@@ -1,1 +1,42 @@
-.CaravanParent {}
+.caravan-parent {
+    background-color: aqua;
+    height: 100vh;
+    width: 100vw;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-parent{
+    height: 90%;
+    width: 90%;
+
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-rows: 8fr 2fr;
+}
+
+.messages {
+    background-color: red;
+}
+.nav-rendered-composite {
+    background-color: blue;
+    display: flex;
+    flex-direction: column;
+}
+.nav-buttons {
+    background-color: green;
+    height: 15%;
+}
+.rendered-section {
+    background-color: purple;
+    flex-grow: 1;
+}
+.resources {
+    background-color: orange;
+}
+.options {
+    background-color: grey;
+    grid-column: 1/-1;
+}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import HpDisplay from './HpDisplay';
+import HpDisplay from './HPDisplay';
 
 describe('<HpDisplay />', () => {
   test('it should mount', () => {
