@@ -1,1 +1,29 @@
-.MapParent {}
+.map-parent {
+    background-color: aqua;
+    height: 100vh;
+    width: 100vw;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-parent{
+    height: var(--standard-section-height);
+    width: var(--standard-section-width);
+
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-rows: 1fr;
+    gap: var(--standard-gap);
+}
+
+.messages{
+    background-color: red;
+}
+.map{
+    background-color: purple;
+}
+.inventory{
+    background-color: yellow;
+}

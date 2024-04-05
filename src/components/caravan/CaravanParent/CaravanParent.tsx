@@ -25,7 +25,7 @@ const CaravanParent: FC<CaravanParentProps> = () => {
           Options
         </div>
       </div>
-      </div>
+    </div>
   );
 }
 
