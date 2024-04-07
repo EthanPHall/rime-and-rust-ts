@@ -4,8 +4,8 @@ import './NavButtonCaravan.css';
 interface NavButtonCaravanProps {}
 
 const NavButtonCaravan: FC<NavButtonCaravanProps> = () => (
-  <div className="NavButtonCaravan" data-testid="NavButtonCaravan">
-    NavButtonCaravan Component
+  <div className="nav-button-caravan" data-testid="nav-button-caravan">
+    <button>Caravan</button>
   </div>
 );
 

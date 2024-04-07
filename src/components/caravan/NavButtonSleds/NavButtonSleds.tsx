@@ -4,8 +4,8 @@ import './NavButtonSleds.css';
 interface NavButtonSledsProps {}
 
 const NavButtonSleds: FC<NavButtonSledsProps> = () => (
-  <div className="NavButtonSleds" data-testid="NavButtonSleds">
-    NavButtonSleds Component
+  <div className="nav-button-sleds" data-testid="nav-button-sleds">
+    <button>Sleds</button>
   </div>
 );
 

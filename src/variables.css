@@ -8,4 +8,10 @@
     --outline-color: #d7d9db;
     --text-color: #d7d9db;
     --text-color-tanya: #ff762c;
+
+    --font-size-regular: .9em;
+
+    --nav-button-height: 90%;
+    --nav-button-width: 20%;
+    --nav-button-font-size: 1.2em;
 }

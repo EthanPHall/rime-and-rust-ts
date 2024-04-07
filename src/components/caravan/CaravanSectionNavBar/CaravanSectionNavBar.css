@@ -1,1 +1,24 @@
-.CaravanSectionNavBar {}
+.caravan-section-navbar {
+    display: flex;
+    justify-content: space-around;
+}
+
+.caravan-section-navbar button{
+    height: var(--nav-button-height);
+    font-size: var(--nav-button-font-size);
+    background: none;
+    border: none;
+    color: var(--outline-color);
+}
+
+.caravan-section-navbar .active-section-button{
+    text-decoration: underline 2px solid var(--outline-color);
+}
+
+.caravan-section-navbar button:hover{
+    text-decoration: underline 2px solid var(--outline-color);
+}
+
+.caravan-section-navbar .divider{
+    font-size: 1.5em;
+}

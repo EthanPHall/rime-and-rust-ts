@@ -7,9 +7,11 @@ import NavButtonExploration from '../NavButtonExploration/NavButtonExploration';
 interface CaravanSectionNavBarProps {}
 
 const CaravanSectionNavBar: FC<CaravanSectionNavBarProps> = () => (
-  <div className="CaravanSectionNavBar" data-testid="CaravanSectionNavBar">
+  <div className="caravan-section-navbar" data-testid="caravan-section-navbar">
     <NavButtonCaravan></NavButtonCaravan>
+    <span className='divider'>|</span>
     <NavButtonSleds></NavButtonSleds>
+    <span className='divider'>|</span>
     <NavButtonExploration></NavButtonExploration>
   </div>
 );
