@@ -2,4 +2,10 @@
     --standard-section-height: 95%;
     --standard-section-width: 90%;
     --standard-gap: 10px;
+
+    --background-color: #18191a;
+    --background-color-trans: #18191a00;
+    --outline-color: #d7d9db;
+    --text-color: #d7d9db;
+    --text-color-tanya: #ff762c;
 }

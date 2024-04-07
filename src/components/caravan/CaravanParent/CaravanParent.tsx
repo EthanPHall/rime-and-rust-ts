@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import './CaravanParent.css';
-import Messages from '../../messages/Messages/Messages';
 import CaravanSectionCrafting from '../CaravanSectionCrafting/CaravanSectionCrafting';
 import CaravanSectionNavBar from '../CaravanSectionNavBar/CaravanSectionNavBar';
 import CaravanSectionValuables from '../CaravanSectionValuables/CaravanSectionValuables';
 import CaravanSectionOptions from '../CaravanSectionOptions/CaravanSectionOptions';
 import CaravanSectionSleds from '../CaravanSectionSleds/CaravanSectionSleds';
 import CaravanSectionExploration from '../CaravanSectionExploration/CaravanSectionExploration';
+import MessagesParent from '../../messages/MessagesParent/MessagesParent';
 
 interface CaravanParentProps {}
 
@@ -14,7 +14,7 @@ const CaravanParent: FC<CaravanParentProps> = () => {
   return (
     <div className='caravan-parent'>
       <div className='grid-parent'>
-        <Messages></Messages>
+        <MessagesParent></MessagesParent>
         <div className='nav-rendered-composite'>
           <CaravanSectionNavBar></CaravanSectionNavBar>
           <CaravanSectionCrafting></CaravanSectionCrafting>

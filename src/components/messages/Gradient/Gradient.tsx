@@ -4,8 +4,7 @@ import './Gradient.css';
 interface GradientProps {}
 
 const Gradient: FC<GradientProps> = () => (
-  <div className="Gradient" data-testid="Gradient">
-    Gradient Component
+  <div className="gradient_gradient" data-testid="gradient_gradient">
   </div>
 );
 

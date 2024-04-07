@@ -1,1 +1,12 @@
-.Messages {}
+.messages {
+    padding-top: 5%;
+    padding-bottom: 5%;
+}
+
+.messages div{
+    margin-top: 5%;
+}
+
+.tanya-dialogue{
+    color: var(--text-color-tanya);
+}

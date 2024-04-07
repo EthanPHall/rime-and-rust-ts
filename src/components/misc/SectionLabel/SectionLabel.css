@@ -1,0 +1,11 @@
+.section-label {
+    position: absolute;
+    height: 5%;
+    top: -2.5%;
+    left: 5%;
+
+    padding-left: 5px;
+    padding-right: 5px;
+    
+    background-color: var(--background-color);
+}
