@@ -11,7 +11,7 @@
 }
 
 .combat-parent-grid-parent{
-    height: 80%;
+    height: var(--standard-section-height);
     width: 60%;
 
     display: grid;
