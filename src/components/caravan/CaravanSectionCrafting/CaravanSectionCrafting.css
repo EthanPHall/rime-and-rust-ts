@@ -1,1 +1,67 @@
-.CaravanSectionCrafting {}
+.caravan-section-crafting{
+    display: flex;
+    justify-content: center;
+}
+
+.caravan-section-crafting .grid-parent{
+    height: 100%;
+    width: 95%;
+
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr;
+    
+    gap: var(--very-large-gap);
+    
+    /* outline: 1px solid white; */
+}
+
+.caravan-section-crafting .sled-crafting-section{
+    margin-top: var(--large-gap);
+    width: 100%;
+}
+
+.caravan-section-crafting .sled-crafting-recipes {
+    height: 100%;
+    width: 100%;
+
+    margin-top: var(--standard-gap);
+    
+    display: flex;
+    
+    gap: var(--standard-gap);
+    
+    /* outline: 1px solid white; */
+}
+
+.caravan-section-crafting .sled-crafting-recipes button,
+.caravan-section-crafting .trade-section button{
+    height: 30px;
+    width: 180px;
+    
+    background: none;
+    outline: 1px solid var(--outline-color);
+    color: var(--outline-color);
+    font-size: var(--font-size-regular);
+}
+.caravan-section-crafting .sled-crafting-recipes button:hover,
+.caravan-section-crafting .trade-section button:hover{
+    text-decoration: underline 2px solid var(--outline-color);
+}
+.caravan-section-crafting .trade-section button{
+    margin-top: var(--standard-gap);
+}
+
+.caravan-section-crafting .sled-name, .caravan-section-crafting .trade-section-title {
+    text-align: left;
+    font-size: var(--font-size-larger);
+}
+
+.caravan-section-crafting .trade-section{
+    display: flex;
+    flex-direction: column;
+}
+
+.caravan-section-crafting .trade-section-title{
+    margin-top: var(--large-gap);
+}
