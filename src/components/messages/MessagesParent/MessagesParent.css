@@ -2,4 +2,17 @@
     position: relative;
 
     border: 1px solid var(--outline-color);
-}
+
+    /*  
+    These next two rules are necessary because otherwise
+    I would need to set the overflow to hidden to keep
+    excess messages from increasing the size of this
+    component. The issue with that is that it cuts off
+    the SectionLabel componennt, which is partly outside
+    of this one and so gets hidden. This solution needs to
+    be used in conjunction with limiting the Messages 
+    component's height.
+    */
+    min-height: 0;
+    min-width: 0; 
+  }
