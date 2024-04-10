@@ -28,6 +28,8 @@ const Messages: FC<MessagesProps> = () => (
     <div>Message. Lorem Ipsum Whatever.</div>
     <div>Message. Lorem Ipsum Whatever.</div>
     <div>Message. Lorem Ipsum Whatever.</div>
+    <div>Message. Lorem Ipsum Whatever.</div>
+    <div>Message. Lorem Ipsum Whatever.</div>
   </div>
 );
 

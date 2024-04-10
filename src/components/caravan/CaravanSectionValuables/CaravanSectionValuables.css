@@ -1,1 +1,29 @@
-.CaravanSectionValuables {}
+.caravan-section-valuables {
+    width: 100%;
+    height: 100%;
+
+    position: relative;
+
+    outline: 1px solid var(--outline-color);
+}
+
+.caravan-section-valuables .resources-list{
+    width: 100%;
+}
+.caravan-section-valuables .resource-entry{
+    width: 100%;
+
+    margin-top: var(--standard-gap);
+    
+    display: flex;
+    justify-content: space-between;
+}
+.caravan-section-valuables .resource-entry:first-child{
+    margin-top: var(--large-gap);
+}
+.caravan-section-valuables .resource-name{
+    margin-left: var(--standard-gap);
+}
+.caravan-section-valuables .resource-amount{
+    margin-right: var(--standard-gap);
+}

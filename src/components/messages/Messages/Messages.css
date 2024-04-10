@@ -1,15 +1,17 @@
 .messages {
-    padding-top: 5%;
     padding-bottom: 5%;
     padding-left: 5px;
     padding-right: 5px;
 
-    max-height: 90%;
+    max-height: 95%;
     overflow: hidden;
 }
 
 .messages div{
-    margin-top: 5%;
+    margin-top: var(--standard-gap);
+}
+.messages div:first-child{
+    margin-top: var(--large-gap);
 }
 
 .tanya-dialogue{
