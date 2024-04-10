@@ -1,1 +1,39 @@
-.ExplorationResourcesEntry {}
+.exploration-resources-entry {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: var(--standard-gap);
+    gap: var(--standard-gap);
+
+    font-size: var(--font-size-larger);
+}
+
+.exploration-resources-entry .resource-name{
+    margin-left: var(--standard-gap);
+}
+.exploration-resources-entry .resource-amount{
+
+}
+.exploration-resources-entry .resource-increment{
+
+}
+.exploration-resources-entry .resource-decrement{
+
+}
+.exploration-resources-entry .resource-increment-large{
+
+}
+.exploration-resources-entry .resource-decrement-large{
+
+}
+.exploration-resources-entry .increment-decrement{
+    display: flex;
+    gap: 5px;
+}
+.exploration-resources-entry .increment-decrement:last-child{
+    margin-right: var(--standard-gap);
+}
+.exploration-resources-entry .amount-and-increments{
+    display: flex;
+    gap: var(--standard-gap);
+}

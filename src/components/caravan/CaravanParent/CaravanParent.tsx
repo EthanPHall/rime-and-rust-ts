@@ -18,8 +18,8 @@ const CaravanParent: FC<CaravanParentProps> = () => {
         <div className='nav-rendered-composite'>
           <CaravanSectionNavBar></CaravanSectionNavBar>
           {/* <CaravanSectionCrafting></CaravanSectionCrafting> */}
-          <CaravanSectionSleds></CaravanSectionSleds>
-          {/* <CaravanSectionExploration></CaravanSectionExploration> */}
+          {/* <CaravanSectionSleds></CaravanSectionSleds> */}
+          <CaravanSectionExploration></CaravanSectionExploration>
         </div>
         <CaravanSectionValuables></CaravanSectionValuables>
         <CaravanSectionOptions></CaravanSectionOptions>
