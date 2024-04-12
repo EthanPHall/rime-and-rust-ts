@@ -3,9 +3,11 @@
     justify-content: flex-end;
     gap: var(--standard-gap);
 
-    height: var(--nav-button-height);
+    /* height: var(--nav-button-height); */
 
     grid-column: 1/-1;
+
+    /* outline: 1px solid cyan; */
 }
 
 .caravan-section-options button{
