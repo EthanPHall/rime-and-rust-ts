@@ -1,7 +1,11 @@
+:root{
+
+  background-color: var(--background-color);
+}
+
 .App {
   text-align: center;
 
-  background-color: var(--background-color);
   color: var(--text-color);
 
   font-size: var(--font-size-regular);
