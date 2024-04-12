@@ -17,10 +17,3 @@
     grid-template-rows: 1fr;
     gap: var(--standard-gap);
 }
-
-.map{
-    background-color: purple;
-}
-.inventory{
-    background-color: yellow;
-}

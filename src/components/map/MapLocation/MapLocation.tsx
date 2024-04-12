@@ -4,9 +4,9 @@ import './MapLocation.css';
 interface MapLocationProps {}
 
 const MapLocation: FC<MapLocationProps> = () => (
-  <div className="MapLocation" data-testid="MapLocation">
-    MapLocation Component
-  </div>
+  <span className="map-location" data-testid="map-location">
+    .
+  </span>
 );
 
 export default MapLocation;

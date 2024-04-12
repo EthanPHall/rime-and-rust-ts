@@ -1,1 +1,4 @@
-.MapLocation {}
+.map-location {
+    margin-left: var(--map-location-spacing);
+    margin-right: var(--map-location-spacing);
+}
