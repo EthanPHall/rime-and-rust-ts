@@ -4,8 +4,8 @@ import './OptionCredits.css';
 interface OptionCreditsProps {}
 
 const OptionCredits: FC<OptionCreditsProps> = () => (
-  <div className="OptionCredits" data-testid="OptionCredits">
-    OptionCredits Component
+  <div className="option-credits" data-testid="option-credits">
+    <button>Credits</button>
   </div>
 );
 

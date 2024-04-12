@@ -4,8 +4,8 @@ import './OptionRestart.css';
 interface OptionRestartProps {}
 
 const OptionRestart: FC<OptionRestartProps> = () => (
-  <div className="OptionRestart" data-testid="OptionRestart">
-    OptionRestart Component
+  <div className="option-restart" data-testid="option-restart">
+    <button>Restart</button>
   </div>
 );
 

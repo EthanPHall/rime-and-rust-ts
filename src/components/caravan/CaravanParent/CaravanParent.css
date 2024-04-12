@@ -16,6 +16,8 @@
     grid-template-rows: 9fr 1fr;
 
     gap: var(--standard-gap);
+
+    /* outline: 1px solid white; */
 }
 
 .nav-rendered-composite {
