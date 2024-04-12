@@ -26,3 +26,17 @@
     
     /* outline: 1px solid cyan; */
 }
+
+.caravan-section-exploration .venture-out-button{
+    width: 50%;
+    height: 7%;
+    margin-left: 5%;
+
+    font-size: var(--nav-button-font-size);
+    background: none;
+    border: none;
+    color: var(--outline-color);
+}
+.caravan-section-exploration .venture-out-button:hover{
+    text-decoration: underline 2px solid var(--outline-color);
+}
