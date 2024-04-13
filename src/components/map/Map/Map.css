@@ -4,7 +4,9 @@
     justify-content: center;
     align-items: center;
 
-    font-size: var(--font-size-much-larger);
+    font-size: var(--font-size-larger);
+    font-family: monospace;
+
     /* outline: 1px solid var(--outline-color); */
 
     /* line-height: var(--map-line-height); */

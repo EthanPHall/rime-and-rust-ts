@@ -1,0 +1,20 @@
+{
+    "bgLocation1": 
+    {
+        "name": "plains",
+        "symbol": ".",
+        "bgLocation": true    
+    },
+    "bgLocation2": 
+    {
+        "name": "dunes",
+        "symbol": ",",
+        "bgLocation": true    
+    },
+    "bgLocation3": 
+    {
+        "name": "blizzards",
+        "symbol": ";",
+        "bgLocation": true    
+    }
+}
