@@ -24,6 +24,7 @@
     --nav-button-width: 20%;
     --nav-button-font-size: 1.2em;
     
-    --map-row-height: 20px;
-    --map-location-spacing: 5px;
+    --map-row-height: 15px;
+    --map-location-spacing: 4.5px;
+    --map-font-size: .9em;
 }
