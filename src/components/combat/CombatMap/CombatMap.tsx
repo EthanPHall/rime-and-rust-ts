@@ -4,7 +4,7 @@ import './CombatMap.css';
 interface CombatMapProps {}
 
 const CombatMap: FC<CombatMapProps> = () => (
-  <div className="CombatMap" data-testid="CombatMap">
+  <div className="combat-map" data-testid="combat-map">
     CombatMap Component
   </div>
 );

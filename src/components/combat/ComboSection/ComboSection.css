@@ -1,1 +1,4 @@
-.ComboSection {}
+.combo-section {
+    background-color: var(--background-color);
+    outline: 1px solid var(--outline-color);
+}

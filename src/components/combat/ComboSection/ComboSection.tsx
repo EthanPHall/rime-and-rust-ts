@@ -4,7 +4,7 @@ import './ComboSection.css';
 interface ComboSectionProps {}
 
 const ComboSection: FC<ComboSectionProps> = () => (
-  <div className="ComboSection" data-testid="ComboSection">
+  <div className="combo-section" data-testid="combo-section">
     ComboSection Component
   </div>
 );

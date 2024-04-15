@@ -4,7 +4,7 @@ import './LootDisplay.css';
 interface LootDisplayProps {}
 
 const LootDisplay: FC<LootDisplayProps> = () => (
-  <div className="LootDisplay" data-testid="LootDisplay">
+  <div className="loot-display" data-testid="loot-display">
     LootDisplay Component
   </div>
 );

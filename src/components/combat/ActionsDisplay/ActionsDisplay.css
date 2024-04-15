@@ -1,1 +1,5 @@
-.ActionsDisplay {}
+.actions-display {
+    background-color: var(--background-color);
+    outline: 1px solid var(--outline-color);
+
+}

@@ -4,7 +4,7 @@ import './TurnDisplay.css';
 interface TurnDisplayProps {}
 
 const TurnDisplay: FC<TurnDisplayProps> = () => (
-  <div className="TurnDisplay" data-testid="TurnDisplay">
+  <div className="turn-display" data-testid="turn-display">
     TurnDisplay Component
   </div>
 );

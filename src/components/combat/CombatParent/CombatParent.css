@@ -8,6 +8,8 @@
     justify-content: center;
 
     position: absolute;
+
+    z-index: 1;
 }
 
 .combat-parent-grid-parent{
@@ -22,43 +24,43 @@
 }
 
 .combat-parent-map-actions-composite{
-        background-color: red;
+        /* background-color: red; */
         grid-column: 3;
         grid-row: 2 / -1;
 
         display: flex;
         flex-direction: column;
 }
-.combat-parent-battle-map{
-        background-color: blue;
+.combat-map{
+        /* background-color: blue; */
         height: 80%;
 }
-.combat-parent-actions{
-        background-color: yellow;
+.actions-display{
+        /* background-color: yellow; */
         flex-grow: 1;
 }
-.combat-parent-loot{
-        background-color: purple;
+.loot-display{
+        /* background-color: purple; */
         grid-column: 3;
         grid-row: 1;
 }
-.combat-parent-hp{
-        background-color: green;
+.hp-display{
+        /* background-color: green; */
         grid-column: 1;
         grid-row: 2;
 }
-.combat-parent-turn{
-        background-color: cyan;
+.turn-display{
+        /* background-color: cyan; */
         grid-column: 2;
         grid-row: 2;
 }
-.combat-parent-action-sequence{
-        background-color: orange;
+.combo-section{
+        /* background-color: orange; */
         grid-column: 1/span 2;
         grid-row: 3/-1;
 }
-.combat-parent-swappable-section{
-        background-color: white;
+.component-switcher{
+        /* background-color: white; */
         grid-column: 4/span 2;
         grid-row: 2/span 2;
 }
