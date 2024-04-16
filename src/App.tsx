@@ -15,8 +15,8 @@ function App() {
     <div className="App">
       {/* <EventParent></EventParent> */}
       <CombatParent></CombatParent>
-      {/* <CaravanParent></CaravanParent> */}
-      <MapParent></MapParent>
+      <CaravanParent></CaravanParent>
+      {/* <MapParent></MapParent> */}
     </div>
   );
 }

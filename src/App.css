@@ -2,6 +2,18 @@
   background-color: var(--background-color);
 }
 
+:root button{
+  height: var(--nav-button-height);
+  font-size: var(--nav-button-font-size);
+  background: none;
+  border: none;
+  color: var(--outline-color);
+}
+
+:root button:hover{
+  text-decoration: underline 2px solid var(--outline-color);
+}
+
 .App {
   text-align: center;
 

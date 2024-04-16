@@ -1,1 +1,17 @@
-.ActionButton {}
+.action-button {
+    height: 100%;
+    width: 100%;
+
+}
+.action-button button {
+    height: 100%;
+    width: 100%;
+
+    border-bottom: 1px solid white;
+
+    font-size: var(--font-size-regular);
+}
+
+.action-button button:hover {
+    border-bottom: none;
+}

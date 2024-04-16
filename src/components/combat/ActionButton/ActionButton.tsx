@@ -4,8 +4,8 @@ import './ActionButton.css';
 interface ActionButtonProps {}
 
 const ActionButton: FC<ActionButtonProps> = () => (
-  <div className="ActionButton" data-testid="ActionButton">
-    ActionButton Component
+  <div className="action-button" data-testid="action-button">
+    <button>Telekinesis</button>
   </div>
 );
 

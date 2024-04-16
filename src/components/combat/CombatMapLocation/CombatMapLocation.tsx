@@ -4,9 +4,9 @@ import './CombatMapLocation.css';
 interface CombatMapLocationProps {}
 
 const CombatMapLocation: FC<CombatMapLocationProps> = () => (
-  <div className="CombatMapLocation" data-testid="CombatMapLocation">
-    CombatMapLocation Component
-  </div>
+  <span className="combat-map-location" data-testid="combat-map-location">
+    .
+  </span>
 );
 
 export default CombatMapLocation;

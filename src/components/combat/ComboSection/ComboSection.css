@@ -1,4 +1,26 @@
 .combo-section {
     background-color: var(--background-color);
     outline: 1px solid var(--outline-color);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    
+    padding: var(--standard-gap);
+    
+    font-size: var(--font-size-larger);
+}
+
+.combo-section .combo-actions{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--standard-gap);
+}
+.combo-section .confirm-cancel{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--standard-gap);
 }
