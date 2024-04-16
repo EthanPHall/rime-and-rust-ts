@@ -52,20 +52,7 @@ const CombatMap: FC<CombatMapProps> = () => (
       <CombatMapLocation></CombatMapLocation>
       <CombatMapLocation></CombatMapLocation>
       <CombatMapLocation></CombatMapLocation>
-      <CombatMapLocation></CombatMapLocation>
-      <CombatMapLocation></CombatMapLocation>
-      <CombatMapLocation></CombatMapLocation>
-      <CombatMapLocation></CombatMapLocation>
-      <CombatMapLocation></CombatMapLocation>
-    </div>       
-    <div className='row'>
-      <CombatMapLocation></CombatMapLocation>
-      <CombatMapLocation></CombatMapLocation>
-      <CombatMapLocation></CombatMapLocation>
-      <CombatMapLocation></CombatMapLocation>
-      <CombatMapLocation></CombatMapLocation>
-      <CombatMapLocation></CombatMapLocation>
-      <CombatMapLocation></CombatMapLocation>
+      <CombatMapLocation symbol='E'></CombatMapLocation>
       <CombatMapLocation></CombatMapLocation>
       <CombatMapLocation></CombatMapLocation>
       <CombatMapLocation></CombatMapLocation>
@@ -89,6 +76,19 @@ const CombatMap: FC<CombatMapProps> = () => (
       <CombatMapLocation></CombatMapLocation>
       <CombatMapLocation></CombatMapLocation>
       <CombatMapLocation></CombatMapLocation>
+      <CombatMapLocation symbol='@'></CombatMapLocation>
+      <CombatMapLocation></CombatMapLocation>
+      <CombatMapLocation></CombatMapLocation>
+      <CombatMapLocation symbol='+'></CombatMapLocation>
+      <CombatMapLocation></CombatMapLocation>
+      <CombatMapLocation></CombatMapLocation>
+      <CombatMapLocation></CombatMapLocation>
+    </div>       
+    <div className='row'>
+      <CombatMapLocation></CombatMapLocation>
+      <CombatMapLocation></CombatMapLocation>
+      <CombatMapLocation></CombatMapLocation>
+      <CombatMapLocation></CombatMapLocation>
       <CombatMapLocation></CombatMapLocation>
       <CombatMapLocation></CombatMapLocation>
       <CombatMapLocation></CombatMapLocation>
@@ -98,7 +98,7 @@ const CombatMap: FC<CombatMapProps> = () => (
       <CombatMapLocation></CombatMapLocation>
     </div>       
     <div className='row'>
-      <CombatMapLocation></CombatMapLocation>
+      <CombatMapLocation symbol='E'></CombatMapLocation>
       <CombatMapLocation></CombatMapLocation>
       <CombatMapLocation></CombatMapLocation>
       <CombatMapLocation></CombatMapLocation>
