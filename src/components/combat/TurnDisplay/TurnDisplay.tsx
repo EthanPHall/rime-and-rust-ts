@@ -5,7 +5,8 @@ interface TurnDisplayProps {}
 
 const TurnDisplay: FC<TurnDisplayProps> = () => (
   <div className="turn-display" data-testid="turn-display">
-    TurnDisplay Component
+    Turn:
+    <div className='turn'>@</div>
   </div>
 );
 
