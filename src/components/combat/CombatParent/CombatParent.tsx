@@ -17,7 +17,7 @@ const CombatParent: FC<CombatParentProps> = () => (
           <CombatMap></CombatMap>
           <ActionsDisplay></ActionsDisplay>
         </div>
-          <LootDisplay></LootDisplay>
+          {/* <LootDisplay></LootDisplay> */}
           <HpDisplay></HpDisplay>
           <TurnDisplay></TurnDisplay>
           <ComboSection></ComboSection>

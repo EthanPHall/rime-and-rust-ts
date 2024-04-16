@@ -26,7 +26,7 @@
 .combat-parent-map-actions-composite{
         /* background-color: red; */
         grid-column: 3;
-        grid-row: 2 / -1;
+        grid-row: 1 / -1;
 
         display: flex;
         flex-direction: column;
@@ -47,20 +47,20 @@
 .hp-display{
         /* background-color: green; */
         grid-column: 1;
-        grid-row: 2;
+        grid-row: 1;
 }
 .turn-display{
         /* background-color: cyan; */
         grid-column: 2;
-        grid-row: 2;
+        grid-row: 1;
 }
 .combo-section{
         /* background-color: orange; */
         grid-column: 1/span 2;
-        grid-row: 3/-1;
+        grid-row: 2/span 2;
 }
 .component-switcher{
         /* background-color: white; */
         grid-column: 4/span 2;
-        grid-row: 2/span 2;
+        grid-row: 1/span 3;
 }
