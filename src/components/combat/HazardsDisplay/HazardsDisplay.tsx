@@ -4,8 +4,15 @@ import './HazardsDisplay.css';
 interface HazardsDisplayProps {}
 
 const HazardsDisplay: FC<HazardsDisplayProps> = () => (
-  <div className="HazardsDisplay" data-testid="HazardsDisplay">
-    HazardsDisplay Component
+  <div className="hazards-display" data-testid="hazards-display">
+    <div className='hazard-entry'>
+      <div className='hazard-symbol'>
+        +:
+      </div>
+      <div className='hazard-name'>
+        Volatile Tank
+      </div> 
+    </div>
   </div>
 );
 

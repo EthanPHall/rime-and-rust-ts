@@ -1,4 +1,15 @@
 .component-switcher {
     background-color: var(--background-color);
     outline: 1px solid var(--outline-color);
+
+    padding: var(--standard-gap);
+    font-size: var(--font-size-larger);
+}
+
+.component-switcher .title-section{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: var(--large-gap);
 }

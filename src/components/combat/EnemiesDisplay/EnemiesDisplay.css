@@ -1,1 +1,15 @@
-.EnemiesDisplay {}
+.enemies-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.enemies-display .enemy-entry{
+    width: 80%;
+    display: flex;
+}
+
+.enemies-display .enemy-hp{
+    margin-left: var(--large-gap);
+}

@@ -1,1 +1,14 @@
-.HazardsDisplay {}
+.hazards-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hazards-display .hazard-entry{
+    width: 80%;
+    display: flex;
+}
+
+.hazard-entry .hazard-name{
+    margin-left: var(--large-gap);
+}
