@@ -1,1 +1,31 @@
-.InventoryPicker {}
+.inventory-picker {
+    outline: 1px solid var(--outline-color);
+    background-color: var(--background-color);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--standard-gap);
+
+
+    outline: 1px solid var(--outline-color);
+    background-color: var(--background-color);
+    
+    font-size: var(--font-size-larger);
+}
+
+.inventory-picker .loot-entries{
+    padding: var(--standard-gap);
+    padding-top: 0px;
+}
+
+.inventory-picker .loot-entry{
+    display: flex;
+    gap: var(--standard-gap);
+    width: 80%;
+
+    margin-top: var(--standard-gap);
+}
+
+.inventory-picker .capacity-heading{
+    margin-top: var(--large-gap);
+}

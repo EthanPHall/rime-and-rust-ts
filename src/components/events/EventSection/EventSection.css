@@ -1,1 +1,32 @@
-.EventSection {}
+.event-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+
+    outline: 1px solid var(--outline-color);
+    background-color: var(--background-color);
+
+    padding: var(--standard-gap);
+}
+
+.event-section .title{
+    width: 90%;
+    display: flex;
+
+    font-size: var(--font-size-much-larger);
+
+    border-bottom: 2px solid var(--outline-color);
+}
+
+.event-section .buttons{
+    width: 80%;
+
+    display: flex;
+    justify-content: space-around;
+}
+
+.event-section .content-section{
+    height: 70%;
+    width: 80%;
+}
