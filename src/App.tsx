@@ -13,8 +13,8 @@ function App() {
   
   return (
     <div className="App">
-      <EventParent></EventParent>
-      {/* <CombatParent></CombatParent> */}
+      {/* <EventParent></EventParent> */}
+      <CombatParent></CombatParent>
       <CaravanParent></CaravanParent>
       {/* <MapParent></MapParent> */}
     </div>
