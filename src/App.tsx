@@ -9,7 +9,7 @@ import EventParent from './components/events/EventParent/EventParent';
 
 function App() {
 
-
+  
   
   return (
     <div className="App">

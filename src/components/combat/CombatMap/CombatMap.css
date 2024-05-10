@@ -11,6 +11,6 @@
     font-family: monospace;
 }
 
-.combat-map .row{
-    height: 25px;
+.combat-map .combat-map-row{
+    height: 24px;
 }

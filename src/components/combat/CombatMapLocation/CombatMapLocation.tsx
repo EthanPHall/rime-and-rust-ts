@@ -6,8 +6,6 @@ interface CombatMapLocationProps {
 }
 
 const CombatMapLocation: FC<CombatMapLocationProps> = (props: CombatMapLocationProps) => {
-  console.log(props as CombatMapLocationProps);
-
   return (<span className="combat-map-location" data-testid="combat-map-location">
     {props.symbol}
   </span>);
