@@ -26,16 +26,20 @@
     0% {
         font-size: inherit;
     }
-    100% {
+    50%{
         font-size: var(--font-size-much-larger);
+    }
+    100% {
+        font-size: inherit;
     }
 }
 .combat-map .highlight{ 
     color: orange;
 
     animation-name: textGrow;
-    animation-duration: .3s;
-    animation-fill-mode: forwards;
+    animation-duration: 3s;
+    /* animation-fill-mode: forwards; */
+    animation-iteration-count: infinite;
 }
 
 .highlight-button{
