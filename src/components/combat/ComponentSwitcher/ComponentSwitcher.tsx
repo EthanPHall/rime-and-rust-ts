@@ -5,14 +5,42 @@ import HazardsDisplay from '../HazardsDisplay/HazardsDisplay';
 
 interface ComponentSwitcherProps {}
 
-const ComponentSwitcher: FC<ComponentSwitcherProps> = () => (
-  <div className="component-switcher" data-testid="component-switcher">
-    <div className='title-section'>
-      <span className='left-arrow'>{`<`}</span> Hazards <span className='right-arrow'>{`>`}</span>
+class SwitchedComponent{
+  component: JSX.Element;
+  name: string;
+  constructor(component: JSX.Element, name: string){
+    this.component = component;
+    this.name = name;
+  }
+}
+
+const ComponentSwitcher: FC<ComponentSwitcherProps> = () => {
+  const [index, setIndex] = React.useState<number>(0);
+  const [components, setComponents] = React.useState<SwitchedComponent[]>([
+    new SwitchedComponent(<EnemiesDisplay></EnemiesDisplay>, 'Enemies'),
+    new SwitchedComponent(<HazardsDisplay></HazardsDisplay>, 'Hazards'),
+    // new SwitchedComponent(<div>Buh</div>, 'Buh')
+  ]);
+  
+  function incrementIndex(){
+    setIndex((index + 1) % components.length);
+  }
+  function decrementIndex(){
+    setIndex((index - 1 + components.length) % components.length);
+  }
+
+  const toDisplay: JSX.Element = index == 0 ? <EnemiesDisplay></EnemiesDisplay> : <HazardsDisplay></HazardsDisplay>;
+
+  return (
+    <div className="component-switcher" data-testid="component-switcher">
+      <div className='title-section'>
+        <span className='left-arrow' onClick={decrementIndex}>{`<`}</span>
+        {components[index].name}
+        <span className='right-arrow' onClick={incrementIndex}>{`>`}</span>
+      </div>
+      {components[index].component}
     </div>
-    {/* <EnemiesDisplay></EnemiesDisplay> */}
-    <HazardsDisplay></HazardsDisplay>
-  </div>
-);
+  );
+}
 
 export default ComponentSwitcher;
