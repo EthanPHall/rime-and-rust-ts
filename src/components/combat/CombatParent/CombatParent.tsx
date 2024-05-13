@@ -21,7 +21,7 @@ const CombatParent: FC<CombatParentProps> = () => {
     <div className="combat-parent" data-testid="combat-parent">
         <div className='combat-parent-grid-parent'>
           <div className='combat-parent-map-actions-composite'>
-            <CombatMap combatMapManager={mapManager}></CombatMap>
+            <CombatMap></CombatMap>
             <ActionsDisplay></ActionsDisplay>
           </div>
             {/* <LootDisplay></LootDisplay> */}
