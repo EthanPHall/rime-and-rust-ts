@@ -35,12 +35,23 @@ class CombatAction{
     };
   }
 }
+class CombatActionWithUses{
+  action: CombatAction;
+  uses: number;
+
+  constructor(action: CombatAction, uses: number){
+    this.action = action;
+    this.uses = uses;
+  }
+}
 
 
 const ActionButton: FC<ActionButtonProps> = () => {
+  const USES = 2;
+
   const [activateControls, setActivateControls] = useState<boolean>(false);
   const [direction, setDirection] = useState<Directions>(Directions.NONE);
-  const [action, setAction] = useState<CombatAction>(new CombatAction("Attack", true));
+  const [actionWithUses, setActionWithUses] = useState<CombatActionWithUses>(new CombatActionWithUses(new CombatAction("Attack", true), USES));
 
   const handleDirectionInputs = useCallback((event:any) => {
     if (activateControls && (event.key === "ArrowUp" || event.key === "w")) {
@@ -70,45 +81,47 @@ const ActionButton: FC<ActionButtonProps> = () => {
       return;
     }
 
-    let actionToSendOff:CombatAction|null = null;
     switch(direction){
       case Directions.UP:
-        actionToSendOff = CombatAction.clone(action);
-        actionToSendOff.direction = Directions.UP;
+        actionWithUses.action.direction = Directions.UP;
         break;
       case Directions.DOWN:
-        actionToSendOff = CombatAction.clone(action);
-        actionToSendOff.direction = Directions.DOWN;
+        actionWithUses.action.direction = Directions.DOWN;
         break;
       case Directions.LEFT:
-        actionToSendOff = CombatAction.clone(action);
-        actionToSendOff.direction = Directions.LEFT;
+        actionWithUses.action.direction = Directions.LEFT;
         break;
       case Directions.RIGHT:
-        actionToSendOff = CombatAction.clone(action);
-        actionToSendOff.direction = Directions.RIGHT;
+        actionWithUses.action.direction = Directions.RIGHT;
         break;
       }
     
-    sendOffAction(actionToSendOff);
+    sendOffAction(actionWithUses);
 
     setActivateControls(false);
 
   }, [direction]);
 
-  function sendOffAction(actionToSendOff:CombatAction|null) : boolean{
+  function sendOffAction(actionToSendOff:CombatActionWithUses|null) : boolean{
     if (actionToSendOff === null) {
       console.log("No action to send off.");
       return false;
     } else {
-      console.log("Sending off action: ", (actionToSendOff as CombatAction).dataToObject());
+      actionToSendOff.uses--;
+      setActionWithUses(actionToSendOff);
+      console.log("Sending off action: ", CombatAction.clone(actionToSendOff.action).dataToObject());
+
       return true;
     }
   }
   
   function setupForDirectionalInput() : void{
-    if(!action.directional){
-      sendOffAction(action);
+    if(actionWithUses.uses <= 0){
+      return;
+    }
+
+    if(!actionWithUses.action.directional){
+      sendOffAction(actionWithUses);
     }
     else{
       setDirection(Directions.NONE);
@@ -116,12 +129,17 @@ const ActionButton: FC<ActionButtonProps> = () => {
     }
   }
 
+  function resetUses() : void{
+    setActionWithUses(new CombatActionWithUses(actionWithUses.action, USES));
+  }
+
   return (
     <div>
       <div className={`${activateControls ? "direction-input-cover" : ""}`}>
       </div>
+      <button className="reset-button" data-testid="reset-button" onClick={resetUses}>Reset Uses</button>
       <button className="action-button" data-testid="action-button" onClick={setupForDirectionalInput}>
-        {action.name}
+        {`${actionWithUses.action.name} x${actionWithUses.uses}`}
       </button>
     </div>
   );
