@@ -6,6 +6,9 @@ import CombatMapManager from '../../../classes/combat/CombatMapManager';
 interface CombatMapProps {}
 
 class MapUtilities{
+  static MAX_HEIGHT = 99;
+  static MAX_WIDTH = 99;
+
   static getDistance(a:Vector2, b:Vector2):number{
     return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
   }
@@ -32,11 +35,16 @@ class MapUtilities{
     return Direction.UP;
   }
 
-  static breadthFirstSearch(map:Map, startingX:number, startingY:number, distance:number):LocationData[]{
-    const visited:LocationData[] = [];
-    const locations:LocationData[][] = map.locations;
-    const height = locations.length;
-    const width = locations[0].length;
+  static breadthFirstSearch(map:Map|null, startingX:number, startingY:number, distance:number):Vector2[]{
+    //Copilot has given a potential improvement: chnage visited to a Set, and store stringified versions
+    //of points so that I can use Set.has, a constant time way to check for existing things. I won't do that unless
+    //this is slow though.
+    const visited:Vector2[] = [];
+    const height = map ? map.height : MapUtilities.MAX_HEIGHT;
+    const width = map ? map.width : MapUtilities.MAX_WIDTH;
+
+    //By comparing distances squared to eachother, I avoid having to do take square roots. Should be more efficient.
+    //Probably premature optimization, but I'm more comfortable with this method from working with Unity.
     const distanceSquared = distance*distance;
 
     const increments:Vector2[] = [
@@ -48,17 +56,61 @@ class MapUtilities{
 
     const queue: Vector2[] = [];
     queue.push(new Vector2(startingX, startingY));
+    const history:Vector2[] = [];
     
     while(queue.length > 0){
       const currentPoint:Vector2 = queue[0];
+      visited.push(currentPoint);
+      history.push(currentPoint);
+      queue.shift();
 
       for(let i:number = 0; i < increments.length; i++){
         const currentIncrement:Vector2 = increments[i];
-        const newPoint:Vector2 = new Vector2(currentPoint.x + currentIncrement.x, currentPoint.y + currentIncrement.y); 
+        const newPoint:Vector2 = new Vector2(currentPoint.x + currentIncrement.x, currentPoint.y + currentIncrement.y);
+        
+        const alreadyInHistory = history.some(point => {
+          return point.x === newPoint.x && point.y === newPoint.y;
+        });
+        if(!alreadyInHistory){
+          history.push(newPoint);
+        }
+        else{
+          continue;
+        }
+        
+        if(MapUtilities.getDistanceSquared(new Vector2(startingX, startingY), newPoint) <= distanceSquared && MapUtilities.isPointInBounds(newPoint, width, height)){
+          queue.push(newPoint);
+        }
       }
     }
 
     return visited;
+  }
+
+  static getLineBetweenPoints(start:Vector2, end:Vector2):Vector2[]{
+    const points:Vector2[] = [];
+    const deltaX:number = Math.abs(end.x - start.x);
+    const deltaY:number = Math.abs(end.y - start.y);
+    const signX:number = start.x < end.x ? 1 : -1;
+    const signY:number = start.y < end.y ? 1 : -1;
+    let error:number = deltaX - deltaY;
+    let currentX:number = start.x;
+    let currentY:number = start.y;
+
+    while(currentX !== end.x || currentY !== end.y){
+      points.push(new Vector2(currentX, currentY));
+      const doubleError = error * 2;
+      if(doubleError > -deltaY){
+        error -= deltaY;
+        currentX += signX;
+      }
+      if(doubleError < deltaX){
+        error += deltaX;
+        currentY += signY;
+      }
+    }
+
+    return points;
   }
 
   static isPointInBounds(point: Vector2, mapWidth:number, mapHeight:number): boolean{
@@ -73,13 +125,15 @@ class LocationData{
   name: string;
   symbol: string;
   highlight: boolean;
-  constructor(id: number, x: number, y: number, name: string = "Combat Location", symbol: string = ".", highlight: boolean = false){
+  solid: boolean;
+  constructor(id: number, x: number, y: number, name: string = "Combat Location", symbol: string = ".", highlight: boolean = false, solid: boolean = false){
     this.id = id;
     this.x = x;
     this.y = y;
     this.name = name;
     this.symbol = symbol;
     this.highlight = highlight;
+    this.solid = solid;
   }
 }
 
@@ -99,7 +153,7 @@ class Vector2{
   }
 }
 
-class AOEData{
+class AreaOfEffect{
   length:number;
   direction:Direction;
   radius:number;
@@ -111,21 +165,27 @@ class AOEData{
     this.cone = cone;
   }
   
-  getAffectedCoordinates(startingX:number, startingY:number) : Vector2[]{
+  getAffectedCoordinates(startingX:number, startingY:number, map:Map|null) : Vector2[]{
     const affectedCoordinates:Vector2[] = [];
     affectedCoordinates.push(new Vector2(startingX, startingY));
     
     const linePoints:Vector2[] = this.getLinePoints(affectedCoordinates[0]);
     this.mergeCoordinates(affectedCoordinates, linePoints);
-
+    
     if(this.cone){
       const conePoints:Vector2[] = this.getConePoints(linePoints);
       this.mergeCoordinates(affectedCoordinates, conePoints);
     }
+    
+    const radiusPoints:Vector2[] = this.getRadiusPoints(affectedCoordinates, map);
+    this.mergeCoordinates(affectedCoordinates, radiusPoints);
 
-    const radiusPoints:Vector2[] = this.getRadiusPoints(affectedCoordinates);
+    let occludedPoints:Vector2[]|null = null;
+    if(map){
+      occludedPoints = this.occludePoints(affectedCoordinates, new Vector2(startingX, startingY), map);
+    }
 
-    return affectedCoordinates;
+    return occludedPoints ? occludedPoints : affectedCoordinates;
   }
 
   private mergeCoordinates(existingCoordinates:Vector2[], newCoordinates:Vector2[]) : void{
@@ -188,7 +248,7 @@ class AOEData{
     }
 
     for(let i = 0; i < linePoints.length; i++){
-      for(let j = i; j > 0; j--){
+      for(let j = i+1; j > 0; j--){
         newPoints.push(new Vector2(linePoints[i].x + directionVector.x*j, linePoints[i].y + directionVector.y*j));
         newPoints.push(new Vector2(linePoints[i].x - directionVector.x*j, linePoints[i].y - directionVector.y*j));
       }
@@ -197,14 +257,40 @@ class AOEData{
     return newPoints;
   }
 
-  private getRadiusPoints(existingPoints:Vector2[]):Vector2[]{
+  private getRadiusPoints(existingPoints:Vector2[], map:Map|null):Vector2[]{
     const newPoints:Vector2[] = [];
 
-    this.mergeCoordinates(newPoints, existingPoints);
-
     existingPoints.forEach(point => {
-      const radiusPoints:Vector2[] = [];
+      const radiusPoints:Vector2[] = MapUtilities.breadthFirstSearch(map, point.x, point.y, this.radius);
+      this.mergeCoordinates(newPoints, radiusPoints);
+    });
+
+    return newPoints;
+  }
+
+  private occludePoints(existingPoints:Vector2[], origin:Vector2, map:Map):Vector2[]{
+    const newPoints:Vector2[] = [];
+
+    if(map.locations[origin.y][origin.x].solid){
+      return newPoints;
+    }
+
+    existingPoints.forEach((existingPoint) => {
+      const originToPointLine:Vector2[] = MapUtilities.getLineBetweenPoints(origin, existingPoint);
       
+      let blocked:boolean = false;
+      for(let i = 0; i < originToPointLine.length; i++){
+        const otplPoint = originToPointLine[i];
+
+        if(map.locations[otplPoint.y][otplPoint.x].solid){
+          blocked = true;
+          break;
+        }
+      }
+
+      if(!blocked){
+        newPoints.push(existingPoint);
+      }
     });
 
     return newPoints;
@@ -213,11 +299,16 @@ class AOEData{
 
 class Map{
   locations: LocationData[][];
-  constructor(dimensionX: number, dimensionY: number){
+  height: number;
+  width: number;
+  constructor(height: number, width: number){
     this.locations = [];
-    for(let i = 0; i < dimensionX; i++){
+    this.height = height;
+    this.width = width;
+
+    for(let i = 0; i < height; i++){
       const row: LocationData[] = [];
-      for(let j = 0; j < dimensionY; j++){
+      for(let j = 0; j < width; j++){
         row.push(new LocationData(i*10+j, i, j, "Combat Location", ".", false));
       }
 
@@ -233,15 +324,43 @@ class Map{
     });
   }
 
-  highlightAOE(aoeData: AOEData){
+  highlightAOE(aoeData: AreaOfEffect, origin:Vector2):void{
+    this.dehighlightAll();
+
+    const aoePoints:Vector2[] = aoeData.getAffectedCoordinates(origin.x, origin.y, this);
     
+    this.locations.forEach((row) => {
+      row.forEach((location) => {
+        location.highlight = false;
+      });
+    });
+
+    aoePoints.forEach((point) => {
+      this.locations[point.y][point.x].highlight = true;
+    });
+  }
+
+  highlightByCoordinates(coordinates:Vector2[]):void{
+    this.dehighlightAll();
+
+    coordinates.forEach((point) => {
+      this.locations[point.y][point.x].highlight = true;
+    });
+  }
+
+  dehighlightAll():void{
+    this.locations.forEach((row) => {
+      row.forEach((location) => {
+        location.highlight = false;
+      });
+    });
   }
 
   static clone(map: Map): Map{
-    const newMap = new Map(0, 0);
+    const newMap:Map = new Map(map.height, map.width);
     newMap.locations = map.locations.map((row) => {
       return row.map((location) => {
-        return new LocationData(location.id, location.x, location.y, location.name, location.symbol, location.highlight);
+        return new LocationData(location.id, location.x, location.y, location.name, location.symbol, location.highlight, location.solid);
       });
     });
 
@@ -250,24 +369,40 @@ class Map{
 }
 
 const CombatMap: FC<CombatMapProps> = (props:CombatMapProps) => {
-  const [map, setMap] = useState<Map>(new Map(5, 5));  
-  
-  function highlight(){
-    setMap((prevMap) => {
-      const newMap = Map.clone(prevMap);
-      newMap.locations[0][0].highlight = !newMap.locations[0][0].highlight;
-      return newMap;
-    });
+  const [map, setMap] = useState<Map>(new Map(15, 15));  
+  const [aoe, setAOE] = useState<AreaOfEffect>(new AreaOfEffect(0, Direction.UP, 5, false));
+
+  useMemo(() => {
+    map.locations[7][8].solid = true;
+    map.locations[7][8].symbol = "#";
+    map.locations[7][3].symbol = "E";
+    map.locations[7][9].symbol = "E";
+    map.locations[7][7].symbol = "@";
+
+  }, []);
+
+  function highlightAOE(){
+    map.highlightAOE(aoe, new Vector2(7, 7));
+
+    setMap(Map.clone(map));
   }
 
   function logLocationData(){
     map.logLocationData();
   }
 
+  function highlightPlayer(){
+    const playerLocation:Vector2 = new Vector2(7, 7);
+    map.highlightByCoordinates([playerLocation]);
+
+    setMap(Map.clone(map));
+  }
+
   return (
     <>
-      <button className='highlight-button' onClick={highlight}>Highlight</button>
-      <button className='log-button' onClick={logLocationData}>Log</button>
+      <button className='highlight-button' onClick={highlightAOE}>Highlight</button>
+      <button className='highlight-button' onClick={highlightPlayer}>Highlight Player</button>
+      {/* <button className='log-button' onClick={logLocationData}>Log</button> */}
       <div className="combat-map" data-testid="combat-map">
         {map.locations.map((row, i) => {
           return (
