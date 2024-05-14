@@ -31,7 +31,7 @@ const EnemyInfoCard: FC<{enemy: Enemy, hideCard: () => void}> = ({enemy, hideCar
 const EnemyEntry: FC<{enemy: Enemy, onClick: () => void}> = ({enemy, onClick}) => {
   return (
     <div className="enemy-entry" data-testid="enemy-entry" onClick={onClick}>
-      <span>{enemy.symbol}</span>
+      <span>{`${enemy.symbol}: `}</span>
       <span>{enemy.hp}/{enemy.maxHp}</span>
     </div>
   );
