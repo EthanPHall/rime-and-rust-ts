@@ -40,6 +40,8 @@ const HazardEntry: FC<{hazard: Hazard, onClick: () => void}> = ({hazard, onClick
 const HazardsDisplay: FC<HazardsDisplayProps> = () => {
   const [hazards, setHazards] = React.useState<Hazard[]>([
     new Hazard(5, 5, '+', 'Volatile Tank', 'A tank that explodes when destroyed'),
+    new Hazard(5, 5, '+', 'Volatile Tank', 'A tank that explodes when destroyed'),
+    new Hazard(5, 5, '+', 'Volatile Tank', 'A tank that explodes when destroyed'),
   ]);
   const [displayInfoForHazard, setDisplayInfoForHazard] = React.useState<Hazard | null>(null);
   
