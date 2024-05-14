@@ -13,3 +13,14 @@
 .enemies-display .enemy-hp{
     margin-left: var(--large-gap);
 }
+
+.enemy-info{
+    width: 300px;
+    height: 250px;
+
+    position: absolute;
+    left: 0;
+
+    background-color: var(--background-color);
+    border: 1px solid var(--outline-color);
+}
