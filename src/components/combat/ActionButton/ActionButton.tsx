@@ -5,54 +5,21 @@ import { Dir } from 'fs';
 import { act } from 'react-dom/test-utils';
 import { stringify } from 'querystring';
 import { send } from 'process';
+import CombatAction from '../../../classes/combat/CombatAction';
+import Directions from '../../../classes/utility/Directions';
+import { CombatActionWithUses } from '../../../classes/combat/CombatAction';
 
-interface ActionButtonProps {}
-
-enum Directions {UP, DOWN, LEFT, RIGHT, NONE};
-class CombatAction{
-  static incrementor: number = 0;
-  
-  name: string;
-  directional: boolean;
-  direction: Directions; 
-  constructor(name: string, directional: boolean, direction: Directions = Directions.NONE){    
-    this.name = name + " " + CombatAction.incrementor;
-    this.directional = directional;
-    this.direction = direction;
-
-    CombatAction.incrementor++;
-  }
-
-  static clone(action:CombatAction) : CombatAction{
-    return new CombatAction(action.name, action.directional, action.direction);
-  }
-
-  dataToObject() : Object{
-    return {
-      name: this.name,
-      directional: this.directional,
-      direction: Directions[this.direction]
-    };
-  }
-}
-class CombatActionWithUses{
-  action: CombatAction;
-  uses: number;
-
-  constructor(action: CombatAction, uses: number){
-    this.action = action;
-    this.uses = uses;
-  }
+interface ActionButtonProps {
+  addToComboList: (newAction: CombatAction) => void;
+  action: CombatActionWithUses;
+  actionIndex: number;
+  reduceActionUses: (index:number) => void;
 }
 
-
-const ActionButton: FC<ActionButtonProps> = () => {
-  const USES = 2;
-
+const ActionButton: FC<ActionButtonProps> = ({addToComboList, action, actionIndex, reduceActionUses}: ActionButtonProps) => {
   const [activateControls, setActivateControls] = useState<boolean>(false);
   const [direction, setDirection] = useState<Directions>(Directions.NONE);
-  const [actionWithUses, setActionWithUses] = useState<CombatActionWithUses>(new CombatActionWithUses(new CombatAction("Attack", true), USES));
-
+ 
   const handleDirectionInputs = useCallback((event:any) => {
     if (activateControls && (event.key === "ArrowUp" || event.key === "w")) {
       setDirection(Directions.UP);
@@ -83,20 +50,20 @@ const ActionButton: FC<ActionButtonProps> = () => {
 
     switch(direction){
       case Directions.UP:
-        actionWithUses.action.direction = Directions.UP;
+        action.action.direction = Directions.UP;
         break;
       case Directions.DOWN:
-        actionWithUses.action.direction = Directions.DOWN;
+        action.action.direction = Directions.DOWN;
         break;
       case Directions.LEFT:
-        actionWithUses.action.direction = Directions.LEFT;
+        action.action.direction = Directions.LEFT;
         break;
       case Directions.RIGHT:
-        actionWithUses.action.direction = Directions.RIGHT;
+        action.action.direction = Directions.RIGHT;
         break;
       }
     
-    sendOffAction(actionWithUses);
+    sendOffAction(action);
 
     setActivateControls(false);
 
@@ -107,21 +74,20 @@ const ActionButton: FC<ActionButtonProps> = () => {
       console.log("No action to send off.");
       return false;
     } else {
-      actionToSendOff.uses--;
-      setActionWithUses(actionToSendOff);
-      console.log("Sending off action: ", CombatAction.clone(actionToSendOff.action).dataToObject());
+      reduceActionUses(actionIndex);
+      addToComboList(CombatAction.clone(actionToSendOff.action));
 
       return true;
     }
   }
   
   function setupForDirectionalInput() : void{
-    if(actionWithUses.uses <= 0){
+    if(action.uses <= 0){
       return;
     }
 
-    if(!actionWithUses.action.directional){
-      sendOffAction(actionWithUses);
+    if(!action.action.directional){
+      sendOffAction(action);
     }
     else{
       setDirection(Directions.NONE);
@@ -129,17 +95,12 @@ const ActionButton: FC<ActionButtonProps> = () => {
     }
   }
 
-  function resetUses() : void{
-    setActionWithUses(new CombatActionWithUses(actionWithUses.action, USES));
-  }
-
   return (
     <div>
       <div className={`${activateControls ? "direction-input-cover" : ""}`}>
       </div>
-      <button className="reset-button" data-testid="reset-button" onClick={resetUses}>Reset Uses</button>
       <button className="action-button" data-testid="action-button" onClick={setupForDirectionalInput}>
-        {`${actionWithUses.action.name} x${actionWithUses.uses}`}
+        {`${action.action.name} x${action.uses}`}
       </button>
     </div>
   );

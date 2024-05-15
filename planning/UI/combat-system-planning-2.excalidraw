@@ -5,8 +5,8 @@
   "elements": [
     {
       "type": "text",
-      "version": 989,
-      "versionNonce": 1846534115,
+      "version": 1377,
+      "versionNonce": 480625823,
       "isDeleted": false,
       "id": "-DXiTcYEYzYvx9fQRAD4R",
       "fillStyle": "solid",
@@ -15,34 +15,34 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -1389.359375,
-      "y": -3406.1775970458984,
+      "x": -1751.458984375,
+      "y": -5190.727615356445,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
-      "width": 3961.453125,
-      "height": 1738.6502441406246,
+      "width": 4173.673828125,
+      "height": 2752.862886555989,
       "seed": 1506056194,
       "groupIds": [],
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1715532128885,
+      "updated": 1715729444235,
       "link": null,
       "locked": false,
       "fontSize": 120.73960028754338,
       "fontFamily": 3,
-      "text": "I'm not satisfied with the last plan I came up with.\nI think it focused too much on the interactions\nbetween different components/classes, and not enough\non how the individual components and classes would\nactually work. So for this plan, I'll figure out how\neach component will work and then implement \nsaid components independent of eachother. I won't worry\nabout props or interactions at all in this step;\neverything the components need will be hard coded for\nnow, and then when everything works in isolation, that's\nwhen I'll plan out how to make the components interact,\nprovide important data, etc.",
+      "text": "I'm not satisfied with the last plan I came up with.\nI think it focused too much on the interactions\nbetween different components/classes, and not enough\non how the individual components and classes would\nactually work. So for this plan, I'll figure out how\neach component will work and then implement \nsaid components independent of eachother. I won't worry\nabout props or interactions at all in this step;\neverything the components need will be hard coded for\nnow, and then when everything works in isolation, that's\nwhen I'll plan out how to make the components interact,\nprovide important data, etc.\n\nEverything is working in isolation now, so I'll start\nmaking the components interact with eachother. I'll just \npick a component at a time, and then draw a line between it\nand some other component to represent an interaction.\nCompleted interactions are green, TODO interactions are \nred.",
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "I'm not satisfied with the last plan I came up with.\nI think it focused too much on the interactions\nbetween different components/classes, and not enough\non how the individual components and classes would\nactually work. So for this plan, I'll figure out how\neach component will work and then implement \nsaid components independent of eachother. I won't worry\nabout props or interactions at all in this step;\neverything the components need will be hard coded for\nnow, and then when everything works in isolation, that's\nwhen I'll plan out how to make the components interact,\nprovide important data, etc.",
+      "originalText": "I'm not satisfied with the last plan I came up with.\nI think it focused too much on the interactions\nbetween different components/classes, and not enough\non how the individual components and classes would\nactually work. So for this plan, I'll figure out how\neach component will work and then implement \nsaid components independent of eachother. I won't worry\nabout props or interactions at all in this step;\neverything the components need will be hard coded for\nnow, and then when everything works in isolation, that's\nwhen I'll plan out how to make the components interact,\nprovide important data, etc.\n\nEverything is working in isolation now, so I'll start\nmaking the components interact with eachother. I'll just \npick a component at a time, and then draw a line between it\nand some other component to represent an interaction.\nCompleted interactions are green, TODO interactions are \nred.",
       "lineHeight": 1.2,
-      "baseline": 1710
+      "baseline": 2724
     },
     {
       "type": "rectangle",
-      "version": 189,
-      "versionNonce": 2020852653,
+      "version": 300,
+      "versionNonce": 221515985,
       "isDeleted": false,
       "id": "ur80RaByGKxLwVlaCgGsg",
       "fillStyle": "solid",
@@ -51,8 +51,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -1954.562495676686,
-      "y": 775.9328384418632,
+      "x": -5736.5622108459565,
+      "y": -665.8673934917305,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
       "width": 847.5104361976169,
@@ -67,16 +67,28 @@
         {
           "type": "text",
           "id": "xSeHYsBMMqbU8A2QLzgvN"
+        },
+        {
+          "id": "wFZ4Tj2uAYfZ135uMbWL_",
+          "type": "arrow"
+        },
+        {
+          "id": "VcK5c--Yszfj0caPhZz1K",
+          "type": "arrow"
+        },
+        {
+          "id": "0XJSlIY9C8xCYp8ZhtwXQ",
+          "type": "arrow"
         }
       ],
-      "updated": 1715533423475,
+      "updated": 1715732156021,
       "link": null,
       "locked": false
     },
     {
       "type": "text",
-      "version": 529,
-      "versionNonce": 1108887597,
+      "version": 637,
+      "versionNonce": 1493152931,
       "isDeleted": false,
       "id": "xSeHYsBMMqbU8A2QLzgvN",
       "fillStyle": "solid",
@@ -85,8 +97,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -1942.1354025778776,
-      "y": 887.5884633164685,
+      "x": -5724.135117747148,
+      "y": -554.2117686171251,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
       "width": 822.65625,
@@ -96,7 +108,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1715533428864,
+      "updated": 1715668033934,
       "link": null,
       "locked": false,
       "fontSize": 36,
@@ -107,12 +119,12 @@
       "containerId": "ur80RaByGKxLwVlaCgGsg",
       "originalText": "ActionButton\n\nActionButton needs to register when the player clicks on it and accurately be able to tell other components what action was selected.\n\nAlso, it needs to provide a means to determine what direction the action should take place in.",
       "lineHeight": 1.2,
-      "baseline": 423
+      "baseline": 425
     },
     {
       "type": "rectangle",
-      "version": 244,
-      "versionNonce": 2139384734,
+      "version": 344,
+      "versionNonce": 304893009,
       "isDeleted": false,
       "id": "G9x6xAyradCyIWpgqSD3W",
       "fillStyle": "solid",
@@ -121,8 +133,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -1947.0859846406556,
-      "y": 1530.3542959972278,
+      "x": -4180.0608890189105,
+      "y": 1177.6289745454053,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
       "width": 847.5104361976169,
@@ -137,16 +149,24 @@
         {
           "type": "text",
           "id": "A1yNrPUqenGundMEUke8C"
+        },
+        {
+          "id": "VcK5c--Yszfj0caPhZz1K",
+          "type": "arrow"
+        },
+        {
+          "id": "UXMuNIr203bRePQnvRmGL",
+          "type": "arrow"
         }
       ],
-      "updated": 1715383122461,
+      "updated": 1715732146190,
       "link": null,
       "locked": false
     },
     {
       "type": "text",
-      "version": 490,
-      "versionNonce": 1574940482,
+      "version": 588,
+      "versionNonce": 274766385,
       "isDeleted": false,
       "id": "A1yNrPUqenGundMEUke8C",
       "fillStyle": "solid",
@@ -155,8 +175,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -1934.6588915418472,
-      "y": 1598.8099208718331,
+      "x": -4167.633795920102,
+      "y": 1246.0845994200106,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
       "width": 822.65625,
@@ -166,7 +186,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1715387099680,
+      "updated": 1715732146190,
       "link": null,
       "locked": false,
       "fontSize": 36,
@@ -321,8 +341,8 @@
     },
     {
       "type": "rectangle",
-      "version": 255,
-      "versionNonce": 272014338,
+      "version": 538,
+      "versionNonce": 4088081,
       "isDeleted": false,
       "id": "T1ppHyqG5xWezh_0vXvYy",
       "fillStyle": "solid",
@@ -331,8 +351,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -1043.1299463038436,
-      "y": 779.2497762755738,
+      "x": -4107.6797103012395,
+      "y": -593.6005146586708,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
       "width": 847.5104361976169,
@@ -347,16 +367,28 @@
         {
           "type": "text",
           "id": "Yv3mOEXDTZHoYxaZIQlOU"
+        },
+        {
+          "id": "VcK5c--Yszfj0caPhZz1K",
+          "type": "arrow"
+        },
+        {
+          "id": "UXMuNIr203bRePQnvRmGL",
+          "type": "arrow"
+        },
+        {
+          "id": "0XJSlIY9C8xCYp8ZhtwXQ",
+          "type": "arrow"
         }
       ],
-      "updated": 1715383122462,
+      "updated": 1715732156021,
       "link": null,
       "locked": false
     },
     {
       "type": "text",
-      "version": 286,
-      "versionNonce": 1982805634,
+      "version": 566,
+      "versionNonce": 1141726641,
       "isDeleted": false,
       "id": "Yv3mOEXDTZHoYxaZIQlOU",
       "fillStyle": "solid",
@@ -365,8 +397,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -1030.7028532050351,
-      "y": 977.3054011501791,
+      "x": -4095.2526172024313,
+      "y": -395.5448897840656,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
       "width": 822.65625,
@@ -376,7 +408,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1715385790626,
+      "updated": 1715732148671,
       "link": null,
       "locked": false,
       "fontSize": 36,
@@ -597,7 +629,7 @@
       "containerId": "q7Y9QvQKJ02m8mtuW6an7",
       "originalText": "CombatMap\n\nNeeds to use a 2D array of location data to render the map.\n\nIn isolation, just render the symbol associated with the location. Also, the array, and the LocationData class, will just be declared in the CombatMap. Later, these things will be refactored out/passed in by other components/classes.\n\nA couple more things:\n- it needs to be able to highlight AOE's.\n- it needs to be able to highlight specific things in the environment, like enemies, hazards, the player, etc.\n\nNOTES: I spent a lot of time building up a fairly robust AOE system, and I don't think I should have. Part of the challenge of this game will be visualizing how your combo will play out. That gets exponentially harder when you have semi realistic AOE's that are occluded by walls and such. And even in my own imagination, I imagine pretty much all of the abilities working in straight lines. So yeah, keep that in mind in the future. Try not to devote time to systems/mechanics that probably aren't going to get used.",
       "lineHeight": 1.2,
-      "baseline": 1460
+      "baseline": 1462
     },
     {
       "type": "rectangle",
@@ -811,8 +843,8 @@
     },
     {
       "type": "rectangle",
-      "version": 433,
-      "versionNonce": 4231746,
+      "version": 656,
+      "versionNonce": 511073649,
       "isDeleted": false,
       "id": "G9RyvkkvLFCBF_P2u_uJ2",
       "fillStyle": "solid",
@@ -821,8 +853,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": 767.9441377311609,
-      "y": 1541.2503865761773,
+      "x": -5768.105463505818,
+      "y": 1015.3508300983124,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
       "width": 847.5104361976169,
@@ -837,16 +869,24 @@
         {
           "type": "text",
           "id": "goOJkSSbT5DPGXaUXn9Al"
+        },
+        {
+          "id": "wFZ4Tj2uAYfZ135uMbWL_",
+          "type": "arrow"
+        },
+        {
+          "id": "VcK5c--Yszfj0caPhZz1K",
+          "type": "arrow"
         }
       ],
-      "updated": 1715383122464,
+      "updated": 1715732150403,
       "link": null,
       "locked": false
     },
     {
       "type": "text",
-      "version": 741,
-      "versionNonce": 587807234,
+      "version": 962,
+      "versionNonce": 1737197393,
       "isDeleted": false,
       "id": "goOJkSSbT5DPGXaUXn9Al",
       "fillStyle": "solid",
@@ -855,8 +895,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": 780.3712308299694,
-      "y": 1609.7060114507826,
+      "x": -5755.6783704070085,
+      "y": 1083.8064549729177,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
       "width": 822.65625,
@@ -866,7 +906,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1715402450356,
+      "updated": 1715732150403,
       "link": null,
       "locked": false,
       "fontSize": 36,
@@ -1158,6 +1198,378 @@
       "originalText": "Overlay\n\nNo work needed.",
       "lineHeight": 1.2,
       "baseline": 123
+    },
+    {
+      "type": "arrow",
+      "version": 293,
+      "versionNonce": 1916457343,
+      "isDeleted": false,
+      "id": "wFZ4Tj2uAYfZ135uMbWL_",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": -5556.116354434088,
+      "y": 6.536003133125973,
+      "strokeColor": "#2f9e44",
+      "backgroundColor": "transparent",
+      "width": 22.565771027232586,
+      "height": 995.9004211425778,
+      "seed": 664527661,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 2
+      },
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "x9252ihItiX_I5KzLTk3e"
+        }
+      ],
+      "updated": 1715732221586,
+      "link": null,
+      "locked": false,
+      "startBinding": {
+        "elementId": "ur80RaByGKxLwVlaCgGsg",
+        "focus": 0.553300895281919,
+        "gap": 17.092146875645767
+      },
+      "endBinding": {
+        "elementId": "G9RyvkkvLFCBF_P2u_uJ2",
+        "focus": -0.5613642714459216,
+        "gap": 12.914405822608614
+      },
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -22.565771027232586,
+          995.9004211425778
+        ]
+      ]
+    },
+    {
+      "type": "text",
+      "version": 121,
+      "versionNonce": 11815409,
+      "isDeleted": false,
+      "id": "x9252ihItiX_I5KzLTk3e",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": -3401.473199479623,
+      "y": 844.9610550130085,
+      "strokeColor": "#2f9e44",
+      "backgroundColor": "transparent",
+      "width": 358.59375,
+      "height": 345.59999999999997,
+      "seed": 265256419,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1715732221586,
+      "link": null,
+      "locked": false,
+      "fontSize": 36,
+      "fontFamily": 3,
+      "text": "Sends off its \nAction when \npressed, so that \nComboSection can \nthen display and \npotentially \nexecute said \naction.",
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "wFZ4Tj2uAYfZ135uMbWL_",
+      "originalText": "Sends off its Action when pressed, so that ComboSection can then display and potentially execute said action.",
+      "lineHeight": 1.2,
+      "baseline": 337
+    },
+    {
+      "type": "arrow",
+      "version": 801,
+      "versionNonce": 1751498175,
+      "isDeleted": false,
+      "id": "VcK5c--Yszfj0caPhZz1K",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": -4905.192981104733,
+      "y": 1430.3665351116706,
+      "strokeColor": "#2f9e44",
+      "backgroundColor": "transparent",
+      "width": 719.5432291627139,
+      "height": 9.217150696682438,
+      "seed": 37833571,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 2
+      },
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "XCbRmcTi5Essz2zEKveQs"
+        }
+      ],
+      "updated": 1715732223593,
+      "link": null,
+      "locked": false,
+      "startBinding": {
+        "elementId": "G9RyvkkvLFCBF_P2u_uJ2",
+        "focus": 0.27593166973710337,
+        "gap": 15.402046203467762
+      },
+      "endBinding": {
+        "elementId": "G9x6xAyradCyIWpgqSD3W",
+        "focus": 0.2691064264135233,
+        "gap": 5.588862923109218
+      },
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          719.5432291627139,
+          -9.217150696682438
+        ]
+      ]
+    },
+    {
+      "type": "text",
+      "version": 200,
+      "versionNonce": 137183665,
+      "isDeleted": false,
+      "id": "XCbRmcTi5Essz2zEKveQs",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": -4693.592657499345,
+      "y": 528.6383090623442,
+      "strokeColor": "#2f9e44",
+      "backgroundColor": "transparent",
+      "width": 464.0625,
+      "height": 215.99999999999997,
+      "seed": 2049526893,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1715732223593,
+      "link": null,
+      "locked": false,
+      "fontSize": 36,
+      "fontFamily": 3,
+      "text": "If the combo is \ncanceled, tells \nCombatParent to reset \nthe uses on all \nActionButtons.",
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "VcK5c--Yszfj0caPhZz1K",
+      "originalText": "If the combo is canceled, tells CombatParent to reset the uses on all ActionButtons.",
+      "lineHeight": 1.2,
+      "baseline": 207
+    },
+    {
+      "id": "UXMuNIr203bRePQnvRmGL",
+      "type": "arrow",
+      "x": -3621.159870060464,
+      "y": 1155.5558228004156,
+      "width": 37.74386927668684,
+      "height": 1085.9211213524882,
+      "angle": 0,
+      "strokeColor": "#2f9e44",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 2
+      },
+      "seed": 266185137,
+      "version": 254,
+      "versionNonce": 1685768447,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "2VYb6qJ9LA94he4MEZ_IO"
+        }
+      ],
+      "updated": 1715732217865,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          37.74386927668684,
+          -1085.9211213524882
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "G9x6xAyradCyIWpgqSD3W",
+        "focus": 0.28274175293728043,
+        "gap": 22.07315174498956
+      },
+      "endBinding": {
+        "elementId": "T1ppHyqG5xWezh_0vXvYy",
+        "focus": -0.2577824038118588,
+        "gap": 7.923966357387599
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow"
+    },
+    {
+      "id": "2VYb6qJ9LA94he4MEZ_IO",
+      "type": "text",
+      "x": -3977.355912161961,
+      "y": 587.194564495823,
+      "width": 379.6875,
+      "height": 129.6,
+      "angle": 0,
+      "strokeColor": "#2f9e44",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 216000927,
+      "version": 73,
+      "versionNonce": 1278315121,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1715732217865,
+      "link": null,
+      "locked": false,
+      "text": "Provides the \nplayer actions to \ndisplay.",
+      "fontSize": 36,
+      "fontFamily": 3,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "baseline": 121,
+      "containerId": "UXMuNIr203bRePQnvRmGL",
+      "originalText": "Provides the player actions to display.",
+      "lineHeight": 1.2
+    },
+    {
+      "id": "0XJSlIY9C8xCYp8ZhtwXQ",
+      "type": "arrow",
+      "x": -4133.302135103042,
+      "y": -337.79079520469793,
+      "width": 732.5502522786455,
+      "height": 18.849995930989508,
+      "angle": 0,
+      "strokeColor": "#2f9e44",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 2
+      },
+      "seed": 1075956447,
+      "version": 49,
+      "versionNonce": 497931583,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "LSgWvyKWzztK-66U8M-1J"
+        }
+      ],
+      "updated": 1715732219698,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -732.5502522786455,
+          -18.849995930989508
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "T1ppHyqG5xWezh_0vXvYy",
+        "focus": 0.17805578087726076,
+        "gap": 25.62242480180271
+      },
+      "endBinding": {
+        "elementId": "ur80RaByGKxLwVlaCgGsg",
+        "focus": -0.08840410160581003,
+        "gap": 23.19938726665214
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow"
+    },
+    {
+      "id": "LSgWvyKWzztK-66U8M-1J",
+      "type": "text",
+      "x": -4752.702261242364,
+      "y": -433.61579317019266,
+      "width": 506.25,
+      "height": 172.79999999999998,
+      "angle": 0,
+      "strokeColor": "#2f9e44",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 1624297617,
+      "version": 94,
+      "versionNonce": 1018454577,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1715732219698,
+      "link": null,
+      "locked": false,
+      "text": "Instantiates an \nActionButton for each \naction it receives from \nCombatParent.",
+      "fontSize": 36,
+      "fontFamily": 3,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "baseline": 164,
+      "containerId": "0XJSlIY9C8xCYp8ZhtwXQ",
+      "originalText": "Instantiates an ActionButton for each action it receives from CombatParent.",
+      "lineHeight": 1.2
     }
   ],
   "appState": {
