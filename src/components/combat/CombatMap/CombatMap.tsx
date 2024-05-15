@@ -8,29 +8,21 @@ import MapUtilities from '../../../classes/utility/MapUtilities';
 import CombatMapData from '../../../classes/combat/CombatMapData';
 import AreaOfEffect from '../../../classes/combat/AreaOfEffect';
 
-interface CombatMapProps {}
+interface CombatMapProps {
+  map: CombatMapData;
+  setMap: (map: CombatMapData) => void;
+  aoeToDisplay: AreaOfEffect|null;
+}
 
-const CombatMap: FC<CombatMapProps> = (props:CombatMapProps) => {
-  const [map, setMap] = useState<CombatMapData>(new CombatMapData(15, 15));  
-  const [aoe, setAOE] = useState<AreaOfEffect>(new AreaOfEffect(0, Directions.UP, 5, false));
-
-  useMemo(() => {
-    map.locations[7][8].solid = true;
-    map.locations[7][8].symbol = "#";
-    map.locations[7][3].symbol = "E";
-    map.locations[7][9].symbol = "E";
-    map.locations[7][7].symbol = "@";
-
-  }, []);
-
+const CombatMap: FC<CombatMapProps> = ({map, setMap, aoeToDisplay}:CombatMapProps) => {
   function highlightAOE(){
-    map.highlightAOE(aoe, new Vector2(7, 7));
+    if(!aoeToDisplay){
+      return;
+    }
+
+    map.highlightAOE(aoeToDisplay, new Vector2(7, 7));
 
     setMap(CombatMapData.clone(map));
-  }
-
-  function logCombatLocationData(){
-    map.logCombatLocationData();
   }
 
   function highlightPlayer(){
