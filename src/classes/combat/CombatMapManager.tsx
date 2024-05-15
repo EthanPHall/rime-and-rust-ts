@@ -23,7 +23,7 @@ class CombatMapManager{
         for(let y = 0; y < this.mapData.height; y++){
             let row: CombatLocationData[] = [];
             for(let x = 0; x < this.mapData.width; x++){
-                let locationData = new CombatLocationData(x, y);
+                let locationData = new CombatLocationData(y*10+x, x, y);
                 row.push(locationData);
             }
 
