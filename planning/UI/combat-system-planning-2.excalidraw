@@ -1600,8 +1600,8 @@
         "type": 2
       },
       "seed": 1627557951,
-      "version": 54,
-      "versionNonce": 1396631935,
+      "version": 55,
+      "versionNonce": 1756255249,
       "isDeleted": false,
       "boundElements": [
         {
@@ -1609,7 +1609,7 @@
           "id": "sy9PpqvXNMhUUWkMQmrfl"
         }
       ],
-      "updated": 1715733934525,
+      "updated": 1715734045165,
       "link": null,
       "locked": false,
       "points": [
@@ -1639,10 +1639,10 @@
     {
       "id": "sy9PpqvXNMhUUWkMQmrfl",
       "type": "text",
-      "x": -3156.121410005386,
-      "y": 1492.3186835550669,
-      "width": 485.15625,
-      "height": 86.39999999999999,
+      "x": -3187.762035005386,
+      "y": 1449.1186835550668,
+      "width": 548.4375,
+      "height": 172.79999999999998,
       "angle": 0,
       "strokeColor": "#e03131",
       "backgroundColor": "transparent",
@@ -1655,21 +1655,21 @@
       "frameId": null,
       "roundness": null,
       "seed": 2011673297,
-      "version": 47,
-      "versionNonce": 1701079327,
+      "version": 107,
+      "versionNonce": 884503871,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1715733931446,
+      "updated": 1715734043659,
       "link": null,
       "locked": false,
-      "text": "Provides the data that \nCombatMap displays",
+      "text": "Provides the data that \nCombatMap displays. This \nincludes hazards, enemies,\nthe player, etc.",
       "fontSize": 36,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
-      "baseline": 78,
+      "baseline": 164,
       "containerId": "F9Gsqp-A2rpeQX0Uyc2kI",
-      "originalText": "Provides the data that CombatMap displays",
+      "originalText": "Provides the data that CombatMap displays. This includes hazards, enemies, the player, etc.",
       "lineHeight": 1.2
     }
   ],

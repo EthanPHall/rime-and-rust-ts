@@ -14,7 +14,7 @@ class CombatMapData{
       for(let i = 0; i < height; i++){
         const row: CombatLocationData[] = [];
         for(let j = 0; j < width; j++){
-          row.push(new CombatLocationData(i*10+j, i, j, "Combat Location", ".", false));
+          row.push(new CombatLocationData(j, i, "Combat Location", ".", false, false));
         }
   
         this.locations.push(row);
@@ -65,7 +65,7 @@ class CombatMapData{
       const newMap:CombatMapData = new CombatMapData(map.height, map.width);
       newMap.locations = map.locations.map((row) => {
         return row.map((location) => {
-          return new CombatLocationData(location.id, location.x, location.y, location.name, location.symbol, location.highlight, location.solid);
+          return new CombatLocationData(location.x, location.y, location.name, location.symbol, location.highlight, location.solid);
         });
       });
   
