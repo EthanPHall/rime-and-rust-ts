@@ -1,65 +1,39 @@
-import React, { FC } from 'react';
+import React, { FC, PropsWithChildren } from 'react';
 import './HazardsDisplay.css';
+import CombatHazard from '../../../classes/combat/CombatHazard';
 
-interface HazardsDisplayProps {}
-
-class Hazard{
-  hp: number;
-  maxHp: number;
-  symbol: string;
-  name: string;
-  description: string;
-  constructor(hp: number, maxHp: number, symbol: string, name: string, description: string){
-    this.hp = hp;
-    this.maxHp = maxHp;
-    this.symbol = symbol;
-    this.name = name;
-    this.description = description;
-  }
+interface HazardsDisplayProps {
+  hazards: CombatHazard[];
+  showCard: (title: string, description: string) => void;
 }
 
-const HazardInfoCard: FC<{hazard: Hazard, hideCard: () => void}> = ({hazard, hideCard}) => {
-  return (
-    <div className="hazard-info" data-testid="hazard-info">
-      <h3>{hazard.name}</h3>
-      <p>{hazard.description}</p>
-      <button onClick={hideCard}>Close</button>
-    </div>
-  );
-}
-
-const HazardEntry: FC<{hazard: Hazard, onClick: () => void}> = ({hazard, onClick}) => {
+const HazardEntry: FC<{hazard: CombatHazard, onClick: () => void}> = ({hazard, onClick}) => {
   return (
     <div className="hazard-entry" data-testid="hazard-entry" onClick={onClick}>
-      <span>{`${hazard.symbol}:`}</span>
-      <span>{`${hazard.hp}/${hazard.maxHp}`}</span>
+      <span>{`${hazard.symbol}`}</span>
+      <span>{!hazard.onlyDisplayOneInSidebar && `: ${hazard.hp}/${hazard.maxHp}`}</span>
     </div>
   );
 }
 
-const HazardsDisplay: FC<HazardsDisplayProps> = () => {
-  const [hazards, setHazards] = React.useState<Hazard[]>([
-    new Hazard(5, 5, '+', 'Volatile Tank', 'A tank that explodes when destroyed'),
-    new Hazard(5, 5, '+', 'Volatile Tank', 'A tank that explodes when destroyed'),
-    new Hazard(5, 5, '+', 'Volatile Tank', 'A tank that explodes when destroyed'),
-  ]);
-  const [displayInfoForHazard, setDisplayInfoForHazard] = React.useState<Hazard | null>(null);
-  
+const HazardsDisplay: FC<HazardsDisplayProps> = ({hazards, showCard}: HazardsDisplayProps) => {
+  const toDisplay: CombatHazard[] = [];
+  hazards.forEach(hazard => {
+    const alreadyDisplayed = toDisplay.find(displayed => displayed.name === hazard.name);
+    if (!alreadyDisplayed || !alreadyDisplayed.onlyDisplayOneInSidebar) {
+      toDisplay.push(hazard);
+    }
+  });
+
   return (
-    <>
-      {displayInfoForHazard && (
-        <div className="hazard-info" data-testid="hazard-info">
-          <HazardInfoCard hazard={displayInfoForHazard} hideCard={() => setDisplayInfoForHazard(null)} />
-        </div>
-      )}
-      <div className="hazards-display" data-testid="hazards-display">
-        {
-          hazards.map((hazard, index) => (
-            <HazardEntry key={index} hazard={hazard} onClick={() => setDisplayInfoForHazard(hazard)} />
-          ))
-        }
-      </div>
-    </>
-);}
+    <div className="hazards-display" data-testid="hazards-display">
+      {
+        toDisplay.map((hazard, index) => (
+          <HazardEntry key={index} hazard={hazard} onClick={() => showCard(hazard.name, hazard.description)} />
+        ))
+      }
+    </div>
+  );
+}
 
 export default HazardsDisplay;

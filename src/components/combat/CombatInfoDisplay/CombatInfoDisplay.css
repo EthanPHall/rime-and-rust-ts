@@ -1,0 +1,8 @@
+
+.combat-info{
+    background-color: var(--background-color);
+    outline: 1px solid var(--outline-color);
+}
+.combat-info button{
+    height: 10%;
+}

@@ -1,34 +1,13 @@
 import React, { FC } from 'react';
 import './EnemiesDisplay.css';
+import CombatEnemy from '../../../classes/combat/CombatEnemy';
 
-interface EnemiesDisplayProps {}
-
-class Enemy{
-  hp: number;
-  maxHp: number;
-  symbol: string;
-  name: string;
-  description: string;
-  constructor(hp: number, maxHp: number, symbol: string, name: string, description: string){
-    this.hp = hp;
-    this.maxHp = maxHp;
-    this.symbol = symbol;
-    this.name = name;
-    this.description = description;
-  }
+interface EnemiesDisplayProps {
+  enemies: CombatEnemy[];
+  showCard: (title: string, description: string) => void;
 }
 
-const EnemyInfoCard: FC<{enemy: Enemy, hideCard: () => void}> = ({enemy, hideCard}) => {
-  return (
-    <div className="enemy-info" data-testid="enemy-info">
-      <h3>{enemy.name}</h3>
-      <p>{enemy.description}</p>
-      <button onClick={hideCard}>Close</button>
-    </div>
-  );
-}
-
-const EnemyEntry: FC<{enemy: Enemy, onClick: () => void}> = ({enemy, onClick}) => {
+const EnemyEntry: FC<{enemy: CombatEnemy, onClick: () => void}> = ({enemy, onClick}) => {
   return (
     <div className="enemy-entry" data-testid="enemy-entry" onClick={onClick}>
       <span>{`${enemy.symbol}: `}</span>
@@ -37,27 +16,13 @@ const EnemyEntry: FC<{enemy: Enemy, onClick: () => void}> = ({enemy, onClick}) =
   );
 }
 
-const EnemiesDisplay: FC<EnemiesDisplayProps> = () => {
-  const [enemies, setEnemies] = React.useState<Enemy[]>([
-    new Enemy(5, 5, 'g', 'Goblin', 'A small goblin'),
-    new Enemy(5, 5, 'g', 'Goblin', 'A small goblin'),
-    new Enemy(5, 5, 'g', 'Goblin', 'A small goblin'),
-    new Enemy(5, 5, 'g', 'Goblin', 'A small goblin'),
-    new Enemy(10, 10, 'G', 'Goblin Boss', 'A big goblin'),
-  ]);
-  const [displayInfoForEnemy, setDisplayInfoForEnemy] = React.useState<Enemy | null>(null);
-
+const EnemiesDisplay: FC<EnemiesDisplayProps> = ({enemies, showCard}: EnemiesDisplayProps) => {
   return (
     <>
-      {displayInfoForEnemy && (
-        <div className="enemy-info" data-testid="enemy-info">
-          <EnemyInfoCard enemy={displayInfoForEnemy} hideCard={() => setDisplayInfoForEnemy(null)} />
-        </div>
-      )}
       <div className="enemies-display" data-testid="enemies-display">
         {
           enemies.map((enemy, index) => (
-            <EnemyEntry key={index} enemy={enemy} onClick={() => setDisplayInfoForEnemy(enemy)} />
+            <EnemyEntry key={index} enemy={enemy} onClick={() => showCard(enemy.name, enemy.description)} />
           ))
         }
       </div>

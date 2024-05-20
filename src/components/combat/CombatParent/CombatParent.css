@@ -1,66 +1,71 @@
 .combat-parent {
-    background-color: rgba(79, 79, 79, 0.8);
-    height: 100vh;
-    width: 100vw;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    position: absolute;
-
-    z-index: 1;
-}
-
-.combat-parent-grid-parent{
-    height: var(--standard-section-height);
-    width: 60%;
-
-    display: grid;
-    grid-template-columns: 1fr 1fr 5fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 3fr 2fr;
-
-    gap: var(--standard-gap);
-}
-
-.combat-parent-map-actions-composite{
-        /* background-color: red; */
-        grid-column: 3;
-        grid-row: 1 / -1;
-
+        background-color: rgba(79, 79, 79, 0.8);
+        height: 100vh;
+        width: 100vw;
+    
         display: flex;
-        flex-direction: column;
-}
-.combat-map{
-        /* background-color: blue; */
-        height: 80%;
-}
-.actions-display{
-        /* background-color: yellow; */
-        flex-grow: 1;
-}
-.loot-display{
-        /* background-color: purple; */
-        grid-column: 3;
-        grid-row: 1;
-}
-.hp-display{
-        /* background-color: green; */
-        grid-column: 1;
-        grid-row: 1;
-}
-.turn-display{
-        /* background-color: cyan; */
-        grid-column: 2;
-        grid-row: 1;
-}
-.combo-section{
-        /* background-color: orange; */
-        grid-column: 1/span 2;
-        grid-row: 2/span 2;
-}
-.component-switcher{
-        /* background-color: white; */
-        grid-column: 4/span 2;
-        grid-row: 1/span 3;
-}
+        align-items: center;
+        justify-content: center;
+    
+        position: absolute;
+    
+        z-index: 1;
+    }
+    
+    .combat-parent-grid-parent{
+        height: var(--standard-section-height);
+        width: 90%;
+    
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 5fr 1fr 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 3fr 2fr;
+    
+        gap: var(--standard-gap);
+    }
+    
+    .combat-parent-map-actions-composite{
+            /* background-color: red; */
+            grid-column: 5;
+            grid-row: 1 / -1;
+    
+            display: flex;
+            flex-direction: column;
+    }
+    .combat-map{
+            /* background-color: blue; */
+            height: 80%;
+    }
+    .actions-display{
+            /* background-color: yellow; */
+            flex-grow: 1;
+    }
+    .loot-display{
+            /* background-color: purple; */
+            grid-column: 4;
+            grid-row: 1;
+    }
+    .hp-display{
+            /* background-color: green; */
+            grid-column: 3;
+            grid-row: 1;
+    }
+    .turn-display{
+            /* background-color: cyan; */
+            grid-column: 4;
+            grid-row: 1;
+    }
+    .combo-section{
+            /* background-color: orange; */
+            grid-column: 3/span 2;
+            grid-row: 2/span 2;
+    }
+    .component-switcher{
+            /* background-color: white; */
+            grid-column: 6/span 2;
+            grid-row: 1/span 3;
+    }
+    .combat-info{
+            /* background-color: pink; */
+            grid-column: 8/span 2;
+            grid-row: 1/span 3;
+    }

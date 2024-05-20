@@ -16,89 +16,12 @@ import Directions from '../../../classes/utility/Directions';
 import Vector2 from '../../../classes/utility/Vector2';
 import MapUtilities from '../../../classes/utility/MapUtilities';
 import CombatLocationData from '../../../classes/combat/CombatLocationData';
+import CombatInfoDisplay, { CombatInfoDisplayProps } from '../CombatInfoDisplay/CombatInfoDisplay';
+import CombatEnemy, { RustedBrute, RustedShambler } from '../../../classes/combat/CombatEnemy';
+import CombatHazard, { VolatileCanister, Wall } from '../../../classes/combat/CombatHazard';
+import CombatPlayer from '../../../classes/combat/CombatPlayer';
 
 interface CombatParentProps {}
-
-abstract class CombatEntity{
-  hp: number;
-  maxHp: number;
-  symbol: string;
-  name: string;
-  position: Vector2;
-
-  constructor(hp: number, maxHp: number, symbol: string, name: string, position: Vector2){
-    this.hp = hp;
-    this.maxHp = maxHp;
-    this.symbol = symbol;
-    this.name = name;
-    this.position = position;
-  }
-}
-
-class CombatPlayer extends CombatEntity{
-  constructor(hp: number, maxHp: number, symbol: string, name: string, position: Vector2){
-    super(hp, maxHp, symbol, name, position);
-  }
-}
-
-abstract class CombatEnemy extends CombatEntity{
-  constructor(hp: number, maxHp: number, symbol: string, name: string, position: Vector2){
-    super(hp, maxHp, symbol, name, position);
-  }
-}
-
-class RustedShambler extends CombatEnemy{
-  constructor(hp: number, maxHp: number, symbol: string, name: string, position: Vector2){
-    super(hp, maxHp, symbol, name, position);
-  }
-}
-
-class RustedBrute extends CombatEnemy{
-  constructor(hp: number, maxHp: number, symbol: string, name: string, position: Vector2){
-    super(hp, maxHp, symbol, name, position);
-  }
-}
-
-abstract class CombatHazard extends CombatEntity{
-  solid: boolean;
-
-  constructor(hp: number, maxHp: number, symbol: string, name: string, position: Vector2, solid: boolean){
-    super(hp, maxHp, symbol, name, position);
-    this.solid = solid;
-  }
-}
-
-class Wall extends CombatHazard{
-  static WALL_HP = 10;
-
-  constructor(hp: number, maxHp: number, symbol: string, name: string, position: Vector2, solid: boolean){
-    super(hp, maxHp, symbol, name, position, solid);
-  }
-
-  static createDefaultWall(position: Vector2): Wall{
-    return new Wall(Wall.WALL_HP, Wall.WALL_HP, '#', 'Wall', position, true);
-  }
-
-  static createDefaultWalls(startEndPointPair: {start:Vector2, end:Vector2}[]): Wall[]{
-    const walls: Wall[] = [];
-
-    startEndPointPair.forEach(pair => {
-      const line:Vector2[] = MapUtilities.getLineBetweenPoints(pair.start, pair.end);
-
-      line.forEach(point => {
-        walls.push(Wall.createDefaultWall(point));
-      });
-    });
-
-    return walls;
-  }
-}
-
-class VolatileCanister extends CombatHazard{
-  constructor(hp: number, maxHp: number, symbol: string, name: string, position: Vector2, solid: boolean){
-    super(hp, maxHp, symbol, name, position, solid);
-  }
-}
 
 abstract class CombatMapTemplate{
   size: Vector2;
@@ -152,6 +75,14 @@ const CombatParent: FC<CombatParentProps> = () => {
   const [aoeToDisplay, setAoeToDisplay] = useState<AreaOfEffect|null>(
     new AreaOfEffect(3, Directions.RIGHT, 1, true)
   );
+
+  const [infoCardData, setInfoCardData] = useState<CombatInfoDisplayProps | null>(null);
+  function hideCard(){
+    setInfoCardData(null);
+  }
+  function showCard(title: string, description: string){
+    setInfoCardData({title, description, hideCard});
+  }
 
   useEffect(() => {
     setMapToSendOff(getBaseMapClonePlusAddons());
@@ -215,9 +146,11 @@ const CombatParent: FC<CombatParentProps> = () => {
     setPlayer(newPlayer);
   }
 
+
+
   return (
     <div className="combat-parent" data-testid="combat-parent">
-        <button onClick={debug_movePlayer}>Debug Move Player</button>
+        {/* <button onClick={debug_movePlayer}>Debug Move Player</button> */}
         <div className='combat-parent-grid-parent'>
           <div className='combat-parent-map-actions-composite'>
             <CombatMap map={mapToSendOff} setMap={setBaseMap} aoeToDisplay={aoeToDisplay}></CombatMap>
@@ -227,7 +160,8 @@ const CombatParent: FC<CombatParentProps> = () => {
             <HpDisplay></HpDisplay>
             <TurnDisplay></TurnDisplay>
             <ComboSection comboList={comboList} setComboList={setComboList} resetActionUses={resetActionUses}></ComboSection>
-            <ComponentSwitcher></ComponentSwitcher>
+            <ComponentSwitcher enemies={enemies} hazards={hazards} showCard={showCard}></ComponentSwitcher>
+            {infoCardData != null && <CombatInfoDisplay {...infoCardData}></CombatInfoDisplay>}
         </div>
     </div>
   );
