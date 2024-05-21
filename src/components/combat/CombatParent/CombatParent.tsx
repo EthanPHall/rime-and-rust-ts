@@ -145,19 +145,24 @@ const CombatParent: FC<CombatParentProps> = () => {
     const newPlayer = new CombatPlayer(player.hp, player.maxHp, player.symbol, player.name, new Vector2(player.position.x + 1, player.position.y));
     setPlayer(newPlayer);
   }
+  function debug_harmPlayer() {
+    const newPlayer = new CombatPlayer(player.hp - 10, player.maxHp, player.symbol, player.name, player.position);
+    setPlayer(newPlayer);
+  }
 
 
 
   return (
     <div className="combat-parent" data-testid="combat-parent">
         {/* <button onClick={debug_movePlayer}>Debug Move Player</button> */}
+        {/* <button onClick={debug_harmPlayer}>Debug Harm Player</button> */}
         <div className='combat-parent-grid-parent'>
           <div className='combat-parent-map-actions-composite'>
             <CombatMap map={mapToSendOff} setMap={setBaseMap} aoeToDisplay={aoeToDisplay}></CombatMap>
             <ActionsDisplay addToComboList={addToComboList} actions={playerActions} setActions={setPlayerActions} reduceActionUses={reduceActionUses}></ActionsDisplay>
           </div>
             {/* <LootDisplay></LootDisplay> */}
-            <HpDisplay></HpDisplay>
+            <HpDisplay hp={player.hp} maxHp={player.maxHp}></HpDisplay>
             <TurnDisplay></TurnDisplay>
             <ComboSection comboList={comboList} setComboList={setComboList} resetActionUses={resetActionUses}></ComboSection>
             <ComponentSwitcher enemies={enemies} hazards={hazards} showCard={showCard}></ComponentSwitcher>
