@@ -20,6 +20,8 @@ import CombatInfoDisplay, { CombatInfoDisplayProps } from '../CombatInfoDisplay/
 import CombatEnemy, { RustedBrute, RustedShambler } from '../../../classes/combat/CombatEnemy';
 import CombatHazard, { VolatileCanister, Wall } from '../../../classes/combat/CombatHazard';
 import CombatPlayer from '../../../classes/combat/CombatPlayer';
+import TurnManager from '../../../classes/combat/TurnManager';
+import useTurnManager from '../useTurnManager';
 
 interface CombatParentProps {}
 
@@ -47,9 +49,9 @@ class CombatMapTemplate1 extends CombatMapTemplate{
       ]
     );
     const enemies: CombatEnemy[] = [
-      new RustedShambler(10, 10, 'S', 'Rusted Shambler', new Vector2(5, 5)),
-      new RustedBrute(20, 20, 'B', 'Rusted Brute', new Vector2(10, 10)),
-      new RustedShambler(10, 10, 'S', 'Rusted Shambler', new Vector2(0, 0)),
+      new RustedShambler(10, 10, 'S', 'Rusted Shambler', new Vector2(10, 10), () => {console.log('Advance turn not set');}),
+      new RustedBrute(20, 20, 'B', 'Rusted Brute', new Vector2(9, 9), () => {console.log('Advance turn not set');}),
+      new RustedShambler(10, 10, 'S', 'Rusted Shambler', new Vector2(11, 11), () => {console.log('Advance turn not set');}),
     ];
     const hazards: CombatHazard[] = [new VolatileCanister(10, 10, '+', 'Volatile Canister', new Vector2(3, 3), false)];
 
@@ -58,24 +60,25 @@ class CombatMapTemplate1 extends CombatMapTemplate{
 }
 
 const CombatParent: FC<CombatParentProps> = () => {
-  const MAP_TEMPLATE = new CombatMapTemplate1();
+  const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>(new CombatMapTemplate1());
 
+  
   const [comboList, setComboList] = useState<CombatActionWithRepeat[]>([]);
   const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>([
     new CombatActionWithUses(new CombatAction('Attack', true), 3),
     new CombatActionWithUses(new CombatAction('Block', false), 1),
     new CombatActionWithUses(new CombatAction('Move', true), 5),
   ]);
-
-  const [enemies, setEnemies] = useState<CombatEnemy[]>(MAP_TEMPLATE.enemies);
-  const [hazards, setHazards] = useState<CombatHazard[]>(MAP_TEMPLATE.hazards);
+  
+  const [enemies, setEnemies] = useState<CombatEnemy[]>(mapTemplate.enemies);
+  const [hazards, setHazards] = useState<CombatHazard[]>(mapTemplate.hazards);
   const [player, setPlayer] = useState<CombatPlayer>(new CombatPlayer(100, 100, '@', 'Player', new Vector2(7, 7)));
-  const [baseMap, setBaseMap] = useState<CombatMapData>(createMapFromTemplate(MAP_TEMPLATE));
+  const [baseMap, setBaseMap] = useState<CombatMapData>(createMapFromTemplate(mapTemplate));
   const [mapToSendOff, setMapToSendOff] = useState<CombatMapData>(getBaseMapClonePlusAddons());
   const [aoeToDisplay, setAoeToDisplay] = useState<AreaOfEffect|null>(
     new AreaOfEffect(3, Directions.RIGHT, 1, true)
   );
-
+  
   const [infoCardData, setInfoCardData] = useState<CombatInfoDisplayProps | null>(null);
   function hideCard(){
     setInfoCardData(null);
@@ -84,6 +87,8 @@ const CombatParent: FC<CombatParentProps> = () => {
     setInfoCardData({title, description, hideCard});
   }
 
+  const turnManager:TurnManager = useTurnManager([player, ...mapTemplate.enemies]);
+  
   useEffect(() => {
     setMapToSendOff(getBaseMapClonePlusAddons());
   }, [player, enemies, hazards]);
@@ -149,13 +154,15 @@ const CombatParent: FC<CombatParentProps> = () => {
     const newPlayer = new CombatPlayer(player.hp - 10, player.maxHp, player.symbol, player.name, player.position);
     setPlayer(newPlayer);
   }
-
-
+  function debug_endTurn() {
+    turnManager.currentTurnTaker.endTurn();
+  }
 
   return (
     <div className="combat-parent" data-testid="combat-parent">
         {/* <button onClick={debug_movePlayer}>Debug Move Player</button> */}
         {/* <button onClick={debug_harmPlayer}>Debug Harm Player</button> */}
+        <button onClick={debug_endTurn}>Debug End Turn</button>
         <div className='combat-parent-grid-parent'>
           <div className='combat-parent-map-actions-composite'>
             <CombatMap map={mapToSendOff} setMap={setBaseMap} aoeToDisplay={aoeToDisplay}></CombatMap>
@@ -163,7 +170,7 @@ const CombatParent: FC<CombatParentProps> = () => {
           </div>
             {/* <LootDisplay></LootDisplay> */}
             <HpDisplay hp={player.hp} maxHp={player.maxHp}></HpDisplay>
-            <TurnDisplay></TurnDisplay>
+            <TurnDisplay currentTurnTaker={turnManager.currentTurnTaker}></TurnDisplay>
             <ComboSection comboList={comboList} setComboList={setComboList} resetActionUses={resetActionUses}></ComboSection>
             <ComponentSwitcher enemies={enemies} hazards={hazards} showCard={showCard}></ComponentSwitcher>
             {infoCardData != null && <CombatInfoDisplay {...infoCardData}></CombatInfoDisplay>}

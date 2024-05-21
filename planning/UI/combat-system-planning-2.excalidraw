@@ -213,8 +213,8 @@
     },
     {
       "type": "rectangle",
-      "version": 660,
-      "versionNonce": 572312555,
+      "version": 664,
+      "versionNonce": 2004608459,
       "isDeleted": false,
       "id": "ZCZes0UDTbSHaR-2x-d87",
       "fillStyle": "solid",
@@ -263,9 +263,13 @@
         {
           "id": "QI6VMYVdOZxnLQa1Fp52S",
           "type": "arrow"
+        },
+        {
+          "id": "xZRvcJQP5XIzLuEHh1Tur",
+          "type": "arrow"
         }
       ],
-      "updated": 1716249197349,
+      "updated": 1716257609536,
       "link": null,
       "locked": false
     },
@@ -385,8 +389,8 @@
     },
     {
       "type": "rectangle",
-      "version": 509,
-      "versionNonce": 727982443,
+      "version": 1145,
+      "versionNonce": 1156942277,
       "isDeleted": false,
       "id": "9_nQ10VIWK3KoY0y6hEQg",
       "fillStyle": "solid",
@@ -395,8 +399,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -5831.142149224712,
-      "y": 3836.7959438282164,
+      "x": -5853.442055637472,
+      "y": 3603.5460252084245,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
       "width": 847.5104361976169,
@@ -411,16 +415,20 @@
         {
           "type": "text",
           "id": "fGMDTVoCfAxqSHKLaAxjP"
+        },
+        {
+          "id": "xZRvcJQP5XIzLuEHh1Tur",
+          "type": "arrow"
         }
       ],
-      "updated": 1716252472990,
+      "updated": 1716257795646,
       "link": null,
       "locked": false
     },
     {
       "type": "text",
-      "version": 505,
-      "versionNonce": 1490205707,
+      "version": 1138,
+      "versionNonce": 1602881829,
       "isDeleted": false,
       "id": "fGMDTVoCfAxqSHKLaAxjP",
       "fillStyle": "solid",
@@ -429,8 +437,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -5818.715056125903,
-      "y": 3991.651568702822,
+      "x": -5841.014962538663,
+      "y": 3758.40165008303,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
       "width": 822.65625,
@@ -440,7 +448,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1716252472990,
+      "updated": 1716257795646,
       "link": null,
       "locked": false,
       "fontSize": 36,
@@ -829,8 +837,8 @@
     },
     {
       "type": "rectangle",
-      "version": 633,
-      "versionNonce": 38079787,
+      "version": 634,
+      "versionNonce": 1500443275,
       "isDeleted": false,
       "id": "iYqacjNLq6kooDZU_m5Ox",
       "fillStyle": "solid",
@@ -861,7 +869,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1716249197350,
+      "updated": 1716252507833,
       "link": null,
       "locked": false
     },
@@ -2561,6 +2569,99 @@
       "baseline": 78,
       "containerId": "QI6VMYVdOZxnLQa1Fp52S",
       "originalText": "Provides the player or player's hp",
+      "lineHeight": 1.2
+    },
+    {
+      "id": "xZRvcJQP5XIzLuEHh1Tur",
+      "type": "arrow",
+      "x": -5445.094426225785,
+      "y": 3163.3718324190227,
+      "width": 5.87346624174188,
+      "height": 419.9001057942701,
+      "angle": 0,
+      "strokeColor": "#e03131",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 2
+      },
+      "seed": 520332133,
+      "version": 1376,
+      "versionNonce": 542884837,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "mpYETLwN_4v0BJrn0VvH_"
+        }
+      ],
+      "updated": 1716257795646,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          5.87346624174188,
+          419.9001057942701
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "ZCZes0UDTbSHaR-2x-d87",
+        "focus": 0.02957874873370485,
+        "gap": 12.12403912314744
+      },
+      "endBinding": {
+        "elementId": "9_nQ10VIWK3KoY0y6hEQg",
+        "focus": -0.010896435286706065,
+        "gap": 20.274086995131483
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow"
+    },
+    {
+      "id": "mpYETLwN_4v0BJrn0VvH_",
+      "type": "text",
+      "x": -5569.1502678500965,
+      "y": 3425.1468446260533,
+      "width": 274.21875,
+      "height": 129.6,
+      "angle": 0,
+      "strokeColor": "#e03131",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 289138411,
+      "version": 51,
+      "versionNonce": 1085687301,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1716257792982,
+      "link": null,
+      "locked": false,
+      "text": "Provides the \ncurrent turn \ntaker.",
+      "fontSize": 36,
+      "fontFamily": 3,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "baseline": 121,
+      "containerId": "xZRvcJQP5XIzLuEHh1Tur",
+      "originalText": "Provides the current turn taker.",
       "lineHeight": 1.2
     }
   ],
