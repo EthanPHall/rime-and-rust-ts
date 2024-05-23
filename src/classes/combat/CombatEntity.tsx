@@ -1,6 +1,8 @@
+import IdGenerator from "../utility/IdGenerator";
 import Vector2 from "../utility/Vector2";
 
 abstract class CombatEntity{
+    id: number;  
     hp: number;
     maxHp: number;
     symbol: string;
@@ -8,7 +10,8 @@ abstract class CombatEntity{
     position: Vector2;
     description: string;
   
-    constructor(hp: number, maxHp: number, symbol: string, name: string, position: Vector2, description: string = ""){
+    constructor(id: number, hp: number, maxHp: number, symbol: string, name: string, position: Vector2, description: string = ""){
+      this.id = id;
       this.hp = hp;
       this.maxHp = maxHp;
       this.symbol = symbol;
@@ -16,6 +19,8 @@ abstract class CombatEntity{
       this.position = position;
       this.description = description;
     }
+
+    abstract clone(): CombatEntity;
   }
 
 export default CombatEntity;

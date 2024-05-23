@@ -35,7 +35,7 @@ const ComboSection: FC<ComboSectionProps> = ({comboList, setComboList, resetActi
     let delay = 0;
 
     for(let i = 0; i < comboList.length; i++) {
-      const action = comboList[i];
+      const action:CombatActionWithRepeat = comboList[i];
       for(let j = 0; j < action.repeat; j++) {
         setTimeout(() => {
           action.combatAction.execute();

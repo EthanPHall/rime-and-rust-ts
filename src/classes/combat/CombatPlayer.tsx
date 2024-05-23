@@ -16,8 +16,12 @@ class CombatPlayer extends CombatEntity implements TurnTaker{
 
     advanceTurn: () => void = () => {};
 
-    constructor(hp: number, maxHp: number, symbol: string, name: string, position: Vector2){
-      super(hp, maxHp, symbol, name, position);
+    clone(): CombatEntity {
+      return new CombatPlayer(this.id, this.hp, this.maxHp, this.symbol, this.name, this.position);
+    }
+
+    constructor(id:number, hp: number, maxHp: number, symbol: string, name: string, position: Vector2){
+      super(id, hp, maxHp, symbol, name, position);
     }
   }
 

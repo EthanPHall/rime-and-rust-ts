@@ -1,5 +1,6 @@
 import Vector2 from "../utility/Vector2";
 import AreaOfEffect from "./AreaOfEffect";
+import CombatEntity from "./CombatEntity";
 import CombatLocationData from "./CombatLocationData";
 
 class CombatMapData{
@@ -19,6 +20,37 @@ class CombatMapData{
   
         this.locations.push(row);
       }
+    }
+
+    setLocationWithEntity(entity: CombatEntity):void{
+      this.locations[entity.position.y][entity.position.x] = new CombatLocationData(entity.position.x, entity.position.y, entity.name + " " + entity.id, entity.symbol, false, false);
+      this.locations[entity.position.y][entity.position.x].entity = entity;
+    }
+
+    getEntityById(id: number):CombatEntity{
+      let entity:CombatEntity|null = null;
+  
+      this.locations.forEach((row) => {
+        row.forEach((location) => {
+          if(location.entity && location.entity.id === id){
+            entity = location.entity;
+          }
+
+          if(entity){
+            return;
+          }
+        });
+
+        if(entity){
+          return;
+        }
+      });
+  
+      if(entity){
+        return entity;
+      }
+  
+      throw new Error(`Entity with id ${id} not found`);
     }
   
     logCombatLocationData(){

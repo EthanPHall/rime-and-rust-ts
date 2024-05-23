@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import './CombatParent.css';
 import CombatMap from '../CombatMap/CombatMap';
 import ActionsDisplay from '../ActionsDisplay/ActionsDisplay';
@@ -9,7 +9,7 @@ import ComboSection from '../ComboSection/ComboSection';
 import ComponentSwitcher from '../ComponentSwitcher/ComponentSwitcher';
 import CombatMapManager from '../../../classes/combat/CombatMapManager';
 import CombatManager from '../../../classes/combat/CombatManager';
-import CombatAction, { CombatActionWithRepeat, CombatActionWithUses } from '../../../classes/combat/CombatAction';
+import CombatAction, { Attack, Block, CombatActionWithRepeat, CombatActionWithUses, Move } from '../../../classes/combat/CombatAction';
 import CombatMapData from '../../../classes/combat/CombatMapData';
 import AreaOfEffect from '../../../classes/combat/AreaOfEffect';
 import Directions from '../../../classes/utility/Directions';
@@ -22,6 +22,8 @@ import CombatHazard, { VolatileCanister, Wall } from '../../../classes/combat/Co
 import CombatPlayer from '../../../classes/combat/CombatPlayer';
 import TurnManager from '../../../classes/combat/TurnManager';
 import useTurnManager from '../useTurnManager';
+import IdGenerator from '../../../classes/utility/IdGenerator';
+import CombatEntity from '../../../classes/combat/CombatEntity';
 
 interface CombatParentProps {}
 
@@ -49,11 +51,11 @@ class CombatMapTemplate1 extends CombatMapTemplate{
       ]
     );
     const enemies: CombatEnemy[] = [
-      new RustedShambler(10, 10, 'S', 'Rusted Shambler', new Vector2(10, 10), () => {console.log('Advance turn not set');}),
-      new RustedBrute(20, 20, 'B', 'Rusted Brute', new Vector2(9, 9), () => {console.log('Advance turn not set');}),
-      new RustedShambler(10, 10, 'S', 'Rusted Shambler', new Vector2(11, 11), () => {console.log('Advance turn not set');}),
+      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(10, 10), () => {console.log('Advance turn not set');}),
+      new RustedBrute(IdGenerator.generateUniqueId(), 20, 20, 'B', 'Rusted Brute', new Vector2(9, 9), () => {console.log('Advance turn not set');}),
+      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(11, 11), () => {console.log('Advance turn not set');}),
     ];
-    const hazards: CombatHazard[] = [new VolatileCanister(10, 10, '+', 'Volatile Canister', new Vector2(3, 3), false)];
+    const hazards: CombatHazard[] = [new VolatileCanister(IdGenerator.generateUniqueId(), 10, 10, '+', 'Volatile Canister', new Vector2(3, 3), false)];
 
     super(size, enemies, [...walls, ...hazards]);
   }
@@ -61,23 +63,23 @@ class CombatMapTemplate1 extends CombatMapTemplate{
 
 const CombatParent: FC<CombatParentProps> = () => {
   const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>(new CombatMapTemplate1());
-
-  
-  const [comboList, setComboList] = useState<CombatActionWithRepeat[]>([]);
-  const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>([
-    new CombatActionWithUses(new CombatAction('Attack', true), 3),
-    new CombatActionWithUses(new CombatAction('Block', false), 1),
-    new CombatActionWithUses(new CombatAction('Move', true), 5),
-  ]);
-  
+ 
   const [enemies, setEnemies] = useState<CombatEnemy[]>(mapTemplate.enemies);
   const [hazards, setHazards] = useState<CombatHazard[]>(mapTemplate.hazards);
-  const [player, setPlayer] = useState<CombatPlayer>(new CombatPlayer(100, 100, '@', 'Player', new Vector2(7, 7)));
+  const [player, setPlayer] = useState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), 100, 100, '@', 'Player', new Vector2(7, 7)));
   const [baseMap, setBaseMap] = useState<CombatMapData>(createMapFromTemplate(mapTemplate));
   const [mapToSendOff, setMapToSendOff] = useState<CombatMapData>(getBaseMapClonePlusAddons());
+  const mapToSendOffCached = useRef<CombatMapData>(mapToSendOff);
   const [aoeToDisplay, setAoeToDisplay] = useState<AreaOfEffect|null>(
     new AreaOfEffect(3, Directions.RIGHT, 1, true)
   );
+ 
+  const [comboList, setComboList] = useState<CombatActionWithRepeat[]>([]);
+  const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>([
+    new CombatActionWithUses(new Attack(player.id, undefined, getCachedMap, updateEntity), 3),
+    new CombatActionWithUses(new Block(player.id, updateEntity), 1),
+    new CombatActionWithUses(new Move(player.id, undefined, getCachedMap, updateEntity), 5),
+  ]);
   
   const [infoCardData, setInfoCardData] = useState<CombatInfoDisplayProps | null>(null);
   function hideCard(){
@@ -90,7 +92,9 @@ const CombatParent: FC<CombatParentProps> = () => {
   const turnManager:TurnManager = useTurnManager([player, ...mapTemplate.enemies]);
   
   useEffect(() => {
-    setMapToSendOff(getBaseMapClonePlusAddons());
+    const newMap: CombatMapData = getBaseMapClonePlusAddons();
+    mapToSendOffCached.current = newMap;
+    setMapToSendOff(newMap);
   }, [player, enemies, hazards]);
 
   function createMapFromTemplate(template: CombatMapTemplate): CombatMapData{
@@ -105,18 +109,21 @@ const CombatParent: FC<CombatParentProps> = () => {
       if (enemy.hp <= 0) {
         return;
       }
-      newMap.locations[enemy.position.y][enemy.position.x] = new CombatLocationData(enemy.position.x, enemy.position.y, enemy.name, enemy.symbol, false, false);
+      newMap.setLocationWithEntity(enemy);
     });
     hazards.forEach(hazard => {
       if (hazard.hp <= 0) {
         return;
       }
-      newMap.locations[hazard.position.y][hazard.position.x] = new CombatLocationData(hazard.position.x, hazard.position.y, hazard.name, hazard.symbol, false, hazard.solid);
+      newMap.setLocationWithEntity(hazard);
     });
 
-    newMap.locations[player.position.y][player.position.x] = new CombatLocationData(player.position.x, player.position.y, player.name, player.symbol, false, false);
+    newMap.setLocationWithEntity(player);
 
     return newMap;
+  }
+  function getCachedMap(): CombatMapData{
+    return mapToSendOffCached.current;
   }
 
   function resetActionUses() : void{
@@ -146,12 +153,24 @@ const CombatParent: FC<CombatParentProps> = () => {
     setComboList([...comboList, newWithRepeat]);
   }
 
+  function updateEntity(id: number, newEntity: CombatEntity) {
+    if (newEntity instanceof CombatEnemy) {
+      const newEnemies = enemies.map(enemy => enemy.id === id ? newEntity : enemy);
+      setEnemies(newEnemies);
+    } else if (newEntity instanceof CombatHazard) {
+      const newHazards = hazards.map(hazard => hazard.id === id ? newEntity : hazard);
+      setHazards(newHazards);
+    } else if (newEntity instanceof CombatPlayer) {
+      setPlayer(newEntity);
+    }
+  }
+
   function debug_movePlayer() {
-    const newPlayer = new CombatPlayer(player.hp, player.maxHp, player.symbol, player.name, new Vector2(player.position.x + 1, player.position.y));
+    const newPlayer = new CombatPlayer(player.id, player.hp, player.maxHp, player.symbol, player.name, new Vector2(player.position.x + 1, player.position.y));
     setPlayer(newPlayer);
   }
   function debug_harmPlayer() {
-    const newPlayer = new CombatPlayer(player.hp - 10, player.maxHp, player.symbol, player.name, player.position);
+    const newPlayer = new CombatPlayer(player.id, player.hp - 10, player.maxHp, player.symbol, player.name, player.position);
     setPlayer(newPlayer);
   }
   function debug_endTurn() {
@@ -160,7 +179,7 @@ const CombatParent: FC<CombatParentProps> = () => {
 
   return (
     <div className="combat-parent" data-testid="combat-parent">
-        {/* <button onClick={debug_movePlayer}>Debug Move Player</button> */}
+        <button onClick={debug_movePlayer}>Debug Move Player</button>
         {/* <button onClick={debug_harmPlayer}>Debug Harm Player</button> */}
         <button onClick={debug_endTurn}>Debug End Turn</button>
         <div className='combat-parent-grid-parent'>

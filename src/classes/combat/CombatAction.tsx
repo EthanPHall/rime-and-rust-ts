@@ -1,17 +1,36 @@
-import Directions from "../utility/Directions";
+import Directions, { DirectionsUtility } from "../utility/Directions";
+import Vector2 from "../utility/Vector2";
+import CombatEntity from "./CombatEntity";
+import CombatMapData from "./CombatMapData";
 
-class CombatAction{
+abstract class CombatAction{
     name: string;
     directional: boolean;
-    direction: Directions; 
-    constructor(name: string, directional: boolean, direction: Directions = Directions.NONE){    
+    ownerId: number;
+    direction: Directions;
+    updateEntity: (id:number, newEntity: CombatEntity) => void;
+
+    constructor(name: string, directional: boolean, ownerId: number, direction: Directions = Directions.NONE, updateEntity: (id:number, newEntity: CombatEntity) => void){    
       this.name = name;
       this.directional = directional;
+      this.ownerId = ownerId;
       this.direction = direction;
+      this.updateEntity = updateEntity;
     }
   
+    //MIGHTDO: Might want to put stuff like this into a factory class
     static clone(action:CombatAction) : CombatAction{
-      return new CombatAction(action.name, action.directional, action.direction);
+      if(action instanceof Attack){
+        return Attack.clone(action);
+      }
+      if(action instanceof Block){
+        return Block.clone(action);
+      }
+      if(action instanceof Move){
+        return Move.clone(action);
+      }
+
+      throw new Error('Action type not recognized');
     }
   
     dataToObject() : Object{
@@ -22,9 +41,7 @@ class CombatAction{
       };
     }
 
-    execute(): void{
-      console.log('Executing action');
-    }
+    abstract execute(): void;
 
     areEquivalent(action: CombatAction): boolean {
       return this.name === action.name && this.direction === action.direction;
@@ -67,22 +84,30 @@ class CombatAction{
   }  
   
   class Attack extends CombatAction {
-    name = 'Attack';
-    direction = Directions.RIGHT;
-  
-    constructor() {
-      super('Attack', true);
+    getMap: () => CombatMapData;
+
+    constructor(ownerId: number, direction: Directions = Directions.NONE, getMap: () => CombatMapData, updateEntity: (id:number, newEntity: CombatEntity) => void){
+      super('Attack', true, ownerId, direction, updateEntity);
+      this.getMap = getMap;
     }
   
+    static clone(action: Attack) : Attack{
+      return new Attack(action.ownerId, action.direction, action.getMap, action.updateEntity);
+    }
+
     execute() {
-      console.log('Attacking');
+      const map: CombatMapData = this.getMap();
+      console.log(`Attacking ${this.direction}`);
+      console.log(map);
     }
   }
-  class Block extends  CombatAction {
-    name = 'Block';
-  
-    constructor() {
-      super('Block', false);
+  class Block extends CombatAction {
+    constructor(ownerId: number, updateEntity: (id:number, newEntity: CombatEntity) => void){
+      super('Block', false, ownerId, Directions.NONE, updateEntity);
+    }
+
+    static clone(action: Block) : Block{
+      return new Block(action.ownerId, action.updateEntity);
     }
   
     execute() {
@@ -91,14 +116,31 @@ class CombatAction{
   }
 
   class Move extends  CombatAction {
-    name = 'Move';
-  
-    constructor(direction: Directions = Directions.NONE) {
-      super('Move', true, direction);
+    getMap: () => CombatMapData;
+
+    constructor(ownerId: number, direction: Directions = Directions.NONE, getMap: () => CombatMapData, updateEntity: (id:number, newEntity: CombatEntity) => void){
+      super('Move', true, ownerId, direction, updateEntity);
+      this.getMap = getMap;
+    }
+
+    static clone(action: Move) : Move{
+      return new Move(action.ownerId, action.direction, action.getMap, action.updateEntity);
     }
   
     execute() {
-      console.log(`Moving ${this.direction}`);
+      const map: CombatMapData = this.getMap();
+      const owner: CombatEntity = map.getEntityById(this.ownerId);
+
+      const targetPosition = Vector2.add(owner.position, DirectionsUtility.getVectorFromDirection(this.direction));
+      const targetLocationData = map.locations[targetPosition.y][targetPosition.x];
+      if(targetLocationData.entity || targetLocationData.solid){
+        return;
+      }
+      else{
+        const updatedEntity = owner.clone();
+        updatedEntity.position = targetPosition;
+        this.updateEntity(owner.id, updatedEntity);
+      }
     }
   }
   
