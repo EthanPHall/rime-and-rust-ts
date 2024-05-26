@@ -41,8 +41,8 @@
     },
     {
       "type": "text",
-      "version": 2866,
-      "versionNonce": 1862539333,
+      "version": 3331,
+      "versionNonce": 1769943723,
       "isDeleted": false,
       "id": "WDac3Xj4hDeYq2s-80g4R",
       "fillStyle": "solid",
@@ -55,25 +55,25 @@
       "y": 3305.973892211914,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
-      "width": 3890.712890625,
-      "height": 1883.5377644856767,
+      "width": 4102.93359375,
+      "height": 2752.862886555989,
       "seed": 2136372581,
       "groupIds": [],
       "frameId": null,
       "roundness": null,
       "boundElements": null,
-      "updated": 1716677105727,
+      "updated": 1716705043301,
       "link": null,
       "locked": false,
       "fontSize": 120.73960028754338,
       "fontFamily": 3,
-      "text": "I'll pivot to animations here for a bit.\n\nBefore that though, I want to stop using \nsetTimeout for executing teh actions.\nI think I can use a hook for that, useActionExecutor\nor something. That hook will take in the map, and have\na useEffect for the map. The first action is triggered,\nthen when the map updates and the useEffect runs, \nthe next will trigger, and so on until there are no\nmore actions to run.\n\nCombatParent instantiates the hook and passes whatever\nfunction is necessary to give it a list of actions.",
+      "text": "I'll pivot to animations here for a bit.\n\nBefore that though, I want to stop using \nsetTimeout for executing teh actions.\nI think I can use a hook for that, useActionExecutor\nor something. That hook will take in the map, and have\na useEffect for the map. The first action is triggered,\nthen when the map updates and the useEffect runs, \nthe next will trigger, and so on until there are no\nmore actions to run.\n\nCombatParent instantiates the hook and passes whatever\nfunction is necessary to give it a list of actions.\n\nDid that, back to animations.\n\nI just need to make it so the CombatAction can return\nwhat AnimationDetails to use, and then have ActionExecutor\nactually run that animation.",
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "I'll pivot to animations here for a bit.\n\nBefore that though, I want to stop using \nsetTimeout for executing teh actions.\nI think I can use a hook for that, useActionExecutor\nor something. That hook will take in the map, and have\na useEffect for the map. The first action is triggered,\nthen when the map updates and the useEffect runs, \nthe next will trigger, and so on until there are no\nmore actions to run.\n\nCombatParent instantiates the hook and passes whatever\nfunction is necessary to give it a list of actions.",
+      "originalText": "I'll pivot to animations here for a bit.\n\nBefore that though, I want to stop using \nsetTimeout for executing teh actions.\nI think I can use a hook for that, useActionExecutor\nor something. That hook will take in the map, and have\na useEffect for the map. The first action is triggered,\nthen when the map updates and the useEffect runs, \nthe next will trigger, and so on until there are no\nmore actions to run.\n\nCombatParent instantiates the hook and passes whatever\nfunction is necessary to give it a list of actions.\n\nDid that, back to animations.\n\nI just need to make it so the CombatAction can return\nwhat AnimationDetails to use, and then have ActionExecutor\nactually run that animation.",
       "lineHeight": 1.2,
-      "baseline": 1855
+      "baseline": 2724
     },
     {
       "type": "rectangle",
@@ -253,8 +253,8 @@
     },
     {
       "type": "rectangle",
-      "version": 760,
-      "versionNonce": 2128230315,
+      "version": 945,
+      "versionNonce": 221717035,
       "isDeleted": false,
       "id": "Q3uXulJ9vkyIhjjz9aJJR",
       "fillStyle": "solid",
@@ -263,8 +263,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": 233.48891566858947,
-      "y": 7298.828620541499,
+      "x": 509.3385250435904,
+      "y": 8551.02863274853,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
       "width": 847.5104361976169,
@@ -317,14 +317,14 @@
           "type": "arrow"
         }
       ],
-      "updated": 1716677053523,
+      "updated": 1716704932190,
       "link": null,
       "locked": false
     },
     {
       "type": "text",
-      "version": 1112,
-      "versionNonce": 482782341,
+      "version": 1297,
+      "versionNonce": 839361739,
       "isDeleted": false,
       "id": "mqHS2YV6SG1gO6mArruK7",
       "fillStyle": "solid",
@@ -333,8 +333,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": 319.7441337673981,
-      "y": 7561.684245416104,
+      "x": 595.593743142399,
+      "y": 8813.884257623136,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
       "width": 675,
@@ -344,7 +344,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": null,
-      "updated": 1716677053523,
+      "updated": 1716704932190,
       "link": null,
       "locked": false,
       "fontSize": 36,
@@ -925,8 +925,8 @@
     },
     {
       "type": "rectangle",
-      "version": 943,
-      "versionNonce": 2008521899,
+      "version": 1128,
+      "versionNonce": 2022008651,
       "isDeleted": false,
       "id": "wJ5TwcwxowlFr8q11peka",
       "fillStyle": "solid",
@@ -935,8 +935,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": 3170.505539409218,
-      "y": 8614.533604652595,
+      "x": 3446.3551487842187,
+      "y": 9866.733616859627,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
       "width": 847.5104361976169,
@@ -961,14 +961,14 @@
           "type": "arrow"
         }
       ],
-      "updated": 1716677053523,
+      "updated": 1716704932190,
       "link": null,
       "locked": false
     },
     {
       "type": "text",
-      "version": 2026,
-      "versionNonce": 916330373,
+      "version": 2211,
+      "versionNonce": 1636845035,
       "isDeleted": false,
       "id": "twtrNR1M_pk4i66X-d623",
       "fillStyle": "solid",
@@ -977,8 +977,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": 3225.1201325080265,
-      "y": 8895.863653785895,
+      "x": 3500.9697418830274,
+      "y": 10148.063665992926,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
       "width": 738.28125,
@@ -988,7 +988,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": null,
-      "updated": 1716677053523,
+      "updated": 1716704932190,
       "link": null,
       "locked": false,
       "fontSize": 36,
@@ -1300,100 +1300,6 @@
       "originalText": "ComboSection\n\nDisplays a list of Actions as ComboEntries, as well as buttons to confirm or cancel a combo. Both should \"work\" in this preliminary step. Just clear the list for cancel, and call some sort of Execute() function on all of the actions for the confirm option. These executions should not happen all at once, there should be a delay between them.",
       "lineHeight": 1.2,
       "baseline": 512
-    },
-    {
-      "type": "rectangle",
-      "version": 1273,
-      "versionNonce": 1860784587,
-      "isDeleted": false,
-      "id": "O72mSFHtlcjWhoUQReFmx",
-      "fillStyle": "solid",
-      "strokeWidth": 4,
-      "strokeStyle": "solid",
-      "roughness": 1,
-      "opacity": 100,
-      "angle": 0,
-      "x": 1688.045252640014,
-      "y": 5880.350728373051,
-      "strokeColor": "#1e1e1e",
-      "backgroundColor": "transparent",
-      "width": 847.5104361976169,
-      "height": 655.3112497492107,
-      "seed": 578520619,
-      "groupIds": [],
-      "frameId": null,
-      "roundness": {
-        "type": 3
-      },
-      "boundElements": [
-        {
-          "id": "wFZ4Tj2uAYfZ135uMbWL_",
-          "type": "arrow"
-        },
-        {
-          "id": "VcK5c--Yszfj0caPhZz1K",
-          "type": "arrow"
-        },
-        {
-          "id": "1vhdYiR0cRtGyAEK7dgxi",
-          "type": "arrow"
-        },
-        {
-          "id": "Q-gbhfyaUEOq4pxeBRE0d",
-          "type": "arrow"
-        },
-        {
-          "type": "text",
-          "id": "nLBI-Ovxx3_M4szjITlfS"
-        },
-        {
-          "id": "ELpuUStGLeNRKoqmGv3lQ",
-          "type": "arrow"
-        },
-        {
-          "id": "CpfJU-m6TwkU6ciljQYVN",
-          "type": "arrow"
-        }
-      ],
-      "updated": 1716677053523,
-      "link": null,
-      "locked": false
-    },
-    {
-      "type": "text",
-      "version": 1809,
-      "versionNonce": 1281737829,
-      "isDeleted": false,
-      "id": "nLBI-Ovxx3_M4szjITlfS",
-      "fillStyle": "solid",
-      "strokeWidth": 4,
-      "strokeStyle": "solid",
-      "roughness": 1,
-      "opacity": 100,
-      "angle": 0,
-      "x": 1711.0192207388225,
-      "y": 6078.406353247657,
-      "strokeColor": "#1e1e1e",
-      "backgroundColor": "transparent",
-      "width": 801.5625,
-      "height": 259.2,
-      "seed": 2038924805,
-      "groupIds": [],
-      "frameId": null,
-      "roundness": null,
-      "boundElements": null,
-      "updated": 1716677053523,
-      "link": null,
-      "locked": false,
-      "fontSize": 36,
-      "fontFamily": 3,
-      "text": "ComboSection\n\nTakes in the Animator and, before the \ncurrent action is actually run, gets \nthe animator to run the animation \nassociated with CombatAction.",
-      "textAlign": "center",
-      "verticalAlign": "middle",
-      "containerId": "O72mSFHtlcjWhoUQReFmx",
-      "originalText": "ComboSection\n\nTakes in the Animator and, before the current action is actually run, gets the animator to run the animation associated with CombatAction.",
-      "lineHeight": 1.2,
-      "baseline": 251
     },
     {
       "type": "rectangle",
@@ -1783,8 +1689,8 @@
     },
     {
       "type": "arrow",
-      "version": 958,
-      "versionNonce": 604126603,
+      "version": 959,
+      "versionNonce": 1282698757,
       "isDeleted": false,
       "id": "wFZ4Tj2uAYfZ135uMbWL_",
       "fillStyle": "solid",
@@ -1811,7 +1717,7 @@
           "id": "x9252ihItiX_I5KzLTk3e"
         }
       ],
-      "updated": 1716677053523,
+      "updated": 1716691081649,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -1876,8 +1782,8 @@
     },
     {
       "type": "arrow",
-      "version": 1548,
-      "versionNonce": 731403307,
+      "version": 1549,
+      "versionNonce": 371352933,
       "isDeleted": false,
       "id": "VcK5c--Yszfj0caPhZz1K",
       "fillStyle": "solid",
@@ -1904,7 +1810,7 @@
           "id": "XCbRmcTi5Essz2zEKveQs"
         }
       ],
-      "updated": 1716677053523,
+      "updated": 1716691081649,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -3176,8 +3082,8 @@
     {
       "id": "WhaJidMQWDQJyBSzBs3dr",
       "type": "ellipse",
-      "x": 3028.6090476406257,
-      "y": 5838.175701030673,
+      "x": 3304.4586570156266,
+      "y": 7090.375713237704,
       "width": 964.1994222005206,
       "height": 809,
       "angle": 0,
@@ -3194,8 +3100,8 @@
         "type": 2
       },
       "seed": 1979260363,
-      "version": 1361,
-      "versionNonce": 579880843,
+      "version": 1546,
+      "versionNonce": 44173099,
       "isDeleted": false,
       "boundElements": [
         {
@@ -3219,15 +3125,15 @@
           "type": "arrow"
         }
       ],
-      "updated": 1716677053524,
+      "updated": 1716704932190,
       "link": null,
       "locked": false
     },
     {
       "id": "U2lETTfkc3bAX-TINws8p",
       "type": "text",
-      "x": 3183.859658813816,
-      "y": 6069.851008040714,
+      "x": 3459.709268188817,
+      "y": 7322.051020247745,
       "width": 653.90625,
       "height": 345.59999999999997,
       "angle": 0,
@@ -3242,11 +3148,11 @@
       "frameId": null,
       "roundness": null,
       "seed": 1476966501,
-      "version": 1927,
-      "versionNonce": 1126304421,
+      "version": 2112,
+      "versionNonce": 1657661899,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1716677053524,
+      "updated": 1716704932190,
       "link": null,
       "locked": false,
       "text": "CombatAction\n\nNeeds to know what animation to\nplay.\n\nDoes this via a function taht \ncan be overriden by child \nobjects.",
@@ -3262,8 +3168,8 @@
     {
       "id": "fIj8rJnWLzh4NvmF935_i",
       "type": "ellipse",
-      "x": 3076.2845237148445,
-      "y": 7049.4010326550215,
+      "x": 3369.1336448085954,
+      "y": 8399.000947205803,
       "width": 964.1994222005206,
       "height": 809,
       "angle": 0,
@@ -3280,8 +3186,8 @@
         "type": 2
       },
       "seed": 1533795915,
-      "version": 2061,
-      "versionNonce": 2144673323,
+      "version": 2311,
+      "versionNonce": 1730910635,
       "isDeleted": false,
       "boundElements": [
         {
@@ -3305,15 +3211,15 @@
           "type": "arrow"
         }
       ],
-      "updated": 1716677053524,
+      "updated": 1716704932190,
       "link": null,
       "locked": false
     },
     {
       "id": "I7-mn3H3l6kwoLf1MRcZ4",
       "type": "text",
-      "x": 3231.535134888035,
-      "y": 7324.276339665063,
+      "x": 3524.384255981786,
+      "y": 8673.876254215844,
       "width": 653.90625,
       "height": 259.2,
       "angle": 0,
@@ -3328,11 +3234,11 @@
       "frameId": null,
       "roundness": null,
       "seed": 1216364517,
-      "version": 2673,
-      "versionNonce": 1781755397,
+      "version": 2923,
+      "versionNonce": 1434528843,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1716677053524,
+      "updated": 1716704932190,
       "link": null,
       "locked": false,
       "text": "CombatAnimationDetails\n\nStores things like the \nanimation name, direction, and \nthe id of the entity to be \nanimated.",
@@ -3346,10 +3252,100 @@
       "lineHeight": 1.2
     },
     {
+      "id": "QO51CnWZ44hISG8_jHvi2",
+      "type": "ellipse",
+      "x": 1846.8334332200538,
+      "y": 6988.901002137444,
+      "width": 964.1994222005206,
+      "height": 809,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 2
+      },
+      "seed": 244377605,
+      "version": 2426,
+      "versionNonce": 2039797131,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "1vhdYiR0cRtGyAEK7dgxi",
+          "type": "arrow"
+        },
+        {
+          "id": "T7ILVnNITDjM-ZewLC6LU",
+          "type": "arrow"
+        },
+        {
+          "id": "ELpuUStGLeNRKoqmGv3lQ",
+          "type": "arrow"
+        },
+        {
+          "id": "pt44lx9rg8j5wCCahc7iT",
+          "type": "arrow"
+        },
+        {
+          "type": "text",
+          "id": "3ohrbbJIxgo88szlUcBtC"
+        },
+        {
+          "id": "CpfJU-m6TwkU6ciljQYVN",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1716704932190,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "3ohrbbJIxgo88szlUcBtC",
+      "type": "text",
+      "x": 2002.0840443932448,
+      "y": 7242.176309147486,
+      "width": 653.90625,
+      "height": 302.4,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 223692491,
+      "version": 3079,
+      "versionNonce": 1662512171,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1716704932190,
+      "link": null,
+      "locked": false,
+      "text": "ActionExecutor\n\nTakes in the Animator and, \nbefore the current action is \nactually run, gets the animator\nto run the animation associated\nwith CombatAction.",
+      "fontSize": 36,
+      "fontFamily": 3,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "baseline": 294,
+      "containerId": "QO51CnWZ44hISG8_jHvi2",
+      "originalText": "ActionExecutor\n\nTakes in the Animator and, before the current action is actually run, gets the animator to run the animation associated with CombatAction.",
+      "lineHeight": 1.2
+    },
+    {
       "id": "DDezHQ4MZheNOjCgwQU8Q",
       "type": "ellipse",
-      "x": 1579.2712790859387,
-      "y": 8582.863226461988,
+      "x": 1855.1208884609396,
+      "y": 9835.06323866902,
       "width": 964.1994222005206,
       "height": 809,
       "angle": 0,
@@ -3366,8 +3362,8 @@
         "type": 2
       },
       "seed": 1330674571,
-      "version": 1325,
-      "versionNonce": 1162258955,
+      "version": 1510,
+      "versionNonce": 1184118795,
       "isDeleted": false,
       "boundElements": [
         {
@@ -3395,17 +3391,17 @@
           "type": "arrow"
         }
       ],
-      "updated": 1716677053524,
+      "updated": 1716704932190,
       "link": null,
       "locked": false
     },
     {
       "id": "S88t0VON8hT2KDvcb5Y7j",
       "type": "text",
-      "x": 1734.5218902591293,
-      "y": 8900.93853347203,
+      "x": 2010.3714996341303,
+      "y": 10109.93854567906,
       "width": 653.90625,
-      "height": 172.79999999999998,
+      "height": 259.2,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -3418,28 +3414,28 @@
       "frameId": null,
       "roundness": null,
       "seed": 1756305061,
-      "version": 1911,
-      "versionNonce": 391712805,
+      "version": 2106,
+      "versionNonce": 471993509,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1716677053524,
+      "updated": 1716704976545,
       "link": null,
       "locked": false,
-      "text": "CombatCSSAnimator\n\nAnimates by adding css classes \nto specific entities in the map",
+      "text": "CombatCSSAnimator\n\nAnimates by adding css classes \nto specific entities in the map\n\n",
       "fontSize": 36,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
-      "baseline": 164,
+      "baseline": 251,
       "containerId": "DDezHQ4MZheNOjCgwQU8Q",
-      "originalText": "CombatCSSAnimator\n\nAnimates by adding css classes to specific entities in the map",
+      "originalText": "CombatCSSAnimator\n\nAnimates by adding css classes to specific entities in the map\n\n",
       "lineHeight": 1.2
     },
     {
       "id": "sRuG-v9PMDnAoUaN94Qg_",
       "type": "ellipse",
-      "x": 119.50901101953241,
-      "y": 8469.275885153394,
+      "x": 395.3586203945333,
+      "y": 9721.475897360426,
       "width": 964.1994222005206,
       "height": 809,
       "angle": 0,
@@ -3456,8 +3452,8 @@
         "type": 2
       },
       "seed": 2046467781,
-      "version": 1155,
-      "versionNonce": 1922773163,
+      "version": 1340,
+      "versionNonce": 865653035,
       "isDeleted": false,
       "boundElements": [
         {
@@ -3481,15 +3477,15 @@
           "type": "arrow"
         }
       ],
-      "updated": 1716677053524,
+      "updated": 1716704932190,
       "link": null,
       "locked": false
     },
     {
       "id": "iCqr9U0_M_9Mqkyf9yIqV",
       "type": "text",
-      "x": 285.3064971927233,
-      "y": 8787.351192163436,
+      "x": 561.1561065677242,
+      "y": 10039.551204370468,
       "width": 632.8125,
       "height": 172.79999999999998,
       "angle": 0,
@@ -3504,11 +3500,11 @@
       "frameId": null,
       "roundness": null,
       "seed": 798448651,
-      "version": 1805,
-      "versionNonce": 2087568261,
+      "version": 1990,
+      "versionNonce": 509309899,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1716677053524,
+      "updated": 1716704932190,
       "link": null,
       "locked": false,
       "text": "IAnimator\n\nGiven some animation details, \nruns that animation",
@@ -3620,8 +3616,8 @@
         "type": 2
       },
       "seed": 793403013,
-      "version": 255,
-      "versionNonce": 1517800587,
+      "version": 256,
+      "versionNonce": 433746117,
       "isDeleted": false,
       "boundElements": [
         {
@@ -3629,7 +3625,7 @@
           "id": "6UWaCzFY38ef89vSa1Ga9"
         }
       ],
-      "updated": 1716677053524,
+      "updated": 1716691081649,
       "link": null,
       "locked": false,
       "points": [
@@ -3713,8 +3709,8 @@
         "type": 2
       },
       "seed": 1277275595,
-      "version": 274,
-      "versionNonce": 981730091,
+      "version": 275,
+      "versionNonce": 892997669,
       "isDeleted": false,
       "boundElements": [
         {
@@ -3722,7 +3718,7 @@
           "id": "UJGnGut9SnXnfLMP-mX6U"
         }
       ],
-      "updated": 1716677053524,
+      "updated": 1716691081649,
       "link": null,
       "locked": false,
       "points": [
@@ -3900,8 +3896,8 @@
     {
       "id": "NeP0S22uhQfd9yUhf8u0E",
       "type": "arrow",
-      "x": 1101.473498918235,
-      "y": 8897.780701489675,
+      "x": 1377.323108293236,
+      "y": 10149.980713696707,
       "width": 474.72982370156353,
       "height": 12.932877563908733,
       "angle": 0,
@@ -3918,8 +3914,8 @@
         "type": 2
       },
       "seed": 361265739,
-      "version": 811,
-      "versionNonce": 1858318091,
+      "version": 1374,
+      "versionNonce": 625978245,
       "isDeleted": false,
       "boundElements": [
         {
@@ -3927,7 +3923,7 @@
           "id": "oFuxwddyDzIbgWdS1D6bE"
         }
       ],
-      "updated": 1716677053524,
+      "updated": 1716704932484,
       "link": null,
       "locked": false,
       "points": [
@@ -3993,8 +3989,8 @@
     {
       "id": "LW8xKlrVJmAOc-2IF0jMR",
       "type": "arrow",
-      "x": 620.6815674175023,
-      "y": 7960.811422873119,
+      "x": 896.5311767925032,
+      "y": 9213.01143508015,
       "width": 6.958915380851749,
       "height": 491.9125703030604,
       "angle": 0,
@@ -4011,8 +4007,8 @@
         "type": 2
       },
       "seed": 1853326533,
-      "version": 386,
-      "versionNonce": 1014902405,
+      "version": 949,
+      "versionNonce": 1344556613,
       "isDeleted": false,
       "boundElements": [
         {
@@ -4020,7 +4016,7 @@
           "id": "Vn2ScV8_PlPHMMb7NZnhS"
         }
       ],
-      "updated": 1716677053524,
+      "updated": 1716704932484,
       "link": null,
       "locked": false,
       "points": [
@@ -4086,8 +4082,8 @@
     {
       "id": "pFcNCa54lVuYR3KAr7nEp",
       "type": "arrow",
-      "x": 1073.939298698594,
-      "y": 7968.9407970593165,
+      "x": 1349.788908073595,
+      "y": 9221.140809266348,
       "width": 617.8502400716143,
       "height": 742.7501424153652,
       "angle": 0,
@@ -4104,8 +4100,8 @@
         "type": 2
       },
       "seed": 253616843,
-      "version": 365,
-      "versionNonce": 1344280037,
+      "version": 928,
+      "versionNonce": 1992245509,
       "isDeleted": false,
       "boundElements": [
         {
@@ -4113,7 +4109,7 @@
           "id": "kD-OseQWMv-f8LxPaDh-l"
         }
       ],
-      "updated": 1716677053524,
+      "updated": 1716704932484,
       "link": null,
       "locked": false,
       "points": [
@@ -4179,8 +4175,8 @@
     {
       "id": "3vLuN3LUrN0McvjHmMCf-",
       "type": "arrow",
-      "x": 2552.339465528021,
-      "y": 9031.340902853586,
+      "x": 2828.1890749030217,
+      "y": 10283.540915060617,
       "width": 605.050048828125,
       "height": 9.2498779296875,
       "angle": 0,
@@ -4197,8 +4193,8 @@
         "type": 2
       },
       "seed": 569797451,
-      "version": 357,
-      "versionNonce": 432935237,
+      "version": 920,
+      "versionNonce": 2009891781,
       "isDeleted": false,
       "boundElements": [
         {
@@ -4206,7 +4202,7 @@
           "id": "9I5ekQlvIKtKrBQEde0Zw"
         }
       ],
-      "updated": 1716677053525,
+      "updated": 1716704932484,
       "link": null,
       "locked": false,
       "points": [
@@ -4227,8 +4223,8 @@
       },
       "endBinding": {
         "elementId": "wJ5TwcwxowlFr8q11peka",
-        "focus": -0.08858321097602077,
-        "gap": 13.116025053072235
+        "focus": -0.08858321097602082,
+        "gap": 13.116025053072008
       },
       "startArrowhead": null,
       "endArrowhead": "arrow"
@@ -4272,8 +4268,8 @@
     {
       "id": "ELpuUStGLeNRKoqmGv3lQ",
       "type": "arrow",
-      "x": 2544.9604098688933,
-      "y": 6205.851267384678,
+      "x": 2820.810019243894,
+      "y": 7458.051279591709,
       "width": 483.54981434255865,
       "height": 5.761897081048119,
       "angle": 0,
@@ -4290,8 +4286,8 @@
         "type": 2
       },
       "seed": 374314059,
-      "version": 938,
-      "versionNonce": 652583077,
+      "version": 1503,
+      "versionNonce": 1995970181,
       "isDeleted": false,
       "boundElements": [
         {
@@ -4299,7 +4295,7 @@
           "id": "G6BqHFU4tfmrJzfF2KtI3"
         }
       ],
-      "updated": 1716677053525,
+      "updated": 1716704932484,
       "link": null,
       "locked": false,
       "points": [
@@ -4314,14 +4310,14 @@
       ],
       "lastCommittedPoint": null,
       "startBinding": {
-        "elementId": "O72mSFHtlcjWhoUQReFmx",
-        "focus": 0.009036154805167366,
-        "gap": 9.40472103126217
+        "elementId": "QO51CnWZ44hISG8_jHvi2",
+        "focus": 0.1742998484734401,
+        "gap": 15.69792684575151
       },
       "endBinding": {
         "elementId": "WhaJidMQWDQJyBSzBs3dr",
         "focus": 0.11947404910375609,
-        "gap": 2.756427949703948
+        "gap": 2.756427949703607
       },
       "startArrowhead": null,
       "endArrowhead": "arrow"
@@ -4365,8 +4361,8 @@
     {
       "id": "CpfJU-m6TwkU6ciljQYVN",
       "type": "arrow",
-      "x": 1077.5341786285276,
-      "y": 7280.288189496872,
+      "x": 1353.3837880035285,
+      "y": 8532.488201703904,
       "width": 837.0001570920679,
       "height": 732.2713560660031,
       "angle": 0,
@@ -4383,8 +4379,8 @@
         "type": 2
       },
       "seed": 217566309,
-      "version": 649,
-      "versionNonce": 2098480133,
+      "version": 1214,
+      "versionNonce": 485357893,
       "isDeleted": false,
       "boundElements": [
         {
@@ -4392,7 +4388,7 @@
           "id": "jT38Z2NDHyv43oBpntSCw"
         }
       ],
-      "updated": 1716677053525,
+      "updated": 1716704932484,
       "link": null,
       "locked": false,
       "points": [
@@ -4412,9 +4408,9 @@
         "gap": 18.54043104462653
       },
       "endBinding": {
-        "elementId": "O72mSFHtlcjWhoUQReFmx",
-        "focus": -0.23973329452842695,
-        "gap": 12.354855308607966
+        "elementId": "QO51CnWZ44hISG8_jHvi2",
+        "focus": -0.4887155167180518,
+        "gap": 18.81300428552771
       },
       "startArrowhead": null,
       "endArrowhead": "arrow"
@@ -4458,10 +4454,10 @@
     {
       "id": "pt44lx9rg8j5wCCahc7iT",
       "type": "arrow",
-      "x": 3513.3110474663326,
-      "y": 6656.960830590946,
-      "width": 13.42357141676871,
-      "height": 391.12691817478844,
+      "x": 3793.3298799449585,
+      "y": 7909.127367976564,
+      "width": 21.958006935952653,
+      "height": 488.8128691038128,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -4476,8 +4472,8 @@
         "type": 2
       },
       "seed": 1914527755,
-      "version": 1483,
-      "versionNonce": 274168677,
+      "version": 2185,
+      "versionNonce": 1465527301,
       "isDeleted": false,
       "boundElements": [
         {
@@ -4485,7 +4481,7 @@
           "id": "h33Hrh7suE4bCF6a_Fc5q"
         }
       ],
-      "updated": 1716677053525,
+      "updated": 1716704932484,
       "link": null,
       "locked": false,
       "points": [
@@ -4494,20 +4490,20 @@
           0
         ],
         [
-          13.42357141676871,
-          391.12691817478844
+          21.958006935952653,
+          488.8128691038128
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "WhaJidMQWDQJyBSzBs3dr",
-        "focus": 0.024084779170181533,
-        "gap": 9.790923724178754
+        "focus": 0.02453584807761507,
+        "gap": 9.79088929001091
       },
       "endBinding": {
         "elementId": "fIj8rJnWLzh4NvmF935_i",
-        "focus": -0.03674480898780311,
-        "gap": 2.18258402401284
+        "focus": -0.03674480898780429,
+        "gap": 2.182357405341122
       },
       "startArrowhead": null,
       "endArrowhead": "arrow"

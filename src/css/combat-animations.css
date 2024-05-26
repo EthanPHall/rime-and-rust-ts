@@ -31,19 +31,19 @@
     }
 };
 
-.move_anim_Right {
+.Move-Right {
     animation: moveRight var(--combat-animation-duration);
     animation-fill-mode: forwards;
 }
-.move_anim_Left {
+.Move-Left {
     animation: moveLeft var(--combat-animation-duration);
     animation-fill-mode: forwards;
 }
-.move_anim_Up {
+.Move-Up {
     animation: moveUp var(--combat-animation-duration);
     animation-fill-mode: forwards;
 }
-.move_anim_Down {
+.Move-Down {
     animation: moveDown var(--combat-animation-duration);
     animation-fill-mode: forwards;
 }

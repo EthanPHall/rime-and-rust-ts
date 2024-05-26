@@ -21,10 +21,11 @@ import CombatEnemy, { RustedBrute, RustedShambler } from '../../../classes/comba
 import CombatHazard, { VolatileCanister, Wall } from '../../../classes/combat/CombatHazard';
 import CombatPlayer from '../../../classes/combat/CombatPlayer';
 import TurnManager from '../../../classes/combat/TurnManager';
-import useTurnManager from '../hooks/useTurnManager';
+import useTurnManager from '../../../hooks/useTurnManager';
 import IdGenerator from '../../../classes/utility/IdGenerator';
 import CombatEntity from '../../../classes/combat/CombatEntity';
-import useActionExecutor, { IActionExecutor } from '../hooks/useActionExecutor';
+import useActionExecutor, { IActionExecutor } from '../../../hooks/useActionExecutor';
+import CSSCombatAnimator from '../../../classes/animation/CSSCombatAnimator';
 
 interface CombatParentProps {}
 
@@ -91,15 +92,52 @@ const CombatParent: FC<CombatParentProps> = () => {
   function showCard(title: string, description: string){
     setInfoCardData({title, description, hideCard});
   }
+  
+  const [animator, setAnimator] = useState<CSSCombatAnimator>(new CSSCombatAnimator(getCachedMap, refreshMap));
 
   const turnManager:TurnManager = useTurnManager([player, ...mapTemplate.enemies]);
-  const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList);
+  const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator);
   
   useEffect(() => {
+    refreshMap();
+  }, [player, enemies, hazards]);
+
+  function refreshMap():void{
     const newMap: CombatMapData = getBaseMapClonePlusAddons();
+
+    enemies.forEach(enemy => {
+      try{
+        const previousPosition:Vector2 = getCachedMap().getEntityById(enemy.id).position;
+        const previousLocation:CombatLocationData = getCachedMap().locations[previousPosition.y][previousPosition.x];
+        newMap.locations[enemy.position.y][enemy.position.x].animationList = previousLocation.animationList;   
+      }
+      catch(e){
+        console.log(e, enemy);
+      }
+    });
+    hazards.forEach(hazard => {
+      try{
+        const previousPosition:Vector2 = getCachedMap().getEntityById(hazard.id).position;
+        const previousLocation:CombatLocationData = getCachedMap().locations[previousPosition.y][previousPosition.x];
+        newMap.locations[hazard.position.y][hazard.position.x].animationList = previousLocation.animationList;   
+      }
+      catch(e){
+        console.log(e, hazard);
+      }
+    });
+
+    try{
+      const previousPosition:Vector2 = getCachedMap().getEntityById(player.id).position;
+      const previousPlayerLocation:CombatLocationData = getCachedMap().locations[previousPosition.y][previousPosition.x];
+      newMap.locations[player.position.y][player.position.x].animationList = previousPlayerLocation.animationList;
+    }
+    catch(e){
+      console.log(e, player);
+    }
+
     mapToSendOffCached.current = newMap;
     setMapToSendOff(newMap);
-  }, [player, enemies, hazards]);
+  }
 
   function createMapFromTemplate(template: CombatMapTemplate): CombatMapData{
     const newMap: CombatMapData = new CombatMapData(template.size.x, template.size.y);

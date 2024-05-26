@@ -1,3 +1,5 @@
+import AnimationDetails from "../animation/AnimationDetails";
+import CombatAnimationFactory, { CombatAnimationNames } from "../animation/CombatAnimationFactory";
 import Directions, { DirectionsUtility } from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
 import CombatEntity from "./CombatEntity";
@@ -42,6 +44,7 @@ abstract class CombatAction{
     }
 
     abstract execute(): void;
+    abstract getAnimations(): AnimationDetails[];
 
     areEquivalent(action: CombatAction): boolean {
       return this.name === action.name && this.direction === action.direction;
@@ -100,6 +103,10 @@ abstract class CombatAction{
       console.log(`Attacking ${this.direction}`);
       console.log(map);
     }
+
+    getAnimations(): AnimationDetails[] {
+      return [CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId)];
+    }
   }
   class Block extends CombatAction {
     constructor(ownerId: number, updateEntity: (id:number, newEntity: CombatEntity) => void){
@@ -112,6 +119,10 @@ abstract class CombatAction{
   
     execute() {
       console.log('Blocking');
+    }
+
+    getAnimations(): AnimationDetails[] {
+      return [CombatAnimationFactory.createAnimation(CombatAnimationNames.Block, Directions.NONE, this.ownerId)];
     }
   }
 
@@ -141,6 +152,10 @@ abstract class CombatAction{
         updatedEntity.position = targetPosition;
         this.updateEntity(owner.id, updatedEntity);
       }
+    }
+
+    getAnimations(): AnimationDetails[] {
+      return [CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, this.direction, this.ownerId)];
     }
   }
   

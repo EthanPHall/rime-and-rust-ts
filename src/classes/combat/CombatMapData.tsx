@@ -27,6 +27,16 @@ class CombatMapData{
       this.locations[entity.position.y][entity.position.x].entity = entity;
     }
 
+    applyAnimationToEntity(id: number, className: string):void{
+      this.locations.forEach((row) => {
+        row.forEach((location) => {
+          if(location.entity && location.entity.id === id){
+            location.animationList.push(className);
+          }
+        });
+      });     
+    }
+
     getEntityById(id: number):CombatEntity{
       let entity:CombatEntity|null = null;
   
@@ -97,7 +107,7 @@ class CombatMapData{
       const newMap:CombatMapData = new CombatMapData(map.height, map.width);
       newMap.locations = map.locations.map((row) => {
         return row.map((location) => {
-          return new CombatLocationData(location.x, location.y, location.name, location.symbol, location.highlight, location.solid);
+          return new CombatLocationData(location.x, location.y, location.name, location.symbol, location.highlight, location.solid, location.entity, location.animationList);
         });
       });
   

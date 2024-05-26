@@ -12,14 +12,14 @@
 }
 
 .combat-map .combat-map-row{
-    height: 24px;
+    height: var(--combat-location-height);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .combat-map-location {
-    width: 24px;
+    width: var(--combat-location-width);
 }
 
 @keyframes textGrow {

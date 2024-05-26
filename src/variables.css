@@ -31,5 +31,8 @@
     --map-location-spacing: 4.5px;
     --map-font-size: .9em;
 
-    
+    /* Animation */
+    --combat-animation-duration: .35s;
+    --combat-location-width: 24px;
+    --combat-location-height: 24px;
 }

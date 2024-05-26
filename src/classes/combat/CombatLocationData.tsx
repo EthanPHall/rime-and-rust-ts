@@ -7,15 +7,18 @@ class CombatLocationData{
   symbol: string;
   highlight: boolean;
   solid: boolean;
-  entity: CombatEntity | null = null;
+  entity: CombatEntity | null;
+  animationList: string[];
 
-  constructor(x: number, y: number, name: string = "Combat Location", symbol: string = ".", highlight: boolean = false, solid: boolean = false){
+  constructor(x: number, y: number, name: string = "Combat Location", symbol: string = ".", highlight: boolean = false, solid: boolean = false, entity: CombatEntity | null = null, animationList: string[] = []){
     this.x = x;
     this.y = y;
     this.name = name;
     this.symbol = symbol;
     this.highlight = highlight;
     this.solid = solid;
+    this.entity = entity;
+    this.animationList = animationList;
   }
 }
 

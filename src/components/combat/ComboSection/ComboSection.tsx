@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import './ComboSection.css';
 import CombatAction, { Attack, Block, CombatActionWithRepeat, Move } from '../../../classes/combat/CombatAction';
 import Directions from '../../../classes/utility/Directions';
-import { IActionExecutor } from '../hooks/useActionExecutor';
+import { IActionExecutor } from '../../../hooks/useActionExecutor';
 
 interface ComboSectionProps {
   comboList: CombatActionWithRepeat[];
@@ -16,7 +16,7 @@ const ComboSection: FC<ComboSectionProps> = ({comboList, setComboList, resetActi
     if(actionExecutor.isExecuting()) {
       return;
     }
-    
+
     resetActionUses();
     setComboList([]);
   }
@@ -30,33 +30,6 @@ const ComboSection: FC<ComboSectionProps> = ({comboList, setComboList, resetActi
     if(!actionExecutor.isExecuting()) {
       actionExecutor.execute(comboList);
     }
-
-    // if (isExecuting) {
-    //   return;
-    // }
-
-    // //I think in the final project, we can use global context to make sure other components know that we are executing
-    // setIsExecuting(true);
-
-    // let delay = 0;
-
-    // for(let i = 0; i < comboList.length; i++) {
-    //   const action:CombatActionWithRepeat = comboList[i];
-    //   for(let j = 0; j < action.repeat; j++) {
-    //     setTimeout(() => {
-    //       action.combatAction.execute();
-    //       action.decrementRepeat();
-    //       setComboList([...comboList]);
-    //     }, delay);
-
-    //     delay += EXECUTION_DELAY;
-    //   }
-    // }
-
-    // setTimeout(() => {
-    //   setComboList([]);
-    //   setIsExecuting(false);
-    // }, delay);
   }
 
   return (

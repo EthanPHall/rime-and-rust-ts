@@ -7,6 +7,7 @@ import Vector2 from '../../../classes/utility/Vector2';
 import MapUtilities from '../../../classes/utility/MapUtilities';
 import CombatMapData from '../../../classes/combat/CombatMapData';
 import AreaOfEffect from '../../../classes/combat/AreaOfEffect';
+import '../../../css/combat-animations.css';
 
 interface CombatMapProps {
   map: CombatMapData;
@@ -32,6 +33,10 @@ const CombatMap: FC<CombatMapProps> = ({map, setMap, aoeToDisplay}:CombatMapProp
     setMap(CombatMapData.clone(map));
   }
 
+  function classListToString(classList: string[]): string {
+    return classList.join(' ');
+  }
+
   return (
     <>
       <button className='highlight-button' onClick={highlightAOE}>Highlight</button>
@@ -43,7 +48,7 @@ const CombatMap: FC<CombatMapProps> = ({map, setMap, aoeToDisplay}:CombatMapProp
             <div key={"combat-map-" + row + "-" + i} className="combat-map-row">
               {row.map((location, j) => {
                 return (
-                  <span className={`combat-map-location ${location.highlight ? "highlight" : ""}`} key={"combat-map-location:" + location.y*10+location.x}>{location.symbol}</span>
+                  <span className={`combat-map-location ${location.highlight ? "highlight" : ""} ${classListToString(location.animationList)}`} key={"combat-map-location:" + location.y*10+location.x}>{location.symbol}</span>
                 );
               })}
             </div>
