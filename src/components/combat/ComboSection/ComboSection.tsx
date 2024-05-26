@@ -2,19 +2,21 @@ import React, { FC, useState } from 'react';
 import './ComboSection.css';
 import CombatAction, { Attack, Block, CombatActionWithRepeat, Move } from '../../../classes/combat/CombatAction';
 import Directions from '../../../classes/utility/Directions';
+import { IActionExecutor } from '../hooks/useActionExecutor';
 
 interface ComboSectionProps {
   comboList: CombatActionWithRepeat[];
   setComboList: (comboList: CombatActionWithRepeat[]) => void;
   resetActionUses: () => void;
+  actionExecutor: IActionExecutor;
 }
 
-const ComboSection: FC<ComboSectionProps> = ({comboList, setComboList, resetActionUses}: ComboSectionProps) => {
-  const EXECUTION_DELAY = 600;
-
-  const [isExecuting, setIsExecuting] = useState<boolean>(false);
-
+const ComboSection: FC<ComboSectionProps> = ({comboList, setComboList, resetActionUses, actionExecutor}: ComboSectionProps) => {
   function cancelActions() {
+    if(actionExecutor.isExecuting()) {
+      return;
+    }
+    
     resetActionUses();
     setComboList([]);
   }
@@ -25,32 +27,36 @@ const ComboSection: FC<ComboSectionProps> = ({comboList, setComboList, resetActi
   }
 
   function executeActions() {
-    if (isExecuting) {
-      return;
+    if(!actionExecutor.isExecuting()) {
+      actionExecutor.execute(comboList);
     }
 
-    //I think in the final project, we can use global context to make sure other components know that we are executing
-    setIsExecuting(true);
+    // if (isExecuting) {
+    //   return;
+    // }
 
-    let delay = 0;
+    // //I think in the final project, we can use global context to make sure other components know that we are executing
+    // setIsExecuting(true);
 
-    for(let i = 0; i < comboList.length; i++) {
-      const action:CombatActionWithRepeat = comboList[i];
-      for(let j = 0; j < action.repeat; j++) {
-        setTimeout(() => {
-          action.combatAction.execute();
-          action.decrementRepeat();
-          setComboList([...comboList]);
-        }, delay);
+    // let delay = 0;
 
-        delay += EXECUTION_DELAY;
-      }
-    }
+    // for(let i = 0; i < comboList.length; i++) {
+    //   const action:CombatActionWithRepeat = comboList[i];
+    //   for(let j = 0; j < action.repeat; j++) {
+    //     setTimeout(() => {
+    //       action.combatAction.execute();
+    //       action.decrementRepeat();
+    //       setComboList([...comboList]);
+    //     }, delay);
 
-    setTimeout(() => {
-      setComboList([]);
-      setIsExecuting(false);
-    }, delay);
+    //     delay += EXECUTION_DELAY;
+    //   }
+    // }
+
+    // setTimeout(() => {
+    //   setComboList([]);
+    //   setIsExecuting(false);
+    // }, delay);
   }
 
   return (

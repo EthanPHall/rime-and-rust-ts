@@ -1,0 +1,49 @@
+@keyframes moveRight {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(var(--combat-location-width));
+    }
+}
+@keyframes moveLeft {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(var(--combat-location-width) * -1));
+    }
+}
+@keyframes moveUp {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(calc(var(--combat-location-height) * -1));
+    }
+}
+@keyframes moveDown {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(var(--combat-location-height));
+    }
+};
+
+.move_anim_Right {
+    animation: moveRight var(--combat-animation-duration);
+    animation-fill-mode: forwards;
+}
+.move_anim_Left {
+    animation: moveLeft var(--combat-animation-duration);
+    animation-fill-mode: forwards;
+}
+.move_anim_Up {
+    animation: moveUp var(--combat-animation-duration);
+    animation-fill-mode: forwards;
+}
+.move_anim_Down {
+    animation: moveDown var(--combat-animation-duration);
+    animation-fill-mode: forwards;
+}

@@ -21,9 +21,10 @@ import CombatEnemy, { RustedBrute, RustedShambler } from '../../../classes/comba
 import CombatHazard, { VolatileCanister, Wall } from '../../../classes/combat/CombatHazard';
 import CombatPlayer from '../../../classes/combat/CombatPlayer';
 import TurnManager from '../../../classes/combat/TurnManager';
-import useTurnManager from '../useTurnManager';
+import useTurnManager from '../hooks/useTurnManager';
 import IdGenerator from '../../../classes/utility/IdGenerator';
 import CombatEntity from '../../../classes/combat/CombatEntity';
+import useActionExecutor, { IActionExecutor } from '../hooks/useActionExecutor';
 
 interface CombatParentProps {}
 
@@ -61,6 +62,8 @@ class CombatMapTemplate1 extends CombatMapTemplate{
   }
 }
 
+
+
 const CombatParent: FC<CombatParentProps> = () => {
   const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>(new CombatMapTemplate1());
  
@@ -90,6 +93,7 @@ const CombatParent: FC<CombatParentProps> = () => {
   }
 
   const turnManager:TurnManager = useTurnManager([player, ...mapTemplate.enemies]);
+  const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList);
   
   useEffect(() => {
     const newMap: CombatMapData = getBaseMapClonePlusAddons();
@@ -190,7 +194,7 @@ const CombatParent: FC<CombatParentProps> = () => {
             {/* <LootDisplay></LootDisplay> */}
             <HpDisplay hp={player.hp} maxHp={player.maxHp}></HpDisplay>
             <TurnDisplay currentTurnTaker={turnManager.currentTurnTaker}></TurnDisplay>
-            <ComboSection comboList={comboList} setComboList={setComboList} resetActionUses={resetActionUses}></ComboSection>
+            <ComboSection comboList={comboList} setComboList={setComboList} resetActionUses={resetActionUses} actionExecutor={actionExecutor}></ComboSection>
             <ComponentSwitcher enemies={enemies} hazards={hazards} showCard={showCard}></ComponentSwitcher>
             {infoCardData != null && <CombatInfoDisplay {...infoCardData}></CombatInfoDisplay>}
         </div>

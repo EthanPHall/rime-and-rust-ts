@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import TurnManager from '../../classes/combat/TurnManager';
-import TurnTaker from '../../classes/combat/TurnTaker';
+import TurnManager from '../../../classes/combat/TurnManager';
+import TurnTaker from '../../../classes/combat/TurnTaker';
 
 const useTurnManager = (turnTakers: TurnTaker[]): TurnManager => {
     const currentIndex = useRef(0);
