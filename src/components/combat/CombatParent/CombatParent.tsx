@@ -26,6 +26,7 @@ import IdGenerator from '../../../classes/utility/IdGenerator';
 import CombatEntity from '../../../classes/combat/CombatEntity';
 import useActionExecutor, { IActionExecutor } from '../../../hooks/useActionExecutor';
 import CSSCombatAnimator from '../../../classes/animation/CSSCombatAnimator';
+import useRefState from '../../../hooks/useRefState';
 
 interface CombatParentProps {}
 
@@ -47,7 +48,7 @@ class CombatMapTemplate1 extends CombatMapTemplate{
     const walls: Wall[] = Wall.createDefaultWalls(
       [
         {start: new Vector2(8, 8), end: new Vector2(12, 8)},
-        {start: new Vector2(8, 8), end: new Vector2(8, 12)},
+        {start: new Vector2(8, 9), end: new Vector2(8, 12)},
         {start: new Vector2(8, 12), end: new Vector2(12, 12)},
         {start: new Vector2(12, 8), end: new Vector2(12, 13)},
       ]
@@ -70,7 +71,14 @@ const CombatParent: FC<CombatParentProps> = () => {
  
   const [enemies, setEnemies] = useState<CombatEnemy[]>(mapTemplate.enemies);
   const [hazards, setHazards] = useState<CombatHazard[]>(mapTemplate.hazards);
-  const [player, setPlayer] = useState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), 100, 100, '@', 'Player', new Vector2(7, 7)));
+  
+  //I was running into issues with closures I think. I was passing refreshMap() to the animator, but when it was called there,
+  //the player wasn't up to date. That led to weird behavior where the player would move and be animated correctly the first time,
+  //but then with the next action, the player would reset to its old position. So I made a hook where setPlayer also updates
+  //a ref that everyone can use to make sure that they're using the most up-to-date player, and a function to get that ref's value,
+  //so no more trying to get the player by value, it's all by reference now.
+  const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), 100, 100, '@', 'Player', new Vector2(7, 7)));
+  
   const [baseMap, setBaseMap] = useState<CombatMapData>(createMapFromTemplate(mapTemplate));
   const [mapToSendOff, setMapToSendOff] = useState<CombatMapData>(getBaseMapClonePlusAddons());
   const mapToSendOffCached = useRef<CombatMapData>(mapToSendOff);
@@ -80,9 +88,9 @@ const CombatParent: FC<CombatParentProps> = () => {
  
   const [comboList, setComboList] = useState<CombatActionWithRepeat[]>([]);
   const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>([
-    new CombatActionWithUses(new Attack(player.id, undefined, getCachedMap, updateEntity), 3),
-    new CombatActionWithUses(new Block(player.id, updateEntity), 1),
-    new CombatActionWithUses(new Move(player.id, undefined, getCachedMap, updateEntity), 5),
+    new CombatActionWithUses(new Attack(getPlayer().id, undefined, getCachedMap, updateEntity), 3),
+    new CombatActionWithUses(new Block(getPlayer().id, updateEntity), 1),
+    new CombatActionWithUses(new Move(getPlayer().id, undefined, getCachedMap, updateEntity), 5),
   ]);
   
   const [infoCardData, setInfoCardData] = useState<CombatInfoDisplayProps | null>(null);
@@ -95,16 +103,23 @@ const CombatParent: FC<CombatParentProps> = () => {
   
   const [animator, setAnimator] = useState<CSSCombatAnimator>(new CSSCombatAnimator(getCachedMap, refreshMap));
 
-  const turnManager:TurnManager = useTurnManager([player, ...mapTemplate.enemies]);
-  const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator);
+  const turnManager:TurnManager = useTurnManager([getPlayer(), ...mapTemplate.enemies]);
+  const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator, refreshMap);
   
   useEffect(() => {
+  }, [mapToSendOff]);
+
+  useEffect(() => {
     refreshMap();
-  }, [player, enemies, hazards]);
+  }, [playerForEffects, enemies, hazards]);
+
+  useEffect(() => {
+  }, [playerForEffects]);
 
   function refreshMap():void{
+    const accuratePlayer = getPlayer();
     const newMap: CombatMapData = getBaseMapClonePlusAddons();
-
+    
     enemies.forEach(enemy => {
       try{
         const previousPosition:Vector2 = getCachedMap().getEntityById(enemy.id).position;
@@ -127,12 +142,12 @@ const CombatParent: FC<CombatParentProps> = () => {
     });
 
     try{
-      const previousPosition:Vector2 = getCachedMap().getEntityById(player.id).position;
+      const previousPosition:Vector2 = getCachedMap().getEntityById(accuratePlayer.id).position;
       const previousPlayerLocation:CombatLocationData = getCachedMap().locations[previousPosition.y][previousPosition.x];
-      newMap.locations[player.position.y][player.position.x].animationList = previousPlayerLocation.animationList;
+      newMap.locations[accuratePlayer.position.y][accuratePlayer.position.x].animationList = previousPlayerLocation.animationList;
     }
     catch(e){
-      console.log(e, player);
+      console.log(e, accuratePlayer);
     }
 
     mapToSendOffCached.current = newMap;
@@ -160,7 +175,7 @@ const CombatParent: FC<CombatParentProps> = () => {
       newMap.setLocationWithEntity(hazard);
     });
 
-    newMap.setLocationWithEntity(player);
+    newMap.setLocationWithEntity(getPlayer());
 
     return newMap;
   }
@@ -208,11 +223,11 @@ const CombatParent: FC<CombatParentProps> = () => {
   }
 
   function debug_movePlayer() {
-    const newPlayer = new CombatPlayer(player.id, player.hp, player.maxHp, player.symbol, player.name, new Vector2(player.position.x + 1, player.position.y));
+    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().hp, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, new Vector2(getPlayer().position.x + 1, getPlayer().position.y));
     setPlayer(newPlayer);
   }
   function debug_harmPlayer() {
-    const newPlayer = new CombatPlayer(player.id, player.hp - 10, player.maxHp, player.symbol, player.name, player.position);
+    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().hp - 10, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, getPlayer().position);
     setPlayer(newPlayer);
   }
   function debug_endTurn() {
@@ -230,7 +245,7 @@ const CombatParent: FC<CombatParentProps> = () => {
             <ActionsDisplay addToComboList={addToComboList} actions={playerActions} setActions={setPlayerActions} reduceActionUses={reduceActionUses}></ActionsDisplay>
           </div>
             {/* <LootDisplay></LootDisplay> */}
-            <HpDisplay hp={player.hp} maxHp={player.maxHp}></HpDisplay>
+            <HpDisplay hp={getPlayer().hp} maxHp={getPlayer().maxHp}></HpDisplay>
             <TurnDisplay currentTurnTaker={turnManager.currentTurnTaker}></TurnDisplay>
             <ComboSection comboList={comboList} setComboList={setComboList} resetActionUses={resetActionUses} actionExecutor={actionExecutor}></ComboSection>
             <ComponentSwitcher enemies={enemies} hazards={hazards} showCard={showCard}></ComponentSwitcher>

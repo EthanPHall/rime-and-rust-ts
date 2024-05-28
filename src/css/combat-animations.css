@@ -29,7 +29,52 @@
     100% {
         transform: translateY(var(--combat-location-height));
     }
-};
+}
+
+@keyframes bumpRight {
+    0% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(10px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+@keyframes bumpLeft {
+    0% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(-10px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+@keyframes bumpUp {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+@keyframes bumpDown {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(10px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
 
 .Move-Right {
     animation: moveRight var(--combat-animation-duration);
@@ -45,5 +90,22 @@
 }
 .Move-Down {
     animation: moveDown var(--combat-animation-duration);
+    animation-fill-mode: forwards;
+}
+
+.Bump-Right {
+    animation: bumpRight var(.15s);
+    animation-fill-mode: forwards;
+}
+.Bump-Left {
+    animation: bumpLeft var(.15s);
+    animation-fill-mode: forwards;
+}
+.Bump-Up {
+    animation: bumpUp var(.15s);
+    animation-fill-mode: forwards;
+}
+.Bump-Down {
+    animation: bumpDown var(.15s);
     animation-fill-mode: forwards;
 }

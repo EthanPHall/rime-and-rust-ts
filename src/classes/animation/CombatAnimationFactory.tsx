@@ -13,7 +13,7 @@ class CombatAnimationFactory{
     static createAnimation(animationName: string, direction:Directions, entityToAnimateId:number): CombatAnimationDetails {
         switch(animationName){
             case CombatAnimationNames.Move:
-                return new CombatAnimationDetails(CombatAnimationNames.Move, 3500, direction, entityToAnimateId);
+                return new CombatAnimationDetails(CombatAnimationNames.Move, 350, direction, entityToAnimateId);
             case CombatAnimationNames.Attack:
                 return new CombatAnimationDetails(CombatAnimationNames.Attack, 350, direction, entityToAnimateId);
             case CombatAnimationNames.Block:

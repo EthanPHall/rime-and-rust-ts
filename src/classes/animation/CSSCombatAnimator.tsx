@@ -1,6 +1,6 @@
 import CombatMapData from "../combat/CombatMapData";
 import AnimationDetails from "./AnimationDetails";
-import IAnimator from "./IAnimator";
+import IAnimator, { IAnimationCleanup } from "./IAnimator";
 
 class CSSCombatAnimator implements IAnimator {
     getMap: () => CombatMapData;
@@ -11,29 +11,32 @@ class CSSCombatAnimator implements IAnimator {
         this.refreshMap = refreshMap;
     }
 
-    animate(animationDetails:AnimationDetails[]): Promise<void> {
+    animate(animationDetails:AnimationDetails[]): Promise<IAnimationCleanup> {
         animationDetails.forEach((animationDetail) => {
             this.getMap().applyAnimationToEntity(animationDetail.entityToAnimateId, animationDetail.getFullname());
         });
+        
         this.refreshMap();
-
         const longestAnimation: number = Math.max(...animationDetails.map((animationDetail) => animationDetail.animationLength));
         
         return new Promise((resolve) => {
             setTimeout(() => {
-                // this.removeAnimations();
-                resolve();
+                const args: any[] = [
+                    this.getMap,
+                    this.refreshMap
+                ];
+                resolve({cleanupAnimations: this.cleanupAnimations, args: args});
             }, longestAnimation);
         });
     }
 
-    removeAnimations(): void {
-        this.getMap().locations.forEach((row) => {
+    cleanupAnimations(getMap: () => CombatMapData, refreshMap: () => void): void {
+        getMap().locations.forEach((row) => {
             row.forEach((location) => {
                 location.animationList = [];
             });
         });
-        this.refreshMap();
+        refreshMap();
     }
 }
 
