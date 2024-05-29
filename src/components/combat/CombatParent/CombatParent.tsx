@@ -24,9 +24,11 @@ import TurnManager from '../../../classes/combat/TurnManager';
 import useTurnManager from '../../../hooks/useTurnManager';
 import IdGenerator from '../../../classes/utility/IdGenerator';
 import CombatEntity from '../../../classes/combat/CombatEntity';
-import useActionExecutor, { IActionExecutor } from '../../../hooks/useActionExecutor';
 import CSSCombatAnimator from '../../../classes/animation/CSSCombatAnimator';
 import useRefState from '../../../hooks/useRefState';
+import IActionExecutor from '../../../classes/combat/IActionExecutor';
+import useActionExecutor from '../../../hooks/useActionExecutor';
+import useBasicActionExecutor from '../../../hooks/useBasicActionExecutor';
 
 interface CombatParentProps {}
 
@@ -104,7 +106,8 @@ const CombatParent: FC<CombatParentProps> = () => {
   const [animator, setAnimator] = useState<CSSCombatAnimator>(new CSSCombatAnimator(getCachedMap, refreshMap));
 
   const turnManager:TurnManager = useTurnManager([getPlayer(), ...mapTemplate.enemies]);
-  const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator, refreshMap);
+  // const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator, refreshMap);
+  const actionExecutor:IActionExecutor = useBasicActionExecutor(mapToSendOff, comboList, setComboList);
   
   useEffect(() => {
     // console.log('map updated');

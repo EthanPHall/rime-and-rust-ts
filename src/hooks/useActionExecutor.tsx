@@ -4,11 +4,7 @@ import CombatAction, { CombatActionWithRepeat } from '../classes/combat/CombatAc
 import { exec } from 'child_process';
 import IAnimator, { IAnimationCleanup } from '../classes/animation/IAnimator';
 import AnimationDetails from '../classes/animation/AnimationDetails';
-
-interface IActionExecutor {
-    execute(actions: CombatActionWithRepeat[]): void;
-    isExecuting(): boolean;
-}
+import IActionExecutor from '../classes/combat/IActionExecutor';
 
 const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[], setComboList:(newList:CombatActionWithRepeat[]) => void, animator: IAnimator, DEBUG_refreshMap: () => void):IActionExecutor => {
     const ACTION_DELAY = 400;
@@ -36,7 +32,7 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
         }
 
         standbyForAnimation.current = true;
-        animator.animate(action.combatAction.getAnimations()).then((animationCleanup: IAnimationCleanup) => {
+        animator.animate(toAnimate).then((animationCleanup: IAnimationCleanup) => {
             standbyForAnimation.current = false;
             standbyForAction.current = true;
             setTimeout(() => {
@@ -107,4 +103,3 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
 };
 
 export default useActionExecutor;
-export type { IActionExecutor };

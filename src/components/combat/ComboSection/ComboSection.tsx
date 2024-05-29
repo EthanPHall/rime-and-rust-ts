@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import './ComboSection.css';
 import CombatAction, { Attack, Block, CombatActionWithRepeat, Move } from '../../../classes/combat/CombatAction';
 import Directions from '../../../classes/utility/Directions';
-import { IActionExecutor } from '../../../hooks/useActionExecutor';
+import IActionExecutor from '../../../classes/combat/IActionExecutor';
 
 interface ComboSectionProps {
   comboList: CombatActionWithRepeat[];
