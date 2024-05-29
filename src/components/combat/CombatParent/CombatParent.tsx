@@ -88,9 +88,9 @@ const CombatParent: FC<CombatParentProps> = () => {
  
   const [comboList, setComboList] = useState<CombatActionWithRepeat[]>([]);
   const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>([
-    new CombatActionWithUses(new Attack(getPlayer().id, undefined, getCachedMap, updateEntity), 3),
-    new CombatActionWithUses(new Block(getPlayer().id, updateEntity), 1),
-    new CombatActionWithUses(new Move(getPlayer().id, undefined, getCachedMap, updateEntity), 5),
+    new CombatActionWithUses(new Attack(getPlayer().id, undefined, getCachedMap, updateEntity, refreshMap), 3),
+    new CombatActionWithUses(new Block(getPlayer().id, updateEntity, refreshMap), 1),
+    new CombatActionWithUses(new Move(getPlayer().id, undefined, getCachedMap, updateEntity, refreshMap), 30),
   ]);
   
   const [infoCardData, setInfoCardData] = useState<CombatInfoDisplayProps | null>(null);
@@ -107,6 +107,7 @@ const CombatParent: FC<CombatParentProps> = () => {
   const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator, refreshMap);
   
   useEffect(() => {
+    // console.log('map updated');
   }, [mapToSendOff]);
 
   useEffect(() => {
@@ -115,7 +116,7 @@ const CombatParent: FC<CombatParentProps> = () => {
 
   useEffect(() => {
   }, [playerForEffects]);
-
+  
   function refreshMap():void{
     const accuratePlayer = getPlayer();
     const newMap: CombatMapData = getBaseMapClonePlusAddons();

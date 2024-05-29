@@ -94,18 +94,35 @@
 }
 
 .Bump-Right {
-    animation: bumpRight var(.15s);
+    animation: bumpRight .25s;
     animation-fill-mode: forwards;
 }
 .Bump-Left {
-    animation: bumpLeft var(.15s);
+    animation: bumpLeft .25s;
     animation-fill-mode: forwards;
 }
 .Bump-Up {
-    animation: bumpUp var(.15s);
+    animation: bumpUp .25s;
     animation-fill-mode: forwards;
 }
 .Bump-Down {
-    animation: bumpDown var(.15s);
+    animation: bumpDown .25s;
+    animation-fill-mode: forwards;
+}
+
+.Bump-Alt-Right {
+    animation: bumpRight .25s;
+    animation-fill-mode: forwards;
+}
+.Bump-Alt-Left {
+    animation: bumpLeft .25s;
+    animation-fill-mode: forwards;
+}
+.Bump-Alt-Up {
+    animation: bumpUp .25s;
+    animation-fill-mode: forwards;
+}
+.Bump-Alt-Down {
+    animation: bumpDown .25s;
     animation-fill-mode: forwards;
 }

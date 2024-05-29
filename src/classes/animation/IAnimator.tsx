@@ -1,7 +1,7 @@
 import AnimationDetails from "./AnimationDetails";
 
 interface IAnimationCleanup {
-    cleanupAnimations: (...args: any[]) => void;
+    cleanupAnimations: (...args: any[]) => Promise<void>;
     args: any[];
 }
 

@@ -11,13 +11,15 @@ abstract class CombatAction{
     ownerId: number;
     direction: Directions;
     updateEntity: (id:number, newEntity: CombatEntity) => void;
+    refreshMap: () => void;
 
-    constructor(name: string, directional: boolean, ownerId: number, direction: Directions = Directions.NONE, updateEntity: (id:number, newEntity: CombatEntity) => void){    
+    constructor(name: string, directional: boolean, ownerId: number, direction: Directions = Directions.NONE, updateEntity: (id:number, newEntity: CombatEntity) => void, refreshMap: () => void){    
       this.name = name;
       this.directional = directional;
       this.ownerId = ownerId;
       this.direction = direction;
       this.updateEntity = updateEntity;
+      this.refreshMap = refreshMap;
     }
   
     //MIGHTDO: Might want to put stuff like this into a factory class
@@ -89,13 +91,13 @@ abstract class CombatAction{
   class Attack extends CombatAction {
     getMap: () => CombatMapData;
 
-    constructor(ownerId: number, direction: Directions = Directions.NONE, getMap: () => CombatMapData, updateEntity: (id:number, newEntity: CombatEntity) => void){
-      super('Attack', true, ownerId, direction, updateEntity);
+    constructor(ownerId: number, direction: Directions = Directions.NONE, getMap: () => CombatMapData, updateEntity: (id:number, newEntity: CombatEntity) => void, refreshMap: () => void){
+      super('Attack', true, ownerId, direction, updateEntity, refreshMap);
       this.getMap = getMap;
     }
   
     static clone(action: Attack) : Attack{
-      return new Attack(action.ownerId, action.direction, action.getMap, action.updateEntity);
+      return new Attack(action.ownerId, action.direction, action.getMap, action.updateEntity, action.refreshMap);
     }
 
     execute() {
@@ -109,12 +111,12 @@ abstract class CombatAction{
     }
   }
   class Block extends CombatAction {
-    constructor(ownerId: number, updateEntity: (id:number, newEntity: CombatEntity) => void){
-      super('Block', false, ownerId, Directions.NONE, updateEntity);
+    constructor(ownerId: number, updateEntity: (id:number, newEntity: CombatEntity) => void, refreshMap: () => void){
+      super('Block', false, ownerId, Directions.NONE, updateEntity, refreshMap);
     }
 
     static clone(action: Block) : Block{
-      return new Block(action.ownerId, action.updateEntity);
+      return new Block(action.ownerId, action.updateEntity, action.refreshMap);
     }
   
     execute() {
@@ -129,13 +131,13 @@ abstract class CombatAction{
   class Move extends  CombatAction {
     getMap: () => CombatMapData;
 
-    constructor(ownerId: number, direction: Directions = Directions.NONE, getMap: () => CombatMapData, updateEntity: (id:number, newEntity: CombatEntity) => void){
-      super('Move', true, ownerId, direction, updateEntity);
+    constructor(ownerId: number, direction: Directions = Directions.NONE, getMap: () => CombatMapData, updateEntity: (id:number, newEntity: CombatEntity) => void, refreshMap: () => void){
+      super('Move', true, ownerId, direction, updateEntity, refreshMap);
       this.getMap = getMap;
     }
 
     static clone(action: Move) : Move{
-      return new Move(action.ownerId, action.direction, action.getMap, action.updateEntity);
+      return new Move(action.ownerId, action.direction, action.getMap, action.updateEntity, action.refreshMap);
     }
   
     execute() {
@@ -144,18 +146,33 @@ abstract class CombatAction{
 
       const targetPosition = Vector2.add(owner.position, DirectionsUtility.getVectorFromDirection(this.direction));
       const targetLocationData = map.locations[targetPosition.y][targetPosition.x];
+      
+      const updatedEntity = owner.clone();
       if(targetLocationData.entity || targetLocationData.solid){
-        return;
+        this.refreshMap();
       }
       else{
-        const updatedEntity = owner.clone();
         updatedEntity.position = targetPosition;
         this.updateEntity(owner.id, updatedEntity);
       }
     }
 
     getAnimations(): AnimationDetails[] {
-      return [CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, this.direction, this.ownerId)];
+      const animationsToSendOff: AnimationDetails[] = [];
+
+      const map: CombatMapData = this.getMap();
+      const owner: CombatEntity = map.getEntityById(this.ownerId);
+
+      const targetPosition = Vector2.add(owner.position, DirectionsUtility.getVectorFromDirection(this.direction));
+      const targetLocationData = map.locations[targetPosition.y][targetPosition.x];
+      if(targetLocationData.entity || targetLocationData.solid){
+        animationsToSendOff.push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Bump, this.direction, this.ownerId));
+      }
+      else{
+        animationsToSendOff.push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, this.direction, this.ownerId));
+      }
+
+      return animationsToSendOff;
     }
   }
   

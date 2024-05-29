@@ -11,13 +11,18 @@ interface IActionExecutor {
 }
 
 const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[], setComboList:(newList:CombatActionWithRepeat[]) => void, animator: IAnimator, DEBUG_refreshMap: () => void):IActionExecutor => {
-    const ACTION_DELAY = 300;
+    const ACTION_DELAY = 400;
+    const DEBUG_DELAY = 4000;
     
     const [executing, setExecuting] = useState(false);
 
     const actionIndex = useRef(0);
+    const animationCleanupObject = useRef<IAnimationCleanup | null>(null);
+
     const standbyForAction = useRef(false);
     const standbyForAnimation = useRef(false);
+    const standbyForAnimationCleanup = useRef(false);
+    const standbyForDebug = useRef(false);
 
     function isExecuting():boolean {
         return executing;
@@ -30,31 +35,15 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
             toAnimate = toAnimate.filter((animation) => !animation.dontPlayIfLast);
         }
 
-        // DEBUG_refreshMap();
-        // new Promise<void>((resolve) => {
-        //     standbyForAnimation.current = true;
-        //     setTimeout(() => {
-        //         resolve();
-        //     }, ACTION_DELAY);
-        // }).then(() => {
-        //     standbyForAnimation.current = false;
-        //     standbyForAction.current = true;
-        //     setTimeout(() => {
-        //         // animationCleanup.cleanupAnimations(...animationCleanup.args);
-
-        //         standbyForAction.current = false;
-        //         executeAction(action);
-        //     }, ACTION_DELAY);
-        // });
-
         standbyForAnimation.current = true;
         animator.animate(action.combatAction.getAnimations()).then((animationCleanup: IAnimationCleanup) => {
             standbyForAnimation.current = false;
             standbyForAction.current = true;
             setTimeout(() => {
                 standbyForAction.current = false;
+                standbyForAnimationCleanup.current = true;
+                animationCleanupObject.current = animationCleanup;
                 executeAction(action);
-                animationCleanup.cleanupAnimations(...animationCleanup.args);
             }, ACTION_DELAY);
         });
     }
@@ -88,19 +77,27 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
     }, [executing])
 
     useEffect(() => {
-        if(!isExecuting() || standbyForAction.current || standbyForAnimation.current){
+        if(!isExecuting() || standbyForAction.current || standbyForAnimation.current || standbyForDebug.current){
             return;
         }
 
-        if(actionIndex.current >= comboList.length){
-            setExecuting(false);
-            setComboList([]);
-            return;
-        }
-
-        const isLastAction:boolean = actionIndex.current === comboList.length - 1 && comboList[actionIndex.current].repeat <= 1;
+        if(standbyForAnimationCleanup.current){
+            animationCleanupObject.current?.cleanupAnimations(...animationCleanupObject.current.args)
+            .then(() => {
+                if(actionIndex.current >= comboList.length){
+                    setExecuting(false);
+                    setComboList([]);
+                    return;
+                }
         
-        animateAndExecute(comboList[actionIndex.current], isLastAction);
+                const isLastAction:boolean = actionIndex.current === comboList.length - 1 && comboList[actionIndex.current].repeat <= 1;
+                
+                animateAndExecute(comboList[actionIndex.current], isLastAction);        
+            });
+            animationCleanupObject.current = null;
+            standbyForAnimationCleanup.current = false;
+            return;
+        }
     }, [map])
 
     return {
