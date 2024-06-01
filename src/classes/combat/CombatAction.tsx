@@ -90,24 +90,45 @@ abstract class CombatAction{
   
   class Attack extends CombatAction {
     getMap: () => CombatMapData;
+    damage: number;
 
-    constructor(ownerId: number, direction: Directions = Directions.NONE, getMap: () => CombatMapData, updateEntity: (id:number, newEntity: CombatEntity) => void, refreshMap: () => void){
+    constructor(ownerId: number, direction: Directions = Directions.NONE, damage:number, getMap: () => CombatMapData, updateEntity: (id:number, newEntity: CombatEntity) => void, refreshMap: () => void){
       super('Attack', true, ownerId, direction, updateEntity, refreshMap);
       this.getMap = getMap;
+      this.damage = damage;
     }
   
     static clone(action: Attack) : Attack{
-      return new Attack(action.ownerId, action.direction, action.getMap, action.updateEntity, action.refreshMap);
+      return new Attack(action.ownerId, action.direction, action.damage, action.getMap, action.updateEntity, action.refreshMap);
     }
 
     execute() {
       const map: CombatMapData = this.getMap();
-      console.log(`Attacking ${this.direction}`);
-      console.log(map);
+      const owner: CombatEntity = map.getEntityById(this.ownerId);
+      const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
+      const targetPosition: Vector2 = Vector2.add(owner.position, directionVector);
+      const targetId:number|undefined = this.getMap().locations[targetPosition.y][targetPosition.x].entity?.id;
+
+      if(targetId){
+        const targetEntity = map.getEntityById(targetId);
+        targetEntity.hp -= this.damage;
+      }
+
+      this.refreshMap();
     }
 
     getAnimations(): AnimationDetails[] {
-      return [CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId)];
+      const map: CombatMapData = this.getMap();
+      const owner: CombatEntity = map.getEntityById(this.ownerId);
+      const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
+      const targetPosition: Vector2 = Vector2.add(owner.position, directionVector);
+      const targetId:number|undefined = this.getMap().locations[targetPosition.y][targetPosition.x].entity?.id;
+
+      let result:AnimationDetails[] = [CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId)];
+      if(targetId) result.push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, targetId));
+      // if(targetId) result = [CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, targetId)];
+
+      return result;
     }
   }
   class Block extends CombatAction {
@@ -121,6 +142,7 @@ abstract class CombatAction{
   
     execute() {
       console.log('Blocking');
+      this.refreshMap();
     }
 
     getAnimations(): AnimationDetails[] {

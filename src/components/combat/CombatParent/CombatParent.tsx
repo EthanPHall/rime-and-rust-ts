@@ -60,7 +60,9 @@ class CombatMapTemplate1 extends CombatMapTemplate{
       ]
     );
     const enemies: CombatEnemy[] = [
-      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(10, 10), () => {console.log('Advance turn not set');}),
+      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(8, 7), () => {console.log('Advance turn not set');}),
+      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(6, 7), () => {console.log('Advance turn not set');}),
+      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(7, 6), () => {console.log('Advance turn not set');}),
       new RustedBrute(IdGenerator.generateUniqueId(), 20, 20, 'B', 'Rusted Brute', new Vector2(9, 9), () => {console.log('Advance turn not set');}),
       new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(11, 11), () => {console.log('Advance turn not set');}),
     ];
@@ -94,7 +96,7 @@ const CombatParent: FC<CombatParentProps> = () => {
  
   const [comboList, setComboList] = useState<CombatActionWithRepeat[]>([]);
   const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>([
-    new CombatActionWithUses(new Attack(getPlayer().id, undefined, getCachedMap, updateEntity, refreshMap), 3),
+    new CombatActionWithUses(new Attack(getPlayer().id, undefined, 5, getCachedMap, updateEntity, refreshMap), 3),
     new CombatActionWithUses(new Block(getPlayer().id, updateEntity, refreshMap), 1),
     new CombatActionWithUses(new Move(getPlayer().id, undefined, getCachedMap, updateEntity, refreshMap), 5),
   ]);
