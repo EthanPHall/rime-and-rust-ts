@@ -8,6 +8,7 @@ import MapUtilities from '../../../classes/utility/MapUtilities';
 import CombatMapData from '../../../classes/combat/CombatMapData';
 import AreaOfEffect from '../../../classes/combat/AreaOfEffect';
 import '../../../css/combat-animations.css';
+import AnimationDetails from '../../../classes/animation/AnimationDetails';
 
 interface CombatMapProps {
   map: CombatMapData;
@@ -33,8 +34,14 @@ const CombatMap: FC<CombatMapProps> = ({map, setMap, aoeToDisplay}:CombatMapProp
     setMap(CombatMapData.clone(map));
   }
 
-  function classListToString(classList: string[]): string {
-    return classList.join(' ');
+  function classListToString(animationList: AnimationDetails[]): string {
+    let animationString: string = "";
+
+    animationList.forEach((animation) => {
+      animationString += " " + animation.animationName + "-" + animation.direction;
+    });
+
+    return animationList.join(' ');
   }
 
   return (

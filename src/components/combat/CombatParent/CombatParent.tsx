@@ -29,6 +29,10 @@ import useRefState from '../../../hooks/useRefState';
 import IActionExecutor from '../../../classes/combat/IActionExecutor';
 import useActionExecutor from '../../../hooks/useActionExecutor';
 import useBasicActionExecutor from '../../../hooks/useBasicActionExecutor';
+import CombatMapFramerMotion from '../CombatMapFramerMotion/CombatMapFramerMotion';
+import { useAnimate } from 'framer-motion';
+import MotionCombatAnimator from '../../../classes/animation/MotionCombatAnimator';
+import { MotionAnimation } from '../../../classes/animation/CombatAnimationDetailsToMotionAnimation';
 
 interface CombatParentProps {}
 
@@ -92,7 +96,7 @@ const CombatParent: FC<CombatParentProps> = () => {
   const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>([
     new CombatActionWithUses(new Attack(getPlayer().id, undefined, getCachedMap, updateEntity, refreshMap), 3),
     new CombatActionWithUses(new Block(getPlayer().id, updateEntity, refreshMap), 1),
-    new CombatActionWithUses(new Move(getPlayer().id, undefined, getCachedMap, updateEntity, refreshMap), 30),
+    new CombatActionWithUses(new Move(getPlayer().id, undefined, getCachedMap, updateEntity, refreshMap), 5),
   ]);
   
   const [infoCardData, setInfoCardData] = useState<CombatInfoDisplayProps | null>(null);
@@ -103,12 +107,16 @@ const CombatParent: FC<CombatParentProps> = () => {
     setInfoCardData({title, description, hideCard});
   }
   
-  const [animator, setAnimator] = useState<CSSCombatAnimator>(new CSSCombatAnimator(getCachedMap, refreshMap));
+  // const [motionAnimationsList, setMotionAnimationsList] = useState<MotionAnimation[]>([]);
+  const [mapScope, mapAnimate] = useAnimate();
+  const [animator, setAnimator] = useState<MotionCombatAnimator>(new MotionCombatAnimator(getCachedMap, mapAnimate));
+
 
   const turnManager:TurnManager = useTurnManager([getPlayer(), ...mapTemplate.enemies]);
   // const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator, refreshMap);
-  const actionExecutor:IActionExecutor = useBasicActionExecutor(mapToSendOff, comboList, setComboList);
+  const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator);
   
+
   useEffect(() => {
     // console.log('map updated');
   }, [mapToSendOff]);
@@ -226,6 +234,13 @@ const CombatParent: FC<CombatParentProps> = () => {
     }
   }
 
+  async function framerMotionAnimate(animationList: MotionAnimation[]){
+    for(let i = 0; i < animationList.length; i++){
+      // await mapAnimate();
+    }
+
+  }
+
   function debug_movePlayer() {
     const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().hp, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, new Vector2(getPlayer().position.x + 1, getPlayer().position.y));
     setPlayer(newPlayer);
@@ -245,7 +260,7 @@ const CombatParent: FC<CombatParentProps> = () => {
         <button onClick={debug_endTurn}>Debug End Turn</button>
         <div className='combat-parent-grid-parent'>
           <div className='combat-parent-map-actions-composite'>
-            <CombatMap map={mapToSendOff} setMap={setBaseMap} aoeToDisplay={aoeToDisplay}></CombatMap>
+            <CombatMapFramerMotion map={mapToSendOff} setMap={setBaseMap} aoeToDisplay={aoeToDisplay} scope={mapScope}></CombatMapFramerMotion>
             <ActionsDisplay addToComboList={addToComboList} actions={playerActions} setActions={setPlayerActions} reduceActionUses={reduceActionUses}></ActionsDisplay>
           </div>
             {/* <LootDisplay></LootDisplay> */}

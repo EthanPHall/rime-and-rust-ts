@@ -26,7 +26,6 @@
     --nav-button-width: 20%;
     --nav-button-font-size: 1.2em;
 
-    /* TODO: I don't expect these to be reused, remove them from global variables. */
     --map-row-height: 15px;
     --map-location-spacing: 4.5px;
     --map-font-size: .9em;

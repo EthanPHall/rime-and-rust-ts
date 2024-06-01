@@ -22,7 +22,7 @@ class CSSCombatAnimator implements IAnimator {
         animationDetails.forEach((animationDetail) => {
             const entity:CombatEntity = this.getMap().getEntityById(animationDetail.entityToAnimateId);
             console.log(entity, this.getMap().locations[entity.position.y][entity.position.y].animationList);
-            this.getMap().applyAnimationToEntity(animationDetail.entityToAnimateId, animationDetail.getFullname());
+            this.getMap().applyAnimationToEntity(animationDetail.entityToAnimateId, animationDetail);
         });
         
         this.refreshMap();

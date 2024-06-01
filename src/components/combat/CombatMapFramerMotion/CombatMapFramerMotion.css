@@ -1,0 +1,47 @@
+.combat-map {
+    background-color: var(--background-color);
+    outline: 1px solid var(--outline-color);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    font-size: var(--font-size-much-larger);
+    font-family: monospace;
+}
+
+.combat-map .combat-map-row{
+    height: var(--combat-location-height);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.combat-map-location {
+    width: var(--combat-location-width);
+}
+
+@keyframes textGrow {
+    0% {
+        font-size: inherit;
+    }
+    50%{
+        font-size: var(--font-size-much-larger);
+    }
+    100% {
+        font-size: inherit;
+    }
+}
+.combat-map .highlight{ 
+    color: orange;
+
+    animation-name: textGrow;
+    animation-duration: 3s;
+    /* animation-fill-mode: forwards; */
+    animation-iteration-count: infinite;
+}
+
+.highlight-button{
+    
+}

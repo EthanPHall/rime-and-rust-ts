@@ -6,8 +6,8 @@ import IAnimator, { IAnimationCleanup } from '../classes/animation/IAnimator';
 import AnimationDetails from '../classes/animation/AnimationDetails';
 import IActionExecutor from '../classes/combat/IActionExecutor';
 
-const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[], setComboList:(newList:CombatActionWithRepeat[]) => void, animator: IAnimator, DEBUG_refreshMap: () => void):IActionExecutor => {
-    const ACTION_DELAY = 400;
+const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[], setComboList:(newList:CombatActionWithRepeat[]) => void, animator: IAnimator):IActionExecutor => {
+    const ACTION_DELAY = 200;
     const DEBUG_DELAY = 4000;
     
     const [executing, setExecuting] = useState(false);

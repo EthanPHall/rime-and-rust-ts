@@ -1,3 +1,4 @@
+import AnimationDetails from "../animation/AnimationDetails";
 import Vector2 from "../utility/Vector2";
 import AreaOfEffect from "./AreaOfEffect";
 import CombatEntity from "./CombatEntity";
@@ -22,16 +23,20 @@ class CombatMapData{
       }
     }
 
+    positionToCSSIdString(position: Vector2): string{
+      return `#combat-location-${position.y*100+position.x}`;
+    }    
+
     setLocationWithEntity(entity: CombatEntity):void{
       this.locations[entity.position.y][entity.position.x] = new CombatLocationData(entity.position.x, entity.position.y, entity.name + " " + entity.id, entity.symbol, false, false);
       this.locations[entity.position.y][entity.position.x].entity = entity;
     }
 
-    applyAnimationToEntity(id: number, className: string):void{
+    applyAnimationToEntity(id: number, animation: AnimationDetails):void{
       this.locations.forEach((row) => {
         row.forEach((location) => {
           if(location.entity && location.entity.id === id){
-            location.animationList.push(className);
+            location.animationList.push(animation);
           }
         });
       });     
