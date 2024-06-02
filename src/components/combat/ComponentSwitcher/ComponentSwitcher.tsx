@@ -22,11 +22,11 @@ class SwitchedComponent{
 
 const ComponentSwitcher: FC<ComponentSwitcherProps> = ({hazards, enemies, showCard}: ComponentSwitcherProps) => {
   const [index, setIndex] = React.useState<number>(0);
-  const [components, setComponents] = React.useState<SwitchedComponent[]>([
+  
+  const components:SwitchedComponent[] = [
     new SwitchedComponent(<EnemiesDisplay enemies={enemies} showCard={showCard}></EnemiesDisplay>, 'Enemies'),
     new SwitchedComponent(<HazardsDisplay hazards={hazards} showCard={showCard}></HazardsDisplay>, 'Hazards'),
-    // new SwitchedComponent(<div>Buh</div>, 'Buh')
-  ]);
+  ];
   
   function incrementIndex(){
     setIndex((index + 1) % components.length);

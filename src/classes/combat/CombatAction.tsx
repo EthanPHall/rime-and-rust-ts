@@ -110,8 +110,10 @@ abstract class CombatAction{
       const targetId:number|undefined = this.getMap().locations[targetPosition.y][targetPosition.x].entity?.id;
 
       if(targetId){
-        const targetEntity = map.getEntityById(targetId);
+        const targetEntity = map.getEntityById(targetId).clone();
         targetEntity.hp -= this.damage;
+        this.updateEntity(targetEntity.id, targetEntity);
+        return;
       }
 
       this.refreshMap();

@@ -77,8 +77,6 @@ class CombatMapTemplate1 extends CombatMapTemplate{
 const CombatParent: FC<CombatParentProps> = () => {
   const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>(new CombatMapTemplate1());
  
-  const [enemies, setEnemies] = useState<CombatEnemy[]>(mapTemplate.enemies);
-  const [hazards, setHazards] = useState<CombatHazard[]>(mapTemplate.hazards);
   
   //I was running into issues with closures I think. I was passing refreshMap() to the animator, but when it was called there,
   //the player wasn't up to date. That led to weird behavior where the player would move and be animated correctly the first time,
@@ -86,6 +84,8 @@ const CombatParent: FC<CombatParentProps> = () => {
   //a ref that everyone can use to make sure that they're using the most up-to-date player, and a function to get that ref's value,
   //so no more trying to get the player by value, it's all by reference now.
   const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), 100, 100, '@', 'Player', new Vector2(7, 7)));
+  const [enemiesForEffects, getEnemies, setEnemies] = useRefState<CombatEnemy[]>(mapTemplate.enemies);
+  const [hazardsForEffects, getHazards, setHazards] = useRefState<CombatHazard[]>(mapTemplate.hazards);
   
   const [baseMap, setBaseMap] = useState<CombatMapData>(createMapFromTemplate(mapTemplate));
   const [mapToSendOff, setMapToSendOff] = useState<CombatMapData>(getBaseMapClonePlusAddons());
@@ -118,56 +118,15 @@ const CombatParent: FC<CombatParentProps> = () => {
   // const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator, refreshMap);
   const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator);
   
-
-  useEffect(() => {
-    // console.log('map updated');
-  }, [mapToSendOff]);
-
   useEffect(() => {
     refreshMap();
-  }, [playerForEffects, enemies, hazards]);
+  }, [playerForEffects, enemiesForEffects, hazardsForEffects]);
 
-  useEffect(() => {
-  }, [playerForEffects]);
-  
   function refreshMap():void{
-    const accuratePlayer = getPlayer();
     const newMap: CombatMapData = getBaseMapClonePlusAddons();
-    
-    enemies.forEach(enemy => {
-      try{
-        const previousPosition:Vector2 = getCachedMap().getEntityById(enemy.id).position;
-        const previousLocation:CombatLocationData = getCachedMap().locations[previousPosition.y][previousPosition.x];
-        newMap.locations[enemy.position.y][enemy.position.x].animationList = previousLocation.animationList;   
-      }
-      catch(e){
-        console.log(e, enemy);
-      }
-    });
-    hazards.forEach(hazard => {
-      try{
-        const previousPosition:Vector2 = getCachedMap().getEntityById(hazard.id).position;
-        const previousLocation:CombatLocationData = getCachedMap().locations[previousPosition.y][previousPosition.x];
-        newMap.locations[hazard.position.y][hazard.position.x].animationList = previousLocation.animationList;   
-      }
-      catch(e){
-        console.log(e, hazard);
-      }
-    });
-
-    try{
-      const previousPosition:Vector2 = getCachedMap().getEntityById(accuratePlayer.id).position;
-      const previousPlayerLocation:CombatLocationData = getCachedMap().locations[previousPosition.y][previousPosition.x];
-      newMap.locations[accuratePlayer.position.y][accuratePlayer.position.x].animationList = previousPlayerLocation.animationList;
-    }
-    catch(e){
-      console.log(e, accuratePlayer);
-    }
-
     mapToSendOffCached.current = newMap;
     setMapToSendOff(newMap);
   }
-
   function createMapFromTemplate(template: CombatMapTemplate): CombatMapData{
     const newMap: CombatMapData = new CombatMapData(template.size.x, template.size.y);
 
@@ -176,13 +135,13 @@ const CombatParent: FC<CombatParentProps> = () => {
   function getBaseMapClonePlusAddons(): CombatMapData{
     const newMap: CombatMapData = CombatMapData.clone(baseMap);
 
-    enemies.forEach(enemy => {
+    getEnemies().forEach(enemy => {
       if (enemy.hp <= 0) {
         return;
       }
       newMap.setLocationWithEntity(enemy);
     });
-    hazards.forEach(hazard => {
+    getHazards().forEach(hazard => {
       if (hazard.hp <= 0) {
         return;
       }
@@ -226,10 +185,10 @@ const CombatParent: FC<CombatParentProps> = () => {
 
   function updateEntity(id: number, newEntity: CombatEntity) {
     if (newEntity instanceof CombatEnemy) {
-      const newEnemies = enemies.map(enemy => enemy.id === id ? newEntity : enemy);
+      const newEnemies = getEnemies().map(enemy => enemy.id === id ? newEntity : enemy);
       setEnemies(newEnemies);
     } else if (newEntity instanceof CombatHazard) {
-      const newHazards = hazards.map(hazard => hazard.id === id ? newEntity : hazard);
+      const newHazards = getHazards().map(hazard => hazard.id === id ? newEntity : hazard);
       setHazards(newHazards);
     } else if (newEntity instanceof CombatPlayer) {
       setPlayer(newEntity);
@@ -269,7 +228,7 @@ const CombatParent: FC<CombatParentProps> = () => {
             <HpDisplay hp={getPlayer().hp} maxHp={getPlayer().maxHp}></HpDisplay>
             <TurnDisplay currentTurnTaker={turnManager.currentTurnTaker}></TurnDisplay>
             <ComboSection comboList={comboList} setComboList={setComboList} resetActionUses={resetActionUses} actionExecutor={actionExecutor}></ComboSection>
-            <ComponentSwitcher enemies={enemies} hazards={hazards} showCard={showCard}></ComponentSwitcher>
+            <ComponentSwitcher enemies={enemiesForEffects} hazards={hazardsForEffects} showCard={showCard}></ComponentSwitcher>
             {infoCardData != null && <CombatInfoDisplay {...infoCardData}></CombatInfoDisplay>}
         </div>
     </div>

@@ -16,7 +16,7 @@ class CombatPlayer extends CombatEntity implements TurnTaker{
 
     advanceTurn: () => void = () => {};
 
-    clone(): CombatEntity {
+    clone(): CombatPlayer {
       return new CombatPlayer(this.id, this.hp, this.maxHp, this.symbol, this.name, this.position);
     }
 
