@@ -40,16 +40,19 @@ abstract class CombatMapTemplate{
   size: Vector2;
   enemies: CombatEnemy[];
   hazards: CombatHazard[];
+  advanceTurn: () => void;
 
-  constructor(size:Vector2, enemies: CombatEnemy[], hazards: CombatHazard[]){
+  constructor(size:Vector2, enemies: CombatEnemy[], hazards: CombatHazard[], advanceTurn: () => void){
     this.size = size;
     this.enemies = enemies;
     this.hazards = hazards;
+    this.advanceTurn = advanceTurn;
   }
 }
 
 class CombatMapTemplate1 extends CombatMapTemplate{
-  constructor(){
+  
+  constructor(advanceTurn: () => void){
     const size:Vector2 = new Vector2(15, 15);
     const walls: Wall[] = Wall.createDefaultWalls(
       [
@@ -60,32 +63,35 @@ class CombatMapTemplate1 extends CombatMapTemplate{
       ]
     );
     const enemies: CombatEnemy[] = [
-      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(8, 7), () => {console.log('Advance turn not set');}),
-      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(6, 7), () => {console.log('Advance turn not set');}),
-      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(7, 6), () => {console.log('Advance turn not set');}),
-      new RustedBrute(IdGenerator.generateUniqueId(), 20, 20, 'B', 'Rusted Brute', new Vector2(9, 9), () => {console.log('Advance turn not set');}),
-      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(11, 11), () => {console.log('Advance turn not set');}),
+      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(9, 11), advanceTurn),
+      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(10, 11), advanceTurn),
+      new RustedShambler(IdGenerator.generateUniqueId(), 20, 20, 'B', 'Rusted Brute', new Vector2(11, 11), advanceTurn),
+      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(8, 7), advanceTurn),
+      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(6, 7), advanceTurn),
+      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(7, 6), advanceTurn),
     ];
     const hazards: CombatHazard[] = [new VolatileCanister(IdGenerator.generateUniqueId(), 10, 10, '+', 'Volatile Canister', new Vector2(3, 3), false)];
 
-    super(size, enemies, [...walls, ...hazards]);
+    super(size, enemies, [...walls, ...hazards], advanceTurn);
   }
 }
 
 
 
 const CombatParent: FC<CombatParentProps> = () => {
-  const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>(new CombatMapTemplate1());
- 
+  
+  const turnManager:TurnManager = useTurnManager();
+  const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>(new CombatMapTemplate1(turnManager.advanceTurn));
   
   //I was running into issues with closures I think. I was passing refreshMap() to the animator, but when it was called there,
   //the player wasn't up to date. That led to weird behavior where the player would move and be animated correctly the first time,
   //but then with the next action, the player would reset to its old position. So I made a hook where setPlayer also updates
   //a ref that everyone can use to make sure that they're using the most up-to-date player, and a function to get that ref's value,
   //so no more trying to get the player by value, it's all by reference now.
-  const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), 100, 100, '@', 'Player', new Vector2(7, 7)));
+  const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), 100, 100, '@', 'Player', new Vector2(7, 7), turnManager.advanceTurn));
   const [enemiesForEffects, getEnemies, setEnemies] = useRefState<CombatEnemy[]>(mapTemplate.enemies);
   const [hazardsForEffects, getHazards, setHazards] = useRefState<CombatHazard[]>(mapTemplate.hazards);
+
   
   const [baseMap, setBaseMap] = useState<CombatMapData>(createMapFromTemplate(mapTemplate));
   const [mapToSendOff, setMapToSendOff] = useState<CombatMapData>(getBaseMapClonePlusAddons());
@@ -112,12 +118,14 @@ const CombatParent: FC<CombatParentProps> = () => {
   // const [motionAnimationsList, setMotionAnimationsList] = useState<MotionAnimation[]>([]);
   const [mapScope, mapAnimate] = useAnimate();
   const [animator, setAnimator] = useState<MotionCombatAnimator>(new MotionCombatAnimator(getCachedMap, mapAnimate));
-
-
-  const turnManager:TurnManager = useTurnManager([getPlayer(), ...mapTemplate.enemies]);
+  
   // const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator, refreshMap);
   const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator);
   
+  useEffect(() => {
+    turnManager.finishSetup([getPlayer(), ...getEnemies()]);
+  },[])
+
   useEffect(() => {
     refreshMap();
   }, [playerForEffects, enemiesForEffects, hazardsForEffects]);
@@ -203,15 +211,15 @@ const CombatParent: FC<CombatParentProps> = () => {
   }
 
   function debug_movePlayer() {
-    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().hp, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, new Vector2(getPlayer().position.x + 1, getPlayer().position.y));
+    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().hp, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, new Vector2(getPlayer().position.x + 1, getPlayer().position.y), getPlayer().advanceTurn);
     setPlayer(newPlayer);
   }
   function debug_harmPlayer() {
-    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().hp - 10, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, getPlayer().position);
+    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().hp - 10, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, getPlayer().position, getPlayer().advanceTurn);
     setPlayer(newPlayer);
   }
   function debug_endTurn() {
-    turnManager.currentTurnTaker.endTurn();
+    turnManager.currentTurnTaker?.endTurn();
   }
 
   return (

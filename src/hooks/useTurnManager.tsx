@@ -1,28 +1,36 @@
 import { useEffect, useRef, useState } from 'react';
 import TurnManager from '../classes/combat/TurnManager';
 import TurnTaker from '../classes/combat/TurnTaker';
+import useRefState from './useRefState';
 
-const useTurnManager = (turnTakers: TurnTaker[]): TurnManager => {
+const useTurnManager = (): TurnManager => {
     const currentIndex = useRef(0);
-    const [currentTurnTaker, setCurrentTurnTaker] = useState(turnTakers[0]);
+    const [turnTakers, getTurnTakers, setTurnTakers] = useRefState<TurnTaker[]>([]);
+    const [currentTurnTaker, getCurrentTurnTaker, setCurrentTurnTaker] = useRefState<TurnTaker|null>(null);
 
     useEffect(() => {
-        turnTakers.forEach((turnTaker) => {
-            turnTaker.advanceTurn = advanceTurn;
-        });
-    }, []);
+        currentIndex.current = 0;
+        if(turnTakers.length > 0){
+            setCurrentTurnTaker(turnTakers[currentIndex.current]);
+        }
+    }, [turnTakers]);
 
     useEffect(() => {
-        currentTurnTaker.startTurn();
+        currentTurnTaker?.startTurn();
     }, [currentTurnTaker]);
     
     const advanceTurn = () => {
-        const nextIndex = (currentIndex.current + 1) % turnTakers.length;
+        console.log(getTurnTakers().length);
+        const nextIndex = (currentIndex.current + 1) % getTurnTakers().length;
         currentIndex.current = (nextIndex);
-        setCurrentTurnTaker(turnTakers[currentIndex.current]);
+        setCurrentTurnTaker(getTurnTakers()[currentIndex.current]);
     };
 
-    return new TurnManager(currentTurnTaker, advanceTurn);
+    const finishSetup = (turnTakers: TurnTaker[]) => {
+        setTurnTakers(turnTakers);
+    };
+
+    return new TurnManager(currentTurnTaker, advanceTurn, finishSetup);
 };
 
 export default useTurnManager;

@@ -8,20 +8,20 @@ class CombatPlayer extends CombatEntity implements TurnTaker{
     }
     endTurn(): void {
       console.log(`${this.name} is ending their turn.`);
-      // console.log(this.advanceTurn);
       this.advanceTurn();
     }
 
     combatEntity: CombatEntity = this;
 
-    advanceTurn: () => void = () => {};
+    advanceTurn: () => void;
 
     clone(): CombatPlayer {
-      return new CombatPlayer(this.id, this.hp, this.maxHp, this.symbol, this.name, this.position);
+      return new CombatPlayer(this.id, this.hp, this.maxHp, this.symbol, this.name, this.position, this.advanceTurn);
     }
 
-    constructor(id:number, hp: number, maxHp: number, symbol: string, name: string, position: Vector2){
+    constructor(id:number, hp: number, maxHp: number, symbol: string, name: string, position: Vector2, advanceTurn: () => void){
       super(id, hp, maxHp, symbol, name, position);
+      this.advanceTurn = advanceTurn;
     }
   }
 
