@@ -103,7 +103,7 @@ const CombatParent: FC<CombatParentProps> = () => {
   //but then with the next action, the player would reset to its old position. So I made a hook where setPlayer also updates
   //a ref that everyone can use to make sure that they're using the most up-to-date player, and a function to get that ref's value,
   //so no more trying to get the player by value, it's all by reference now.
-  const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), 100, 100, '@', 'Player', new Vector2(7, 7), turnManager.advanceTurn));
+  const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), 100, 100, '@', 'Player', new Vector2(7, 7), turnManager.advanceTurn, resetActionUses));
   const [enemiesForEffects, getEnemies, setEnemies] = useRefState<CombatEnemy[]>([]);
   const [hazardsForEffects, getHazards, setHazards] = useRefState<CombatHazard[]>(mapTemplate.hazards );
 
@@ -252,11 +252,11 @@ function executeActionsList() {
 
 
   function debug_movePlayer() {
-    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().hp, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, new Vector2(getPlayer().position.x + 1, getPlayer().position.y), getPlayer().advanceTurn);
+    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().hp, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, new Vector2(getPlayer().position.x + 1, getPlayer().position.y), getPlayer().advanceTurn, getPlayer().resetActionUses);
     setPlayer(newPlayer);
   }
   function debug_harmPlayer() {
-    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().hp - 10, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, getPlayer().position, getPlayer().advanceTurn);
+    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().hp - 10, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, getPlayer().position, getPlayer().advanceTurn, getPlayer().resetActionUses);
     setPlayer(newPlayer);
   }
   function debug_endTurn() {
