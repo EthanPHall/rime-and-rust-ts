@@ -20,7 +20,6 @@ const useTurnManager = (): [TurnManager, ()=>boolean] => {
     }, [currentTurnTaker]);
     
     const advanceTurn = () => {
-        console.log(getTurnTakers().length);
         const nextIndex = (currentIndex.current + 1) % getTurnTakers().length;
         currentIndex.current = (nextIndex);
         setCurrentTurnTaker(getTurnTakers()[currentIndex.current]);

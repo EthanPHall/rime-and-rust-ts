@@ -22,7 +22,6 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
     const standbyForDebug = useRef(false);
 
     useEffect(() => {
-        console.log('ComboList changed, useActionExecutor', comboList);
     }, [comboList])
 
     function isExecuting():boolean {
@@ -61,7 +60,6 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
 
     function startExecution(){
         if(isExecuting() || comboList.length === 0){
-            console.log('Did not start execution', comboList.length, isExecuting());
             return;
         }
 

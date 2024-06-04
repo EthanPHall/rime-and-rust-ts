@@ -1,6 +1,6 @@
 import Directions from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
-import CombatAction, {  CombatActionWithRepeat, Move } from "./CombatAction";
+import CombatAction, {  Attack, CombatActionWithRepeat, Move } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
 import CombatMapData from "./CombatMapData";
 import IActionExecutor from "./IActionExecutor";
@@ -18,6 +18,8 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     advanceTurn: () => void;
     startTurn(): void {
       setTimeout(() => {
+        this.addActionToList(new Attack(this.id, Directions.LEFT, 5, this.getMap, this.updateEntity, this.refreshMap));
+        this.addActionToList(new Attack(this.id, Directions.LEFT, 5, this.getMap, this.updateEntity, this.refreshMap));
         this.addActionToList(new Move(this.id, Directions.DOWN, this.getMap, this.updateEntity, this.refreshMap));
         this.addActionToList(new Move(this.id, Directions.DOWN, this.getMap, this.updateEntity, this.refreshMap));
       }, 1000);
@@ -26,11 +28,15 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       setTimeout(() => {
         // this.endTurn();
         this.executeActionsList();
-      }, 2500);
+      }, 1500);
     }
     endTurn(): void {
       console.log(`${this.name} is ending their turn.`);
       this.advanceTurn();
+    }
+
+    setHp(hp: number): void{
+      this.hp = hp;
     }
 
     constructor(
@@ -56,8 +62,8 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       this.refreshMap = refreshMap;
     }
 
-    clone(): CombatEnemy{
-      return new RustedShambler(
+    clone(): CombatEnemy {
+      const clone = new RustedShambler(
         this.id, 
         this.position, 
         this.advanceTurn,
@@ -67,6 +73,10 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
         this.updateEntity,
         this.refreshMap
       );
+
+      clone.setHp(this.hp);
+
+      return clone;
     }
   }
   
@@ -96,6 +106,23 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
         refreshMap
       );
     }
+
+    clone(): RustedShambler {
+      const clone = new RustedShambler(
+        this.id, 
+        this.position, 
+        this.advanceTurn,
+        this.addActionToList,
+        this.executeActionsList,
+        this.getMap,
+        this.updateEntity,
+        this.refreshMap
+      );
+
+      clone.setHp(this.hp);
+
+      return clone;
+    }
   }
   
   class RustedBrute extends CombatEnemy{
@@ -123,6 +150,23 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
         updateEntity,
         refreshMap
       );
+    }
+
+    clone(): RustedBrute {
+      const clone = new RustedBrute(
+        this.id, 
+        this.position, 
+        this.advanceTurn,
+        this.addActionToList,
+        this.executeActionsList,
+        this.getMap,
+        this.updateEntity,
+        this.refreshMap
+      );
+  
+      clone.setHp(this.hp);
+  
+      return clone;
     }
   }
 

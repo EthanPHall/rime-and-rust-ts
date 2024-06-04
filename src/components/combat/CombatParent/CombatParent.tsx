@@ -208,8 +208,6 @@ const CombatParent: FC<CombatParentProps> = () => {
   }
 
   function addToComboList(newAction: CombatAction) {
-    console.log('Adding to combo list:', getComboList());
-
     const newWithRepeat: CombatActionWithRepeat = new CombatActionWithRepeat(newAction);
     const comboList = getComboList();
 
