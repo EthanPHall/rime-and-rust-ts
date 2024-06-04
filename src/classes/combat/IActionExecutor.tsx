@@ -1,7 +1,7 @@
 import { CombatActionWithRepeat } from "./CombatAction";
 
 interface IActionExecutor {
-    execute(actions: CombatActionWithRepeat[]): void;
+    execute(): void;
     isExecuting(): boolean;
 }
 

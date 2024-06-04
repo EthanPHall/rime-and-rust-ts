@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './CombatParent.css';
 import CombatMap from '../CombatMap/CombatMap';
 import ActionsDisplay from '../ActionsDisplay/ActionsDisplay';
@@ -33,16 +33,27 @@ import CombatMapFramerMotion from '../CombatMapFramerMotion/CombatMapFramerMotio
 import { useAnimate } from 'framer-motion';
 import MotionCombatAnimator from '../../../classes/animation/MotionCombatAnimator';
 import { MotionAnimation } from '../../../classes/animation/CombatAnimationDetailsToMotionAnimation';
+import CombatEnemyFactory from '../../../classes/combat/CombatEnemyFactory';
 
 interface CombatParentProps {}
 
+class EnemyStarterInfo{
+  type: string;
+  position: Vector2;
+
+  constructor(type: string, position: Vector2){
+    this.type = type;
+    this.position = position;
+  }
+}
+
 abstract class CombatMapTemplate{
   size: Vector2;
-  enemies: CombatEnemy[];
+  enemies: EnemyStarterInfo[];
   hazards: CombatHazard[];
   advanceTurn: () => void;
 
-  constructor(size:Vector2, enemies: CombatEnemy[], hazards: CombatHazard[], advanceTurn: () => void){
+  constructor(size:Vector2, enemies: EnemyStarterInfo[], hazards: CombatHazard[], advanceTurn: () => void){
     this.size = size;
     this.enemies = enemies;
     this.hazards = hazards;
@@ -52,7 +63,9 @@ abstract class CombatMapTemplate{
 
 class CombatMapTemplate1 extends CombatMapTemplate{
   
-  constructor(advanceTurn: () => void){
+  constructor(
+    advanceTurn: () => void
+  ){
     const size:Vector2 = new Vector2(15, 15);
     const walls: Wall[] = Wall.createDefaultWalls(
       [
@@ -62,13 +75,13 @@ class CombatMapTemplate1 extends CombatMapTemplate{
         {start: new Vector2(12, 8), end: new Vector2(12, 13)},
       ]
     );
-    const enemies: CombatEnemy[] = [
-      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(9, 11), advanceTurn),
-      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(10, 11), advanceTurn),
-      new RustedShambler(IdGenerator.generateUniqueId(), 20, 20, 'B', 'Rusted Brute', new Vector2(11, 11), advanceTurn),
-      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(8, 7), advanceTurn),
-      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(6, 7), advanceTurn),
-      new RustedShambler(IdGenerator.generateUniqueId(), 10, 10, 'S', 'Rusted Shambler', new Vector2(7, 6), advanceTurn),
+    const enemies: EnemyStarterInfo[] = [
+      new EnemyStarterInfo('RustedShambler', new Vector2(9, 11)),
+      new EnemyStarterInfo('RustedShambler', new Vector2(10, 11)),
+      new EnemyStarterInfo('RustedBrute', new Vector2(11, 11)),
+      new EnemyStarterInfo('RustedShambler', new Vector2(8, 7)),
+      new EnemyStarterInfo('RustedShambler', new Vector2(6, 7)),
+      new EnemyStarterInfo('RustedShambler', new Vector2(7, 6)),
     ];
     const hazards: CombatHazard[] = [new VolatileCanister(IdGenerator.generateUniqueId(), 10, 10, '+', 'Volatile Canister', new Vector2(3, 3), false)];
 
@@ -81,6 +94,8 @@ class CombatMapTemplate1 extends CombatMapTemplate{
 const CombatParent: FC<CombatParentProps> = () => {
   
   const turnManager:TurnManager = useTurnManager();
+  const [comboListForEffects, getComboList, setComboList] = useRefState<CombatActionWithRepeat[]>([]);
+
   const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>(new CombatMapTemplate1(turnManager.advanceTurn));
   
   //I was running into issues with closures I think. I was passing refreshMap() to the animator, but when it was called there,
@@ -89,8 +104,8 @@ const CombatParent: FC<CombatParentProps> = () => {
   //a ref that everyone can use to make sure that they're using the most up-to-date player, and a function to get that ref's value,
   //so no more trying to get the player by value, it's all by reference now.
   const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), 100, 100, '@', 'Player', new Vector2(7, 7), turnManager.advanceTurn));
-  const [enemiesForEffects, getEnemies, setEnemies] = useRefState<CombatEnemy[]>(mapTemplate.enemies);
-  const [hazardsForEffects, getHazards, setHazards] = useRefState<CombatHazard[]>(mapTemplate.hazards);
+  const [enemiesForEffects, getEnemies, setEnemies] = useRefState<CombatEnemy[]>([]);
+  const [hazardsForEffects, getHazards, setHazards] = useRefState<CombatHazard[]>(mapTemplate.hazards );
 
   
   const [baseMap, setBaseMap] = useState<CombatMapData>(createMapFromTemplate(mapTemplate));
@@ -100,7 +115,6 @@ const CombatParent: FC<CombatParentProps> = () => {
     new AreaOfEffect(3, Directions.RIGHT, 1, true)
   );
  
-  const [comboList, setComboList] = useState<CombatActionWithRepeat[]>([]);
   const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>([
     new CombatActionWithUses(new Attack(getPlayer().id, undefined, 5, getCachedMap, updateEntity, refreshMap), 3),
     new CombatActionWithUses(new Block(getPlayer().id, updateEntity, refreshMap), 1),
@@ -120,15 +134,30 @@ const CombatParent: FC<CombatParentProps> = () => {
   const [animator, setAnimator] = useState<MotionCombatAnimator>(new MotionCombatAnimator(getCachedMap, mapAnimate));
   
   // const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator, refreshMap);
-  const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator);
+  const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboListForEffects, setComboList, animator, turnManager);
+  const actionExecutorRef = useRef<IActionExecutor>(actionExecutor);
   
   useEffect(() => {
+    const enemyFactory = new CombatEnemyFactory(
+      turnManager.advanceTurn,
+      addToComboList,
+      executeActionsList,
+      getCachedMap,
+      updateEntity,
+      refreshMap
+    );
+    setEnemies(mapTemplate.enemies.map(enemyInfo => enemyFactory.createEnemy(enemyInfo.type, enemyInfo.position)));
+    
     turnManager.finishSetup([getPlayer(), ...getEnemies()]);
   },[])
 
   useEffect(() => {
     refreshMap();
   }, [playerForEffects, enemiesForEffects, hazardsForEffects]);
+
+  useEffect(() => {
+    actionExecutorRef.current = actionExecutor;
+  }, [actionExecutor]);
 
   function refreshMap():void{
     const newMap: CombatMapData = getBaseMapClonePlusAddons();
@@ -179,7 +208,10 @@ const CombatParent: FC<CombatParentProps> = () => {
   }
 
   function addToComboList(newAction: CombatAction) {
+    console.log('Adding to combo list:', getComboList());
+
     const newWithRepeat: CombatActionWithRepeat = new CombatActionWithRepeat(newAction);
+    const comboList = getComboList();
 
     const lastAction: CombatActionWithRepeat = comboList[comboList.length - 1];
     if (lastAction && lastAction.areEquivalent(newWithRepeat)) {
@@ -210,6 +242,15 @@ const CombatParent: FC<CombatParentProps> = () => {
 
   }
 
+
+
+function executeActionsList() {
+  if(!actionExecutorRef.current.isExecuting()) {
+    actionExecutorRef.current.execute();
+  }
+}
+
+
   function debug_movePlayer() {
     const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().hp, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, new Vector2(getPlayer().position.x + 1, getPlayer().position.y), getPlayer().advanceTurn);
     setPlayer(newPlayer);
@@ -235,7 +276,7 @@ const CombatParent: FC<CombatParentProps> = () => {
             {/* <LootDisplay></LootDisplay> */}
             <HpDisplay hp={getPlayer().hp} maxHp={getPlayer().maxHp}></HpDisplay>
             <TurnDisplay currentTurnTaker={turnManager.currentTurnTaker}></TurnDisplay>
-            <ComboSection comboList={comboList} setComboList={setComboList} resetActionUses={resetActionUses} actionExecutor={actionExecutor}></ComboSection>
+            <ComboSection comboList={comboListForEffects} setComboList={setComboList} resetActionUses={resetActionUses} actionExecutor={actionExecutor}></ComboSection>
             <ComponentSwitcher enemies={enemiesForEffects} hazards={hazardsForEffects} showCard={showCard}></ComponentSwitcher>
             {infoCardData != null && <CombatInfoDisplay {...infoCardData}></CombatInfoDisplay>}
         </div>

@@ -28,7 +28,7 @@ const ComboSection: FC<ComboSectionProps> = ({comboList, setComboList, resetActi
 
   function executeActions() {
     if(!actionExecutor.isExecuting()) {
-      actionExecutor.execute(comboList);
+      actionExecutor.execute();
     }
   }
 

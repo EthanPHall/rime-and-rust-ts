@@ -5,8 +5,9 @@ import { exec } from 'child_process';
 import IAnimator, { IAnimationCleanup } from '../classes/animation/IAnimator';
 import AnimationDetails from '../classes/animation/AnimationDetails';
 import IActionExecutor from '../classes/combat/IActionExecutor';
+import TurnManager from '../classes/combat/TurnManager';
 
-const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[], setComboList:(newList:CombatActionWithRepeat[]) => void, animator: IAnimator):IActionExecutor => {
+const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[], setComboList:(newList:CombatActionWithRepeat[]) => void, animator: IAnimator, turnManager:TurnManager):IActionExecutor => {
     const ACTION_DELAY = 200;
     const DEBUG_DELAY = 4000;
     
@@ -19,6 +20,10 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
     const standbyForAnimation = useRef(false);
     const standbyForAnimationCleanup = useRef(false);
     const standbyForDebug = useRef(false);
+
+    useEffect(() => {
+        console.log('ComboList changed, useActionExecutor', comboList);
+    }, [comboList])
 
     function isExecuting():boolean {
         return executing;
@@ -56,6 +61,7 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
 
     function startExecution(){
         if(isExecuting() || comboList.length === 0){
+            console.log('Did not start execution', comboList.length, isExecuting());
             return;
         }
 
@@ -83,6 +89,7 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
                 if(actionIndex.current >= comboList.length){
                     setExecuting(false);
                     setComboList([]);
+                    turnManager.advanceTurn();
                     return;
                 }
         
@@ -90,6 +97,7 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
                 
                 animateAndExecute(comboList[actionIndex.current], isLastAction);        
             });
+
             animationCleanupObject.current = null;
             standbyForAnimationCleanup.current = false;
             return;
@@ -98,7 +106,7 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
 
     return {
         execute: startExecution,
-        isExecuting: isExecuting
+        isExecuting: isExecuting,
     };
 };
 
