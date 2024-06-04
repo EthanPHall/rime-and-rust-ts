@@ -10,8 +10,11 @@
   color: var(--outline-color);
 }
 
-:root button:hover{
+:root button:hover:not(:disabled){
   text-decoration: underline 2px solid var(--outline-color);
+}
+:root button:disabled{
+  color: var(--disabled-text-color);
 }
 
 .App {

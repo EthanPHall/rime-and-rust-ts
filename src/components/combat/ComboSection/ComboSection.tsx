@@ -9,9 +9,10 @@ interface ComboSectionProps {
   setComboList: (comboList: CombatActionWithRepeat[]) => void;
   resetActionUses: () => void;
   actionExecutor: IActionExecutor;
+  isTurnTakerPlayer: ()=>boolean;
 }
 
-const ComboSection: FC<ComboSectionProps> = ({comboList, setComboList, resetActionUses, actionExecutor}: ComboSectionProps) => {
+const ComboSection: FC<ComboSectionProps> = ({comboList, setComboList, resetActionUses, actionExecutor, isTurnTakerPlayer}: ComboSectionProps) => {
   function cancelActions() {
     if(actionExecutor.isExecuting()) {
       return;
@@ -32,6 +33,10 @@ const ComboSection: FC<ComboSectionProps> = ({comboList, setComboList, resetActi
     }
   }
 
+  function buttonsShouldBeDisabled(): boolean {
+    return actionExecutor.isExecuting() || !isTurnTakerPlayer();
+  }
+
   return (
     <div className="combo-section" data-testid="combo-section">
       <div className='combo-actions'>
@@ -41,8 +46,8 @@ const ComboSection: FC<ComboSectionProps> = ({comboList, setComboList, resetActi
         ))}
       </div>
       <div className='confirm-cancel'>
-        <button className='confirm-button' onClick={executeActions}>Confirm</button>
-        <button className='cancel-button' onClick={cancelActions}>Cancel</button>
+        <button className={`confirm-button`} onClick={executeActions} disabled={buttonsShouldBeDisabled() ? true : false}>Confirm</button>
+        <button className={`cancel-button`} onClick={cancelActions} disabled={buttonsShouldBeDisabled() ? true : false}>Cancel</button>
       </div>
     </div>
   );

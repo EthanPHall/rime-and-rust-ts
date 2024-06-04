@@ -35,5 +35,8 @@
     --combat-location-width: 24px;
     --combat-location-height: 24px;
 
+    --disabled-color: #4d4d4d;
+    --disabled-text-color: #a0a0a0;
+
     /* color: #ca4d4d */
 }

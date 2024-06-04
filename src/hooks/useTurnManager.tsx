@@ -3,7 +3,7 @@ import TurnManager from '../classes/combat/TurnManager';
 import TurnTaker from '../classes/combat/TurnTaker';
 import useRefState from './useRefState';
 
-const useTurnManager = (): TurnManager => {
+const useTurnManager = (): [TurnManager, ()=>boolean] => {
     const currentIndex = useRef(0);
     const [turnTakers, getTurnTakers, setTurnTakers] = useRefState<TurnTaker[]>([]);
     const [currentTurnTaker, getCurrentTurnTaker, setCurrentTurnTaker] = useRefState<TurnTaker|null>(null);
@@ -30,7 +30,11 @@ const useTurnManager = (): TurnManager => {
         setTurnTakers(turnTakers);
     };
 
-    return new TurnManager(currentTurnTaker, advanceTurn, finishSetup);
+    function isTurnTakerPlayer(): boolean{
+        return currentIndex.current === 0;
+    }
+
+    return [new TurnManager(currentTurnTaker, advanceTurn, finishSetup), isTurnTakerPlayer];
 };
 
 export default useTurnManager;

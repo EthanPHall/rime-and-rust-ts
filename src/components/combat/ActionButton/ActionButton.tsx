@@ -14,9 +14,10 @@ interface ActionButtonProps {
   action: CombatActionWithUses;
   actionIndex: number;
   reduceActionUses: (index:number) => void;
+  buttonsShouldBeDisabled: () => boolean;
 }
 
-const ActionButton: FC<ActionButtonProps> = ({addToComboList, action, actionIndex, reduceActionUses}: ActionButtonProps) => {
+const ActionButton: FC<ActionButtonProps> = ({addToComboList, action, actionIndex, reduceActionUses, buttonsShouldBeDisabled}: ActionButtonProps) => {
   const [activateControls, setActivateControls] = useState<boolean>(false);
   const [direction, setDirection] = useState<Directions>(Directions.NONE);
  
@@ -99,7 +100,7 @@ const ActionButton: FC<ActionButtonProps> = ({addToComboList, action, actionInde
     <div>
       <div className={`${activateControls ? "direction-input-cover" : ""}`}>
       </div>
-      <button className="action-button" data-testid="action-button" onClick={setupForDirectionalInput}>
+      <button className="action-button" data-testid="action-button" onClick={setupForDirectionalInput} disabled={buttonsShouldBeDisabled()}>
         {`${action.action.name} x${action.uses}`}
       </button>
     </div>

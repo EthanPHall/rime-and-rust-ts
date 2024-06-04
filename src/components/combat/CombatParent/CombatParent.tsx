@@ -93,7 +93,7 @@ class CombatMapTemplate1 extends CombatMapTemplate{
 
 const CombatParent: FC<CombatParentProps> = () => {
   
-  const turnManager:TurnManager = useTurnManager();
+  const [turnManager, isTurnTakerPlayer] = useTurnManager();
   const [comboListForEffects, getComboList, setComboList] = useRefState<CombatActionWithRepeat[]>([]);
 
   const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>(new CombatMapTemplate1(turnManager.advanceTurn));
@@ -271,12 +271,12 @@ function executeActionsList() {
         <div className='combat-parent-grid-parent'>
           <div className='combat-parent-map-actions-composite'>
             <CombatMapFramerMotion map={mapToSendOff} setMap={setBaseMap} aoeToDisplay={aoeToDisplay} scope={mapScope}></CombatMapFramerMotion>
-            <ActionsDisplay addToComboList={addToComboList} actions={playerActions} setActions={setPlayerActions} reduceActionUses={reduceActionUses}></ActionsDisplay>
+            <ActionsDisplay addToComboList={addToComboList} actions={playerActions} setActions={setPlayerActions} reduceActionUses={reduceActionUses} isTurnTakerPlayer={isTurnTakerPlayer} actionsAreExecuting={actionExecutor.isExecuting}></ActionsDisplay>
           </div>
             {/* <LootDisplay></LootDisplay> */}
             <HpDisplay hp={getPlayer().hp} maxHp={getPlayer().maxHp}></HpDisplay>
             <TurnDisplay currentTurnTaker={turnManager.currentTurnTaker}></TurnDisplay>
-            <ComboSection comboList={comboListForEffects} setComboList={setComboList} resetActionUses={resetActionUses} actionExecutor={actionExecutor}></ComboSection>
+            <ComboSection comboList={comboListForEffects} setComboList={setComboList} resetActionUses={resetActionUses} actionExecutor={actionExecutor} isTurnTakerPlayer={isTurnTakerPlayer}></ComboSection>
             <ComponentSwitcher enemies={enemiesForEffects} hazards={hazardsForEffects} showCard={showCard}></ComponentSwitcher>
             {infoCardData != null && <CombatInfoDisplay {...infoCardData}></CombatInfoDisplay>}
         </div>
