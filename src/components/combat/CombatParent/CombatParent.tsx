@@ -118,7 +118,7 @@ const CombatParent: FC<CombatParentProps> = () => {
   const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>([
     new CombatActionWithUses(new Attack(getPlayer().id, undefined, 5, getCachedMap, updateEntity, refreshMap), 3),
     new CombatActionWithUses(new Block(getPlayer().id, updateEntity, refreshMap), 1),
-    new CombatActionWithUses(new Move(getPlayer().id, undefined, getCachedMap, updateEntity, refreshMap), 5),
+    new CombatActionWithUses(new Move(getPlayer().id, undefined, getCachedMap, updateEntity, refreshMap), 15),
   ]);
   
   const [infoCardData, setInfoCardData] = useState<CombatInfoDisplayProps | null>(null);

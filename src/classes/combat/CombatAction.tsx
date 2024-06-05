@@ -107,7 +107,7 @@ abstract class CombatAction{
       const owner: CombatEntity = map.getEntityById(this.ownerId);
       const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       const targetPosition: Vector2 = Vector2.add(owner.position, directionVector);
-      const targetId:number|undefined = this.getMap().locations[targetPosition.y][targetPosition.x].entity?.id;
+      const targetId:number|undefined = this.getMap().locations?.[targetPosition.y]?.[targetPosition.x].entity?.id;
 
       if(targetId){
         const targetEntity = map.getEntityById(targetId).clone();
@@ -124,7 +124,7 @@ abstract class CombatAction{
       const owner: CombatEntity = map.getEntityById(this.ownerId);
       const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       const targetPosition: Vector2 = Vector2.add(owner.position, directionVector);
-      const targetId:number|undefined = this.getMap().locations[targetPosition.y][targetPosition.x].entity?.id;
+      const targetId:number|undefined = this.getMap().locations?.[targetPosition.y]?.[targetPosition.x].entity?.id;
 
       let result:AnimationDetails[] = [CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId)];
       if(targetId) result.push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, targetId));
@@ -169,10 +169,10 @@ abstract class CombatAction{
       const owner: CombatEntity = map.getEntityById(this.ownerId);
 
       const targetPosition = Vector2.add(owner.position, DirectionsUtility.getVectorFromDirection(this.direction));
-      const targetLocationData = map.locations[targetPosition.y][targetPosition.x];
+      const targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
       
       const updatedEntity = owner.clone();
-      if(targetLocationData.entity || targetLocationData.solid){
+      if(!targetLocationData || targetLocationData.entity || targetLocationData.solid){
         this.refreshMap();
       }
       else{
@@ -188,8 +188,8 @@ abstract class CombatAction{
       const owner: CombatEntity = map.getEntityById(this.ownerId);
 
       const targetPosition = Vector2.add(owner.position, DirectionsUtility.getVectorFromDirection(this.direction));
-      const targetLocationData = map.locations[targetPosition.y][targetPosition.x];
-      if(targetLocationData.entity || targetLocationData.solid){
+      const targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
+      if(!targetLocationData || targetLocationData.entity || targetLocationData.solid){
         animationsToSendOff.push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Bump, this.direction, this.ownerId));
       }
       else{
