@@ -13,6 +13,9 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
 
   addActionToList: (action: CombatAction) => void;
   executeActionsList: () => void;
+  canTakeTurn(): boolean {
+      return this.hp > 0;
+  }
   
     combatEntity: CombatEntity = this;
     advanceTurn: () => void;

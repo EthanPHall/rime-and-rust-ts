@@ -11,6 +11,9 @@ class CombatPlayer extends CombatEntity implements TurnTaker{
       console.log(`${this.name} is ending their turn.`);
       this.advanceTurn();
     }
+    canTakeTurn(): boolean {
+      return this.hp > 0;
+    }
 
     
     combatEntity: CombatEntity = this;

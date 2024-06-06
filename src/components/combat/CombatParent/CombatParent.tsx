@@ -34,6 +34,7 @@ import { useAnimate } from 'framer-motion';
 import MotionCombatAnimator from '../../../classes/animation/MotionCombatAnimator';
 import { MotionAnimation } from '../../../classes/animation/CombatAnimationDetailsToMotionAnimation';
 import CombatEnemyFactory from '../../../classes/combat/CombatEnemyFactory';
+import TurnTaker from '../../../classes/combat/TurnTaker';
 
 interface CombatParentProps {}
 
@@ -76,10 +77,10 @@ class CombatMapTemplate1 extends CombatMapTemplate{
       ]
     );
     const enemies: EnemyStarterInfo[] = [
+      new EnemyStarterInfo('RustedShambler', new Vector2(8, 7)),
       new EnemyStarterInfo('RustedShambler', new Vector2(9, 11)),
       new EnemyStarterInfo('RustedShambler', new Vector2(10, 11)),
       new EnemyStarterInfo('RustedBrute', new Vector2(11, 11)),
-      new EnemyStarterInfo('RustedShambler', new Vector2(8, 7)),
       new EnemyStarterInfo('RustedShambler', new Vector2(6, 7)),
       new EnemyStarterInfo('RustedShambler', new Vector2(7, 6)),
     ];
@@ -137,6 +138,8 @@ const CombatParent: FC<CombatParentProps> = () => {
   const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboListForEffects, setComboList, animator, turnManager);
   const actionExecutorRef = useRef<IActionExecutor>(actionExecutor);
   
+  const allTurnTakers = useRef<TurnTaker[]>([getPlayer(), ...getEnemies()]);
+
   useEffect(() => {
     const enemyFactory = new CombatEnemyFactory(
       turnManager.advanceTurn,
@@ -148,12 +151,16 @@ const CombatParent: FC<CombatParentProps> = () => {
     );
     setEnemies(mapTemplate.enemies.map(enemyInfo => enemyFactory.createEnemy(enemyInfo.type, enemyInfo.position)));
     
-    turnManager.finishSetup([getPlayer(), ...getEnemies()]);
+    turnManager.finishSetup(allTurnTakers);
   },[])
 
   useEffect(() => {
     refreshMap();
   }, [playerForEffects, enemiesForEffects, hazardsForEffects]);
+
+  useEffect(() => {
+    allTurnTakers.current = [getPlayer(), ...getEnemies()];
+  }, [playerForEffects, enemiesForEffects]);
 
   useEffect(() => {
     actionExecutorRef.current = actionExecutor;
