@@ -81,7 +81,7 @@ class CombatMapTemplate1 extends CombatMapTemplate{
         {start: new Vector2(12, 8), end: new Vector2(12, 13)},
       ]
     );
-    walls.push(new Wall(IdGenerator.generateUniqueId(), 10, 10, '#', 'Wall', new Vector2(7, 5), false));
+    walls.push(new Wall(IdGenerator.generateUniqueId(), 10, 10, '#', 'Wall', new Vector2(7, 1), false));
     const enemies: EnemyStarterInfo[] = [
       new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(8, 7)),
       new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(9, 11)),
@@ -89,7 +89,9 @@ class CombatMapTemplate1 extends CombatMapTemplate{
       new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(11, 11)),
       new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(6, 7)),
       new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 6)),
-      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 4)),
+      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 5)),
+      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 3)),
+      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 2)),
     ];
     const hazards: CombatHazard[] = [new VolatileCanister(IdGenerator.generateUniqueId(), 10, 10, '+', 'Volatile Canister', new Vector2(3, 3), false)];
 

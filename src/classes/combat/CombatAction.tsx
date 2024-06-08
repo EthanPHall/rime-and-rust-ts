@@ -248,12 +248,45 @@ abstract class CombatAction{
       const map: CombatMapData = this.getMap();
       const pullVector:Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getOppositeDirection(this.direction));
       
-      targetIds.forEach((targetId) => {
-        const targetEntity = map.getEntityById(targetId).clone();
+      // targetIds.forEach((targetId) => {
+      //   const targetEntity = map.getEntityById(targetId).clone();
+      //   targetEntity.hp -= this.damage;
+      //   targetEntity.position = Vector2.add(targetEntity.position, pullVector);
+      //   this.updateEntity(targetEntity.id, targetEntity);
+      // });
+
+      //TODO: Refactor this into a method, and do the same in getAnimations
+      let previousEntity:CombatEntity|null = null;
+      let previousDidBump:boolean = false;
+      const forwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
+      const backwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getOppositeDirection(this.direction));
+      for(let i = 0; i < targetIds.length; i++){
+        let bumped:boolean = false;
+        const targetEntity = map.getEntityById(targetIds[i]).clone();
         targetEntity.hp -= this.damage;
-        targetEntity.position = Vector2.add(targetEntity.position, pullVector);
+
+        const backwardPosition:Vector2 = Vector2.add(targetEntity.position, backwardsVector);
+        if(previousEntity){
+          const forwardPosition:Vector2 = Vector2.add(previousEntity.position, forwardsVector);
+          const currentIsInFrontOfPrevious:boolean = Vector2.equals(targetEntity.position, forwardPosition);
+          if(currentIsInFrontOfPrevious){
+            bumped = previousDidBump;
+          }
+        }else if(map.locations[backwardPosition.y][backwardPosition.x].entity){
+          bumped = true;
+        }
+
+        if(bumped){
+          targetEntity.hp -= this.damage;
+        }
+        else{
+          targetEntity.position = Vector2.add(targetEntity.position, pullVector);
+        }
         this.updateEntity(targetEntity.id, targetEntity);
-      });
+        
+        previousEntity = targetEntity;
+        previousDidBump = bumped;
+      }      
 
       this.refreshMap();
     }
@@ -261,6 +294,7 @@ abstract class CombatAction{
     getAnimations(): AnimationDetails[][] {
       const [targetIds, positions] = this.getTargets();
       const reverseDirection:Directions = DirectionsUtility.getOppositeDirection(this.direction);
+      const map: CombatMapData = this.getMap();
 
       const result:AnimationDetails[][] = [[],[],[]];
       result[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId));
@@ -269,9 +303,42 @@ abstract class CombatAction{
         result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Psychic, this.direction, -1, false, position));
       });
 
-      targetIds.forEach((targetId) => {
-        result[2].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, reverseDirection, targetId));
-      });
+      // targetIds.forEach((targetId) => {
+      //   result[2].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, reverseDirection, targetId));
+      // });
+
+      let previousEntity:CombatEntity|null = null;
+      let previousDidBump:boolean = false;
+      const forwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
+      const backwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getOppositeDirection(this.direction));
+      for(let i = 0; i < targetIds.length; i++){
+        let bumped:boolean = false;
+        const targetEntity = map.getEntityById(targetIds[i]).clone();
+        targetEntity.hp -= this.damage;
+
+        const backwardPosition:Vector2 = Vector2.add(targetEntity.position, backwardsVector);
+        if(previousEntity){
+          const forwardPosition:Vector2 = Vector2.add(previousEntity.position, forwardsVector);
+          const currentIsInFrontOfPrevious:boolean = Vector2.equals(targetEntity.position, forwardPosition);
+          if(currentIsInFrontOfPrevious){
+            bumped = previousDidBump;
+          }
+        }else if(map.locations[backwardPosition.y][backwardPosition.x].entity){
+          bumped = true;
+        }
+
+        if(bumped){
+          result[2].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.ShortBump, reverseDirection, targetIds[i]));
+        }
+        else{
+          result[2].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, reverseDirection, targetIds[i]));
+        }
+        this.updateEntity(targetEntity.id, targetEntity);
+        
+        previousEntity = targetEntity;
+        previousDidBump = bumped;
+      }      
+
 
       return result;
     }
@@ -301,12 +368,12 @@ abstract class CombatAction{
       return new PushRange5(this.ownerId, this.direction, this.damage, this.getMap, this.updateEntity, this.refreshMap);
     }
 
-    getTargets(): [number[], Vector2[]]{
+    getTargets(): [number[], Vector2[], CombatEntity[]]{
       const map: CombatMapData = this.getMap();
       const owner: CombatEntity = map.getEntityById(this.ownerId);
       const [entities, positions] = this.aoe.getAffectedEntities(owner.position.x, owner.position.y, map);
       const targetIds:number[] = entities.map((entity) => entity.id);
-      return [targetIds, positions];
+      return [targetIds, positions, entities];
     }
 
     execute() {
@@ -314,18 +381,52 @@ abstract class CombatAction{
       const map: CombatMapData = this.getMap();
       const pushVector:Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       
-      targetIds.forEach((targetId) => {
-        const targetEntity = map.getEntityById(targetId).clone();
+      // targetIds.forEach((targetId) => {
+      //   const targetEntity = map.getEntityById(targetId).clone();
+      //   targetEntity.hp -= this.damage;
+      //   targetEntity.position = Vector2.add(targetEntity.position, pushVector);
+      //   this.updateEntity(targetEntity.id, targetEntity);
+      // });
+
+      //TODO: Refactor this into a method, and do the same in getAnimations
+      let previousEntity:CombatEntity|null = null;
+      let previousDidBump:boolean = false;
+      const forwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
+      const backwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getOppositeDirection(this.direction));
+      for(let i = targetIds.length-1; i >= 0; i--){
+        let bumped:boolean = false;
+        const targetEntity = map.getEntityById(targetIds[i]).clone();
         targetEntity.hp -= this.damage;
-        targetEntity.position = Vector2.add(targetEntity.position, pushVector);
+
+        const forwardPosition:Vector2 = Vector2.add(targetEntity.position, forwardsVector);
+        if(previousEntity){
+          const backwardPosition:Vector2 = Vector2.add(previousEntity.position, backwardsVector);
+          const currentIsBehindPrevious:boolean = Vector2.equals(targetEntity.position, backwardPosition);
+          if(currentIsBehindPrevious){
+            bumped = previousDidBump;
+          }
+        }else if(map.locations[forwardPosition.y][forwardPosition.x].entity){
+          bumped = true;
+        }
+
+        if(bumped){
+          targetEntity.hp -= this.damage;
+        }
+        else{
+          targetEntity.position = Vector2.add(targetEntity.position, pushVector);
+        }
         this.updateEntity(targetEntity.id, targetEntity);
-      });
+        
+        previousEntity = targetEntity;
+        previousDidBump = bumped;
+      }
 
       this.refreshMap();
     }
 
     getAnimations(): AnimationDetails[][] {
-      const [targetIds, positions] = this.getTargets();
+      const [targetIds, positions, entities] = this.getTargets();
+      const map: CombatMapData = this.getMap();
 
       const result:AnimationDetails[][] = [[],[],[]];
       result[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId));
@@ -334,9 +435,34 @@ abstract class CombatAction{
         result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Psychic, this.direction, -1, false, position));
       });
 
-      targetIds.forEach((targetId) => {
-        result[2].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, this.direction, targetId));
-      });
+      let previousEntity:CombatEntity|null = null;
+      let previousDidBump:boolean = false;
+      const forwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
+      const backwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getOppositeDirection(this.direction));
+      for(let i = entities.length-1; i >= 0; i--){
+        let bumped:boolean = false;
+
+        const forwardPosition:Vector2 = Vector2.add(entities[i].position, forwardsVector);
+        if(previousEntity){
+          const backwardPosition:Vector2 = Vector2.add(previousEntity.position, backwardsVector);
+          const currentIsBehindPrevious:boolean = Vector2.equals(entities[i].position, backwardPosition);
+          if(currentIsBehindPrevious){
+            bumped = previousDidBump;
+          }
+        }else if(map.locations[forwardPosition.y][forwardPosition.x].entity){
+          bumped = true;
+        }
+
+        if(bumped){
+          result[2].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.ShortBump, this.direction, entities[i].id));
+        }
+        else{
+          result[2].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, this.direction, entities[i].id));
+        }
+        
+        previousEntity = entities[i];
+        previousDidBump = bumped;
+      }
 
       return result;
     }

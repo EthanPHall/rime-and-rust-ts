@@ -78,6 +78,21 @@ class CombatAnimationDetailsToMotionAnimation{
                     ],
                     combatAnimation.positionToAnimate
                 );
+            case CombatAnimationNames.ShortBump:
+                xyIncrement.x *= parseFloat(CSSPropertyGetter.getProperty("--combat-location-width")) / 4;
+                xyIncrement.y *= parseFloat(CSSPropertyGetter.getProperty("--combat-location-height")) / 4;
+                return new MotionAnimation(
+                    combatAnimation.entityToAnimateId, 
+                    [
+                        {x: xyIncrement.x, y: xyIncrement.y}, 
+                        {x: 0, y: 0}
+                    ],
+                    [
+                        {duration: combatAnimation.animationLength/2000},
+                        {duration: combatAnimation.animationLength/2000}
+                    ],
+                    combatAnimation.positionToAnimate
+                );
             case CombatAnimationNames.Hurt:
                 const leftMove:number = parseFloat(CSSPropertyGetter.getProperty("--combat-location-width")) / 10;
                 const rightMove:number = -leftMove;

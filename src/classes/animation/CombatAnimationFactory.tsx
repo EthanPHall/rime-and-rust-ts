@@ -8,6 +8,7 @@ enum CombatAnimationNames {
     Attack = "Attack",
     Block = "Block",
     Bump = "Bump",
+    ShortBump = "ShortBump",
     Reset = "Reset",
     Hurt = "Hurt",
     Psychic = "Psychic",
@@ -27,6 +28,8 @@ class CombatAnimationFactory{
                 return new AnimationDetails(CombatAnimationNames.Block, 300, direction, entityToAnimateId);
             case CombatAnimationNames.Bump:
                 return new AnimationDetails(CombatAnimationNames.Bump, 200, direction, entityToAnimateId);
+            case CombatAnimationNames.ShortBump:
+                return new AnimationDetails(CombatAnimationNames.ShortBump, 100, direction, entityToAnimateId);
             case CombatAnimationNames.Hurt:
                 return new AnimationDetails(CombatAnimationNames.Hurt, 200, direction, entityToAnimateId);
             case CombatAnimationNames.Psychic:
