@@ -5,6 +5,7 @@ import CombatAction, { CombatActionWithRepeat } from "./CombatAction";
 import CombatMapData from "./CombatMapData";
 import CombatEntity from "./CombatEntity";
 import IdGenerator from "../utility/IdGenerator";
+import { EnemyType } from "../../components/combat/CombatParent/CombatParent";
 
 
 class CombatEnemyFactory{
@@ -36,7 +37,7 @@ class CombatEnemyFactory{
         initialPosition: Vector2, 
     ): CombatEnemy{
         switch(type){
-            case 'RustedShambler':
+            case EnemyType.RustedShambler:
                 return new RustedShambler(
                     IdGenerator.generateUniqueId(), 
                     initialPosition, 
@@ -47,7 +48,7 @@ class CombatEnemyFactory{
                     this.updateEntity,
                     this.refreshMap
                 );
-            case 'RustedBrute':
+            case EnemyType.RustedBrute:
                 return new RustedBrute(
                     IdGenerator.generateUniqueId(), 
                     initialPosition, 

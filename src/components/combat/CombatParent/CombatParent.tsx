@@ -38,11 +38,16 @@ import TurnTaker from '../../../classes/combat/TurnTaker';
 
 interface CombatParentProps {}
 
+export enum EnemyType {
+  RustedShambler = 'RustedShambler',
+  RustedBrute = 'RustedBrute',
+}
+
 class EnemyStarterInfo{
-  type: string;
+  type: EnemyType;
   position: Vector2;
 
-  constructor(type: string, position: Vector2){
+  constructor(type: EnemyType, position: Vector2){
     this.type = type;
     this.position = position;
   }
@@ -77,12 +82,12 @@ class CombatMapTemplate1 extends CombatMapTemplate{
       ]
     );
     const enemies: EnemyStarterInfo[] = [
-      new EnemyStarterInfo('RustedShambler', new Vector2(8, 7)),
-      new EnemyStarterInfo('RustedShambler', new Vector2(9, 11)),
-      new EnemyStarterInfo('RustedShambler', new Vector2(10, 11)),
-      new EnemyStarterInfo('RustedBrute', new Vector2(11, 11)),
-      new EnemyStarterInfo('RustedShambler', new Vector2(6, 7)),
-      new EnemyStarterInfo('RustedShambler', new Vector2(7, 6)),
+      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(8, 7)),
+      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(9, 11)),
+      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(10, 11)),
+      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(11, 11)),
+      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(6, 7)),
+      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 6)),
     ];
     const hazards: CombatHazard[] = [new VolatileCanister(IdGenerator.generateUniqueId(), 10, 10, '+', 'Volatile Canister', new Vector2(3, 3), false)];
 
