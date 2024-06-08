@@ -1,21 +1,39 @@
 import Directions from "../utility/Directions";
 import MapUtilities from "../utility/MapUtilities";
 import Vector2 from "../utility/Vector2";
+import CombatEntity from "./CombatEntity";
 import CombatMapData from "./CombatMapData";
 
 class AreaOfEffect{
-    length:number;
-    direction:Directions;
-    radius:number;
-    cone:boolean;
+    private length:number;
+    private direction:Directions;
+    private radius:number;
+    private cone:boolean;
     constructor(length:number, direction:Directions, radius:number, cone:boolean){
       this.length = length;
       this.direction = direction;
       this.radius = radius;
       this.cone = cone;
     }
+
+    getLength():number{
+      return this.length;
+    }
+    getDirection():Directions{
+      return this.direction;
+    }
+    getRadius():number{
+      return this.radius;
+    }
+    getCone():boolean{
+      return this.cone;
+    }
+
+    setDirection(direction:Directions):void{
+      this.direction = direction;
+    }
     
-    getAffectedCoordinates(startingX:number, startingY:number, map:CombatMapData|null) : Vector2[]{
+    getAffectedCoordinates(startingX:number, startingY:number, map:CombatMapData|null, includeStart:boolean = false) : Vector2[]{
       const affectedCoordinates:Vector2[] = [];
       affectedCoordinates.push(new Vector2(startingX, startingY));
       
@@ -29,13 +47,32 @@ class AreaOfEffect{
       
       const radiusPoints:Vector2[] = this.getRadiusPoints(affectedCoordinates, map);
       this.mergeCoordinates(affectedCoordinates, radiusPoints);
-  
+      
+      if(!includeStart){
+        affectedCoordinates.shift();
+      }
+
       let occludedPoints:Vector2[]|null = null;
       if(map){
         occludedPoints = this.occludePoints(affectedCoordinates, new Vector2(startingX, startingY), map);
       }
+
   
       return occludedPoints ? occludedPoints : affectedCoordinates;
+    }
+
+    getAffectedEntities(startingX:number, startingY:number, map:CombatMapData|null, includeStart:boolean = false) : CombatEntity[]{
+      const affectedCoordinates:Vector2[] = this.getAffectedCoordinates(startingX, startingY, map, includeStart);
+      const affectedEntities:CombatEntity[] = [];
+  
+      affectedCoordinates.forEach((coordinate) => {
+        const location = map?.locations[coordinate.y][coordinate.x];
+        if(location && location.entity){
+          affectedEntities.push(location.entity);
+        }
+      });
+  
+      return affectedEntities;
     }
   
     private mergeCoordinates(existingCoordinates:Vector2[], newCoordinates:Vector2[]) : void{

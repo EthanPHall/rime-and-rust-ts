@@ -76,7 +76,7 @@ const ActionButton: FC<ActionButtonProps> = ({addToComboList, action, actionInde
       return false;
     } else {
       reduceActionUses(actionIndex);
-      addToComboList(CombatAction.clone(actionToSendOff.action));
+      addToComboList(actionToSendOff.action.clone());
 
       return true;
     }
