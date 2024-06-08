@@ -30,9 +30,11 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
 
     function animateAndExecute(action: CombatActionWithRepeat, lastAction: boolean = false):void{
         
-        let toAnimate: AnimationDetails[] = action.combatAction.getAnimations();
+        let toAnimate: AnimationDetails[][] = action.combatAction.getAnimations();
         if(lastAction){
-            toAnimate = toAnimate.filter((animation) => !animation.dontPlayIfLast);
+            toAnimate = toAnimate.map((animationSet) => 
+                animationSet.filter((animation) => !animation.dontPlayIfLast)
+            );
         }
 
         standbyForAnimation.current = true;

@@ -46,7 +46,7 @@ abstract class CombatAction{
     }
 
     abstract execute(): void;
-    abstract getAnimations(): AnimationDetails[];
+    abstract getAnimations(): AnimationDetails[][];
 
     areEquivalent(action: CombatAction): boolean {
       return this.name === action.name && this.direction === action.direction;
@@ -92,7 +92,14 @@ abstract class CombatAction{
     getMap: () => CombatMapData;
     damage: number;
 
-    constructor(ownerId: number, direction: Directions = Directions.NONE, damage:number, getMap: () => CombatMapData, updateEntity: (id:number, newEntity: CombatEntity) => void, refreshMap: () => void){
+    constructor(
+      ownerId: number,
+      direction: Directions = Directions.NONE,
+      damage: number,
+      getMap: () => CombatMapData,
+      updateEntity: (id:number, newEntity: CombatEntity) => void,
+      refreshMap: () => void
+    ){
       super('Attack', true, ownerId, direction, updateEntity, refreshMap);
       this.getMap = getMap;
       this.damage = damage;
@@ -102,13 +109,18 @@ abstract class CombatAction{
       return new Attack(action.ownerId, action.direction, action.damage, action.getMap, action.updateEntity, action.refreshMap);
     }
 
-    execute() {
+    getTargetId(): number|undefined{
       const map: CombatMapData = this.getMap();
       const owner: CombatEntity = map.getEntityById(this.ownerId);
       const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       const targetPosition: Vector2 = Vector2.add(owner.position, directionVector);
-      const targetId:number|undefined = this.getMap().locations?.[targetPosition.y]?.[targetPosition.x].entity?.id;
+      return map.locations?.[targetPosition.y]?.[targetPosition.x].entity?.id;
+    }
 
+    execute() {
+      const targetId:number|undefined = this.getTargetId();
+      const map: CombatMapData = this.getMap();
+      
       if(targetId){
         const targetEntity = map.getEntityById(targetId).clone();
         targetEntity.hp -= this.damage;
@@ -119,16 +131,11 @@ abstract class CombatAction{
       this.refreshMap();
     }
 
-    getAnimations(): AnimationDetails[] {
-      const map: CombatMapData = this.getMap();
-      const owner: CombatEntity = map.getEntityById(this.ownerId);
-      const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
-      const targetPosition: Vector2 = Vector2.add(owner.position, directionVector);
-      const targetId:number|undefined = this.getMap().locations?.[targetPosition.y]?.[targetPosition.x].entity?.id;
+    getAnimations(): AnimationDetails[][] {
+      const targetId:number|undefined = this.getTargetId();
 
-      let result:AnimationDetails[] = [CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId)];
-      if(targetId) result.push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, targetId));
-      // if(targetId) result = [CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, targetId)];
+      const result:AnimationDetails[][] = [[CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId)]];
+      if(targetId) result[1] = [CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, targetId)];
 
       return result;
     }
@@ -147,8 +154,8 @@ abstract class CombatAction{
       this.refreshMap();
     }
 
-    getAnimations(): AnimationDetails[] {
-      return [CombatAnimationFactory.createAnimation(CombatAnimationNames.Block, Directions.NONE, this.ownerId)];
+    getAnimations(): AnimationDetails[][] {
+      return [[CombatAnimationFactory.createAnimation(CombatAnimationNames.Block, Directions.NONE, this.ownerId)]];
     }
   }
 
@@ -181,24 +188,78 @@ abstract class CombatAction{
       }
     }
 
-    getAnimations(): AnimationDetails[] {
-      const animationsToSendOff: AnimationDetails[] = [];
+    getAnimations(): AnimationDetails[][] {
+      const animationsToSendOff: AnimationDetails[][] = [[]];
 
       const map: CombatMapData = this.getMap();
       const owner: CombatEntity = map.getEntityById(this.ownerId);
 
       const targetPosition = Vector2.add(owner.position, DirectionsUtility.getVectorFromDirection(this.direction));
       const targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
+      
       if(!targetLocationData || targetLocationData.entity || targetLocationData.solid){
-        animationsToSendOff.push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Bump, this.direction, this.ownerId));
+        animationsToSendOff[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Bump, this.direction, this.ownerId));
       }
       else{
-        animationsToSendOff.push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, this.direction, this.ownerId));
+        animationsToSendOff[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, this.direction, this.ownerId));
       }
 
       return animationsToSendOff;
     }
   }
+
+  // class PullRange5 extends CombatAction {
+  //   getMap: () => CombatMapData;
+  //   damage: number;
+
+  //   constructor(
+  //     ownerId: number,
+  //     direction: Directions = Directions.NONE,
+  //     damage: number,
+  //     getMap: () => CombatMapData,
+  //     updateEntity: (id:number, newEntity: CombatEntity) => void,
+  //     refreshMap: () => void
+  //   ){
+  //     super('PullRange5', true, ownerId, direction, updateEntity, refreshMap);
+  //     this.getMap = getMap;
+  //     this.damage = damage;
+  //   }
+  
+  //   static clone(action: PullRange5) : PullRange5{
+  //     return new PullRange5(action.ownerId, action.direction, action.damage, action.getMap, action.updateEntity, action.refreshMap);
+  //   }
+
+  //   getTargetId(): number|undefined{
+  //     const map: CombatMapData = this.getMap();
+  //     const owner: CombatEntity = map.getEntityById(this.ownerId);
+  //     const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
+  //     const targetPosition: Vector2 = Vector2.add(owner.position, directionVector);
+  //     return map.locations?.[targetPosition.y]?.[targetPosition.x].entity?.id;
+  //   }
+
+  //   execute() {
+  //     const targetId:number|undefined = this.getTargetId();
+  //     const map: CombatMapData = this.getMap();
+      
+  //     if(targetId){
+  //       const targetEntity = map.getEntityById(targetId).clone();
+  //       targetEntity.hp -= this.damage;
+  //       this.updateEntity(targetEntity.id, targetEntity);
+  //       return;
+  //     }
+
+  //     this.refreshMap();
+  //   }
+
+  //   getAnimations(): AnimationDetails[] {
+  //     const targetId:number|undefined = this.getTargetId();
+
+  //     let result:AnimationDetails[] = [CombatAnimationFactory.createAnimation(CombatAnimationNames.PullRange5, this.direction, this.ownerId)];
+  //     if(targetId) result.push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, targetId));
+
+  //     return result;
+  //   }
+  // }
   
 export default CombatAction;
 export { Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses};

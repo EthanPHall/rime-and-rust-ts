@@ -8,12 +8,6 @@ import CombatAnimationFactory, { CombatAnimationNames } from "./CombatAnimationF
 import Directions from "../utility/Directions";
 
 class MotionCombatAnimator implements IAnimator{
-    // private setAnimationList:(newAnimations: MotionAnimation[]) => void;
-
-    // constructor(setAnimationList:(newAnimations: MotionAnimation[]) => void){
-    //     this.setAnimationList = setAnimationList;
-    // }
-
     private getMapData: () => CombatMapData;
     private mapAnimate: (value: ElementOrSelector, keyframes: DOMKeyframesDefinition, options?: DynamicAnimationOptions | undefined) => AnimationPlaybackControls;
     constructor(getMapData: () => CombatMapData, mapAnimate: (value: ElementOrSelector, keyframes: DOMKeyframesDefinition, options?: DynamicAnimationOptions | undefined) => AnimationPlaybackControls){
@@ -21,20 +15,66 @@ class MotionCombatAnimator implements IAnimator{
         this.getMapData = getMapData;
     }
 
-    animate(animationDetails: AnimationDetails[]): Promise<IAnimationCleanup>{
-        const motionsAnimations: MotionAnimation[] = animationDetails.map((animation) => {return CombatAnimationDetailsToMotionAnimation.convert(animation)});
+    // animate(animationDetails: AnimationDetails[]): Promise<IAnimationCleanup>{
+    //     const motionsAnimations: MotionAnimation[] = animationDetails.map((animation) => {return CombatAnimationDetailsToMotionAnimation.convert(animation)});
+    //     const mapData:CombatMapData = this.getMapData();
+        
+    //     return new Promise<IAnimationCleanup>(async (resolve) => {
+    //         for(let i = 0; i < motionsAnimations.length; i++){
+    //             const currentAnimation: MotionAnimation = motionsAnimations[i];
+    //             const positionOfEntityToAnimate: Vector2 = mapData.getEntityById(currentAnimation.entityIdToAnimate).position; 
+                
+    //             for(let j = 0; j < currentAnimation.animation.length; j++){
+    //                 await this.mapAnimate(mapData.positionToCSSIdString(positionOfEntityToAnimate), currentAnimation.animation[j], currentAnimation.options?.[j]);
+    //             }
+    //         }
+            
+    //         resolve({cleanupAnimations: this.cleanupAnimations, args: [this.getMapData, this.mapAnimate]});
+    //     });
+    // }
+
+    animate(animationDetails: AnimationDetails[][]): Promise<IAnimationCleanup>{
+        const animationSets: MotionAnimation[][] = animationDetails.map((animationSet) => {
+            return animationSet.map((animation) => CombatAnimationDetailsToMotionAnimation.convert(animation));
+        });
         const mapData:CombatMapData = this.getMapData();
         
         return new Promise<IAnimationCleanup>(async (resolve) => {
-            for(let i = 0; i < motionsAnimations.length; i++){
-                const currentAnimation: MotionAnimation = motionsAnimations[i];
-                const positionOfEntityToAnimate: Vector2 = mapData.getEntityById(currentAnimation.entityIdToAnimate).position; 
-                
-                for(let j = 0; j < currentAnimation.animation.length; j++){
-                    await this.mapAnimate(mapData.positionToCSSIdString(positionOfEntityToAnimate), currentAnimation.animation[j], currentAnimation.options?.[j]);
+            let keyFrameIndex = 0;
+            console.log("Sets",animationSets);
+
+            //i increments when all animations in the set are complete
+            for(let setIndex = 0; setIndex < animationSets.length;){
+                const currentAnimationSet: MotionAnimation[] = animationSets[setIndex];
+                const playbackControls: AnimationPlaybackControls[] = [];
+
+                for(let animationIndex = 0; animationIndex < currentAnimationSet.length; animationIndex++){
+                    const currentAnimation: MotionAnimation = currentAnimationSet[animationIndex];
+                    const positionOfEntityToAnimate: Vector2 = mapData.getEntityById(currentAnimation.entityIdToAnimate).position; 
+                    
+                    console.log("current animation",currentAnimation);
+
+                    if(keyFrameIndex < currentAnimation.keyframes.length){
+                        playbackControls.push(
+                            this.mapAnimate(mapData.positionToCSSIdString(positionOfEntityToAnimate), currentAnimation.keyframes[keyFrameIndex], currentAnimation.options?.[keyFrameIndex])
+                        );
+                    }
+                }
+
+                if(playbackControls.length > 0){
+                    console.log("Should be waiting",playbackControls);
+                    await Promise.all(playbackControls);
+                    keyFrameIndex++;
+                    console.log("KeyframeIndex++",keyFrameIndex);
+                }
+                else{
+                    setIndex++;
+                    console.log("setIndex++",setIndex);
+                    keyFrameIndex = 0;
                 }
             }
             
+            console.log("------DONE------");
             resolve({cleanupAnimations: this.cleanupAnimations, args: [this.getMapData, this.mapAnimate]});
         });
     }
@@ -48,7 +88,7 @@ class MotionCombatAnimator implements IAnimator{
         return new Promise((resolve) => {
             mapData.locations.forEach((row, rowIndex) => {
                 row.forEach((location, columnIndex) => {
-                    mapAnimate(mapData.positionToCSSIdString(new Vector2(rowIndex, columnIndex)), resetAnimation.animation[0], resetAnimation.options?.[0]);
+                    mapAnimate(mapData.positionToCSSIdString(new Vector2(rowIndex, columnIndex)), resetAnimation.keyframes[0], resetAnimation.options?.[0]);
                 });
             });
 

@@ -6,7 +6,7 @@ interface IAnimationCleanup {
 }
 
 interface IAnimator {
-    animate: (animationDetails: AnimationDetails[]) => Promise<IAnimationCleanup>;
+    animate: (animationDetails: AnimationDetails[][]) => Promise<IAnimationCleanup>;
 }
 
 export default IAnimator;

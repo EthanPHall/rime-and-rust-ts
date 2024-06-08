@@ -7,12 +7,12 @@ import CSSPropertyGetter from "../utility/CSSPropertyGetter";
 
 class MotionAnimation{
     entityIdToAnimate: number;
-    animation: DOMKeyframesDefinition[];
+    keyframes: DOMKeyframesDefinition[];
     options: DynamicAnimationOptions[]|undefined;
 
-    constructor(entityIdToAnimate:number, animation: DOMKeyframesDefinition[], options: DynamicAnimationOptions[]|undefined){
+    constructor(entityIdToAnimate:number, keyframes: DOMKeyframesDefinition[], options: DynamicAnimationOptions[]|undefined){
         this.entityIdToAnimate = entityIdToAnimate;
-        this.animation = animation;
+        this.keyframes = keyframes;
         this.options = options;
 
     }
@@ -47,8 +47,8 @@ class CombatAnimationDetailsToMotionAnimation{
                         {duration: combatAnimation.animationLength/2000}
                     ]);
             case CombatAnimationNames.Block:
-                return new MotionAnimation
-                (combatAnimation.entityToAnimateId, 
+                return new MotionAnimation(
+                    combatAnimation.entityToAnimateId, 
                     [
                         {color: "yellow", scale: 1.1},
                         {color: CSSPropertyGetter.getProperty("--text-color"), scale: 1},
