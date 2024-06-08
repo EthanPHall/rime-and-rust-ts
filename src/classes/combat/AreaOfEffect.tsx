@@ -11,6 +11,11 @@ class AreaOfEffect{
     private cone:boolean;
     constructor(length:number, direction:Directions, radius:number, cone:boolean){
       this.length = length;
+      if(length != 0){
+        //AOE includes the starting point, so increase length to account for that
+        this.length++;
+      }
+
       this.direction = direction;
       this.radius = radius;
       this.cone = cone;
