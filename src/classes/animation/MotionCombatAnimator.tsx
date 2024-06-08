@@ -15,24 +15,6 @@ class MotionCombatAnimator implements IAnimator{
         this.getMapData = getMapData;
     }
 
-    // animate(animationDetails: AnimationDetails[]): Promise<IAnimationCleanup>{
-    //     const motionsAnimations: MotionAnimation[] = animationDetails.map((animation) => {return CombatAnimationDetailsToMotionAnimation.convert(animation)});
-    //     const mapData:CombatMapData = this.getMapData();
-        
-    //     return new Promise<IAnimationCleanup>(async (resolve) => {
-    //         for(let i = 0; i < motionsAnimations.length; i++){
-    //             const currentAnimation: MotionAnimation = motionsAnimations[i];
-    //             const positionOfEntityToAnimate: Vector2 = mapData.getEntityById(currentAnimation.entityIdToAnimate).position; 
-                
-    //             for(let j = 0; j < currentAnimation.animation.length; j++){
-    //                 await this.mapAnimate(mapData.positionToCSSIdString(positionOfEntityToAnimate), currentAnimation.animation[j], currentAnimation.options?.[j]);
-    //             }
-    //         }
-            
-    //         resolve({cleanupAnimations: this.cleanupAnimations, args: [this.getMapData, this.mapAnimate]});
-    //     });
-    // }
-
     animate(animationDetails: AnimationDetails[][]): Promise<IAnimationCleanup>{
         const animationSets: MotionAnimation[][] = animationDetails.map((animationSet) => {
             return animationSet.map((animation) => CombatAnimationDetailsToMotionAnimation.convert(animation));
@@ -41,7 +23,7 @@ class MotionCombatAnimator implements IAnimator{
         
         return new Promise<IAnimationCleanup>(async (resolve) => {
             let keyFrameIndex = 0;
-            console.log("Sets",animationSets);
+            // console.log("Sets",animationSets);
 
             //i increments when all animations in the set are complete
             for(let setIndex = 0; setIndex < animationSets.length;){
@@ -50,31 +32,31 @@ class MotionCombatAnimator implements IAnimator{
 
                 for(let animationIndex = 0; animationIndex < currentAnimationSet.length; animationIndex++){
                     const currentAnimation: MotionAnimation = currentAnimationSet[animationIndex];
-                    const positionOfEntityToAnimate: Vector2 = mapData.getEntityById(currentAnimation.entityIdToAnimate).position; 
+                    const positionToAnimate: Vector2 = currentAnimation.positionToAnimate ? currentAnimation.positionToAnimate : mapData.getEntityById(currentAnimation.entityIdToAnimate).position; 
                     
-                    console.log("current animation",currentAnimation);
+                    // console.log("current animation",currentAnimation);
 
                     if(keyFrameIndex < currentAnimation.keyframes.length){
                         playbackControls.push(
-                            this.mapAnimate(mapData.positionToCSSIdString(positionOfEntityToAnimate), currentAnimation.keyframes[keyFrameIndex], currentAnimation.options?.[keyFrameIndex])
+                            this.mapAnimate(mapData.positionToCSSIdString(positionToAnimate), currentAnimation.keyframes[keyFrameIndex], currentAnimation.options?.[keyFrameIndex])
                         );
                     }
                 }
 
                 if(playbackControls.length > 0){
-                    console.log("Should be waiting",playbackControls);
+                    // console.log("Should be waiting",playbackControls);
                     await Promise.all(playbackControls);
                     keyFrameIndex++;
-                    console.log("KeyframeIndex++",keyFrameIndex);
+                    // console.log("KeyframeIndex++",keyFrameIndex);
                 }
                 else{
                     setIndex++;
-                    console.log("setIndex++",setIndex);
+                    // console.log("setIndex++",setIndex);
                     keyFrameIndex = 0;
                 }
             }
             
-            console.log("------DONE------");
+            // console.log("------DONE------");
             resolve({cleanupAnimations: this.cleanupAnimations, args: [this.getMapData, this.mapAnimate]});
         });
     }

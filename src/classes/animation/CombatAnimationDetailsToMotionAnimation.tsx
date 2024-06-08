@@ -9,12 +9,13 @@ class MotionAnimation{
     entityIdToAnimate: number;
     keyframes: DOMKeyframesDefinition[];
     options: DynamicAnimationOptions[]|undefined;
+    positionToAnimate:Vector2|null;
 
-    constructor(entityIdToAnimate:number, keyframes: DOMKeyframesDefinition[], options: DynamicAnimationOptions[]|undefined){
+    constructor(entityIdToAnimate:number, keyframes: DOMKeyframesDefinition[], options: DynamicAnimationOptions[]|undefined, positionToAnimate:Vector2|null = null){
         this.entityIdToAnimate = entityIdToAnimate;
         this.keyframes = keyframes;
         this.options = options;
-
+        this.positionToAnimate = positionToAnimate;
     }
 }
 
@@ -29,10 +30,12 @@ class CombatAnimationDetailsToMotionAnimation{
                 return new MotionAnimation(
                     combatAnimation.entityToAnimateId, 
                     [
-                        {x: xyIncrement.x, y: xyIncrement.y}                    ],
+                        {x: xyIncrement.x, y: xyIncrement.y}                    
+                    ],
                     [
                         {duration: combatAnimation.animationLength/1000}
-                    ]);
+                    ],
+                    combatAnimation.positionToAnimate);
             case CombatAnimationNames.Attack:
                 xyIncrement.x *= parseFloat(CSSPropertyGetter.getProperty("--combat-location-width")) / 3;
                 xyIncrement.y *= parseFloat(CSSPropertyGetter.getProperty("--combat-location-height")) / 3;
@@ -45,7 +48,8 @@ class CombatAnimationDetailsToMotionAnimation{
                     [
                         {duration: combatAnimation.animationLength/2000},
                         {duration: combatAnimation.animationLength/2000}
-                    ]);
+                    ],
+                    combatAnimation.positionToAnimate);
             case CombatAnimationNames.Block:
                 return new MotionAnimation(
                     combatAnimation.entityToAnimateId, 
@@ -56,7 +60,8 @@ class CombatAnimationDetailsToMotionAnimation{
                     [
                         {duration: combatAnimation.animationLength/2000},
                         {duration: combatAnimation.animationLength/2000}
-                    ]
+                    ],
+                    combatAnimation.positionToAnimate
                 );
             case CombatAnimationNames.Bump:
                 xyIncrement.x *= parseFloat(CSSPropertyGetter.getProperty("--combat-location-width")) / 2;
@@ -70,7 +75,9 @@ class CombatAnimationDetailsToMotionAnimation{
                     [
                         {duration: combatAnimation.animationLength/2000},
                         {duration: combatAnimation.animationLength/2000}
-                    ]);
+                    ],
+                    combatAnimation.positionToAnimate
+                );
             case CombatAnimationNames.Hurt:
                 const leftMove:number = parseFloat(CSSPropertyGetter.getProperty("--combat-location-width")) / 10;
                 const rightMove:number = -leftMove;
@@ -85,12 +92,27 @@ class CombatAnimationDetailsToMotionAnimation{
                         {duration: combatAnimation.animationLength/3000},
                         {duration: combatAnimation.animationLength/3000},
                         {duration: combatAnimation.animationLength/3000},
-                    ]
+                    ],
+                    combatAnimation.positionToAnimate
+                );
+            case CombatAnimationNames.Psychic:
+                const emphasisScale:number = parseFloat(CSSPropertyGetter.getProperty("--emphasis-scale"));
+                return new MotionAnimation(
+                    combatAnimation.entityToAnimateId, 
+                    [
+                        {scaleX: emphasisScale, scaleY: emphasisScale, color: CSSPropertyGetter.getProperty("--psychic-color")},
+                        {scaleX: 1, scaleY: 1, color: CSSPropertyGetter.getProperty("--text-color")}
+                    ], 
+                    [
+                        {duration: combatAnimation.animationLength/2000},
+                        {duration: combatAnimation.animationLength/2000},
+                    ],
+                    combatAnimation.positionToAnimate
                 );
             case CombatAnimationNames.Reset:
-                return new MotionAnimation(combatAnimation.entityToAnimateId, [{x: 0, y:0}], [{duration: 0}]);
+                return new MotionAnimation(combatAnimation.entityToAnimateId, [{x: 0, y:0}], [{duration: 0}], combatAnimation.positionToAnimate);
             default:
-                return new MotionAnimation(combatAnimation.entityToAnimateId, [{x: 0, y:0}], [{duration: 0}]);
+                return new MotionAnimation(combatAnimation.entityToAnimateId, [{x: 0, y:0}], [{duration: 0}], combatAnimation.positionToAnimate);
         }
     }
 }

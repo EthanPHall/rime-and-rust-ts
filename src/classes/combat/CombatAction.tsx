@@ -235,15 +235,16 @@ abstract class CombatAction{
       return new PullRange5(this.ownerId, this.direction, this.damage, this.getMap, this.updateEntity, this.refreshMap);
     }
 
-    getTargetIds(): number[]{
+    getTargets(): [number[], Vector2[]]{
       const map: CombatMapData = this.getMap();
       const owner: CombatEntity = map.getEntityById(this.ownerId);
-      const targetIds:number[] = this.aoe.getAffectedEntities(owner.position.x, owner.position.y, map).map((entity) => entity.id);
-      return targetIds;
+      const [entities, positions] = this.aoe.getAffectedEntities(owner.position.x, owner.position.y, map);
+      const targetIds:number[] = entities.map((entity) => entity.id);
+      return [targetIds, positions];
     }
 
     execute() {
-      const targetIds:number[] = this.getTargetIds();
+      const [targetIds] = this.getTargets();
       const map: CombatMapData = this.getMap();
       const pullVector:Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getOppositeDirection(this.direction));
       
@@ -258,13 +259,18 @@ abstract class CombatAction{
     }
 
     getAnimations(): AnimationDetails[][] {
-      const targetIds:number[] = this.getTargetIds();
+      const [targetIds, positions] = this.getTargets();
+      const reverseDirection:Directions = DirectionsUtility.getOppositeDirection(this.direction);
 
-      const result:AnimationDetails[][] = [[],[]];
+      const result:AnimationDetails[][] = [[],[],[]];
       result[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId));
 
+      positions.forEach((position) => {
+        result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Psychic, this.direction, -1, false, position));
+      });
+
       targetIds.forEach((targetId) => {
-        result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, targetId));
+        result[2].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, reverseDirection, targetId));
       });
 
       return result;
@@ -295,15 +301,16 @@ abstract class CombatAction{
       return new PushRange5(this.ownerId, this.direction, this.damage, this.getMap, this.updateEntity, this.refreshMap);
     }
 
-    getTargetIds(): number[]{
+    getTargets(): [number[], Vector2[]]{
       const map: CombatMapData = this.getMap();
       const owner: CombatEntity = map.getEntityById(this.ownerId);
-      const targetIds:number[] = this.aoe.getAffectedEntities(owner.position.x, owner.position.y, map).map((entity) => entity.id);
-      return targetIds;
+      const [entities, positions] = this.aoe.getAffectedEntities(owner.position.x, owner.position.y, map);
+      const targetIds:number[] = entities.map((entity) => entity.id);
+      return [targetIds, positions];
     }
 
     execute() {
-      const targetIds:number[] = this.getTargetIds();
+      const [targetIds] = this.getTargets();
       const map: CombatMapData = this.getMap();
       const pushVector:Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       
@@ -318,13 +325,17 @@ abstract class CombatAction{
     }
 
     getAnimations(): AnimationDetails[][] {
-      const targetIds:number[] = this.getTargetIds();
+      const [targetIds, positions] = this.getTargets();
 
-      const result:AnimationDetails[][] = [[],[]];
+      const result:AnimationDetails[][] = [[],[],[]];
       result[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId));
 
+      positions.forEach((position) => {
+        result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Psychic, this.direction, -1, false, position));
+      });
+
       targetIds.forEach((targetId) => {
-        result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, targetId));
+        result[2].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, this.direction, targetId));
       });
 
       return result;

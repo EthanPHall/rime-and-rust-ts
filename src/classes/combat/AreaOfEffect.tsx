@@ -53,7 +53,7 @@ class AreaOfEffect{
       }
 
       let occludedPoints:Vector2[]|null = null;
-      if(map){
+      if(map != null){
         occludedPoints = this.occludePoints(affectedCoordinates, new Vector2(startingX, startingY), map);
       }
 
@@ -61,7 +61,7 @@ class AreaOfEffect{
       return occludedPoints ? occludedPoints : affectedCoordinates;
     }
 
-    getAffectedEntities(startingX:number, startingY:number, map:CombatMapData|null, includeStart:boolean = false) : CombatEntity[]{
+    getAffectedEntities(startingX:number, startingY:number, map:CombatMapData|null, includeStart:boolean = false) : [CombatEntity[], Vector2[]]{
       const affectedCoordinates:Vector2[] = this.getAffectedCoordinates(startingX, startingY, map, includeStart);
       const affectedEntities:CombatEntity[] = [];
   
@@ -72,7 +72,7 @@ class AreaOfEffect{
         }
       });
   
-      return affectedEntities;
+      return [affectedEntities, affectedCoordinates];
     }
   
     private mergeCoordinates(existingCoordinates:Vector2[], newCoordinates:Vector2[]) : void{
