@@ -70,7 +70,7 @@ const CombatMapFramerMotion: FC<CombatMapProps> = ({map, setMap, aoeToDisplay, s
             <div key={"combat-map-" + row + "-" + i} className="combat-map-row">
               {row.map((location, j) => {
                 return (
-                  <span id={positionToId(location)} className={`combat-map-location ${location.highlight ? "highlight" : ""}`} key={"combat-map-location:" + location.y*10+location.x}>{location.symbol}</span>
+                  <span onClick={() => {console.log(location)}} id={positionToId(location)} className={`combat-map-location ${location.highlight ? "highlight" : ""}`} key={"combat-map-location:" + location.y*10+location.x}>{location.symbol}</span>
                 );
               })}
             </div>

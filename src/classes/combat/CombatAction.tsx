@@ -248,13 +248,6 @@ abstract class CombatAction{
       const map: CombatMapData = this.getMap();
       const pullVector:Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getOppositeDirection(this.direction));
       
-      // targetIds.forEach((targetId) => {
-      //   const targetEntity = map.getEntityById(targetId).clone();
-      //   targetEntity.hp -= this.damage;
-      //   targetEntity.position = Vector2.add(targetEntity.position, pullVector);
-      //   this.updateEntity(targetEntity.id, targetEntity);
-      // });
-
       //TODO: Refactor this into a method, and do the same in getAnimations
       let previousEntity:CombatEntity|null = null;
       let previousDidBump:boolean = false;
@@ -314,7 +307,6 @@ abstract class CombatAction{
       for(let i = 0; i < targetIds.length; i++){
         let bumped:boolean = false;
         const targetEntity = map.getEntityById(targetIds[i]).clone();
-        targetEntity.hp -= this.damage;
 
         const backwardPosition:Vector2 = Vector2.add(targetEntity.position, backwardsVector);
         if(previousEntity){

@@ -81,7 +81,8 @@ class CombatMapTemplate1 extends CombatMapTemplate{
         {start: new Vector2(12, 8), end: new Vector2(12, 13)},
       ]
     );
-    walls.push(new Wall(IdGenerator.generateUniqueId(), 10, 10, '#', 'Wall', new Vector2(7, 1), false));
+    walls.push(Wall.createDefaultWall(new Vector2(7, 4)));
+
     const enemies: EnemyStarterInfo[] = [
       new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(8, 7)),
       new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(9, 11)),
@@ -200,7 +201,7 @@ const CombatParent: FC<CombatParentProps> = () => {
       if (hazard.hp <= 0) {
         return;
       }
-      newMap.setLocationWithEntity(hazard);
+      newMap.setLocationWithHazard(hazard);
     });
 
     newMap.setLocationWithEntity(getPlayer());

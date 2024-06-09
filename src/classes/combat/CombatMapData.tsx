@@ -1,8 +1,10 @@
+import { type } from "os";
 import AnimationDetails from "../animation/AnimationDetails";
 import Vector2 from "../utility/Vector2";
 import AreaOfEffect from "./AreaOfEffect";
 import CombatEntity from "./CombatEntity";
 import CombatLocationData from "./CombatLocationData";
+import CombatHazard from "./CombatHazard";
 
 class CombatMapData{
     locations: CombatLocationData[][];
@@ -30,6 +32,10 @@ class CombatMapData{
     setLocationWithEntity(entity: CombatEntity):void{
       this.locations[entity.position.y][entity.position.x] = new CombatLocationData(entity.position.x, entity.position.y, entity.name + " " + entity.id, entity.symbol, false, false);
       this.locations[entity.position.y][entity.position.x].entity = entity;
+    }
+    setLocationWithHazard(hazard: CombatHazard):void{
+      this.setLocationWithEntity(hazard);
+      this.locations[hazard.position.y][hazard.position.x].solid = hazard.solid;
     }
 
     applyAnimationToEntity(id: number, animation: AnimationDetails):void{
