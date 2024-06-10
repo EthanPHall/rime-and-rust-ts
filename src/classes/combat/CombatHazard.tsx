@@ -5,13 +5,37 @@ import CombatEntity from "./CombatEntity";
 
 abstract class CombatHazard extends CombatEntity{
     solid: boolean;
+    intangible: boolean;
     onlyDisplayOneInSidebar: boolean;
+    previousEntityOnThisSpace: CombatEntity | null = null;
   
-    constructor(id:number, hp: number, maxHp: number, symbol: string, name: string, position: Vector2, solid: boolean, description?: string, onlyDisplayOneInSidebar: boolean = false){
+    constructor(
+      id: number, 
+      hp: number, 
+      maxHp: number, 
+      symbol: string, 
+      name: string, 
+      position: Vector2, 
+      solid: boolean, 
+      description: string = "", 
+      onlyDisplayOneInSidebar: boolean = false,
+      intangible: boolean = false
+    ){
       super(id, hp, maxHp, symbol, name, position, description);
       this.solid = solid;
       this.onlyDisplayOneInSidebar = onlyDisplayOneInSidebar;
+      this.intangible = intangible;
     }
+
+    isWalkable(): boolean {
+      return this.intangible;
+    }
+
+    protected newEntityIsDifferent(newEntity: CombatEntity): boolean{
+      return newEntity.id !== this.previousEntityOnThisSpace?.id;
+    }
+
+    abstract handleNewEntityOnThisSpace(newEntity: CombatEntity|null): CombatEntity|null;
   }
   
   class Wall extends CombatHazard{
@@ -43,6 +67,11 @@ abstract class CombatHazard extends CombatEntity{
     clone(): CombatHazard{
       return new Wall(this.id, this.hp, this.maxHp, this.symbol, this.name, this.position, this.solid);
     }
+
+    handleNewEntityOnThisSpace(newEntity: CombatEntity|null): CombatEntity|null {
+      this.previousEntityOnThisSpace = newEntity;
+      return null;
+    }
   }
   
   class VolatileCanister extends CombatHazard{
@@ -53,7 +82,39 @@ abstract class CombatHazard extends CombatEntity{
     clone(): CombatHazard{
       return new VolatileCanister(this.id, this.hp, this.maxHp, this.symbol, this.name, this.position, this.solid);
     }
+
+    handleNewEntityOnThisSpace(newEntity: CombatEntity|null): CombatEntity|null {
+      this.previousEntityOnThisSpace = newEntity;
+      return null;
+    }
+  }
+
+  class BurningFloor extends CombatHazard{
+    static DESCRIPTION:string = 'Sturdy walls. Click a specific wall in the map to see its health.';
+
+    damage: number;
+
+    constructor(id:number, hp: number, maxHp: number, symbol: string, name: string, position: Vector2, solid: boolean, damage: number = 5){
+      super(id, hp, maxHp, symbol, name, position, solid, BurningFloor.DESCRIPTION, true, true);
+      this.damage = damage;
+    }
+
+    clone(): CombatHazard{
+      return new BurningFloor(this.id, this.hp, this.maxHp, this.symbol, this.name, this.position, this.solid, this.damage);
+    }
+
+    handleNewEntityOnThisSpace(newEntity: CombatEntity|null): CombatEntity|null {
+      let updatedEntity:CombatEntity|null = null;
+      
+      if(newEntity !== null && this.newEntityIsDifferent(newEntity)){
+        updatedEntity = newEntity.clone();
+        updatedEntity.takeDamage(this.damage);
+      }
+      
+      this.previousEntityOnThisSpace = newEntity;
+      return updatedEntity;
+    }
   }
 
 export default CombatHazard;
-export { Wall, VolatileCanister };
+export { Wall, VolatileCanister, BurningFloor};

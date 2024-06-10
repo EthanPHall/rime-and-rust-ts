@@ -182,7 +182,9 @@ abstract class CombatAction{
       const targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
       
       const updatedEntity = owner.clone();
-      if(!targetLocationData || targetLocationData.entity || targetLocationData.solid){
+      const isWalkable:boolean = targetLocationData.entity ? targetLocationData.entity.isWalkable() : true;
+      
+      if(!targetLocationData || !isWalkable){
         this.refreshMap();
       }
       else{
@@ -199,8 +201,9 @@ abstract class CombatAction{
 
       const targetPosition = Vector2.add(owner.position, DirectionsUtility.getVectorFromDirection(this.direction));
       const targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
+      const isWalkable:boolean = targetLocationData.entity ? targetLocationData.entity.isWalkable() : true;
       
-      if(!targetLocationData || targetLocationData.entity || targetLocationData.solid){
+      if(!targetLocationData || !isWalkable){
         animationsToSendOff[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Bump, this.direction, this.ownerId));
       }
       else{
@@ -265,7 +268,7 @@ abstract class CombatAction{
           if(currentIsInFrontOfPrevious){
             bumped = previousDidBump;
           }
-        }else if(map.locations[backwardPosition.y][backwardPosition.x].entity){
+        }else if(!map.locations[backwardPosition.y][backwardPosition.x].entity?.isWalkable()){
           bumped = true;
         }
 
@@ -315,7 +318,7 @@ abstract class CombatAction{
           if(currentIsInFrontOfPrevious){
             bumped = previousDidBump;
           }
-        }else if(map.locations[backwardPosition.y][backwardPosition.x].entity){
+        }else if(!map.locations[backwardPosition.y][backwardPosition.x].entity?.isWalkable()){
           bumped = true;
         }
 
@@ -397,7 +400,7 @@ abstract class CombatAction{
           if(currentIsBehindPrevious){
             bumped = previousDidBump;
           }
-        }else if(map.locations[forwardPosition.y][forwardPosition.x].entity){
+        }else if(!map.locations[forwardPosition.y][forwardPosition.x].entity?.isWalkable()){
           bumped = true;
         }
 
@@ -441,7 +444,7 @@ abstract class CombatAction{
           if(currentIsBehindPrevious){
             bumped = previousDidBump;
           }
-        }else if(map.locations[forwardPosition.y][forwardPosition.x].entity){
+        }else if(!map.locations[forwardPosition.y][forwardPosition.x].entity?.isWalkable()){
           bumped = true;
         }
 

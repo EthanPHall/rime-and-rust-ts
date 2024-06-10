@@ -18,7 +18,7 @@ import MapUtilities from '../../../classes/utility/MapUtilities';
 import CombatLocationData from '../../../classes/combat/CombatLocationData';
 import CombatInfoDisplay, { CombatInfoDisplayProps } from '../CombatInfoDisplay/CombatInfoDisplay';
 import CombatEnemy, { RustedBrute, RustedShambler } from '../../../classes/combat/CombatEnemy';
-import CombatHazard, { VolatileCanister, Wall } from '../../../classes/combat/CombatHazard';
+import CombatHazard, { BurningFloor, VolatileCanister, Wall } from '../../../classes/combat/CombatHazard';
 import CombatPlayer from '../../../classes/combat/CombatPlayer';
 import TurnManager from '../../../classes/combat/TurnManager';
 import useTurnManager from '../../../hooks/useTurnManager';
@@ -35,6 +35,7 @@ import MotionCombatAnimator from '../../../classes/animation/MotionCombatAnimato
 import { MotionAnimation } from '../../../classes/animation/CombatAnimationDetailsToMotionAnimation';
 import CombatEnemyFactory from '../../../classes/combat/CombatEnemyFactory';
 import TurnTaker from '../../../classes/combat/TurnTaker';
+import useCombatHazardReactions from '../../../hooks/useCombatHazardReactions';
 
 interface CombatParentProps {}
 
@@ -94,7 +95,10 @@ class CombatMapTemplate1 extends CombatMapTemplate{
       new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 3)),
       new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 2)),
     ];
-    const hazards: CombatHazard[] = [new VolatileCanister(IdGenerator.generateUniqueId(), 10, 10, '+', 'Volatile Canister', new Vector2(3, 3), false)];
+    const hazards: CombatHazard[] = [
+      new VolatileCanister(IdGenerator.generateUniqueId(), 10, 10, '+', 'Volatile Canister', new Vector2(3, 3), false),
+      new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 10), false, 5),
+    ];
 
     super(size, enemies, [...walls, ...hazards], advanceTurn);
   }
@@ -151,6 +155,9 @@ const CombatParent: FC<CombatParentProps> = () => {
   const actionExecutorRef = useRef<IActionExecutor>(actionExecutor);
   
   const allTurnTakers = useRef<TurnTaker[]>([getPlayer(), ...getEnemies()]);
+
+  //When entities step on hazards, this handles that.
+  useCombatHazardReactions(playerForEffects, enemiesForEffects, hazardsForEffects, mapToSendOff, updateEntity);
 
   useEffect(() => {
     const enemyFactory = new CombatEnemyFactory(
@@ -241,12 +248,12 @@ const CombatParent: FC<CombatParentProps> = () => {
   }
 
   function updateEntity(id: number, newEntity: CombatEntity) {
-    if (newEntity instanceof CombatEnemy) {
-      const newEnemies = getEnemies().map(enemy => enemy.id === id ? newEntity : enemy);
-      setEnemies(newEnemies);
-    } else if (newEntity instanceof CombatHazard) {
+    if (newEntity instanceof CombatHazard) {
       const newHazards = getHazards().map(hazard => hazard.id === id ? newEntity : hazard);
       setHazards(newHazards);
+    } else if (newEntity instanceof CombatEnemy) {
+      const newEnemies = getEnemies().map(enemy => enemy.id === id ? newEntity : enemy);
+      setEnemies(newEnemies);
     } else if (newEntity instanceof CombatPlayer) {
       setPlayer(newEntity);
     }

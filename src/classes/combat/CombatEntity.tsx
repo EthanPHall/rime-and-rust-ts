@@ -21,6 +21,13 @@ abstract class CombatEntity{
     }
 
     abstract clone(): CombatEntity;
+    takeDamage(damage:number): void{
+      this.hp -= damage;
+    }
+
+    isWalkable(): boolean{
+      return false;
+    }
   }
 
 export default CombatEntity;
