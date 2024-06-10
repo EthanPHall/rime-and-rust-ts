@@ -28,6 +28,10 @@ abstract class CombatEntity{
     isWalkable(): boolean{
       return false;
     }
+
+    isMovable(): boolean{
+      return true;
+    }
   }
 
 export default CombatEntity;

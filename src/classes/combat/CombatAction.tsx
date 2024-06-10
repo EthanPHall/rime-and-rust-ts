@@ -117,7 +117,10 @@ abstract class CombatAction{
       const owner: CombatEntity = map.getEntityById(this.ownerId);
       const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       const targetPosition: Vector2 = Vector2.add(owner.position, directionVector);
-      return map.locations?.[targetPosition.y]?.[targetPosition.x].entity?.id;
+      const targetId:number|undefined = map.locations?.[targetPosition.y]?.[targetPosition.x].entity?.id
+      
+      if(targetId === undefined || targetId === owner.id) {return undefined;}
+      else {return targetId;}
     }
 
     execute() {
@@ -143,6 +146,76 @@ abstract class CombatAction{
       return result;
     }
   }
+
+
+
+
+
+  class AttackForHazards extends CombatAction {
+    getMap: () => CombatMapData;
+    damage: number;
+    ownerEntity: CombatEntity;
+
+    constructor(
+      ownerId: number,
+      direction: Directions = Directions.NONE,
+      damage: number,
+      getMap: () => CombatMapData,
+      updateEntity: (id:number, newEntity: CombatEntity) => void,
+      refreshMap: () => void,
+      ownerEntity: CombatEntity
+    ){
+      super('Attack', true, ownerId, direction, updateEntity, refreshMap);
+      this.getMap = getMap;
+      this.damage = damage;
+      this.ownerEntity = ownerEntity;
+    }
+  
+    clone() : AttackForHazards{
+      return new AttackForHazards(this.ownerId, this.direction, this.damage, this.getMap, this.updateEntity, this.refreshMap, this.ownerEntity);
+    }
+
+    getTargetId(): number|undefined{
+      const map: CombatMapData = this.getMap();
+      const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
+      const targetPosition: Vector2 = Vector2.add(this.ownerEntity.position, directionVector);
+      const targetId:number|undefined = map.locations?.[targetPosition.y]?.[targetPosition.x].entity?.id
+      
+      if(targetId === undefined || targetId === this.ownerEntity.id) {return undefined;}
+      else {return targetId;}
+    }
+
+    execute() {
+      const targetId:number|undefined = this.getTargetId();
+      const map: CombatMapData = this.getMap();
+      
+      if(targetId){
+        const targetEntity = map.getEntityById(targetId).clone();
+        targetEntity.hp -= this.damage;
+        this.updateEntity(targetEntity.id, targetEntity);
+        return;
+      }
+
+      this.refreshMap();
+    }
+
+    getAnimations(): AnimationDetails[][] {
+      const targetId:number|undefined = this.getTargetId();
+
+      const result:AnimationDetails[][] = [[]];
+      if(targetId) result[0] = [CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, targetId)];
+
+      return result;
+    }
+  }
+
+
+
+
+
+
+
+
   class Block extends CombatAction {
     constructor(ownerId: number, updateEntity: (id:number, newEntity: CombatEntity) => void, refreshMap: () => void){
       super('Block', false, ownerId, Directions.NONE, updateEntity, refreshMap);
@@ -257,6 +330,10 @@ abstract class CombatAction{
       const forwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       const backwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getOppositeDirection(this.direction));
       for(let i = 0; i < targetIds.length; i++){
+        if(!map.getEntityById(targetIds[i]).isMovable()){
+          continue;
+        }
+
         let bumped:boolean = false;
         const targetEntity = map.getEntityById(targetIds[i]).clone();
         targetEntity.hp -= this.damage;
@@ -268,7 +345,10 @@ abstract class CombatAction{
           if(currentIsInFrontOfPrevious){
             bumped = previousDidBump;
           }
-        }else if(!map.locations[backwardPosition.y][backwardPosition.x].entity?.isWalkable()){
+        }else if(
+          map.locations[backwardPosition.y][backwardPosition.x].entity != null &&
+          !map.locations[backwardPosition.y][backwardPosition.x].entity?.isWalkable()
+        ){
           bumped = true;
         }
 
@@ -308,6 +388,10 @@ abstract class CombatAction{
       const forwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       const backwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getOppositeDirection(this.direction));
       for(let i = 0; i < targetIds.length; i++){
+        if(!map.getEntityById(targetIds[i]).isMovable()){
+          continue;
+        }
+
         let bumped:boolean = false;
         const targetEntity = map.getEntityById(targetIds[i]).clone();
 
@@ -318,7 +402,10 @@ abstract class CombatAction{
           if(currentIsInFrontOfPrevious){
             bumped = previousDidBump;
           }
-        }else if(!map.locations[backwardPosition.y][backwardPosition.x].entity?.isWalkable()){
+        }else if(
+          map.locations[backwardPosition.y][backwardPosition.x].entity != null &&
+          !map.locations[backwardPosition.y][backwardPosition.x].entity?.isWalkable()
+        ){
           bumped = true;
         }
 
@@ -389,6 +476,10 @@ abstract class CombatAction{
       const forwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       const backwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getOppositeDirection(this.direction));
       for(let i = targetIds.length-1; i >= 0; i--){
+        if(!map.getEntityById(targetIds[i]).isMovable()){
+          continue;
+        }
+        
         let bumped:boolean = false;
         const targetEntity = map.getEntityById(targetIds[i]).clone();
         targetEntity.hp -= this.damage;
@@ -400,7 +491,10 @@ abstract class CombatAction{
           if(currentIsBehindPrevious){
             bumped = previousDidBump;
           }
-        }else if(!map.locations[forwardPosition.y][forwardPosition.x].entity?.isWalkable()){
+        }else if(
+          map.locations[forwardPosition.y][forwardPosition.x].entity != null &&
+          !map.locations[forwardPosition.y][forwardPosition.x].entity?.isWalkable()
+        ){
           bumped = true;
         }
 
@@ -435,6 +529,10 @@ abstract class CombatAction{
       const forwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       const backwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getOppositeDirection(this.direction));
       for(let i = entities.length-1; i >= 0; i--){
+        if(!entities[i].isMovable()){
+          continue;
+        }
+
         let bumped:boolean = false;
 
         const forwardPosition:Vector2 = Vector2.add(entities[i].position, forwardsVector);
@@ -444,7 +542,10 @@ abstract class CombatAction{
           if(currentIsBehindPrevious){
             bumped = previousDidBump;
           }
-        }else if(!map.locations[forwardPosition.y][forwardPosition.x].entity?.isWalkable()){
+        }else if(
+          map.locations[forwardPosition.y][forwardPosition.x].entity != null &&
+          !map.locations[forwardPosition.y][forwardPosition.x].entity?.isWalkable()
+        ){
           bumped = true;
         }
 
@@ -464,4 +565,4 @@ abstract class CombatAction{
   }
   
 export default CombatAction;
-export { Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5};
+export { Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, AttackForHazards as AttackGivenOwnerEntity};

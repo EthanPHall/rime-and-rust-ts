@@ -71,7 +71,10 @@ abstract class CombatMapTemplate{
 class CombatMapTemplate1 extends CombatMapTemplate{
   
   constructor(
-    advanceTurn: () => void
+    advanceTurn: () => void,
+    getMap: () => CombatMapData,
+    updateEntity: (id: number, newEntity: CombatEntity) => void,
+    refreshMap: () => void
   ){
     const size:Vector2 = new Vector2(15, 15);
     const walls: Wall[] = Wall.createDefaultWalls(
@@ -94,10 +97,11 @@ class CombatMapTemplate1 extends CombatMapTemplate{
       new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 5)),
       new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 3)),
       new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 2)),
+      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 11)),
     ];
     const hazards: CombatHazard[] = [
       new VolatileCanister(IdGenerator.generateUniqueId(), 10, 10, '+', 'Volatile Canister', new Vector2(3, 3), false),
-      new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 10), false, 5),
+      new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 10), false, 5, getMap, updateEntity, refreshMap),
     ];
 
     super(size, enemies, [...walls, ...hazards], advanceTurn);
@@ -111,7 +115,7 @@ const CombatParent: FC<CombatParentProps> = () => {
   const [turnManager, isTurnTakerPlayer] = useTurnManager();
   const [comboListForEffects, getComboList, setComboList] = useRefState<CombatActionWithRepeat[]>([]);
 
-  const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>(new CombatMapTemplate1(turnManager.advanceTurn));
+  const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>(new CombatMapTemplate1(turnManager.advanceTurn, getCachedMap, updateEntity, refreshMap));
   
   //I was running into issues with closures I think. I was passing refreshMap() to the animator, but when it was called there,
   //the player wasn't up to date. That led to weird behavior where the player would move and be animated correctly the first time,
@@ -134,8 +138,8 @@ const CombatParent: FC<CombatParentProps> = () => {
     new CombatActionWithUses(new Attack(getPlayer().id, undefined, 5, getCachedMap, updateEntity, refreshMap), 3),
     new CombatActionWithUses(new Block(getPlayer().id, updateEntity, refreshMap), 1),
     new CombatActionWithUses(new Move(getPlayer().id, undefined, getCachedMap, updateEntity, refreshMap), 15),
-    new CombatActionWithUses(new PullRange5(getPlayer().id, undefined, 2, getCachedMap, updateEntity, refreshMap), 1),
-    new CombatActionWithUses(new PushRange5(getPlayer().id, undefined, 2, getCachedMap, updateEntity, refreshMap), 1),
+    new CombatActionWithUses(new PullRange5(getPlayer().id, undefined, 2, getCachedMap, updateEntity, refreshMap), 10),
+    new CombatActionWithUses(new PushRange5(getPlayer().id, undefined, 2, getCachedMap, updateEntity, refreshMap), 10),
   ]);
   
   const [infoCardData, setInfoCardData] = useState<CombatInfoDisplayProps | null>(null);
@@ -151,13 +155,22 @@ const CombatParent: FC<CombatParentProps> = () => {
   const [animator, setAnimator] = useState<MotionCombatAnimator>(new MotionCombatAnimator(getCachedMap, mapAnimate));
   
   // const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator, refreshMap);
-  const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboListForEffects, setComboList, animator, turnManager);
+  const actionExecutor:IActionExecutor = useActionExecutor(
+    mapToSendOff, 
+    comboListForEffects, 
+    setComboList, 
+    animator, 
+    turnManager, 
+    hazardsForEffects,
+    updateEntity,
+    refreshMap
+  );
   const actionExecutorRef = useRef<IActionExecutor>(actionExecutor);
   
   const allTurnTakers = useRef<TurnTaker[]>([getPlayer(), ...getEnemies()]);
 
   //When entities step on hazards, this handles that.
-  useCombatHazardReactions(playerForEffects, enemiesForEffects, hazardsForEffects, mapToSendOff, updateEntity);
+  // useCombatHazardReactions(playerForEffects, enemiesForEffects, hazardsForEffects, mapToSendOff, updateEntity);
 
   useEffect(() => {
     const enemyFactory = new CombatEnemyFactory(
@@ -198,17 +211,17 @@ const CombatParent: FC<CombatParentProps> = () => {
   function getBaseMapClonePlusAddons(): CombatMapData{
     const newMap: CombatMapData = CombatMapData.clone(baseMap);
 
-    getEnemies().forEach(enemy => {
-      if (enemy.hp <= 0) {
-        return;
-      }
-      newMap.setLocationWithEntity(enemy);
-    });
     getHazards().forEach(hazard => {
       if (hazard.hp <= 0) {
         return;
       }
       newMap.setLocationWithHazard(hazard);
+    });
+    getEnemies().forEach(enemy => {
+      if (enemy.hp <= 0) {
+        return;
+      }
+      newMap.setLocationWithEntity(enemy);
     });
 
     newMap.setLocationWithEntity(getPlayer());

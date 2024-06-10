@@ -9,8 +9,6 @@ import CombatEntity from "../classes/combat/CombatEntity";
 function useCombatHazardReactions(player:CombatPlayer, enemies:CombatEnemy[], hazards:CombatHazard[], map:CombatMapData, updateEntity:(id: number, newEntity: CombatEntity) => void){
     useEffect(() => {
         hazards.forEach(hazard => {
-            // console.log(hazard);
-
             const entityInSameSpace:CombatEntity|null = map.locations[hazard.position.y][hazard.position.x].entity;
             if(entityInSameSpace !== null){
                 if(entityInSameSpace instanceof CombatPlayer){

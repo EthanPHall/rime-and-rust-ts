@@ -1,7 +1,10 @@
+import Directions from "../utility/Directions";
 import IdGenerator from "../utility/IdGenerator";
 import MapUtilities from "../utility/MapUtilities";
 import Vector2 from "../utility/Vector2";
+import CombatAction, { Attack, AttackGivenOwnerEntity } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
+import CombatMapData from "./CombatMapData";
 
 abstract class CombatHazard extends CombatEntity{
     solid: boolean;
@@ -30,12 +33,16 @@ abstract class CombatHazard extends CombatEntity{
     isWalkable(): boolean {
       return this.intangible;
     }
+    isMovable(): boolean {
+      return false;
+    }
 
     protected newEntityIsDifferent(newEntity: CombatEntity): boolean{
       return newEntity.id !== this.previousEntityOnThisSpace?.id;
     }
 
     abstract handleNewEntityOnThisSpace(newEntity: CombatEntity|null): CombatEntity|null;
+    abstract getActionForNewEntityOnSpace(newEntity: CombatEntity|null): CombatAction|null;
   }
   
   class Wall extends CombatHazard{
@@ -72,11 +79,18 @@ abstract class CombatHazard extends CombatEntity{
       this.previousEntityOnThisSpace = newEntity;
       return null;
     }
+    getActionForNewEntityOnSpace(newEntity: CombatEntity | null): CombatAction | null {
+      return null;
+    }
   }
   
   class VolatileCanister extends CombatHazard{
     constructor(id:number, hp: number, maxHp: number, symbol: string, name: string, position: Vector2, solid: boolean){
       super(id, hp, maxHp, symbol, name, position, solid);
+    }
+
+    isMovable(): boolean {
+      return true;
     }
 
     clone(): CombatHazard{
@@ -87,20 +101,53 @@ abstract class CombatHazard extends CombatEntity{
       this.previousEntityOnThisSpace = newEntity;
       return null;
     }
+    getActionForNewEntityOnSpace(newEntity: CombatEntity | null): CombatAction | null {
+      return null;
+    }
   }
 
   class BurningFloor extends CombatHazard{
     static DESCRIPTION:string = 'Sturdy walls. Click a specific wall in the map to see its health.';
 
     damage: number;
+    getMap: ()=>CombatMapData;
+    updateEntity: (id: number, newEntity: CombatEntity) => void;
+    refreshMap: () => void;
 
-    constructor(id:number, hp: number, maxHp: number, symbol: string, name: string, position: Vector2, solid: boolean, damage: number = 5){
+    constructor(
+      id:number, 
+      hp: number, 
+      maxHp: number, 
+      symbol: string, 
+      name: string, 
+      position: Vector2, 
+      solid: boolean, 
+      damage: number,
+      getMap: ()=>CombatMapData,
+      updateEntity: (id: number, newEntity: CombatEntity) => void,
+      refreshMap: () => void
+    ){
       super(id, hp, maxHp, symbol, name, position, solid, BurningFloor.DESCRIPTION, true, true);
       this.damage = damage;
+      this.getMap = getMap;
+      this.updateEntity = updateEntity;
+      this.refreshMap = refreshMap;
     }
 
     clone(): CombatHazard{
-      return new BurningFloor(this.id, this.hp, this.maxHp, this.symbol, this.name, this.position, this.solid, this.damage);
+      return new BurningFloor(
+        this.id, 
+        this.hp, 
+        this.maxHp, 
+        this.symbol, 
+        this.name, 
+        this.position, 
+        this.solid, 
+        this.damage,
+        this.getMap,
+        this.updateEntity,
+        this.refreshMap
+      );
     }
 
     handleNewEntityOnThisSpace(newEntity: CombatEntity|null): CombatEntity|null {
@@ -113,6 +160,16 @@ abstract class CombatHazard extends CombatEntity{
       
       this.previousEntityOnThisSpace = newEntity;
       return updatedEntity;
+    }
+    getActionForNewEntityOnSpace(newEntity: CombatEntity | null): CombatAction | null {
+      let action:CombatAction|null = null;
+      
+      if(newEntity !== null && this.newEntityIsDifferent(newEntity)){
+        action = new AttackGivenOwnerEntity(this.id, Directions.NONE, this.damage, this.getMap, this.updateEntity, this.refreshMap, this);
+      }
+      
+      this.previousEntityOnThisSpace = newEntity;
+      return action;
     }
   }
 

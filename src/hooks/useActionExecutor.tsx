@@ -6,10 +6,32 @@ import IAnimator, { IAnimationCleanup } from '../classes/animation/IAnimator';
 import AnimationDetails from '../classes/animation/AnimationDetails';
 import IActionExecutor from '../classes/combat/IActionExecutor';
 import TurnManager from '../classes/combat/TurnManager';
+import CombatHazard from '../classes/combat/CombatHazard';
+import CombatEntity from '../classes/combat/CombatEntity';
+import CombatPlayer from '../classes/combat/CombatPlayer';
+import CombatEnemy from '../classes/combat/CombatEnemy';
 
-const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[], setComboList:(newList:CombatActionWithRepeat[]) => void, animator: IAnimator, turnManager:TurnManager):IActionExecutor => {
+enum ActionSteps{
+    ANIMATION,
+    ACTION,
+    HAZARD,
+    DEBUG
+}
+
+const useActionExecutor = (
+    map: CombatMapData, 
+    comboList:CombatActionWithRepeat[], 
+    setComboList:(newList:CombatActionWithRepeat[]) => void, 
+    animator: IAnimator, 
+    turnManager:TurnManager,
+    hazards:CombatHazard[],
+    updateEntity:(id: number, newEntity: CombatEntity) => void,
+    refreshMap: () => void
+):IActionExecutor => {
     const ACTION_DELAY = 200;
     const DEBUG_DELAY = 4000;
+
+    const currentStep = useRef(ActionSteps.ACTION);
     
     const [executing, setExecuting] = useState(false);
 
@@ -20,6 +42,8 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
     const standbyForAnimation = useRef(false);
     const standbyForAnimationCleanup = useRef(false);
     const standbyForDebug = useRef(false);
+
+    const hazardsDidAffectEntities = useRef(false);
 
     useEffect(() => {
     }, [comboList])
@@ -50,13 +74,56 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
         });
     }
 
+    function animateAndExecuteInBulk(actionsList:(CombatActionWithRepeat|null)[]):void{
+        let toAnimate: AnimationDetails[][] = [];
+        actionsList.forEach((action) => {
+            if(action === null){
+                return;
+            }
+
+            let animations: AnimationDetails[][] = action.combatAction.getAnimations();
+            toAnimate = toAnimate.concat(animations);
+        });
+
+        standbyForAnimation.current = true;
+        animator.animate(toAnimate).then((animationCleanup: IAnimationCleanup) => {
+            standbyForAnimation.current = false;
+            standbyForAction.current = true;
+            setTimeout(() => {
+                standbyForAction.current = false;
+                standbyForAnimationCleanup.current = true;
+                animationCleanupObject.current = animationCleanup;
+                executeActionsInBulk(actionsList);
+            }, ACTION_DELAY);
+        });
+    }
+
     function executeAction(action: CombatActionWithRepeat):void{
         action.combatAction.execute();
-        action.decrementRepeat();
-        setComboList([...comboList]);
 
-        if(action.repeat <= 0){
-            actionIndex.current++;
+        if(currentStep.current === ActionSteps.ACTION){
+            action.decrementRepeat();
+            setComboList([...comboList]);
+
+            if(action.repeat <= 0){
+                actionIndex.current++;
+            }
+        }
+    }
+    function executeActionsInBulk(actionsList:(CombatActionWithRepeat|null)[]):void{
+        let atLeastOneActionExecuted:boolean = false;
+        
+        actionsList.forEach((action) => {
+            if(action === null){
+                return;
+            }
+
+            atLeastOneActionExecuted = true;
+            action.combatAction.execute();
+        });
+
+        if(!atLeastOneActionExecuted){
+            refreshMap();
         }
     }
 
@@ -68,6 +135,50 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
         setExecuting(true);
     }
 
+    function endCurrentExecution(){
+        setExecuting(false);
+        setComboList([]);
+        turnManager.advanceTurn();
+    }
+
+    function startNewActionStep(){
+        if(actionIndex.current >= comboList.length){
+            endCurrentExecution();
+            return;
+        }
+
+        currentStep.current = ActionSteps.ACTION;
+
+        const isLastAction:boolean = actionIndex.current === comboList.length - 1 && comboList[actionIndex.current].repeat <= 1;
+        
+        animateAndExecute(comboList[actionIndex.current], isLastAction);
+    }
+
+    function startNewHazardStep(){
+        currentStep.current = ActionSteps.HAZARD;
+        hazardsDidAffectEntities.current = false;
+
+        
+        //Foreach hazard, get an action, if it exists.
+        //If it does, animate and execute it just like combo actions.
+        //Actually, nevermind. The problem with using the existing animateAndExecute function is that
+        //there will be a bunch of different promises and timeouts, all setting things like
+        //the animation cleanup, possibly being out of sync, etc. So, call a new function that
+        //can handle bulk animations and actions.
+        const actionsList:(CombatActionWithRepeat|null)[] = hazards.map((hazard) => {
+            const entity:CombatEntity|null = map.locations[hazard.position.y][hazard.position.x].entity;
+            const action:CombatAction|null = hazard.getActionForNewEntityOnSpace(entity);
+            if(action === null){
+                return null;
+            }
+            else{
+                hazardsDidAffectEntities.current = true;
+                return new CombatActionWithRepeat(action);
+            }
+        });
+        animateAndExecuteInBulk(actionsList);
+    }
+
     useEffect(() => {
         if(!executing){
             return;
@@ -75,7 +186,7 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
         
         actionIndex.current = 0;
 
-        animateAndExecute(comboList[actionIndex.current]);
+        startNewActionStep();
     }, [executing])
 
     useEffect(() => {
@@ -86,16 +197,11 @@ const useActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[
         if(standbyForAnimationCleanup.current){
             animationCleanupObject.current?.cleanupAnimations(...animationCleanupObject.current.args)
             .then(() => {
-                if(actionIndex.current >= comboList.length){
-                    setExecuting(false);
-                    setComboList([]);
-                    turnManager.advanceTurn();
-                    return;
+                if(currentStep.current === ActionSteps.ACTION || (currentStep.current === ActionSteps.HAZARD && hazardsDidAffectEntities.current)){
+                    startNewHazardStep();
+                }else{
+                    startNewActionStep();
                 }
-        
-                const isLastAction:boolean = actionIndex.current === comboList.length - 1 && comboList[actionIndex.current].repeat <= 1;
-                
-                animateAndExecute(comboList[actionIndex.current], isLastAction);        
             });
 
             animationCleanupObject.current = null;
