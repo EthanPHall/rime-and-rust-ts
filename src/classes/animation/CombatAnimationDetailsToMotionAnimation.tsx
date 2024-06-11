@@ -124,6 +124,21 @@ class CombatAnimationDetailsToMotionAnimation{
                     ],
                     combatAnimation.positionToAnimate
                 );
+            case CombatAnimationNames.Burn:
+                return new MotionAnimation(
+                    combatAnimation.entityToAnimateId,
+                    [
+                        {color: CSSPropertyGetter.getProperty("--burn-color-1")},
+                        {color: CSSPropertyGetter.getProperty("--burn-color-2")},
+                        {color: CSSPropertyGetter.getProperty("--text-color")}
+                    ], 
+                    [
+                        {duration: combatAnimation.animationLength/3000},
+                        {duration: combatAnimation.animationLength/3000},
+                        {duration: combatAnimation.animationLength/3000},
+                    ],
+                    combatAnimation.positionToAnimate
+                );
             case CombatAnimationNames.Reset:
                 return new MotionAnimation(combatAnimation.entityToAnimateId, [{x: 0, y:0}], [{duration: 0}], combatAnimation.positionToAnimate);
             default:

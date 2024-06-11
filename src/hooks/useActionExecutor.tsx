@@ -74,7 +74,7 @@ const useActionExecutor = (
         });
     }
 
-    function animateAndExecuteInBulk(actionsList:(CombatActionWithRepeat|null)[]):void{
+    function animateAndExecuteForHazards(actionsList:(CombatActionWithRepeat|null)[]):void{
         let toAnimate: AnimationDetails[][] = [];
         actionsList.forEach((action) => {
             if(action === null){
@@ -88,13 +88,9 @@ const useActionExecutor = (
         standbyForAnimation.current = true;
         animator.animate(toAnimate).then((animationCleanup: IAnimationCleanup) => {
             standbyForAnimation.current = false;
-            standbyForAction.current = true;
-            setTimeout(() => {
-                standbyForAction.current = false;
-                standbyForAnimationCleanup.current = true;
-                animationCleanupObject.current = animationCleanup;
-                executeActionsInBulk(actionsList);
-            }, ACTION_DELAY);
+            standbyForAnimationCleanup.current = true;
+            animationCleanupObject.current = animationCleanup;
+            executeActionsForHazards(actionsList);
         });
     }
 
@@ -110,7 +106,7 @@ const useActionExecutor = (
             }
         }
     }
-    function executeActionsInBulk(actionsList:(CombatActionWithRepeat|null)[]):void{
+    function executeActionsForHazards(actionsList:(CombatActionWithRepeat|null)[]):void{
         let atLeastOneActionExecuted:boolean = false;
         
         actionsList.forEach((action) => {
@@ -176,7 +172,7 @@ const useActionExecutor = (
                 return new CombatActionWithRepeat(action);
             }
         });
-        animateAndExecuteInBulk(actionsList);
+        animateAndExecuteForHazards(actionsList);
     }
 
     useEffect(() => {

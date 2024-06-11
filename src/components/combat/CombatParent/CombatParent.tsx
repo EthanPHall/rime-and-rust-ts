@@ -36,6 +36,8 @@ import { MotionAnimation } from '../../../classes/animation/CombatAnimationDetai
 import CombatEnemyFactory from '../../../classes/combat/CombatEnemyFactory';
 import TurnTaker from '../../../classes/combat/TurnTaker';
 import useCombatHazardReactions from '../../../hooks/useCombatHazardReactions';
+import CombatAnimationFactory, { CombatAnimationNames } from '../../../classes/animation/CombatAnimationFactory';
+import useCombatHazardAnimations from '../../../hooks/useCombatHazardAnimations';
 
 interface CombatParentProps {}
 
@@ -89,19 +91,24 @@ class CombatMapTemplate1 extends CombatMapTemplate{
 
     const enemies: EnemyStarterInfo[] = [
       new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(8, 7)),
-      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(9, 11)),
-      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(10, 11)),
-      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(11, 11)),
-      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(6, 7)),
-      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 6)),
-      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 5)),
-      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 3)),
-      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 2)),
-      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 11)),
+      // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(9, 11)),
+      // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(10, 11)),
+      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(11, 11)),
+      // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(6, 7)),
+      // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 6)),
+      // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 5)),
+      // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 3)),
+      // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 2)),
+      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 10)),
+      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 11)),
+      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 12)),
     ];
     const hazards: CombatHazard[] = [
       new VolatileCanister(IdGenerator.generateUniqueId(), 10, 10, '+', 'Volatile Canister', new Vector2(3, 3), false),
+      new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 9), false, 5, getMap, updateEntity, refreshMap),
       new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 10), false, 5, getMap, updateEntity, refreshMap),
+      new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 11), false, 5, getMap, updateEntity, refreshMap),
+      new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 12), false, 5, getMap, updateEntity, refreshMap),
     ];
 
     super(size, enemies, [...walls, ...hazards], advanceTurn);
@@ -169,6 +176,10 @@ const CombatParent: FC<CombatParentProps> = () => {
   
   const allTurnTakers = useRef<TurnTaker[]>([getPlayer(), ...getEnemies()]);
 
+  const setupFinished = useRef(false);
+
+  useCombatHazardAnimations(mapToSendOff, animator, getPlayer, hazardsForEffects, isTurnTakerPlayer);
+
   //When entities step on hazards, this handles that.
   // useCombatHazardReactions(playerForEffects, enemiesForEffects, hazardsForEffects, mapToSendOff, updateEntity);
 
@@ -184,6 +195,7 @@ const CombatParent: FC<CombatParentProps> = () => {
     setEnemies(mapTemplate.enemies.map(enemyInfo => enemyFactory.createEnemy(enemyInfo.type, enemyInfo.position)));
     
     turnManager.finishSetup(allTurnTakers);
+    setupFinished.current = true;
   },[])
 
   useEffect(() => {
@@ -198,8 +210,17 @@ const CombatParent: FC<CombatParentProps> = () => {
     actionExecutorRef.current = actionExecutor;
   }, [actionExecutor]);
 
+  useEffect(() => {
+    // if(setupFinished.current){
+    //   animator.animate(
+    //     [[CombatAnimationFactory.createAnimation(CombatAnimationNames.Bump, Directions.RIGHT, getPlayer().id)]]
+    //   );
+    // }
+  }, [mapToSendOff]);
+
   function refreshMap():void{
     const newMap: CombatMapData = getBaseMapClonePlusAddons();
+
     mapToSendOffCached.current = newMap;
     setMapToSendOff(newMap);
   }
@@ -299,12 +320,17 @@ function executeActionsList() {
   function debug_endTurn() {
     turnManager.currentTurnTaker?.endTurn();
   }
+  function debug_addNewHazard(){
+    const newHazard = new BurningFloor(IdGenerator.generateUniqueId(), 100, 100, 'f', 'Burning Floor', new Vector2(7, 7), false, 5, getCachedMap, updateEntity, refreshMap);
+    setHazards([...getHazards(), newHazard]);
+  }
 
   return (
     <div className="combat-parent" data-testid="combat-parent">
+        <button onClick={debug_addNewHazard}>Debug Add Hazard</button>
         <button onClick={debug_movePlayer}>Debug Move Player</button>
         {/* <button onClick={debug_harmPlayer}>Debug Harm Player</button> */}
-        <button onClick={debug_endTurn}>Debug End Turn</button>
+        {/* <button onClick={debug_endTurn}>Debug End Turn</button> */}
         <div className='combat-parent-grid-parent'>
           <div className='combat-parent-map-actions-composite'>
             <CombatMapFramerMotion map={mapToSendOff} setMap={setBaseMap} aoeToDisplay={aoeToDisplay} scope={mapScope}></CombatMapFramerMotion>

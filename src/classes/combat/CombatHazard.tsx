@@ -1,3 +1,5 @@
+import AnimationDetails from "../animation/AnimationDetails";
+import CombatAnimationFactory, { CombatAnimationNames } from "../animation/CombatAnimationFactory";
 import Directions from "../utility/Directions";
 import IdGenerator from "../utility/IdGenerator";
 import MapUtilities from "../utility/MapUtilities";
@@ -35,6 +37,9 @@ abstract class CombatHazard extends CombatEntity{
     }
     isMovable(): boolean {
       return false;
+    }
+    getDefaultAnimation(): AnimationDetails|null {
+      return null;
     }
 
     protected newEntityIsDifferent(newEntity: CombatEntity): boolean{
@@ -171,7 +176,11 @@ abstract class CombatHazard extends CombatEntity{
       this.previousEntityOnThisSpace = newEntity;
       return action;
     }
+
+    getDefaultAnimation(): AnimationDetails|null {
+      return CombatAnimationFactory.createAnimation(CombatAnimationNames.Burn, Directions.NONE, this.id, false, this.position);
   }
+}
 
 export default CombatHazard;
 export { Wall, VolatileCanister, BurningFloor};

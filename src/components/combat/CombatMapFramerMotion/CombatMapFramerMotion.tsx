@@ -12,6 +12,7 @@ import { AnimationScope, useAnimate} from 'framer-motion';
 import CombatAnimationDetailsToMotionAnimation, { MotionAnimation } from '../../../classes/animation/CombatAnimationDetailsToMotionAnimation';
 import CombatAnimationFactory, { CombatAnimationNames } from '../../../classes/animation/CombatAnimationFactory';
 import CombatPlayer from '../../../classes/combat/CombatPlayer';
+import {motion} from 'framer-motion';
 
 interface CombatMapProps {
   map: CombatMapData;
@@ -64,20 +65,26 @@ const CombatMapFramerMotion: FC<CombatMapProps> = ({map, setMap, aoeToDisplay, s
       {/* <button className='highlight-button' onClick={highlightPlayer}>Highlight Player</button> */}
       <button className='highlight-button' onClick={animateSevenSeven}>Animate (7,7)</button>
       {/* <button className='log-button' onClick={logLocationData}>Log</button> */}
-      <div ref={scope} className="combat-map" data-testid="combat-map">
+      <div ref={scope} id="-1" className="combat-map" data-testid="combat-map">
         {map.locations.map((row, i) => {
           return (
             <div key={"combat-map-" + row + "-" + i} className="combat-map-row">
               {row.map((location, j) => {
                 return (
-                  <span onClick={() => {console.log(location)}} id={positionToId(location)} className={`combat-map-location ${location.highlight ? "highlight" : ""}`} key={"combat-map-location:" + location.y*10+location.x}>{location.symbol}</span>
+                  <span 
+                    onClick={() => {console.log(location)}} 
+                    id={positionToId(location)} 
+                    className={`combat-map-location ${location.highlight ? "highlight" : ""}`} 
+                    key={"combat-map-location:" + location.y*10+location.x}>
+                      {location.symbol}
+                  </span>
                 );
               })}
             </div>
           );
         }
       )}
-      </div>  
+      </div>
     </>
   );
 }

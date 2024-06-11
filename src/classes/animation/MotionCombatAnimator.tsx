@@ -16,6 +16,10 @@ class MotionCombatAnimator implements IAnimator{
     }
 
     animate(animationDetails: AnimationDetails[][]): Promise<IAnimationCleanup>{
+        if(animationDetails.length === 0){
+            return Promise.resolve({cleanupAnimations: this.cleanupAnimations, args: [this.getMapData, this.mapAnimate]});
+        }
+
         const animationSets: MotionAnimation[][] = animationDetails.map((animationSet) => {
             return animationSet.map((animation) => CombatAnimationDetailsToMotionAnimation.convert(animation));
         });
