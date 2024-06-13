@@ -142,8 +142,8 @@ const CombatParent: FC<CombatParentProps> = () => {
   );
  
   const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>([
-    new CombatActionWithUses(new Attack(getPlayer().id, undefined, 5, getCachedMap, updateEntity, refreshMap), 3),
-    new CombatActionWithUses(new Block(getPlayer().id, updateEntity, refreshMap), 1),
+    new CombatActionWithUses(new Attack(getPlayer().id, undefined, 5, getCachedMap, updateEntity, refreshMap), 30),
+    new CombatActionWithUses(new Block(getPlayer().id, updateEntity, refreshMap), 10),
     new CombatActionWithUses(new Move(getPlayer().id, undefined, getCachedMap, updateEntity, refreshMap), 15),
     new CombatActionWithUses(new PullRange5(getPlayer().id, undefined, 2, getCachedMap, updateEntity, refreshMap), 10),
     new CombatActionWithUses(new PushRange5(getPlayer().id, undefined, 2, getCachedMap, updateEntity, refreshMap), 10),
@@ -178,7 +178,7 @@ const CombatParent: FC<CombatParentProps> = () => {
 
   const setupFinished = useRef(false);
 
-  useCombatHazardAnimations(mapToSendOff, animator, getPlayer, hazardsForEffects, isTurnTakerPlayer);
+  useCombatHazardAnimations(mapToSendOff, animator, getPlayer, hazardsForEffects, actionExecutor.isExecuting);
 
   //When entities step on hazards, this handles that.
   // useCombatHazardReactions(playerForEffects, enemiesForEffects, hazardsForEffects, mapToSendOff, updateEntity);
@@ -216,6 +216,8 @@ const CombatParent: FC<CombatParentProps> = () => {
     //     [[CombatAnimationFactory.createAnimation(CombatAnimationNames.Bump, Directions.RIGHT, getPlayer().id)]]
     //   );
     // }
+
+    
   }, [mapToSendOff]);
 
   function refreshMap():void{

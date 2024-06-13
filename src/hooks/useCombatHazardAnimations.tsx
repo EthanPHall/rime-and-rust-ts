@@ -14,10 +14,14 @@ function useCombatHazardAnimations(
     animator: IAnimator, 
     getPlayer:() => CombatPlayer,
     hazards:CombatHazard[],
-    isTurnTakerPlayer:()=> boolean
+    isExecutingActions:()=> boolean
 ){
     const animationsToPlay = useRef<AnimationDetails[][]>([]);
-    useState<Promise<void>>(startPermanentAnimations());
+    // useState<Promise<void>>(startHazardAnimations());
+
+    useEffect(() => {
+        startHazardAnimations();
+    },[]);
     
     useEffect(() => {
         animationsToPlay.current = [[]];
@@ -30,12 +34,16 @@ function useCombatHazardAnimations(
         });
       }, [map]);
 
-      async function startPermanentAnimations():Promise<void>{
+      async function startHazardAnimations():Promise<void>{
+        console.log("Starting hazard animations");
+
         while(true){
-            if(animationsToPlay.current.length === 0){
+            if(animationsToPlay.current.length === 0 || isExecutingActions()){
+                console.log("No animations to play");
                 await new Promise((resolve) => setTimeout(resolve, 1000));
             }
             else{
+                console.log("Playing hazard animations");
                 await animator.animate(animationsToPlay.current);
             }
         }

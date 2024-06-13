@@ -30,8 +30,8 @@ class MotionCombatAnimator implements IAnimator{
             // console.log("Sets",animationSets);
 
             //i increments when all animations in the set are complete
-            for(let setIndex = 0; setIndex < animationSets.length;){
-                const currentAnimationSet: MotionAnimation[] = animationSets[setIndex];
+            for(let animationSetIndex = 0; animationSetIndex < animationSets.length;){
+                const currentAnimationSet: MotionAnimation[] = animationSets[animationSetIndex];
                 const playbackControls: AnimationPlaybackControls[] = [];
 
                 for(let animationIndex = 0; animationIndex < currentAnimationSet.length; animationIndex++){
@@ -54,7 +54,7 @@ class MotionCombatAnimator implements IAnimator{
                     // console.log("KeyframeIndex++",keyFrameIndex);
                 }
                 else{
-                    setIndex++;
+                    animationSetIndex++;
                     // console.log("setIndex++",setIndex);
                     keyFrameIndex = 0;
                 }
