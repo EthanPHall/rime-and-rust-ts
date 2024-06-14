@@ -1,3 +1,4 @@
+import { ImprovedMotionAnimation } from "../../hooks/useCombatHazardAnimations";
 import AnimationDetails from "../animation/AnimationDetails";
 import CombatAnimationFactory, { CombatAnimationNames } from "../animation/CombatAnimationFactory";
 import Directions from "../utility/Directions";
@@ -38,7 +39,7 @@ abstract class CombatHazard extends CombatEntity{
     isMovable(): boolean {
       return false;
     }
-    getDefaultAnimation(): AnimationDetails|null {
+    getDefaultAnimation(): ImprovedMotionAnimation|null {
       return null;
     }
 
@@ -177,9 +178,9 @@ abstract class CombatHazard extends CombatEntity{
       return action;
     }
 
-    getDefaultAnimation(): AnimationDetails|null {
-      return CombatAnimationFactory.createAnimation(CombatAnimationNames.Burn, Directions.NONE, this.id, false, this.position);
-  }
+    getDefaultAnimation(): ImprovedMotionAnimation|null {
+      return new ImprovedMotionAnimation(this, {color:["#ff0000", "#ffbb4d"]}, {times:[0, 1], duration: 1, repeat: Infinity, repeatType: "reverse"});
+    }
 }
 
 export default CombatHazard;

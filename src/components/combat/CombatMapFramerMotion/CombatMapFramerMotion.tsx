@@ -8,11 +8,12 @@ import MapUtilities from '../../../classes/utility/MapUtilities';
 import CombatMapData from '../../../classes/combat/CombatMapData';
 import AreaOfEffect from '../../../classes/combat/AreaOfEffect';
 import '../../../css/combat-animations.css';
-import { AnimationScope, useAnimate} from 'framer-motion';
+import { AnimationScope, TargetAndTransition, useAnimate} from 'framer-motion';
 import CombatAnimationDetailsToMotionAnimation, { MotionAnimation } from '../../../classes/animation/CombatAnimationDetailsToMotionAnimation';
 import CombatAnimationFactory, { CombatAnimationNames } from '../../../classes/animation/CombatAnimationFactory';
 import CombatPlayer from '../../../classes/combat/CombatPlayer';
 import {motion} from 'framer-motion';
+import CSSPropertyGetter from '../../../classes/utility/CSSPropertyGetter';
 
 interface CombatMapProps {
   map: CombatMapData;
@@ -23,6 +24,18 @@ interface CombatMapProps {
 
 const CombatMapFramerMotion: FC<CombatMapProps> = ({map, setMap, aoeToDisplay, scope}:CombatMapProps) => {
   const pauseAnimInputs = useRef(false);
+
+  const [animationObject, setAnimationObject] = useState<TargetAndTransition>({
+    color:[null, CSSPropertyGetter.getProperty("--burn-color-1"), CSSPropertyGetter.getProperty("--burn-color-2")],
+    transition: {duration: 3, repeat: Infinity, repeatType: "reverse"}
+  });
+
+  useEffect(() => {
+    setAnimationObject({
+      color:[null, CSSPropertyGetter.getProperty("--burn-color-1"), CSSPropertyGetter.getProperty("--burn-color-2")],
+      transition: {duration: 3, repeat: Infinity, repeatType: "reverse"}
+    });
+  }, [map]);
 
   function highlightAOE(){
     if(!aoeToDisplay){
@@ -71,13 +84,15 @@ const CombatMapFramerMotion: FC<CombatMapProps> = ({map, setMap, aoeToDisplay, s
             <div key={"combat-map-" + row + "-" + i} className="combat-map-row">
               {row.map((location, j) => {
                 return (
-                  <span 
+                  <motion.span 
+                    // animate={animationObject}
+
                     onClick={() => {console.log(location)}} 
                     id={positionToId(location)} 
                     className={`combat-map-location ${location.highlight ? "highlight" : ""}`} 
                     key={"combat-map-location:" + location.y*10+location.x}>
                       {location.symbol}
-                  </span>
+                  </motion.span>
                 );
               })}
             </div>

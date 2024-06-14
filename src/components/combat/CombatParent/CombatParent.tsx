@@ -30,7 +30,7 @@ import IActionExecutor from '../../../classes/combat/IActionExecutor';
 import useActionExecutor from '../../../hooks/useActionExecutor';
 import useBasicActionExecutor from '../../../hooks/useBasicActionExecutor';
 import CombatMapFramerMotion from '../CombatMapFramerMotion/CombatMapFramerMotion';
-import { useAnimate } from 'framer-motion';
+import { AnimationPlaybackControls, TargetAndTransition, useAnimate } from 'framer-motion';
 import MotionCombatAnimator from '../../../classes/animation/MotionCombatAnimator';
 import { MotionAnimation } from '../../../classes/animation/CombatAnimationDetailsToMotionAnimation';
 import CombatEnemyFactory from '../../../classes/combat/CombatEnemyFactory';
@@ -99,9 +99,9 @@ class CombatMapTemplate1 extends CombatMapTemplate{
       // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 5)),
       // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 3)),
       // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 2)),
-      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 10)),
-      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 11)),
-      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 12)),
+      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 10)),
+      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 11)),
+      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 12)),
     ];
     const hazards: CombatHazard[] = [
       new VolatileCanister(IdGenerator.generateUniqueId(), 10, 10, '+', 'Volatile Canister', new Vector2(3, 3), false),
@@ -178,7 +178,7 @@ const CombatParent: FC<CombatParentProps> = () => {
 
   const setupFinished = useRef(false);
 
-  useCombatHazardAnimations(mapToSendOff, animator, getPlayer, hazardsForEffects, actionExecutor.isExecuting);
+  useCombatHazardAnimations(mapToSendOff, animator, getPlayer, hazardsForEffects, actionExecutor.isExecuting, mapAnimate);
 
   //When entities step on hazards, this handles that.
   // useCombatHazardReactions(playerForEffects, enemiesForEffects, hazardsForEffects, mapToSendOff, updateEntity);
@@ -217,7 +217,7 @@ const CombatParent: FC<CombatParentProps> = () => {
     //   );
     // }
 
-    
+
   }, [mapToSendOff]);
 
   function refreshMap():void{
@@ -327,8 +327,22 @@ function executeActionsList() {
     setHazards([...getHazards(), newHazard]);
   }
 
+  const animationPlaybackControls = useRef<AnimationPlaybackControls | null>(null);
+  function debug_Animate(){
+    if(animationPlaybackControls.current){
+      animationPlaybackControls.current.cancel();
+      animationPlaybackControls.current = null;
+
+      return;
+    }
+
+    // console.log(new Date().getSeconds());
+    animationPlaybackControls.current = mapAnimate(mapScope.current, {x: [0, 100, -100, 300], y:[0, -100, 100, 300], color:[null, "#ff0000", "#ffbb4d", "#ffbb4d"]}, {times:[0, .4, .6, 1], duration: 2, repeat: Infinity, repeatType: "reverse"});
+  }
+
   return (
     <div className="combat-parent" data-testid="combat-parent">
+        <button onClick={debug_Animate}>Debug Animate Map</button>
         <button onClick={debug_addNewHazard}>Debug Add Hazard</button>
         <button onClick={debug_movePlayer}>Debug Move Player</button>
         {/* <button onClick={debug_harmPlayer}>Debug Harm Player</button> */}
