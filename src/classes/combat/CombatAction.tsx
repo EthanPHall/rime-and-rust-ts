@@ -114,7 +114,10 @@ abstract class CombatAction{
 
     getTargetId(): number|undefined{
       const map: CombatMapData = this.getMap();
-      const owner: CombatEntity = map.getEntityById(this.ownerId);
+      const owner: CombatEntity|null = map.getEntityById(this.ownerId);
+
+      if(!owner){return undefined;}
+
       const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       const targetPosition: Vector2 = Vector2.add(owner.position, directionVector);
       const targetId:number|undefined = map.locations?.[targetPosition.y]?.[targetPosition.x].entity?.id
@@ -128,7 +131,13 @@ abstract class CombatAction{
       const map: CombatMapData = this.getMap();
       
       if(targetId){
-        const targetEntity = map.getEntityById(targetId).clone();
+        const targetEntity = map.getEntityById(targetId)?.clone();
+
+        if(!targetEntity){
+          this.refreshMap();
+          return;
+        }
+
         targetEntity.hp -= this.damage;
         this.updateEntity(targetEntity.id, targetEntity);
         return;
@@ -190,7 +199,13 @@ abstract class CombatAction{
       const map: CombatMapData = this.getMap();
       
       if(targetId){
-        const targetEntity = map.getEntityById(targetId).clone();
+        const targetEntity = map.getEntityById(targetId)?.clone();
+
+        if(!targetEntity){
+          this.refreshMap();
+          return;
+        }
+
         targetEntity.hp -= this.damage;
         this.updateEntity(targetEntity.id, targetEntity);
         return;
@@ -249,20 +264,26 @@ abstract class CombatAction{
   
     execute() {
       const map: CombatMapData = this.getMap();
-      const owner: CombatEntity = map.getEntityById(this.ownerId);
+      const owner: CombatEntity|null = map.getEntityById(this.ownerId);
 
-      const targetPosition = Vector2.add(owner.position, DirectionsUtility.getVectorFromDirection(this.direction));
-      const targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
-      
-      const updatedEntity = owner.clone();
-      const isWalkable:boolean = targetLocationData.entity ? targetLocationData.entity.isWalkable() : true;
-      
-      if(!targetLocationData || !isWalkable){
-        this.refreshMap();
+      if(owner){
+        const targetPosition = Vector2.add(owner.position, DirectionsUtility.getVectorFromDirection(this.direction));
+        const targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
+        
+        const updatedEntity = owner.clone();
+        const isWalkable:boolean = targetLocationData.entity ? targetLocationData.entity.isWalkable() : true;
+        
+        if(!targetLocationData || !isWalkable){
+          this.refreshMap();
+        }
+        else{
+          updatedEntity.position = targetPosition;
+          this.updateEntity(owner.id, updatedEntity);
+        }
       }
       else{
-        updatedEntity.position = targetPosition;
-        this.updateEntity(owner.id, updatedEntity);
+        this.refreshMap();
+        return;
       }
     }
 
@@ -270,17 +291,19 @@ abstract class CombatAction{
       const animationsToSendOff: AnimationDetails[][] = [[]];
 
       const map: CombatMapData = this.getMap();
-      const owner: CombatEntity = map.getEntityById(this.ownerId);
+      const owner: CombatEntity|null = map.getEntityById(this.ownerId);
 
-      const targetPosition = Vector2.add(owner.position, DirectionsUtility.getVectorFromDirection(this.direction));
-      const targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
-      const isWalkable:boolean = targetLocationData.entity ? targetLocationData.entity.isWalkable() : true;
-      
-      if(!targetLocationData || !isWalkable){
-        animationsToSendOff[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Bump, this.direction, this.ownerId));
-      }
-      else{
-        animationsToSendOff[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, this.direction, this.ownerId));
+      if(owner){
+        const targetPosition = Vector2.add(owner.position, DirectionsUtility.getVectorFromDirection(this.direction));
+        const targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
+        const isWalkable:boolean = targetLocationData.entity ? targetLocationData.entity.isWalkable() : true;
+        
+        if(!targetLocationData || !isWalkable){
+          animationsToSendOff[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Bump, this.direction, this.ownerId));
+        }
+        else{
+          animationsToSendOff[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, this.direction, this.ownerId));
+        }
       }
 
       return animationsToSendOff;
@@ -313,7 +336,10 @@ abstract class CombatAction{
 
     getTargets(): [number[], Vector2[]]{
       const map: CombatMapData = this.getMap();
-      const owner: CombatEntity = map.getEntityById(this.ownerId);
+      const owner: CombatEntity|null = map.getEntityById(this.ownerId);
+
+      if(!owner){return [[], []];}
+
       const [entities, positions] = this.aoe.getAffectedEntities(owner.position.x, owner.position.y, map);
       const targetIds:number[] = entities.map((entity) => entity.id);
       return [targetIds, positions];
@@ -330,12 +356,16 @@ abstract class CombatAction{
       const forwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       const backwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getOppositeDirection(this.direction));
       for(let i = 0; i < targetIds.length; i++){
-        if(!map.getEntityById(targetIds[i]).isMovable()){
+        const targetEntity:CombatEntity|undefined = map.getEntityById(targetIds[i])?.clone();
+        if(!targetEntity){
+          continue;
+        }
+
+        if(!targetEntity.isMovable()){
           continue;
         }
 
         let bumped:boolean = false;
-        const targetEntity = map.getEntityById(targetIds[i]).clone();
         targetEntity.hp -= this.damage;
 
         const backwardPosition:Vector2 = Vector2.add(targetEntity.position, backwardsVector);
@@ -388,12 +418,16 @@ abstract class CombatAction{
       const forwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       const backwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getOppositeDirection(this.direction));
       for(let i = 0; i < targetIds.length; i++){
-        if(!map.getEntityById(targetIds[i]).isMovable()){
+        const targetEntity:CombatEntity|undefined = map.getEntityById(targetIds[i])?.clone();
+        if(!targetEntity){
+          continue;
+        }
+
+        if(!targetEntity.isMovable()){
           continue;
         }
 
         let bumped:boolean = false;
-        const targetEntity = map.getEntityById(targetIds[i]).clone();
 
         const backwardPosition:Vector2 = Vector2.add(targetEntity.position, backwardsVector);
         if(previousEntity){
@@ -452,7 +486,10 @@ abstract class CombatAction{
 
     getTargets(): [number[], Vector2[], CombatEntity[]]{
       const map: CombatMapData = this.getMap();
-      const owner: CombatEntity = map.getEntityById(this.ownerId);
+      const owner: CombatEntity|null = map.getEntityById(this.ownerId);
+
+      if(!owner){return [[], [], []];}
+
       const [entities, positions] = this.aoe.getAffectedEntities(owner.position.x, owner.position.y, map);
       const targetIds:number[] = entities.map((entity) => entity.id);
       return [targetIds, positions, entities];
@@ -476,12 +513,16 @@ abstract class CombatAction{
       const forwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       const backwardsVector:Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getOppositeDirection(this.direction));
       for(let i = targetIds.length-1; i >= 0; i--){
-        if(!map.getEntityById(targetIds[i]).isMovable()){
+        const targetEntity:CombatEntity|undefined = map.getEntityById(targetIds[i])?.clone();
+        if(!targetEntity){
+          continue;
+        }
+
+        if(!targetEntity.isMovable()){
           continue;
         }
         
         let bumped:boolean = false;
-        const targetEntity = map.getEntityById(targetIds[i]).clone();
         targetEntity.hp -= this.damage;
 
         const forwardPosition:Vector2 = Vector2.add(targetEntity.position, forwardsVector);

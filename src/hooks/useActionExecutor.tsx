@@ -156,13 +156,6 @@ const useActionExecutor = (
         currentStep.current = ActionSteps.HAZARD;
         hazardsDidAffectEntities.current = false;
 
-        
-        //Foreach hazard, get an action, if it exists.
-        //If it does, animate and execute it just like combo actions.
-        //Actually, nevermind. The problem with using the existing animateAndExecute function is that
-        //there will be a bunch of different promises and timeouts, all setting things like
-        //the animation cleanup, possibly being out of sync, etc. So, call a new function that
-        //can handle bulk animations and actions.
         const actionsList:(CombatActionWithRepeat|null)[] = hazards.map((hazard) => {
             const entity:CombatEntity|null = map.locations[hazard.position.y][hazard.position.x].entity;
             const action:CombatAction|null = hazard.getActionForNewEntityOnSpace(entity);

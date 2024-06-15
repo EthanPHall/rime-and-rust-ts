@@ -48,7 +48,7 @@ class CombatMapData{
       });     
     }
 
-    getEntityById(id: number):CombatEntity{
+    getEntityById(id: number):CombatEntity|null{
       let entity:CombatEntity|null = null;
   
       this.locations.forEach((row) => {
@@ -71,7 +71,7 @@ class CombatMapData{
         return entity;
       }
   
-      throw new Error(`Entity with id ${id} not found`);
+      return null;
     }
   
     logCombatLocationData(){

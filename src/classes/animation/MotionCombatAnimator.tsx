@@ -36,8 +36,12 @@ class MotionCombatAnimator implements IAnimator{
 
                 for(let animationIndex = 0; animationIndex < currentAnimationSet.length; animationIndex++){
                     const currentAnimation: MotionAnimation = currentAnimationSet[animationIndex];
-                    const positionToAnimate: Vector2 = currentAnimation.positionToAnimate ? currentAnimation.positionToAnimate : mapData.getEntityById(currentAnimation.entityIdToAnimate).position; 
+                    const positionToAnimate: Vector2|undefined = currentAnimation.positionToAnimate ? currentAnimation.positionToAnimate : mapData.getEntityById(currentAnimation.entityIdToAnimate)?.position; 
                     
+                    if(!positionToAnimate){
+                        // console.log("No position to animate",currentAnimation);
+                        continue;
+                    }
                     // console.log("current animation",currentAnimation);
 
                     if(keyFrameIndex < currentAnimation.keyframes.length){
