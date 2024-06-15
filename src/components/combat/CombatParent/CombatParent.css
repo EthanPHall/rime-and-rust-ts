@@ -57,7 +57,7 @@
     .combo-section{
             /* background-color: orange; */
             grid-column: 3/span 2;
-            grid-row: 2/span 2;
+            grid-row: 2/span 3;
     }
     .component-switcher{
             /* background-color: white; */
