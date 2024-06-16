@@ -63,7 +63,12 @@ class AreaOfEffect{
         
         if(!includeSolids){
           occludedPoints = occludedPoints.filter((point) => {
-            return !map.locations[point.y][point.x].solid;
+            if(map.locations?.[point.y]?.[point.x] == null){
+              return false;
+            }
+            else{
+              return !map.locations[point.y][point.x].solid;
+            }
           });
         }
       }
@@ -179,7 +184,7 @@ class AreaOfEffect{
         for(let i = 0; i < originToPointLine.length; i++){
           const otplPoint = originToPointLine[i];
   
-          if(map.locations[otplPoint.y][otplPoint.x].solid){
+          if(map.locations?.[otplPoint.y]?.[otplPoint.x]?.solid){
             blocked = true;
             break;
           }

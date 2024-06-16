@@ -120,7 +120,7 @@ abstract class CombatAction{
 
       const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       const targetPosition: Vector2 = Vector2.add(owner.position, directionVector);
-      const targetId:number|undefined = map.locations?.[targetPosition.y]?.[targetPosition.x].entity?.id
+      const targetId:number|undefined = map.locations?.[targetPosition.y]?.[targetPosition.x]?.entity?.id
       
       if(targetId === undefined || targetId === owner.id) {return undefined;}
       else {return targetId;}
@@ -188,7 +188,7 @@ abstract class CombatAction{
       const map: CombatMapData = this.getMap();
       const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
       const targetPosition: Vector2 = Vector2.add(this.ownerEntity.position, directionVector);
-      const targetId:number|undefined = map.locations?.[targetPosition.y]?.[targetPosition.x].entity?.id
+      const targetId:number|undefined = map.locations?.[targetPosition.y]?.[targetPosition.x]?.entity?.id
       
       if(targetId === undefined || targetId === this.ownerEntity.id) {return undefined;}
       else {return targetId;}
@@ -271,7 +271,10 @@ abstract class CombatAction{
         const targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
         
         const updatedEntity = owner.clone();
-        const isWalkable:boolean = targetLocationData.entity ? targetLocationData.entity.isWalkable() : true;
+        let isWalkable:boolean = false;
+        if(targetLocationData){
+          isWalkable = targetLocationData.entity ? targetLocationData.entity.isWalkable() : true;
+        }
         
         if(!targetLocationData || !isWalkable){
           this.refreshMap();
@@ -296,8 +299,11 @@ abstract class CombatAction{
       if(owner){
         const targetPosition = Vector2.add(owner.position, DirectionsUtility.getVectorFromDirection(this.direction));
         const targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
-        const isWalkable:boolean = targetLocationData.entity ? targetLocationData.entity.isWalkable() : true;
-        
+        let isWalkable:boolean = false;
+        if(targetLocationData){
+          isWalkable = targetLocationData.entity ? targetLocationData.entity.isWalkable() : true;
+        }
+
         if(!targetLocationData || !isWalkable){
           animationsToSendOff[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Bump, this.direction, this.ownerId));
         }
