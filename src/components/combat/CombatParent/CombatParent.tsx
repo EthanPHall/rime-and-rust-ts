@@ -342,9 +342,9 @@ function executeActionsList() {
 
   return (
     <div className="combat-parent" data-testid="combat-parent">
-        <button onClick={debug_Animate}>Debug Animate Map</button>
+        {/* <button onClick={debug_Animate}>Debug Animate Map</button>
         <button onClick={debug_addNewHazard}>Debug Add Hazard</button>
-        <button onClick={debug_movePlayer}>Debug Move Player</button>
+        <button onClick={debug_movePlayer}>Debug Move Player</button> */}
         {/* <button onClick={debug_harmPlayer}>Debug Harm Player</button> */}
         {/* <button onClick={debug_endTurn}>Debug End Turn</button> */}
         <div className='combat-parent-grid-parent'>

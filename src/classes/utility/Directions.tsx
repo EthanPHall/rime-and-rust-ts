@@ -56,9 +56,34 @@ class DirectionsUtility {
     }
 
     static getDirectionFromCoordinates(start: Vector2, end: Vector2): Directions{
-        const vector: Vector2 = {x: end.x - start.x, y: end.y - start.y};
+        const vector: Vector2 = Vector2.subtract(end, start);
 
         return DirectionsUtility.getDirectionFromVector(vector);
+    }
+
+    static getNeighbors(position: Vector2, mapData: any): Vector2[] {
+        const neighbors: Vector2[] = [];
+        const directions: Vector2[] = [
+            new Vector2(0, -1),
+            new Vector2(0, 1),
+            new Vector2(-1, 0),
+            new Vector2(1, 0)
+        ];
+
+        for (const direction of directions) {
+            const neighbor = Vector2.add(position, direction);
+            if (mapData.isInBounds(neighbor)) {
+                neighbors.push(neighbor);
+            }
+        }
+
+        if(neighbors.some((neighbor) => {
+            return neighbor.equals(position);
+        })){
+            console.log("There is an issue in finding the neighbors.");
+        }
+
+        return neighbors;
     }
 }
 

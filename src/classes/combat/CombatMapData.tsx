@@ -5,6 +5,7 @@ import AreaOfEffect from "./AreaOfEffect";
 import CombatEntity from "./CombatEntity";
 import CombatLocationData from "./CombatLocationData";
 import CombatHazard from "./CombatHazard";
+import CombatPlayer from "./CombatPlayer";
 
 class CombatMapData{
     locations: CombatLocationData[][];
@@ -73,6 +74,20 @@ class CombatMapData{
   
       return null;
     }
+
+    getPlayer():CombatEntity|null{
+      let player:CombatEntity|null = null;
+      this.locations.forEach((row) => {
+        row.forEach((location) => {
+          if(location.entity && location.entity instanceof CombatPlayer){
+            player = location.entity;
+            return;
+          }
+        });
+      });
+
+      return player;
+    }
   
     logCombatLocationData(){
       this.locations.forEach((row) => {
@@ -112,6 +127,10 @@ class CombatMapData{
           location.highlight = false;
         });
       });
+    }
+
+    isInBounds(position: Vector2):boolean{
+      return position.x >= 0 && position.x < this.width && position.y >= 0 && position.y < this.height;
     }
   
     static clone(map: CombatMapData): CombatMapData{

@@ -63,7 +63,7 @@ const useActionExecutor = (
 
         standbyForAnimation.current = true;
         animator.animate(toAnimate).then((animationCleanup: IAnimationCleanup) => {
-            console.log("Animation cleanup", animationCleanup);
+            // console.log("Animation cleanup", animationCleanup);
 
             standbyForAnimation.current = false;
             standbyForAction.current = true;
@@ -126,8 +126,11 @@ const useActionExecutor = (
     }
 
     function startExecution(){
-        if(isExecuting() || comboList.length === 0){
+        if(isExecuting()){
             return;
+        }
+        if(comboList.length === 0){
+            endCurrentExecution();
         }
 
         setExecuting(true);

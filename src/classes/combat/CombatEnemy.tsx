@@ -1,12 +1,15 @@
+import PathfindingUtil from "../ai/PathfindingUtil";
 import Directions from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
-import CombatAction, {  Attack, CombatActionWithRepeat, Move } from "./CombatAction";
+import CombatAction, {  Attack, CombatActionWithRepeat, CombatActionWithUses, Move } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
 import CombatMapData from "./CombatMapData";
 import IActionExecutor from "./IActionExecutor";
 import TurnTaker from "./TurnTaker";
 
 abstract class CombatEnemy extends CombatEntity implements TurnTaker{
+  static ACTION_DELAY = 150;
+
   getMap: () => CombatMapData;
   updateEntity: (id:number, newEntity: CombatEntity) => void;
   refreshMap: () => void;  
@@ -20,27 +23,21 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     combatEntity: CombatEntity = this;
     advanceTurn: () => void;
     startTurn(): void {
-      setTimeout(() => {
-        this.addActionToList(new Attack(this.id, Directions.LEFT, 5, this.getMap, this.updateEntity, this.refreshMap));
-        this.addActionToList(new Attack(this.id, Directions.LEFT, 5, this.getMap, this.updateEntity, this.refreshMap));
-        this.addActionToList(new Move(this.id, Directions.DOWN, this.getMap, this.updateEntity, this.refreshMap));
-        this.addActionToList(new Move(this.id, Directions.DOWN, this.getMap, this.updateEntity, this.refreshMap));
-      }, 1000);
-
-      
-      setTimeout(() => {
-        // this.endTurn();
-        this.executeActionsList();
-      }, 1500);
+      this.executeTurn();
     }
     endTurn(): void {
       console.log(`${this.name} is ending their turn.`);
       this.advanceTurn();
     }
 
+    abstract executeTurn(): Promise<void>;
+
     setHp(hp: number): void{
       this.hp = hp;
     }
+
+    actions: { [ k: string ]: CombatActionWithUses };
+    playerId: number;
 
     constructor(
       id:number, 
@@ -63,6 +60,8 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       this.getMap = getMap;
       this.updateEntity = updateEntity;
       this.refreshMap = refreshMap;
+      this.actions = {};
+      this.playerId = getMap().getPlayer()?.id || -1;
     }
 
     clone(): CombatEnemy {
@@ -126,9 +125,26 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
 
       return clone;
     }
+
+    async executeTurn(): Promise<void> {
+      setTimeout(() => {
+        this.addActionToList(new Attack(this.id, Directions.LEFT, 5, this.getMap, this.updateEntity, this.refreshMap));
+        this.addActionToList(new Attack(this.id, Directions.LEFT, 5, this.getMap, this.updateEntity, this.refreshMap));
+        this.addActionToList(new Move(this.id, Directions.DOWN, this.getMap, this.updateEntity, this.refreshMap));
+        this.addActionToList(new Move(this.id, Directions.DOWN, this.getMap, this.updateEntity, this.refreshMap));
+      }, 1000);
+
+      
+      setTimeout(() => {
+        // this.endTurn();
+        this.executeActionsList();
+      }, 1500);
+    }
   }
   
   class RustedBrute extends CombatEnemy{
+
+
     constructor(
       id: number,
       position: Vector2, 
@@ -153,6 +169,16 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
         updateEntity,
         refreshMap
       );
+
+      // this.actions = [
+      //   new CombatActionWithUses(new Attack(this.id, undefined, 5, this.getMap, this.updateEntity, this.refreshMap), 2),
+      //   new CombatActionWithUses(new Move(this.id, undefined, getMap, updateEntity, refreshMap), 5),
+      // ];
+
+      this.actions = {
+        attack: new CombatActionWithUses(new Attack(this.id, undefined, 5, this.getMap, this.updateEntity, this.refreshMap), 2),
+        move: new CombatActionWithUses(new Move(this.id, undefined, getMap, updateEntity, refreshMap), 5),
+      };
     }
 
     clone(): RustedBrute {
@@ -170,6 +196,28 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       clone.setHp(this.hp);
   
       return clone;
+    }
+
+    async executeTurn(): Promise<void> {
+      const playerPosition:Vector2|undefined = this.getMap().getEntityById(this.playerId)?.position;
+
+      await new Promise((resolve) => setTimeout(resolve, CombatEnemy.ACTION_DELAY));
+
+      if(playerPosition){
+        const directions:Directions[] = PathfindingUtil.findPath(this.position, playerPosition, this.getMap());
+
+        
+
+        const loopLimit = Math.min(directions.length, this.actions.move.uses);
+        for(let i = 0; i < loopLimit; i++){
+          this.addActionToList(new Move(this.id, directions[i], this.getMap, this.updateEntity, this.refreshMap));
+          await new Promise((resolve) => setTimeout(resolve, CombatEnemy.ACTION_DELAY));
+        }
+      }
+      
+      setTimeout(() => {
+        this.executeActionsList();
+      }, 200);
     }
   }
 

@@ -74,9 +74,9 @@ const CombatMapFramerMotion: FC<CombatMapProps> = ({map, setMap, aoeToDisplay, s
 
   return (
     <>
-      <button className='highlight-button' onClick={highlightAOE}>Highlight</button>
+      {/* <button className='highlight-button' onClick={highlightAOE}>Highlight</button> */}
       {/* <button className='highlight-button' onClick={highlightPlayer}>Highlight Player</button> */}
-      <button className='highlight-button' onClick={animateSevenSeven}>Animate (7,7)</button>
+      {/* <button className='highlight-button' onClick={animateSevenSeven}>Animate (7,7)</button> */}
       {/* <button className='log-button' onClick={logLocationData}>Log</button> */}
       <div ref={scope} id="-1" className="combat-map" data-testid="combat-map">
         {map.locations.map((row, i) => {
@@ -88,7 +88,7 @@ const CombatMapFramerMotion: FC<CombatMapProps> = ({map, setMap, aoeToDisplay, s
                     // animate={animationObject}
 
                     onClick={() => {console.log(location)}} 
-                    id={positionToId(location)} 
+                    id={positionToId(new Vector2(j, i))} 
                     className={`combat-map-location ${location.highlight ? "highlight" : ""}`} 
                     key={"combat-map-location:" + location.y*10+location.x}>
                       {location.symbol}
