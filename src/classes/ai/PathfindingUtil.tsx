@@ -109,6 +109,21 @@ class PathfindingUtil{
 
         return path;
     }
+
+    static findStoppingPoint(start: Vector2, directions: Directions[], movementLimit:number): Vector2 {
+        let current = start;
+        let i = 0;
+
+        while (i < directions.length && movementLimit > 0) {
+            const direction = directions[i];
+            const next = Vector2.add(current, DirectionsUtility.getVectorFromDirection(direction));
+            current = next;
+            i++;
+            movementLimit--;
+        }
+
+        return current;
+    }
 }
 
 export default PathfindingUtil;

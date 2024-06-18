@@ -38,7 +38,7 @@ abstract class CombatAction{
     //   throw new Error('Action type not recognized');
     // }
 
-    abstract clone(): CombatAction;
+    abstract clone(newDirection?:Directions): CombatAction;
   
     dataToObject() : Object{
       return {
@@ -107,9 +107,11 @@ abstract class CombatAction{
       this.getMap = getMap;
       this.damage = damage;
     }
-  
-    clone() : Attack{
-      return new Attack(this.ownerId, this.direction, this.damage, this.getMap, this.updateEntity, this.refreshMap);
+
+    clone(newDirection:Directions = Directions.NONE) : Attack{
+      const direction: Directions = newDirection != Directions.NONE ? newDirection : this.direction;
+      
+      return new Attack(this.ownerId, direction, this.damage, this.getMap, this.updateEntity, this.refreshMap);
     }
 
     getTargetId(): number|undefined{
@@ -258,8 +260,10 @@ abstract class CombatAction{
       this.getMap = getMap;
     }
 
-    clone() : Move{
-      return new Move(this.ownerId, this.direction, this.getMap, this.updateEntity, this.refreshMap);
+    clone(newDirection:Directions|undefined) : Move{
+      const direction: Directions = newDirection ? newDirection : this.direction;
+      
+      return new Move(this.ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
     }
   
     execute() {

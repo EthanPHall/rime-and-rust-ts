@@ -1,5 +1,5 @@
 import PathfindingUtil from "../ai/PathfindingUtil";
-import Directions from "../utility/Directions";
+import Directions, { DirectionsUtility } from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
 import CombatAction, {  Attack, CombatActionWithRepeat, CombatActionWithUses, Move } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
@@ -8,7 +8,7 @@ import IActionExecutor from "./IActionExecutor";
 import TurnTaker from "./TurnTaker";
 
 abstract class CombatEnemy extends CombatEntity implements TurnTaker{
-  static ACTION_DELAY = 300;
+  static ACTION_DELAY = 350;
   static TURN_START_DELAY = 1000;
 
   getMap: () => CombatMapData;
@@ -200,18 +200,49 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       await new Promise((resolve) => setTimeout(resolve, CombatEnemy.TURN_START_DELAY));
 
       if(playerPosition){
-        const directions:Directions[] = PathfindingUtil.findPath(this.position, playerPosition, this.getMap());
+        const directions = PathfindingUtil.findPath(this.position, playerPosition, this.getMap());
 
+        //Handle movement actions.
         const loopLimit = Math.min(directions.length, this.actions.move.uses);
         for(let i = 0; i < loopLimit; i++){
-          this.addActionToList(new Move(this.id, directions[i], this.getMap, this.updateEntity, this.refreshMap));
+          this.addActionToList(this.actions.move.action.clone(directions[i]));
           await new Promise((resolve) => setTimeout(resolve, CombatEnemy.ACTION_DELAY));
+        }
+
+        //Handle attack actions.
+        const targetPosition = directions.length != 0 ? PathfindingUtil.findStoppingPoint(this.position, directions, this.actions.move.uses) : this.position;
+        if(targetPosition){
+          const neighbors:Vector2[] = DirectionsUtility.getNeighbors(targetPosition, this.getMap());
+          let playerLocation:Vector2|null = null;
+          
+          console.log(this.id, targetPosition);
+          for(let i = 0; i < this.actions.attack.uses; i++){
+            //Don't go through the inner loop again if the player position was found.
+            if(playerLocation){
+              this.addActionToList(this.actions.attack.action.clone(DirectionsUtility.getDirectionFromCoordinates(targetPosition, playerLocation)));
+              await new Promise((resolve) => setTimeout(resolve, CombatEnemy.ACTION_DELAY));
+              break;
+            }
+            
+            //Find the player's location, if they are in the neighbors
+            for(const neighbor of neighbors){
+              console.log(neighbor, this.getMap().locations[neighbor.y][neighbor.x].entity?.id, this.playerId);
+              if(this.getMap().locations[neighbor.y][neighbor.x].entity?.id === this.playerId){
+                playerLocation = neighbor;
+                this.addActionToList(this.actions.attack.action.clone(DirectionsUtility.getDirectionFromCoordinates(targetPosition, playerLocation)));
+                await new Promise((resolve) => setTimeout(resolve, CombatEnemy.ACTION_DELAY));
+                break;
+              }
+            }  
+          }
         }
       }
       
+      console.log("---End of Turn---");
+
       setTimeout(() => {
         this.executeActionsList();
-      }, 200);
+      }, CombatEnemy.ACTION_DELAY);
     }
   }
 
