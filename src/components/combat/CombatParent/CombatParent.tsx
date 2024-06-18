@@ -102,6 +102,9 @@ class CombatMapTemplate1 extends CombatMapTemplate{
       new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 10)),
       new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 11)),
       new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 12)),
+      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(3, 7)),
+      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(4, 7)),
+      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(5, 7)),
     ];
     const hazards: CombatHazard[] = [
       new VolatileCanister(IdGenerator.generateUniqueId(), 10, 10, '+', 'Volatile Canister', new Vector2(3, 3), false),

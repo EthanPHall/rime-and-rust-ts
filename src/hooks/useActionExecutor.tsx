@@ -129,10 +129,6 @@ const useActionExecutor = (
         if(isExecuting()){
             return;
         }
-        if(comboList.length === 0){
-            endCurrentExecution();
-        }
-
         setExecuting(true);
     }
 

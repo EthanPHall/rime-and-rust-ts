@@ -8,7 +8,8 @@ import IActionExecutor from "./IActionExecutor";
 import TurnTaker from "./TurnTaker";
 
 abstract class CombatEnemy extends CombatEntity implements TurnTaker{
-  static ACTION_DELAY = 150;
+  static ACTION_DELAY = 300;
+  static TURN_START_DELAY = 1000;
 
   getMap: () => CombatMapData;
   updateEntity: (id:number, newEntity: CombatEntity) => void;
@@ -170,11 +171,6 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
         refreshMap
       );
 
-      // this.actions = [
-      //   new CombatActionWithUses(new Attack(this.id, undefined, 5, this.getMap, this.updateEntity, this.refreshMap), 2),
-      //   new CombatActionWithUses(new Move(this.id, undefined, getMap, updateEntity, refreshMap), 5),
-      // ];
-
       this.actions = {
         attack: new CombatActionWithUses(new Attack(this.id, undefined, 5, this.getMap, this.updateEntity, this.refreshMap), 2),
         move: new CombatActionWithUses(new Move(this.id, undefined, getMap, updateEntity, refreshMap), 5),
@@ -201,12 +197,10 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     async executeTurn(): Promise<void> {
       const playerPosition:Vector2|undefined = this.getMap().getEntityById(this.playerId)?.position;
 
-      await new Promise((resolve) => setTimeout(resolve, CombatEnemy.ACTION_DELAY));
+      await new Promise((resolve) => setTimeout(resolve, CombatEnemy.TURN_START_DELAY));
 
       if(playerPosition){
         const directions:Directions[] = PathfindingUtil.findPath(this.position, playerPosition, this.getMap());
-
-        
 
         const loopLimit = Math.min(directions.length, this.actions.move.uses);
         for(let i = 0; i < loopLimit; i++){

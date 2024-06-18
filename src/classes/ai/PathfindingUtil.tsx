@@ -21,14 +21,36 @@ class PathfindingUtil{
         // Initialize the cameFrom object to keep track of the path
         const cameFrom: { [key: string]: Vector2 | null } = {};
 
+        // get the neighbors of teh goal
+        const goalPlusDirectNeighbors = DirectionsUtility.getNeighbors(goal, mapData);
+        goalPlusDirectNeighbors.push(goal);
+
+        //Get the neighbors of the goal neighbors
+        const indirectGoalNeighbors: Vector2[] = [];
+        for(const neighbor of goalPlusDirectNeighbors){
+            const neighbors = DirectionsUtility.getNeighbors(neighbor, mapData);
+            for(const neighbor of neighbors){
+                if(!goalPlusDirectNeighbors.some((node) => node.equals(neighbor))){
+                    indirectGoalNeighbors.push(neighbor);
+                }
+            }
+        }
+
         while (openList.length > 0) {
-
-
             // Find the node with the lowest fScore
             const current = openList.reduce((a, b) => (fScore[a.toString()] < fScore[b.toString()] ? a : b));
 
-            // If the current node is the goal, reconstruct the path and return it
-            if (current.equals(goal)) {
+            // If the current node is the goal, or is surrounding the goal, reconstruct the path and return it
+            // if (current.equals(goal)) {
+            //     return this.reconstructPath(cameFrom, current);
+            // }
+            if(goalPlusDirectNeighbors.some((node) => node.equals(current))){
+                return this.reconstructPath(cameFrom, current);
+            }
+            else if(
+                !goalPlusDirectNeighbors.some((node) => {return !mapData.locations[node.y][node.x].entity || mapData.locations[node.y][node.x].entity?.isWalkable()}) && 
+                indirectGoalNeighbors.some((node) => node.equals(current))
+            ){
                 return this.reconstructPath(cameFrom, current);
             }
 
@@ -48,7 +70,7 @@ class PathfindingUtil{
 
                 // Calculate the tentative gScore for the neighbor
                 const entityAtNeighborLocation:CombatEntity | null = mapData.locations[neighbor.y][neighbor.x].entity;
-                const tentativeGScore = entityAtNeighborLocation ? Infinity : gScore[current.toString()] + current.manhattanDistance(neighbor);
+                const tentativeGScore = entityAtNeighborLocation && !entityAtNeighborLocation.isWalkable() ? Infinity : gScore[current.toString()] + current.manhattanDistance(neighbor);
 
                 // Add the neighbor to the open list if it's not already in it
                 if (!openList.some((node) => node.equals(neighbor))) {
