@@ -8,8 +8,9 @@ import IActionExecutor from "./IActionExecutor";
 import TurnTaker from "./TurnTaker";
 
 abstract class CombatEnemy extends CombatEntity implements TurnTaker{
-  static ACTION_DELAY = 350;
+  static ACTION_DELAY = 500;
   static TURN_START_DELAY = 1000;
+  static ACTION_SHOW_OFF_DELAY = 1500;
 
   getMap: () => CombatMapData;
   updateEntity: (id:number, newEntity: CombatEntity) => void;
@@ -108,6 +109,11 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
         updateEntity,
         refreshMap
       );
+
+      this.actions = {
+        attack: new CombatActionWithUses(new Attack(this.id, undefined, 3, this.getMap, this.updateEntity, this.refreshMap), 2),
+        move: new CombatActionWithUses(new Move(this.id, undefined, getMap, updateEntity, refreshMap), 3),
+      };
     }
 
     clone(): RustedShambler {
@@ -128,18 +134,23 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     }
 
     async executeTurn(): Promise<void> {
-      setTimeout(() => {
-        this.addActionToList(new Attack(this.id, Directions.LEFT, 5, this.getMap, this.updateEntity, this.refreshMap));
-        this.addActionToList(new Attack(this.id, Directions.LEFT, 5, this.getMap, this.updateEntity, this.refreshMap));
-        this.addActionToList(new Move(this.id, Directions.DOWN, this.getMap, this.updateEntity, this.refreshMap));
-        this.addActionToList(new Move(this.id, Directions.DOWN, this.getMap, this.updateEntity, this.refreshMap));
-      }, 1000);
+      const playerPosition:Vector2|undefined = this.getMap().getEntityById(this.playerId)?.position;
 
-      
+      await new Promise((resolve) => setTimeout(resolve, CombatEnemy.TURN_START_DELAY));
+
+      if(playerPosition){
+        const aiHandler = new RustedShamblerAI(this, playerPosition, this.playerId, this.getMap, this.actions as {move: CombatActionWithUses, attack: CombatActionWithUses});
+        const actions = aiHandler.handleAI();
+
+        for(const action of actions){
+          this.addActionToList(action);
+          await new Promise((resolve) => setTimeout(resolve, CombatEnemy.ACTION_DELAY));
+        }
+      }
+
       setTimeout(() => {
-        // this.endTurn();
         this.executeActionsList();
-      }, 1500);
+      }, CombatEnemy.ACTION_DELAY);
     }
   }
   
@@ -200,49 +211,75 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       await new Promise((resolve) => setTimeout(resolve, CombatEnemy.TURN_START_DELAY));
 
       if(playerPosition){
-        const directions = PathfindingUtil.findPath(this.position, playerPosition, this.getMap());
+        const aiHandler = new RustedShamblerAI(this, playerPosition, this.playerId, this.getMap, this.actions as {move: CombatActionWithUses, attack: CombatActionWithUses});
+        const actions = aiHandler.handleAI();
 
-        //Handle movement actions.
-        const loopLimit = Math.min(directions.length, this.actions.move.uses);
-        for(let i = 0; i < loopLimit; i++){
-          this.addActionToList(this.actions.move.action.clone(directions[i]));
+        for(const action of actions){
+          this.addActionToList(action);
           await new Promise((resolve) => setTimeout(resolve, CombatEnemy.ACTION_DELAY));
         }
-
-        //Handle attack actions.
-        const targetPosition = directions.length != 0 ? PathfindingUtil.findStoppingPoint(this.position, directions, this.actions.move.uses) : this.position;
-        if(targetPosition){
-          const neighbors:Vector2[] = DirectionsUtility.getNeighbors(targetPosition, this.getMap());
-          let playerLocation:Vector2|null = null;
-          
-          console.log(this.id, targetPosition);
-          for(let i = 0; i < this.actions.attack.uses; i++){
-            //Don't go through the inner loop again if the player position was found.
-            if(playerLocation){
-              this.addActionToList(this.actions.attack.action.clone(DirectionsUtility.getDirectionFromCoordinates(targetPosition, playerLocation)));
-              await new Promise((resolve) => setTimeout(resolve, CombatEnemy.ACTION_DELAY));
-              break;
-            }
-            
-            //Find the player's location, if they are in the neighbors
-            for(const neighbor of neighbors){
-              console.log(neighbor, this.getMap().locations[neighbor.y][neighbor.x].entity?.id, this.playerId);
-              if(this.getMap().locations[neighbor.y][neighbor.x].entity?.id === this.playerId){
-                playerLocation = neighbor;
-                this.addActionToList(this.actions.attack.action.clone(DirectionsUtility.getDirectionFromCoordinates(targetPosition, playerLocation)));
-                await new Promise((resolve) => setTimeout(resolve, CombatEnemy.ACTION_DELAY));
-                break;
-              }
-            }  
-          }
-        }
       }
-      
-      console.log("---End of Turn---");
 
       setTimeout(() => {
         this.executeActionsList();
       }, CombatEnemy.ACTION_DELAY);
+    }
+  }
+
+  interface AIHandler{
+    handleAI: () => CombatAction[];
+  }
+
+  class RustedShamblerAI implements AIHandler{
+    entity: CombatEntity;
+    playerPosition: Vector2;
+    playerId: number;
+    getMap: () => CombatMapData;
+    actions: {move: CombatActionWithUses, attack: CombatActionWithUses};
+
+    constructor(entity: CombatEntity, playerPosition: Vector2, playerId: number, getMap: () => CombatMapData, actions: {move: CombatActionWithUses, attack: CombatActionWithUses}){
+      this.entity = entity;
+      this.playerPosition = playerPosition;
+      this.playerId = playerId;
+      this.getMap = getMap;
+      this.actions = actions;
+    }
+
+    handleAI():CombatAction[]{
+      const actions:CombatAction[] = [];
+      const directions = PathfindingUtil.findPath(this.entity.position, this.playerPosition, this.getMap());
+
+      //Handle movement actions.
+      const loopLimit = Math.min(directions.length, this.actions.move.uses);
+      for(let i = 0; i < loopLimit; i++){
+        actions.push(this.actions.move.action.clone(directions[i]));
+      }
+
+      //Handle attack actions.
+      const targetPosition = directions.length != 0 ? PathfindingUtil.findStoppingPoint(this.entity.position, directions, this.actions.move.uses) : this.entity.position;
+      if(targetPosition){
+        const neighbors:Vector2[] = DirectionsUtility.getNeighbors(targetPosition, this.getMap());
+        let playerLocation:Vector2|null = null;
+        
+        for(let i = 0; i < this.actions.attack.uses; i++){
+          //Don't go through the inner loop again if the player position was found.
+          if(playerLocation){
+            actions.push(this.actions.attack.action.clone(DirectionsUtility.getDirectionFromCoordinates(targetPosition, playerLocation)));
+            break;
+          }
+          
+          //Find the player's location, if they are in the neighbors
+          for(const neighbor of neighbors){
+            if(this.getMap().locations[neighbor.y][neighbor.x].entity?.id === this.playerId){
+              playerLocation = neighbor;
+              actions.push(this.actions.attack.action.clone(DirectionsUtility.getDirectionFromCoordinates(targetPosition, playerLocation)));
+              break;
+            }
+          }  
+        }
+      }
+
+      return actions;
     }
   }
 
