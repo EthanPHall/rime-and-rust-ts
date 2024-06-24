@@ -411,6 +411,10 @@ abstract class CombatAction{
         }
         this.updateEntity(targetEntity.id, targetEntity);
         
+        if(targetEntity instanceof CombatEnemy){
+          targetEntity.setReactionFlag(ReactionFlags.WAS_PULLED, this);
+        }
+
         previousEntity = targetEntity;
         previousDidBump = bumped;
       }      
@@ -568,6 +572,10 @@ abstract class CombatAction{
         }
         this.updateEntity(targetEntity.id, targetEntity);
         
+        if(targetEntity instanceof CombatEnemy){
+          targetEntity.setReactionFlag(ReactionFlags.WAS_PULLED, this);
+        }
+
         previousEntity = targetEntity;
         previousDidBump = bumped;
       }

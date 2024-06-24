@@ -10,10 +10,11 @@ import TurnTaker from "./TurnTaker";
 enum ReactionFlags{
   PLAYER_DID_MOVE = 'PLAYER_DID_MOVE',
   WAS_ATTACKED = 'WAS_ATTACKED',
-  WAS_MOVED = 'WAS_MOVED'
+  WAS_PULLED = 'WAS_PULLED',
+  WAS_PUSHED = 'WAS_PUSHED',
 }
 
-type ReactionFlagAndTriggerList = { [ k in ReactionFlags ]?: CombatAction|null };
+type ReactionFlagAndTriggerList = { [ k in ReactionFlags ]?: CombatAction };
 
 abstract class CombatEnemy extends CombatEntity implements TurnTaker{
   static ACTION_DELAY = 500;
@@ -49,7 +50,7 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     }
 
 
-    private reactionTriggerList: ReactionFlagAndTriggerList = {};
+    protected reactionTriggerList: ReactionFlagAndTriggerList = {};
     getReaction(): CombatAction|null {
       return null;
     }
@@ -125,8 +126,8 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     ){
       super(
         id, 
-        10, 
-        10, 
+        40, 
+        40, 
         'S', 
         'Rusted Shambler', 
         position, 
@@ -179,6 +180,16 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       setTimeout(() => {
         this.executeActionsList();
       }, CombatEnemy.ACTION_DELAY);
+    }
+
+    getReaction(): CombatAction | null {
+      const trigger:CombatAction|undefined = this.reactionTriggerList[ReactionFlags.WAS_ATTACKED];
+      
+      if(trigger){
+        return this.actions.attack.action.clone(DirectionsUtility.getOppositeDirection(trigger.direction));
+      }
+
+      return null;
     }
   }
   
@@ -249,6 +260,16 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       setTimeout(() => {
         this.executeActionsList();
       }, CombatEnemy.ACTION_DELAY);
+    }
+
+    getReaction(): CombatAction | null {
+      const trigger:CombatAction|undefined = CombatEnemy.ENEMY_WIDE_REACTION_LIST[ReactionFlags.PLAYER_DID_MOVE];
+      
+      if(trigger){
+        return this.actions.move.action.clone(trigger.direction);
+      }
+
+      return null;
     }
   }
 

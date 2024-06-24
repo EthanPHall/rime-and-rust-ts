@@ -187,6 +187,8 @@ const useActionExecutor = (
             }
         });
 
+        CombatEnemy.clearEnemyWideReactions();
+
         animateAndExecuteGivenList(actionsList);
     }
 
@@ -213,7 +215,8 @@ const useActionExecutor = (
                 }
                 else if(currentStep.current === ActionSteps.REACTION || (currentStep.current === ActionSteps.HAZARD && hazardsDidAffectEntities.current)){
                     startNewHazardStep();
-                }else{
+                }
+                else{
                     startNewActionStep();
                 }
             });
