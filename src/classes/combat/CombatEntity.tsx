@@ -32,6 +32,8 @@ abstract class CombatEntity{
     isMovable(): boolean{
       return true;
     }
+
+    onDeath(): void{}
   }
 
 export default CombatEntity;

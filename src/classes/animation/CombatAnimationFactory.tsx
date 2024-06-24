@@ -13,12 +13,11 @@ enum CombatAnimationNames {
     Hurt = "Hurt",
     Psychic = "Psychic",
     Burn = "Burn",
+    Explosion = "Explosion",
     None = "None",
 }
 
 class CombatAnimationFactory{
-    private static createAltBump: boolean;
-    
     static createAnimation(animationName: string, direction:Directions, entityToAnimateId:number, dontPlayIfLast:boolean = false, positionToAnimate:Vector2|null = null): AnimationDetails {
         switch(animationName){
             case CombatAnimationNames.Move:
@@ -37,6 +36,8 @@ class CombatAnimationFactory{
                 return new AnimationDetails(CombatAnimationNames.Psychic, 400, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate);
             case CombatAnimationNames.Burn:
                 return new AnimationDetails(CombatAnimationNames.Burn, 1200, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate);
+            case CombatAnimationNames.Explosion:
+                return new AnimationDetails(CombatAnimationNames.Explosion, 1000, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate);
             case CombatAnimationNames.Reset:
                 return new AnimationDetails(CombatAnimationNames.Reset, 0, direction, entityToAnimateId);
             default:

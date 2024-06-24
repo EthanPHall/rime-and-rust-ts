@@ -9,7 +9,7 @@ import ComboSection from '../ComboSection/ComboSection';
 import ComponentSwitcher from '../ComponentSwitcher/ComponentSwitcher';
 import CombatMapManager from '../../../classes/combat/CombatMapManager';
 import CombatManager from '../../../classes/combat/CombatManager';
-import CombatAction, { Attack, Block, CombatActionWithRepeat, CombatActionWithUses, Move, PullRange5, PushRange5 } from '../../../classes/combat/CombatAction';
+import CombatAction, { Attack, Block, CombatActionWithRepeat, CombatActionWithUses, Move, PullRange5, PushRange5, VolatileCanExplosion } from '../../../classes/combat/CombatAction';
 import CombatMapData from '../../../classes/combat/CombatMapData';
 import AreaOfEffect from '../../../classes/combat/AreaOfEffect';
 import Directions from '../../../classes/utility/Directions';
@@ -108,7 +108,7 @@ class CombatMapTemplate1 extends CombatMapTemplate{
       // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(5, 7)),
     ];
     const hazards: CombatHazard[] = [
-      new VolatileCanister(IdGenerator.generateUniqueId(), 10, 10, '+', 'Volatile Canister', new Vector2(3, 3), false),
+      new VolatileCanister(IdGenerator.generateUniqueId(), '+', 'Volatile Canister', new Vector2(3, 3), false),
       new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 9), false, 5, getMap, updateEntity, refreshMap),
       new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 10), false, 5, getMap, updateEntity, refreshMap),
       new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 11), false, 5, getMap, updateEntity, refreshMap),
@@ -151,6 +151,7 @@ const CombatParent: FC<CombatParentProps> = () => {
     new CombatActionWithUses(new Move(getPlayer().id, undefined, getCachedMap, updateEntity, refreshMap), 15),
     new CombatActionWithUses(new PullRange5(getPlayer().id, undefined, 2, getCachedMap, updateEntity, refreshMap), 10),
     new CombatActionWithUses(new PushRange5(getPlayer().id, undefined, 2, getCachedMap, updateEntity, refreshMap), 10),
+    new CombatActionWithUses(new VolatileCanExplosion(getPlayer().id, getCachedMap, getHazards, setHazards, updateEntity, refreshMap), 1),
   ]);
   
   const [infoCardData, setInfoCardData] = useState<CombatInfoDisplayProps | null>(null);

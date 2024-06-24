@@ -5,6 +5,7 @@ import Vector2 from "../utility/Vector2";
 import AreaOfEffect from "./AreaOfEffect";
 import CombatEnemy, { ReactionFlags } from "./CombatEnemy";
 import CombatEntity from "./CombatEntity";
+import CombatHazard, { BurningFloor } from "./CombatHazard";
 import CombatMapData from "./CombatMapData";
 import CombatPlayer from "./CombatPlayer";
 
@@ -235,6 +236,100 @@ abstract class CombatAction{
 
 
 
+
+  class VolatileCanExplosion extends CombatAction {
+    getMap: () => CombatMapData;
+    getHazardsList: () => CombatHazard[];
+    setHazardsList: (newHazards: CombatHazard[]) => void;
+    damage: number;
+    aoe: AreaOfEffect;
+
+    constructor(
+      ownerId: number,
+      getMap: () => CombatMapData,
+      getHazardsList: () => CombatHazard[],
+      setHazardsList: (newHazards: CombatHazard[]) => void,
+      updateEntity: (id:number, newEntity: CombatEntity) => void,
+      refreshMap: () => void
+    ){
+      super('Explosion', false, ownerId, undefined, updateEntity, refreshMap);
+      this.getMap = getMap;
+      this.getHazardsList = getHazardsList;
+      this.setHazardsList = setHazardsList;
+      this.damage = 5;
+
+      this.aoe = new AreaOfEffect(0, Directions.NONE, 3, false);
+    }
+  
+    clone(): CombatAction {
+      return new VolatileCanExplosion(this.ownerId, this.getMap, this.getHazardsList, this.setHazardsList, this.updateEntity, this.refreshMap);
+    }
+
+    getTargets(): [number[], Vector2[]]{
+      const map: CombatMapData = this.getMap();
+      const owner: CombatEntity|null = map.getEntityById(this.ownerId);
+
+      if(!owner){return [[], []];}
+
+      const [entities, positions] = this.aoe.getAffectedEntities(owner.position.x, owner.position.y, map);
+      const targetIds:number[] = entities.map((entity) => entity.id);
+      return [targetIds, positions];
+    }
+
+    execute() {
+      const [targetIds, positions] = this.getTargets();
+      const map: CombatMapData = this.getMap();
+      
+      targetIds.forEach((targetId) => {
+        const targetEntity = map.getEntityById(targetId)?.clone();
+        if(!targetEntity){
+          return;
+        }
+
+        targetEntity.hp -= this.damage;
+
+        const hazards = this.getHazardsList();
+        const dontHaveHazardsYet:Vector2[] = positions.filter((position) => {
+          return !hazards.some((hazard) => Vector2.equals(hazard.position, position));
+        });
+        const newBurningFloors:CombatHazard[] = dontHaveHazardsYet.map((position) => {
+          return new BurningFloor(
+            -1,
+            1,
+            1,
+            'f',
+            'Burning Floor',
+            position,
+            true,
+            5,
+            this.getMap,
+            this.updateEntity,
+            this.refreshMap
+          );
+        });
+
+        this.setHazardsList(hazards.concat(newBurningFloors));
+        this.updateEntity(targetEntity.id, targetEntity);
+      });
+
+      this.refreshMap();
+    }
+
+    getAnimations(): AnimationDetails[][] {
+      const [targetIds, positions] = this.getTargets();
+      const map: CombatMapData = this.getMap();
+
+      const result:AnimationDetails[][] = [[],[]];
+      positions.forEach((position) => {
+        result[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Explosion, Directions.NONE, -1, false, position));
+      });
+      targetIds.forEach((targetId) => {
+        result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, Directions.NONE, targetId));
+      });
+
+      return result;
+    }
+  }
 
 
 
@@ -635,4 +730,4 @@ abstract class CombatAction{
   }
   
 export default CombatAction;
-export { Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, AttackForHazards as AttackGivenOwnerEntity};
+export { Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, AttackForHazards as AttackGivenOwnerEntity, VolatileCanExplosion};

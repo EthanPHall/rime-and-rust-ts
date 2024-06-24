@@ -91,8 +91,8 @@ abstract class CombatHazard extends CombatEntity{
   }
   
   class VolatileCanister extends CombatHazard{
-    constructor(id:number, hp: number, maxHp: number, symbol: string, name: string, position: Vector2, solid: boolean){
-      super(id, hp, maxHp, symbol, name, position, solid);
+    constructor(id:number, symbol: string, name: string, position: Vector2, solid: boolean){
+      super(id, 2, 2, symbol, name, position, solid);
     }
 
     isMovable(): boolean {
@@ -100,7 +100,10 @@ abstract class CombatHazard extends CombatEntity{
     }
 
     clone(): CombatHazard{
-      return new VolatileCanister(this.id, this.hp, this.maxHp, this.symbol, this.name, this.position, this.solid);
+      const newCanister:VolatileCanister = new VolatileCanister(this.id, this.symbol, this.name, this.position, this.solid);
+      newCanister.hp = this.hp;
+
+      return newCanister;
     }
 
     handleNewEntityOnThisSpace(newEntity: CombatEntity|null): CombatEntity|null {
@@ -109,6 +112,10 @@ abstract class CombatHazard extends CombatEntity{
     }
     getActionForNewEntityOnSpace(newEntity: CombatEntity | null): CombatAction | null {
       return null;
+    }
+
+    onDeath(): void {
+      
     }
   }
 

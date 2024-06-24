@@ -126,8 +126,8 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     ){
       super(
         id, 
-        40, 
-        40, 
+        10, 
+        10, 
         'S', 
         'Rusted Shambler', 
         position, 
