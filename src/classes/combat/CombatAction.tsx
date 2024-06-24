@@ -3,8 +3,10 @@ import CombatAnimationFactory, { CombatAnimationNames } from "../animation/Comba
 import Directions, { DirectionsUtility } from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
 import AreaOfEffect from "./AreaOfEffect";
+import CombatEnemy, { ReactionFlags } from "./CombatEnemy";
 import CombatEntity from "./CombatEntity";
 import CombatMapData from "./CombatMapData";
+import CombatPlayer from "./CombatPlayer";
 
 abstract class CombatAction{
     name: string;
@@ -141,6 +143,11 @@ abstract class CombatAction{
         }
 
         targetEntity.hp -= this.damage;
+
+        if(targetEntity instanceof CombatEnemy){
+          targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this);
+        }
+
         this.updateEntity(targetEntity.id, targetEntity);
         return;
       }
@@ -286,6 +293,10 @@ abstract class CombatAction{
         else{
           updatedEntity.position = targetPosition;
           this.updateEntity(owner.id, updatedEntity);
+        }
+
+        if(owner instanceof CombatPlayer){
+          CombatEnemy.setEnemyWideReaction(ReactionFlags.PLAYER_DID_MOVE, this);
         }
       }
       else{

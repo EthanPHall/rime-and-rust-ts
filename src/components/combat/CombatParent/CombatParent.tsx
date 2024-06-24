@@ -93,18 +93,19 @@ class CombatMapTemplate1 extends CombatMapTemplate{
       new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(8, 7)),
       // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(9, 11)),
       // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(10, 11)),
-      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(11, 11)),
+      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(11, 11)),
       // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(6, 7)),
       // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 6)),
       // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 5)),
       // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 3)),
       // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 2)),
+
       new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 10)),
-      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 11)),
-      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 12)),
-      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(3, 7)),
-      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(4, 7)),
-      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(5, 7)),
+      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 11)),
+      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 12)),
+      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(3, 7)),
+      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(4, 7)),
+      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(5, 7)),
     ];
     const hazards: CombatHazard[] = [
       new VolatileCanister(IdGenerator.generateUniqueId(), 10, 10, '+', 'Volatile Canister', new Vector2(3, 3), false),
@@ -172,6 +173,7 @@ const CombatParent: FC<CombatParentProps> = () => {
     animator, 
     turnManager, 
     hazardsForEffects,
+    enemiesForEffects,
     updateEntity,
     refreshMap
   );

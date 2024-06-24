@@ -10,11 +10,13 @@ import CombatHazard from '../classes/combat/CombatHazard';
 import CombatEntity from '../classes/combat/CombatEntity';
 import CombatPlayer from '../classes/combat/CombatPlayer';
 import CombatEnemy from '../classes/combat/CombatEnemy';
+import { start } from 'repl';
 
 enum ActionSteps{
     ANIMATION,
     ACTION,
     HAZARD,
+    REACTION,
     DEBUG
 }
 
@@ -25,6 +27,7 @@ const useActionExecutor = (
     animator: IAnimator, 
     turnManager:TurnManager,
     hazards:CombatHazard[],
+    enemies:CombatEnemy[],
     updateEntity:(id: number, newEntity: CombatEntity) => void,
     refreshMap: () => void
 ):IActionExecutor => {
@@ -76,7 +79,7 @@ const useActionExecutor = (
         });
     }
 
-    function animateAndExecuteForHazards(actionsList:(CombatActionWithRepeat|null)[]):void{
+    function animateAndExecuteGivenList(actionsList:(CombatActionWithRepeat|null)[]):void{
         let toAnimate: AnimationDetails[][] = [];
         actionsList.forEach((action) => {
             if(action === null){
@@ -166,7 +169,25 @@ const useActionExecutor = (
                 return new CombatActionWithRepeat(action);
             }
         });
-        animateAndExecuteForHazards(actionsList);
+        animateAndExecuteGivenList(actionsList);
+    }
+
+    function startNewReactionStep(){
+        currentStep.current = ActionSteps.REACTION;
+
+        const actionsList:(CombatActionWithRepeat|null)[] = enemies.map((enemy) => {
+            const action:CombatAction|null = enemy.getReaction();
+            enemy.clearReactionFlags();
+
+            if(action === null){
+                return null;
+            }
+            else{
+                return new CombatActionWithRepeat(action);
+            }
+        });
+
+        animateAndExecuteGivenList(actionsList);
     }
 
     useEffect(() => {
@@ -187,7 +208,10 @@ const useActionExecutor = (
         if(standbyForAnimationCleanup.current){
             animationCleanupObject.current?.cleanupAnimations(...animationCleanupObject.current.args)
             .then(() => {
-                if(currentStep.current === ActionSteps.ACTION || (currentStep.current === ActionSteps.HAZARD && hazardsDidAffectEntities.current)){
+                if(currentStep.current === ActionSteps.ACTION){
+                    startNewReactionStep();
+                }
+                else if(currentStep.current === ActionSteps.REACTION || (currentStep.current === ActionSteps.HAZARD && hazardsDidAffectEntities.current)){
                     startNewHazardStep();
                 }else{
                     startNewActionStep();

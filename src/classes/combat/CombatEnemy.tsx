@@ -7,10 +7,26 @@ import CombatMapData from "./CombatMapData";
 import IActionExecutor from "./IActionExecutor";
 import TurnTaker from "./TurnTaker";
 
+enum ReactionFlags{
+  PLAYER_DID_MOVE = 'PLAYER_DID_MOVE',
+  WAS_ATTACKED = 'WAS_ATTACKED',
+  WAS_MOVED = 'WAS_MOVED'
+}
+
+type ReactionFlagAndTriggerList = { [ k in ReactionFlags ]?: CombatAction|null };
+
 abstract class CombatEnemy extends CombatEntity implements TurnTaker{
   static ACTION_DELAY = 500;
   static TURN_START_DELAY = 1000;
   static ACTION_SHOW_OFF_DELAY = 1500;
+
+  protected static ENEMY_WIDE_REACTION_LIST: ReactionFlagAndTriggerList = {};
+  static clearEnemyWideReactions(): void {
+    CombatEnemy.ENEMY_WIDE_REACTION_LIST = {};
+  }
+  static setEnemyWideReaction(flag: ReactionFlags, action: CombatAction): void {
+    CombatEnemy.ENEMY_WIDE_REACTION_LIST[flag] = action;
+  }
 
   getMap: () => CombatMapData;
   updateEntity: (id:number, newEntity: CombatEntity) => void;
@@ -30,6 +46,18 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     endTurn(): void {
       console.log(`${this.name} is ending their turn.`);
       this.advanceTurn();
+    }
+
+
+    private reactionTriggerList: ReactionFlagAndTriggerList = {};
+    getReaction(): CombatAction|null {
+      return null;
+    }
+    clearReactionFlags(): void {
+      this.reactionTriggerList = {};
+    }
+    setReactionFlag(flag: ReactionFlags, action: CombatAction): void {
+      this.reactionTriggerList[flag] = action;
     }
 
     abstract executeTurn(): Promise<void>;
@@ -155,8 +183,6 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
   }
   
   class RustedBrute extends CombatEnemy{
-
-
     constructor(
       id: number,
       position: Vector2, 
@@ -212,9 +238,9 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
 
       if(playerPosition){
         const aiHandler = new RustedShamblerAI(this, playerPosition, this.playerId, this.getMap, this.actions as {move: CombatActionWithUses, attack: CombatActionWithUses});
-        const actions = aiHandler.handleAI();
+        const aiActions = aiHandler.handleAI();
 
-        for(const action of actions){
+        for(const action of aiActions){
           this.addActionToList(action);
           await new Promise((resolve) => setTimeout(resolve, CombatEnemy.ACTION_DELAY));
         }
@@ -284,4 +310,5 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
   }
 
 export default CombatEnemy;
-export { RustedShambler, RustedBrute };
+export { RustedShambler, RustedBrute, ReactionFlags };
+export type { AIHandler };
