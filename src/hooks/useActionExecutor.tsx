@@ -9,7 +9,7 @@ import TurnManager from '../classes/combat/TurnManager';
 import CombatHazard from '../classes/combat/CombatHazard';
 import CombatEntity from '../classes/combat/CombatEntity';
 import CombatPlayer from '../classes/combat/CombatPlayer';
-import CombatEnemy from '../classes/combat/CombatEnemy';
+import CombatEnemy, { Reaction } from '../classes/combat/CombatEnemy';
 import { start } from 'repl';
 
 enum ActionSteps{
@@ -175,18 +175,39 @@ const useActionExecutor = (
     function startNewReactionStep(){
         currentStep.current = ActionSteps.REACTION;
 
-        const actionsList:(CombatActionWithRepeat|null)[] = enemies.map((enemy) => {
-            const action:CombatAction|null = enemy.getReaction();
+        const reactionsList:(Reaction|null)[] = enemies.map((enemy) => {
+            const reaction:Reaction|null = enemy.getReaction();
             enemy.clearReactionFlags();
 
-            if(action === null){
+            if(reaction === null){
                 return null;
             }
+            
+            return reaction;
+        });
+
+        reactionsList.sort((a, b) => {
+            if(a === null){
+                return 1;
+            }
+            else if(b === null){
+                return -1;
+            }
             else{
-                return new CombatActionWithRepeat(action);
+                return a.priority - b.priority;
             }
         });
 
+        const actionsList:(CombatActionWithRepeat|null)[] = reactionsList.map((reaction) => {
+            if(reaction === null){
+                return null;
+            }
+            else{
+                return new CombatActionWithRepeat(reaction.action);
+            }
+        });
+
+        enemies.forEach((enemy) => { enemy.clearReactionFlags(); });
         CombatEnemy.clearEnemyWideReactions();
 
         animateAndExecuteGivenList(actionsList);

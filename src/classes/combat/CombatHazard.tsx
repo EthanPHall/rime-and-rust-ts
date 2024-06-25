@@ -5,7 +5,8 @@ import Directions from "../utility/Directions";
 import IdGenerator from "../utility/IdGenerator";
 import MapUtilities from "../utility/MapUtilities";
 import Vector2 from "../utility/Vector2";
-import CombatAction, { Attack, AttackGivenOwnerEntity } from "./CombatAction";
+import CombatAction, { Attack, BurningFloorAttack } from "./CombatAction";
+import CombatActionFactory from "./CombatActionFactory";
 import CombatEntity from "./CombatEntity";
 import CombatMapData from "./CombatMapData";
 
@@ -89,10 +90,22 @@ abstract class CombatHazard extends CombatEntity{
       return null;
     }
   }
+
+
+
+
+
+
+
   
   class VolatileCanister extends CombatHazard{
-    constructor(id:number, symbol: string, name: string, position: Vector2, solid: boolean){
+    actionFactory: CombatActionFactory;
+    addToComboList: (action: CombatAction) => void;
+
+    constructor(id:number, symbol: string, name: string, position: Vector2, solid: boolean, actionFactory: CombatActionFactory, addToComboList: (action: CombatAction) => void){
       super(id, 2, 2, symbol, name, position, solid);
+      this.actionFactory = actionFactory;
+      this.addToComboList = addToComboList;
     }
 
     isMovable(): boolean {
@@ -100,7 +113,7 @@ abstract class CombatHazard extends CombatEntity{
     }
 
     clone(): CombatHazard{
-      const newCanister:VolatileCanister = new VolatileCanister(this.id, this.symbol, this.name, this.position, this.solid);
+      const newCanister:VolatileCanister = new VolatileCanister(this.id, this.symbol, this.name, this.position, this.solid, this.actionFactory, this.addToComboList);
       newCanister.hp = this.hp;
 
       return newCanister;
@@ -115,9 +128,19 @@ abstract class CombatHazard extends CombatEntity{
     }
 
     onDeath(): void {
-      
+      this.addToComboList(this.actionFactory.createVolatileCanExplosion(this.id));
     }
   }
+
+
+
+
+
+
+
+
+
+
 
   class BurningFloor extends CombatHazard{
     static DESCRIPTION:string = 'Sturdy walls. Click a specific wall in the map to see its health.';
@@ -178,7 +201,7 @@ abstract class CombatHazard extends CombatEntity{
       let action:CombatAction|null = null;
       
       if(newEntity !== null && this.newEntityIsDifferent(newEntity)){
-        action = new AttackGivenOwnerEntity(this.id, Directions.NONE, this.damage, this.getMap, this.updateEntity, this.refreshMap, this);
+        action = new BurningFloorAttack(this.id, Directions.NONE, this.damage, this, this.getMap, this.updateEntity, this.refreshMap);
       }
       
       this.previousEntityOnThisSpace = newEntity;

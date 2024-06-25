@@ -15,6 +15,15 @@ enum ReactionFlags{
 }
 
 type ReactionFlagAndTriggerList = { [ k in ReactionFlags ]?: CombatAction };
+class Reaction {
+  action:CombatAction; 
+  priority:number;
+
+  constructor(action: CombatAction, priority: number){
+    this.action = action;
+    this.priority = priority;
+  }
+};
 
 abstract class CombatEnemy extends CombatEntity implements TurnTaker{
   static ACTION_DELAY = 500;
@@ -51,7 +60,9 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
 
 
     protected reactionTriggerList: ReactionFlagAndTriggerList = {};
-    getReaction(): CombatAction|null {
+
+    //The number in this tuple is the priority of the reaction. The higher the number, the higher the priority. 100 is middle of the road.
+    getReaction(): Reaction|null {
       return null;
     }
     clearReactionFlags(): void {
@@ -140,7 +151,7 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       );
 
       this.actions = {
-        attack: new CombatActionWithUses(new Attack(this.id, undefined, 3, this.getMap, this.updateEntity, this.refreshMap), 2),
+        attack: new CombatActionWithUses(new Attack(this.id, undefined, this.getMap, this.updateEntity, this.refreshMap), 2),
         move: new CombatActionWithUses(new Move(this.id, undefined, getMap, updateEntity, refreshMap), 3),
       };
     }
@@ -182,11 +193,11 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       }, CombatEnemy.ACTION_DELAY);
     }
 
-    getReaction(): CombatAction | null {
+    getReaction(): Reaction | null {
       const trigger:CombatAction|undefined = this.reactionTriggerList[ReactionFlags.WAS_ATTACKED];
       
       if(trigger){
-        return this.actions.attack.action.clone(DirectionsUtility.getOppositeDirection(trigger.direction));
+        return new Reaction(this.actions.attack.action.clone(DirectionsUtility.getOppositeDirection(trigger.direction)), 100);
       }
 
       return null;
@@ -220,7 +231,7 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       );
 
       this.actions = {
-        attack: new CombatActionWithUses(new Attack(this.id, undefined, 5, this.getMap, this.updateEntity, this.refreshMap), 2),
+        attack: new CombatActionWithUses(new Attack(this.id, undefined, this.getMap, this.updateEntity, this.refreshMap), 2),
         move: new CombatActionWithUses(new Move(this.id, undefined, getMap, updateEntity, refreshMap), 5),
       };
     }
@@ -262,11 +273,11 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       }, CombatEnemy.ACTION_DELAY);
     }
 
-    getReaction(): CombatAction | null {
+    getReaction(): Reaction | null {
       const trigger:CombatAction|undefined = CombatEnemy.ENEMY_WIDE_REACTION_LIST[ReactionFlags.PLAYER_DID_MOVE];
       
       if(trigger){
-        return this.actions.move.action.clone(trigger.direction);
+        return new Reaction(this.actions.move.action.clone(trigger.direction), 100);
       }
 
       return null;
@@ -332,4 +343,4 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
 
 export default CombatEnemy;
 export { RustedShambler, RustedBrute, ReactionFlags };
-export type { AIHandler };
+export type { AIHandler, Reaction };

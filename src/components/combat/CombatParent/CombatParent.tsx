@@ -38,6 +38,7 @@ import TurnTaker from '../../../classes/combat/TurnTaker';
 import useCombatHazardReactions from '../../../hooks/useCombatHazardReactions';
 import CombatAnimationFactory, { CombatAnimationNames } from '../../../classes/animation/CombatAnimationFactory';
 import useCombatHazardAnimations from '../../../hooks/useCombatHazardAnimations';
+import CombatActionFactory, { CombatActionNames } from '../../../classes/combat/CombatActionFactory';
 
 interface CombatParentProps {}
 
@@ -76,7 +77,9 @@ class CombatMapTemplate1 extends CombatMapTemplate{
     advanceTurn: () => void,
     getMap: () => CombatMapData,
     updateEntity: (id: number, newEntity: CombatEntity) => void,
-    refreshMap: () => void
+    refreshMap: () => void,
+    combatActionFactory: CombatActionFactory,
+    addToComboList: (newAction: CombatAction) => void,
   ){
     const size:Vector2 = new Vector2(15, 15);
     const walls: Wall[] = Wall.createDefaultWalls(
@@ -108,7 +111,7 @@ class CombatMapTemplate1 extends CombatMapTemplate{
       // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(5, 7)),
     ];
     const hazards: CombatHazard[] = [
-      new VolatileCanister(IdGenerator.generateUniqueId(), '+', 'Volatile Canister', new Vector2(3, 3), false),
+      new VolatileCanister(IdGenerator.generateUniqueId(), '+', 'Volatile Canister', new Vector2(3, 3), false, combatActionFactory, addToComboList),
       new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 9), false, 5, getMap, updateEntity, refreshMap),
       new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 10), false, 5, getMap, updateEntity, refreshMap),
       new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 11), false, 5, getMap, updateEntity, refreshMap),
@@ -125,8 +128,6 @@ const CombatParent: FC<CombatParentProps> = () => {
   
   const [turnManager, isTurnTakerPlayer] = useTurnManager();
   const [comboListForEffects, getComboList, setComboList] = useRefState<CombatActionWithRepeat[]>([]);
-
-  const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>(new CombatMapTemplate1(turnManager.advanceTurn, getCachedMap, updateEntity, refreshMap));
   
   //I was running into issues with closures I think. I was passing refreshMap() to the animator, but when it was called there,
   //the player wasn't up to date. That led to weird behavior where the player would move and be animated correctly the first time,
@@ -135,8 +136,10 @@ const CombatParent: FC<CombatParentProps> = () => {
   //so no more trying to get the player by value, it's all by reference now.
   const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), 100, 100, '@', 'Player', new Vector2(7, 7), turnManager.advanceTurn, resetActionUses));
   const [enemiesForEffects, getEnemies, setEnemies] = useRefState<CombatEnemy[]>([]);
-  const [hazardsForEffects, getHazards, setHazards] = useRefState<CombatHazard[]>(mapTemplate.hazards );
+  const [hazardsForEffects, getHazards, setHazards] = useRefState<CombatHazard[]>([]);
 
+  const combatActionFactory:CombatActionFactory = new CombatActionFactory(getCachedMap, updateEntity, refreshMap, getHazards, setHazards);
+  const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>(new CombatMapTemplate1(turnManager.advanceTurn, getCachedMap, updateEntity, refreshMap, combatActionFactory, addToComboList));
   
   const [baseMap, setBaseMap] = useState<CombatMapData>(createMapFromTemplate(mapTemplate));
   const [mapToSendOff, setMapToSendOff] = useState<CombatMapData>(getBaseMapClonePlusAddons());
@@ -146,12 +149,12 @@ const CombatParent: FC<CombatParentProps> = () => {
   );
  
   const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>([
-    new CombatActionWithUses(new Attack(getPlayer().id, undefined, 5, getCachedMap, updateEntity, refreshMap), 30),
-    new CombatActionWithUses(new Block(getPlayer().id, updateEntity, refreshMap), 10),
-    new CombatActionWithUses(new Move(getPlayer().id, undefined, getCachedMap, updateEntity, refreshMap), 15),
-    new CombatActionWithUses(new PullRange5(getPlayer().id, undefined, 2, getCachedMap, updateEntity, refreshMap), 10),
-    new CombatActionWithUses(new PushRange5(getPlayer().id, undefined, 2, getCachedMap, updateEntity, refreshMap), 10),
-    new CombatActionWithUses(new VolatileCanExplosion(getPlayer().id, getCachedMap, getHazards, setHazards, updateEntity, refreshMap), 1),
+    new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.Attack, getPlayer().id), 30),
+    new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.Block, getPlayer().id), 10),
+    new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.Move, getPlayer().id), 15),
+    new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.PullRange5, getPlayer().id), 10),
+    new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.PushRange5, getPlayer().id), 10),
+    new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.VolatileCanExplosion, getPlayer().id), 1),
   ]);
   
   const [infoCardData, setInfoCardData] = useState<CombatInfoDisplayProps | null>(null);
@@ -186,9 +189,6 @@ const CombatParent: FC<CombatParentProps> = () => {
 
   useCombatHazardAnimations(mapToSendOff, animator, getPlayer, hazardsForEffects, actionExecutor.isExecuting, mapAnimate);
 
-  //When entities step on hazards, this handles that.
-  // useCombatHazardReactions(playerForEffects, enemiesForEffects, hazardsForEffects, mapToSendOff, updateEntity);
-
   useEffect(() => {
     const enemyFactory = new CombatEnemyFactory(
       turnManager.advanceTurn,
@@ -199,8 +199,10 @@ const CombatParent: FC<CombatParentProps> = () => {
       refreshMap
     );
     setEnemies(mapTemplate.enemies.map(enemyInfo => enemyFactory.createEnemy(enemyInfo.type, enemyInfo.position)));
-    
+    setHazards(mapTemplate.hazards);
+
     turnManager.finishSetup(allTurnTakers);
+
     setupFinished.current = true;
   },[])
 

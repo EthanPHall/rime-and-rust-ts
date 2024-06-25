@@ -101,20 +101,19 @@ abstract class CombatAction{
     constructor(
       ownerId: number,
       direction: Directions = Directions.NONE,
-      damage: number,
       getMap: () => CombatMapData,
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
       super('Attack', true, ownerId, direction, updateEntity, refreshMap);
       this.getMap = getMap;
-      this.damage = damage;
+      this.damage = 5;
     }
 
     clone(newDirection:Directions = Directions.NONE) : Attack{
       const direction: Directions = newDirection != Directions.NONE ? newDirection : this.direction;
       
-      return new Attack(this.ownerId, direction, this.damage, this.getMap, this.updateEntity, this.refreshMap);
+      return new Attack(this.ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
     }
 
     getTargetId(): number|undefined{
@@ -170,7 +169,7 @@ abstract class CombatAction{
 
 
 
-  class AttackForHazards extends CombatAction {
+  class BurningFloorAttack extends CombatAction {
     getMap: () => CombatMapData;
     damage: number;
     ownerEntity: CombatEntity;
@@ -179,10 +178,10 @@ abstract class CombatAction{
       ownerId: number,
       direction: Directions = Directions.NONE,
       damage: number,
+      ownerEntity: CombatEntity,
       getMap: () => CombatMapData,
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void,
-      ownerEntity: CombatEntity
     ){
       super('Attack', true, ownerId, direction, updateEntity, refreshMap);
       this.getMap = getMap;
@@ -190,8 +189,8 @@ abstract class CombatAction{
       this.ownerEntity = ownerEntity;
     }
   
-    clone() : AttackForHazards{
-      return new AttackForHazards(this.ownerId, this.direction, this.damage, this.getMap, this.updateEntity, this.refreshMap, this.ownerEntity);
+    clone() : BurningFloorAttack{
+      return new BurningFloorAttack(this.ownerId, this.direction, this.damage, this.ownerEntity, this.getMap, this.updateEntity, this.refreshMap);
     }
 
     getTargetId(): number|undefined{
@@ -434,20 +433,19 @@ abstract class CombatAction{
     constructor(
       ownerId: number,
       direction: Directions = Directions.NONE,
-      damage: number,
       getMap: () => CombatMapData,
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
       super('Pull', true, ownerId, direction, updateEntity, refreshMap);
       this.getMap = getMap;
-      this.damage = damage;
+      this.damage = 2;
 
       this.aoe = new AreaOfEffect(5, direction, 0, false);
     }
   
     clone(): CombatAction {
-      return new PullRange5(this.ownerId, this.direction, this.damage, this.getMap, this.updateEntity, this.refreshMap);
+      return new PullRange5(this.ownerId, this.direction, this.getMap, this.updateEntity, this.refreshMap);
     }
 
     getTargets(): [number[], Vector2[]]{
@@ -588,20 +586,19 @@ abstract class CombatAction{
     constructor(
       ownerId: number,
       direction: Directions = Directions.NONE,
-      damage: number,
       getMap: () => CombatMapData,
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
       super('Push', true, ownerId, direction, updateEntity, refreshMap);
       this.getMap = getMap;
-      this.damage = damage;
+      this.damage = 2;
 
       this.aoe = new AreaOfEffect(5, direction, 0, false);
     }
   
     clone(): CombatAction {
-      return new PushRange5(this.ownerId, this.direction, this.damage, this.getMap, this.updateEntity, this.refreshMap);
+      return new PushRange5(this.ownerId, this.direction, this.getMap, this.updateEntity, this.refreshMap);
     }
 
     getTargets(): [number[], Vector2[], CombatEntity[]]{
@@ -730,4 +727,4 @@ abstract class CombatAction{
   }
   
 export default CombatAction;
-export { Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, AttackForHazards as AttackGivenOwnerEntity, VolatileCanExplosion};
+export { Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
