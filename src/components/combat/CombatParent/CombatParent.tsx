@@ -89,7 +89,7 @@ class CombatMapTemplate1 extends CombatMapTemplate{
         {start: new Vector2(12, 8), end: new Vector2(12, 13)},
       ]
     );
-    walls.push(Wall.createDefaultWall(new Vector2(7, 4)));
+    // walls.push(Wall.createDefaultWall(new Vector2(7, 4)));
 
     const enemies: EnemyStarterInfo[] = [
       new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(8, 7)),
@@ -110,12 +110,12 @@ class CombatMapTemplate1 extends CombatMapTemplate{
       // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(5, 7)),
     ];
     const hazards: CombatHazard[] = [
-      new VolatileCanister(IdGenerator.generateUniqueId(), '+', 'Volatile Canister', new Vector2(3, 3), false, combatActionFactory, addToComboList),
-      new VolatileCanister(IdGenerator.generateUniqueId(), '+', 'Volatile Canister', new Vector2(4, 4), false, combatActionFactory, addToComboList),
-      new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 9), false, 5, getMap, updateEntity, refreshMap),
-      new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 10), false, 5, getMap, updateEntity, refreshMap),
-      new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 11), false, 5, getMap, updateEntity, refreshMap),
-      new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 12), false, 5, getMap, updateEntity, refreshMap),
+      new VolatileCanister(IdGenerator.generateUniqueId(), '+', 'Volatile Canister', new Vector2(7, 1), false, combatActionFactory, addToComboList),
+      new VolatileCanister(IdGenerator.generateUniqueId(), '+', 'Volatile Canister', new Vector2(7, 4), false, combatActionFactory, addToComboList),
+      new BurningFloor(IdGenerator.generateUniqueId(), new Vector2(7, 9), getMap, updateEntity, refreshMap),
+      new BurningFloor(IdGenerator.generateUniqueId(), new Vector2(7, 10), getMap, updateEntity, refreshMap),
+      new BurningFloor(IdGenerator.generateUniqueId(), new Vector2(7, 11), getMap, updateEntity, refreshMap),
+      new BurningFloor(IdGenerator.generateUniqueId(), new Vector2(7, 12), getMap, updateEntity, refreshMap),
     ];
 
     super(size, enemies, [...walls, ...hazards], advanceTurn);
@@ -331,7 +331,7 @@ function executeActionsList() {
     turnManager.currentTurnTaker?.endTurn();
   }
   function debug_addNewHazard(){
-    const newHazard = new BurningFloor(IdGenerator.generateUniqueId(), 100, 100, 'f', 'Burning Floor', new Vector2(7, 7), false, 5, getCachedMap, updateEntity, refreshMap);
+    const newHazard = new BurningFloor(IdGenerator.generateUniqueId(), new Vector2(7, 7), getCachedMap, updateEntity, refreshMap);
     setHazards([...getHazards(), newHazard]);
   }
 

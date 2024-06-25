@@ -1,11 +1,12 @@
 import AnimationDetails from "../animation/AnimationDetails";
 import CombatAnimationFactory, { CombatAnimationNames } from "../animation/CombatAnimationFactory";
 import Directions, { DirectionsUtility } from "../utility/Directions";
+import IdGenerator from "../utility/IdGenerator";
 import Vector2 from "../utility/Vector2";
 import AreaOfEffect from "./AreaOfEffect";
 import CombatEnemy, { ReactionFlags } from "./CombatEnemy";
 import CombatEntity from "./CombatEntity";
-import CombatHazard, { BurningFloor } from "./CombatHazard";
+import CombatHazard, { BurningFloor, Wall } from "./CombatHazard";
 import CombatMapData from "./CombatMapData";
 import CombatPlayer from "./CombatPlayer";
 
@@ -270,7 +271,7 @@ abstract class CombatAction{
 
       if(!owner){return [[], []];}
 
-      const [entities, positions] = this.aoe.getAffectedEntities(owner.position.x, owner.position.y, map);
+      const [entities, positions] = this.aoe.getAffectedEntities(owner.position.x, owner.position.y, map, true, true);
       const targetIds:number[] = entities.map((entity) => entity.id);
       return [targetIds, positions, owner];
     }
@@ -291,6 +292,11 @@ abstract class CombatAction{
 
         targetEntity.takeDamage(this.damage, this);
 
+        //destroy walls
+        if(targetEntity instanceof Wall){
+          targetEntity.killEntity();
+        }
+
         this.updateEntity(targetEntity.id, targetEntity);
       });
 
@@ -299,17 +305,13 @@ abstract class CombatAction{
       const dontHaveHazardsYet:Vector2[] = positions.filter((position) => {
         return !hazards.some((hazard) => Vector2.equals(hazard.position, position));
       });
-      dontHaveHazardsYet.push(owner?.position as Vector2);
+
+      owner && dontHaveHazardsYet.push(owner.position);
+      
       const newBurningFloors:CombatHazard[] = dontHaveHazardsYet.map((position) => {
         return new BurningFloor(
-          -1,
-          1,
-          1,
-          'f',
-          'Burning Floor',
+          IdGenerator.generateUniqueId(),
           position,
-          true,
-          5,
           this.getMap,
           this.updateEntity,
           this.refreshMap
@@ -329,12 +331,10 @@ abstract class CombatAction{
       positions.forEach((position) => {
         result[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Explosion, Directions.NONE, -1, false, position));
       });
-      result[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Explosion, Directions.NONE, this.ownerId));
       
       targetIds.forEach((targetId) => {
         result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, Directions.NONE, targetId));
       });
-      result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, Directions.NONE, this.ownerId));
       
       return result;
     }

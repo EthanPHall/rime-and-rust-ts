@@ -61,14 +61,22 @@ class AreaOfEffect{
       if(map != null){
         occludedPoints = this.occludePoints(affectedCoordinates, new Vector2(startingX, startingY), map);
         
+        occludedPoints = occludedPoints.filter((point) => {
+          if(map.locations?.[point.y]?.[point.x] == null){
+            return false;
+          }
+
+          return true;
+        });
+
         if(!includeSolids){
           occludedPoints = occludedPoints.filter((point) => {
-            if(map.locations?.[point.y]?.[point.x] == null){
-              return false;
-            }
-            else{
+            // if(map.locations?.[point.y]?.[point.x] == null){
+            //   return false;
+            // }
+            // else{
               return !map.locations[point.y][point.x].solid;
-            }
+            // }
           });
         }
       }
@@ -77,7 +85,7 @@ class AreaOfEffect{
     }
 
     getAffectedEntities(startingX:number, startingY:number, map:CombatMapData|null, includeStart:boolean = false, includeSolids:boolean = false) : [CombatEntity[], Vector2[]]{
-      const affectedCoordinates:Vector2[] = this.getAffectedCoordinates(startingX, startingY, map, includeStart);
+      const affectedCoordinates:Vector2[] = this.getAffectedCoordinates(startingX, startingY, map, includeStart, includeSolids);
       const affectedEntities:CombatEntity[] = [];
   
       affectedCoordinates.forEach((coordinate) => {

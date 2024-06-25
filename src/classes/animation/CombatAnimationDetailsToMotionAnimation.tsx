@@ -144,7 +144,7 @@ class CombatAnimationDetailsToMotionAnimation{
                     combatAnimation.entityToAnimateId,
                     [
                         {scaleX: 1.5, scaleY: 1.5, color: CSSPropertyGetter.getProperty("--explosion-color-1")},
-                        {scaleX: 1.5, scaleY: 1.5, color: CSSPropertyGetter.getProperty("--explosion-color-2")},
+                        {scaleX: 2, scaleY: 2, color: CSSPropertyGetter.getProperty("--explosion-color-2")},
                         {scaleX: 1, scaleY: 1, color: CSSPropertyGetter.getProperty("--explosion-color-2")},
                         {scaleX: 1, scaleY: 1, color: CSSPropertyGetter.getProperty("--text-color")}
                     ], 

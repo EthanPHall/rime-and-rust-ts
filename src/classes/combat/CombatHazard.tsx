@@ -161,7 +161,7 @@ abstract class CombatHazard extends CombatEntity{
 
 
   class BurningFloor extends CombatHazard{
-    static DESCRIPTION:string = 'Sturdy walls. Click a specific wall in the map to see its health.';
+    static DESCRIPTION:string = 'Engulfed in flames, this space deals damage to anything that steps on it.';
 
     damage: number;
     getMap: ()=>CombatMapData;
@@ -170,19 +170,13 @@ abstract class CombatHazard extends CombatEntity{
 
     constructor(
       id:number, 
-      hp: number, 
-      maxHp: number, 
-      symbol: string, 
-      name: string, 
       position: Vector2, 
-      solid: boolean, 
-      damage: number,
       getMap: ()=>CombatMapData,
       updateEntity: (id: number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
-      super(id, hp, maxHp, symbol, name, position, solid, BurningFloor.DESCRIPTION, true, true);
-      this.damage = damage;
+      super(id, 999, 999, 'f', "Burning Floor", position, false, BurningFloor.DESCRIPTION, true, true);
+      this.damage = 5;
       this.getMap = getMap;
       this.updateEntity = updateEntity;
       this.refreshMap = refreshMap;
@@ -191,13 +185,7 @@ abstract class CombatHazard extends CombatEntity{
     clone(): CombatHazard{
       return new BurningFloor(
         this.id, 
-        this.hp, 
-        this.maxHp, 
-        this.symbol, 
-        this.name, 
         this.position, 
-        this.solid, 
-        this.damage,
         this.getMap,
         this.updateEntity,
         this.refreshMap
