@@ -16,6 +16,8 @@ enum ReactionFlags{
 }
 
 type ReactionFlagAndTriggerList = { [ k in ReactionFlags ]?: CombatAction };
+type KeyActionPairs = { [ k: string ]: CombatActionWithUses };
+
 class Reaction {
   action:CombatAction; 
   priority:number;
@@ -25,6 +27,50 @@ class Reaction {
     this.priority = priority;
   }
 };
+
+interface ReactionGenerator{
+  getReaction(): Reaction | null;
+}
+
+class AttackWhenAttacked implements ReactionGenerator{
+  reactionTriggerList: ReactionFlagAndTriggerList;
+  actions: KeyActionPairs;
+
+  constructor(actions: KeyActionPairs, reactionTriggerList: ReactionFlagAndTriggerList){
+    this.reactionTriggerList = reactionTriggerList;
+    this.actions = actions;
+  }
+
+  getReaction(): Reaction | null {
+    const trigger:CombatAction|undefined = this.reactionTriggerList[ReactionFlags.WAS_ATTACKED];
+      
+    if(trigger){
+      return new Reaction(this.actions.attack.action.clone(DirectionsUtility.getOppositeDirection(trigger.direction)), 100);
+    }
+
+    return null;
+  }
+}
+
+class MoveWhenPlayerMoves implements ReactionGenerator{
+  reactionTriggerList: ReactionFlagAndTriggerList;
+  actions: KeyActionPairs;
+
+  constructor(actions: KeyActionPairs, reactionTriggerList: ReactionFlagAndTriggerList){
+    this.reactionTriggerList = reactionTriggerList;
+    this.actions = actions;
+  }
+
+  getReaction(): Reaction | null {
+    const trigger:CombatAction|undefined = this.reactionTriggerList[ReactionFlags.PLAYER_DID_MOVE];
+      
+    if(trigger){
+      return new Reaction(this.actions.move.action.clone(trigger.direction), 100);
+    }
+
+    return null;
+  }
+}
 
 abstract class CombatEnemy extends CombatEntity implements TurnTaker{
   static ACTION_DELAY = 500;
@@ -173,12 +219,7 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     }
 
     getReaction(): Reaction | null {
-      const trigger:CombatAction|undefined = this.reactionTriggerList[ReactionFlags.WAS_ATTACKED];
-      
-      if(trigger){
-        return new Reaction(this.actions.attack.action.clone(DirectionsUtility.getOppositeDirection(trigger.direction)), 100);
-      }
-
+      // return new AttackWhenAttacked(this.actions, this.reactionTriggerList).getReaction();
       return null;
     }
   }
@@ -253,12 +294,7 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     }
 
     getReaction(): Reaction | null {
-      const trigger:CombatAction|undefined = CombatEnemy.ENTITY_WIDE_REACTION_LIST[ReactionFlags.PLAYER_DID_MOVE];
-      
-      if(trigger){
-        return new Reaction(this.actions.move.action.clone(trigger.direction), 100);
-      }
-
+      // return new MoveWhenPlayerMoves(this.actions, CombatEntity.ENTITY_WIDE_REACTION_LIST).getReaction();
       return null;
     }
   }
