@@ -12,6 +12,7 @@ enum ReactionFlags{
   WAS_ATTACKED = 'WAS_ATTACKED',
   WAS_PULLED = 'WAS_PULLED',
   WAS_PUSHED = 'WAS_PUSHED',
+  DID_DIE = 'DID_DIE',
 }
 
 type ReactionFlagAndTriggerList = { [ k in ReactionFlags ]?: CombatAction };
@@ -29,14 +30,6 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
   static ACTION_DELAY = 500;
   static TURN_START_DELAY = 1000;
   static ACTION_SHOW_OFF_DELAY = 1500;
-
-  protected static ENEMY_WIDE_REACTION_LIST: ReactionFlagAndTriggerList = {};
-  static clearEnemyWideReactions(): void {
-    CombatEnemy.ENEMY_WIDE_REACTION_LIST = {};
-  }
-  static setEnemyWideReaction(flag: ReactionFlags, action: CombatAction): void {
-    CombatEnemy.ENEMY_WIDE_REACTION_LIST[flag] = action;
-  }
 
   getMap: () => CombatMapData;
   updateEntity: (id:number, newEntity: CombatEntity) => void;
@@ -56,20 +49,6 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     endTurn(): void {
       console.log(`${this.name} is ending their turn.`);
       this.advanceTurn();
-    }
-
-
-    protected reactionTriggerList: ReactionFlagAndTriggerList = {};
-
-    //The number in this tuple is the priority of the reaction. The higher the number, the higher the priority. 100 is middle of the road.
-    getReaction(): Reaction|null {
-      return null;
-    }
-    clearReactionFlags(): void {
-      this.reactionTriggerList = {};
-    }
-    setReactionFlag(flag: ReactionFlags, action: CombatAction): void {
-      this.reactionTriggerList[flag] = action;
     }
 
     abstract executeTurn(): Promise<void>;
@@ -274,7 +253,7 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     }
 
     getReaction(): Reaction | null {
-      const trigger:CombatAction|undefined = CombatEnemy.ENEMY_WIDE_REACTION_LIST[ReactionFlags.PLAYER_DID_MOVE];
+      const trigger:CombatAction|undefined = CombatEnemy.ENTITY_WIDE_REACTION_LIST[ReactionFlags.PLAYER_DID_MOVE];
       
       if(trigger){
         return new Reaction(this.actions.move.action.clone(trigger.direction), 100);
@@ -342,5 +321,5 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
   }
 
 export default CombatEnemy;
-export { RustedShambler, RustedBrute, ReactionFlags };
-export type { AIHandler, Reaction };
+export { RustedShambler, RustedBrute, ReactionFlags, Reaction };
+export type { AIHandler, ReactionFlagAndTriggerList };

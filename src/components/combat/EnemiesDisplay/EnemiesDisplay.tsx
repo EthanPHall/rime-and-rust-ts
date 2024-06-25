@@ -11,7 +11,7 @@ const EnemyEntry: FC<{enemy: CombatEnemy, onClick: () => void}> = ({enemy, onCli
   return (
     <div className="enemy-entry" data-testid="enemy-entry" onClick={onClick}>
       <span>{`${enemy.symbol}: `}</span>
-      <span>{enemy.hp}/{enemy.maxHp}</span>
+      <span>{enemy.getHp()}/{enemy.maxHp}</span>
     </div>
   );
 }

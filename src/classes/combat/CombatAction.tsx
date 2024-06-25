@@ -142,7 +142,7 @@ abstract class CombatAction{
           return;
         }
 
-        targetEntity.hp -= this.damage;
+        targetEntity.takeDamage(this.damage, this);
 
         if(targetEntity instanceof CombatEnemy){
           targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this);
@@ -215,7 +215,7 @@ abstract class CombatAction{
           return;
         }
 
-        targetEntity.hp -= this.damage;
+        targetEntity.takeDamage(this.damage, this);
         this.updateEntity(targetEntity.id, targetEntity);
         return;
       }
@@ -264,7 +264,7 @@ abstract class CombatAction{
       return new VolatileCanExplosion(this.ownerId, this.getMap, this.getHazardsList, this.setHazardsList, this.updateEntity, this.refreshMap);
     }
 
-    getTargets(): [number[], Vector2[]]{
+    getTargets(): [number[], Vector2[], CombatEntity?]{
       const map: CombatMapData = this.getMap();
       const owner: CombatEntity|null = map.getEntityById(this.ownerId);
 
@@ -272,44 +272,51 @@ abstract class CombatAction{
 
       const [entities, positions] = this.aoe.getAffectedEntities(owner.position.x, owner.position.y, map);
       const targetIds:number[] = entities.map((entity) => entity.id);
-      return [targetIds, positions];
+      return [targetIds, positions, owner];
     }
 
     execute() {
-      const [targetIds, positions] = this.getTargets();
+      const [targetIds, positions, owner] = this.getTargets();
       const map: CombatMapData = this.getMap();
       
+      //Destroy the owner
+      owner?.killEntity();
+
+      //Damage any entities in the area of effect
       targetIds.forEach((targetId) => {
         const targetEntity = map.getEntityById(targetId)?.clone();
         if(!targetEntity){
           return;
         }
 
-        targetEntity.hp -= this.damage;
+        targetEntity.takeDamage(this.damage, this);
 
-        const hazards = this.getHazardsList();
-        const dontHaveHazardsYet:Vector2[] = positions.filter((position) => {
-          return !hazards.some((hazard) => Vector2.equals(hazard.position, position));
-        });
-        const newBurningFloors:CombatHazard[] = dontHaveHazardsYet.map((position) => {
-          return new BurningFloor(
-            -1,
-            1,
-            1,
-            'f',
-            'Burning Floor',
-            position,
-            true,
-            5,
-            this.getMap,
-            this.updateEntity,
-            this.refreshMap
-          );
-        });
-
-        this.setHazardsList(hazards.concat(newBurningFloors));
         this.updateEntity(targetEntity.id, targetEntity);
       });
+
+      //Spawn burning hazards
+      const hazards = this.getHazardsList();
+      const dontHaveHazardsYet:Vector2[] = positions.filter((position) => {
+        return !hazards.some((hazard) => Vector2.equals(hazard.position, position));
+      });
+      dontHaveHazardsYet.push(owner?.position as Vector2);
+      const newBurningFloors:CombatHazard[] = dontHaveHazardsYet.map((position) => {
+        return new BurningFloor(
+          -1,
+          1,
+          1,
+          'f',
+          'Burning Floor',
+          position,
+          true,
+          5,
+          this.getMap,
+          this.updateEntity,
+          this.refreshMap
+        );
+      });
+
+      this.setHazardsList(hazards.concat(newBurningFloors));
 
       this.refreshMap();
     }
@@ -322,10 +329,13 @@ abstract class CombatAction{
       positions.forEach((position) => {
         result[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Explosion, Directions.NONE, -1, false, position));
       });
+      result[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Explosion, Directions.NONE, this.ownerId));
+      
       targetIds.forEach((targetId) => {
         result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, Directions.NONE, targetId));
       });
-
+      result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, Directions.NONE, this.ownerId));
+      
       return result;
     }
   }
@@ -390,7 +400,7 @@ abstract class CombatAction{
         }
 
         if(owner instanceof CombatPlayer){
-          CombatEnemy.setEnemyWideReaction(ReactionFlags.PLAYER_DID_MOVE, this);
+          CombatEntity.setEntityWideReaction(ReactionFlags.PLAYER_DID_MOVE, this);
         }
       }
       else{
@@ -480,7 +490,7 @@ abstract class CombatAction{
         }
 
         let bumped:boolean = false;
-        targetEntity.hp -= this.damage;
+        targetEntity.takeDamage(this.damage, this);
 
         const backwardPosition:Vector2 = Vector2.add(targetEntity.position, backwardsVector);
         if(previousEntity){
@@ -497,7 +507,7 @@ abstract class CombatAction{
         }
 
         if(bumped){
-          targetEntity.hp -= this.damage;
+          targetEntity.takeDamage(this.damage, this);
         }
         else{
           targetEntity.position = Vector2.add(targetEntity.position, pullVector);
@@ -619,7 +629,7 @@ abstract class CombatAction{
       
       // targetIds.forEach((targetId) => {
       //   const targetEntity = map.getEntityById(targetId).clone();
-      //   targetEntity.hp -= this.damage;
+      //   targetEntity.takeDamage(this.damage, this);
       //   targetEntity.position = Vector2.add(targetEntity.position, pushVector);
       //   this.updateEntity(targetEntity.id, targetEntity);
       // });
@@ -640,7 +650,7 @@ abstract class CombatAction{
         }
         
         let bumped:boolean = false;
-        targetEntity.hp -= this.damage;
+        targetEntity.takeDamage(this.damage, this);
 
         const forwardPosition:Vector2 = Vector2.add(targetEntity.position, forwardsVector);
         if(previousEntity){
@@ -657,7 +667,7 @@ abstract class CombatAction{
         }
 
         if(bumped){
-          targetEntity.hp -= this.damage;
+          targetEntity.takeDamage(this.damage, this);
         }
         else{
           targetEntity.position = Vector2.add(targetEntity.position, pushVector);

@@ -35,7 +35,6 @@ import MotionCombatAnimator from '../../../classes/animation/MotionCombatAnimato
 import { MotionAnimation } from '../../../classes/animation/CombatAnimationDetailsToMotionAnimation';
 import CombatEnemyFactory from '../../../classes/combat/CombatEnemyFactory';
 import TurnTaker from '../../../classes/combat/TurnTaker';
-import useCombatHazardReactions from '../../../hooks/useCombatHazardReactions';
 import CombatAnimationFactory, { CombatAnimationNames } from '../../../classes/animation/CombatAnimationFactory';
 import useCombatHazardAnimations from '../../../hooks/useCombatHazardAnimations';
 import CombatActionFactory, { CombatActionNames } from '../../../classes/combat/CombatActionFactory';
@@ -112,6 +111,7 @@ class CombatMapTemplate1 extends CombatMapTemplate{
     ];
     const hazards: CombatHazard[] = [
       new VolatileCanister(IdGenerator.generateUniqueId(), '+', 'Volatile Canister', new Vector2(3, 3), false, combatActionFactory, addToComboList),
+      new VolatileCanister(IdGenerator.generateUniqueId(), '+', 'Volatile Canister', new Vector2(4, 4), false, combatActionFactory, addToComboList),
       new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 9), false, 5, getMap, updateEntity, refreshMap),
       new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 10), false, 5, getMap, updateEntity, refreshMap),
       new BurningFloor(IdGenerator.generateUniqueId(), 10, 10, 'f', 'Burning Floor', new Vector2(7, 11), false, 5, getMap, updateEntity, refreshMap),
@@ -243,13 +243,13 @@ const CombatParent: FC<CombatParentProps> = () => {
     const newMap: CombatMapData = CombatMapData.clone(baseMap);
 
     getHazards().forEach(hazard => {
-      if (hazard.hp <= 0) {
+      if (hazard.getHp() <= 0) {
         return;
       }
       newMap.setLocationWithHazard(hazard);
     });
     getEnemies().forEach(enemy => {
-      if (enemy.hp <= 0) {
+      if (enemy.getHp() <= 0) {
         return;
       }
       newMap.setLocationWithEntity(enemy);
@@ -320,11 +320,11 @@ function executeActionsList() {
 
 
   function debug_movePlayer() {
-    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().hp, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, new Vector2(getPlayer().position.x + 1, getPlayer().position.y), getPlayer().advanceTurn, getPlayer().resetActionUses);
+    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().getHp(), getPlayer().maxHp, getPlayer().symbol, getPlayer().name, new Vector2(getPlayer().position.x + 1, getPlayer().position.y), getPlayer().advanceTurn, getPlayer().resetActionUses);
     setPlayer(newPlayer);
   }
   function debug_harmPlayer() {
-    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().hp - 10, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, getPlayer().position, getPlayer().advanceTurn, getPlayer().resetActionUses);
+    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().getHp() - 10, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, getPlayer().position, getPlayer().advanceTurn, getPlayer().resetActionUses);
     setPlayer(newPlayer);
   }
   function debug_endTurn() {
@@ -361,7 +361,7 @@ function executeActionsList() {
             <ActionsDisplay addToComboList={addToComboList} actions={playerActions} setActions={setPlayerActions} reduceActionUses={reduceActionUses} isTurnTakerPlayer={isTurnTakerPlayer} actionsAreExecuting={actionExecutor.isExecuting}></ActionsDisplay>
           </div>
             {/* <LootDisplay></LootDisplay> */}
-            <HpDisplay hp={getPlayer().hp} maxHp={getPlayer().maxHp}></HpDisplay>
+            <HpDisplay hp={getPlayer().getHp()} maxHp={getPlayer().maxHp}></HpDisplay>
             <TurnDisplay currentTurnTaker={turnManager.currentTurnTaker}></TurnDisplay>
             <ComboSection comboList={comboListForEffects} setComboList={setComboList} resetActionUses={resetActionUses} actionExecutor={actionExecutor} isTurnTakerPlayer={isTurnTakerPlayer}></ComboSection>
             <ComponentSwitcher enemies={enemiesForEffects} hazards={hazardsForEffects} showCard={showCard}></ComponentSwitcher>

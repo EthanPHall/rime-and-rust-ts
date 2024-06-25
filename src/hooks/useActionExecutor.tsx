@@ -174,10 +174,11 @@ const useActionExecutor = (
 
     function startNewReactionStep(){
         currentStep.current = ActionSteps.REACTION;
+        const reactionEntities:CombatEntity[] = [...enemies, ...hazards];
 
-        const reactionsList:(Reaction|null)[] = enemies.map((enemy) => {
-            const reaction:Reaction|null = enemy.getReaction();
-            enemy.clearReactionFlags();
+        const reactionsList:(Reaction|null)[] = reactionEntities.map((entity) => {
+            const reaction:Reaction|null = entity.getReaction();
+            entity.clearReactionFlags();
 
             if(reaction === null){
                 return null;
@@ -207,8 +208,8 @@ const useActionExecutor = (
             }
         });
 
-        enemies.forEach((enemy) => { enemy.clearReactionFlags(); });
-        CombatEnemy.clearEnemyWideReactions();
+        reactionEntities.forEach((entity) => { entity.clearReactionFlags(); });
+        CombatEntity.clearEntityWideReactions();
 
         animateAndExecuteGivenList(actionsList);
     }

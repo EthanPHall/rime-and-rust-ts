@@ -7,6 +7,7 @@ import MapUtilities from "../utility/MapUtilities";
 import Vector2 from "../utility/Vector2";
 import CombatAction, { Attack, BurningFloorAttack } from "./CombatAction";
 import CombatActionFactory from "./CombatActionFactory";
+import { Reaction, ReactionFlags } from "./CombatEnemy";
 import CombatEntity from "./CombatEntity";
 import CombatMapData from "./CombatMapData";
 
@@ -130,6 +131,23 @@ abstract class CombatHazard extends CombatEntity{
     onDeath(): void {
       this.addToComboList(this.actionFactory.createVolatileCanExplosion(this.id));
     }
+
+    takeDamage(damage: number, damagingAction: CombatAction): void {
+      super.takeDamage(damage, damagingAction);
+
+      if(this.reactionTriggerList[ReactionFlags.DID_DIE]){
+        this.hp = .1;
+      }
+    }
+    getReaction(): Reaction | null {
+      if(this.reactionTriggerList[ReactionFlags.DID_DIE] !== undefined){
+        //the explosion action kills the canister
+        const explosion:CombatAction = this.actionFactory.createVolatileCanExplosion(this.id);
+        return new Reaction(explosion, 200);
+      }
+
+      return null;
+    }
   }
 
 
@@ -189,12 +207,12 @@ abstract class CombatHazard extends CombatEntity{
     handleNewEntityOnThisSpace(newEntity: CombatEntity|null): CombatEntity|null {
       let updatedEntity:CombatEntity|null = null;
       
-      if(newEntity !== null && this.newEntityIsDifferent(newEntity)){
-        updatedEntity = newEntity.clone();
-        updatedEntity.takeDamage(this.damage);
-      }
+      // if(newEntity !== null && this.newEntityIsDifferent(newEntity)){
+      //   updatedEntity = newEntity.clone();
+      //   updatedEntity.takeDamage(this.damage);
+      // }
       
-      this.previousEntityOnThisSpace = newEntity;
+      // this.previousEntityOnThisSpace = newEntity;
       return updatedEntity;
     }
     getActionForNewEntityOnSpace(newEntity: CombatEntity | null): CombatAction | null {

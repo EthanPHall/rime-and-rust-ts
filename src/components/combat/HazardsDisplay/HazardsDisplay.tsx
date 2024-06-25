@@ -11,7 +11,7 @@ const HazardEntry: FC<{hazard: CombatHazard, onClick: () => void}> = ({hazard, o
   return (
     <div className="hazard-entry" data-testid="hazard-entry" onClick={onClick}>
       <span>{`${hazard.symbol}`}</span>
-      <span>{!hazard.onlyDisplayOneInSidebar && `: ${hazard.hp}/${hazard.maxHp}`}</span>
+      <span>{!hazard.onlyDisplayOneInSidebar && `: ${hazard.getHp()}/${hazard.maxHp}`}</span>
     </div>
   );
 }
