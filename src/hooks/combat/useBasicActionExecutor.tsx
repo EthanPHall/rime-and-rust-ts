@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import CombatMapData from '../classes/combat/CombatMapData';
-import { CombatActionWithRepeat } from '../classes/combat/CombatAction';
-import IActionExecutor from '../classes/combat/IActionExecutor';
+import CombatMapData from '../../classes/combat/CombatMapData';
+import { CombatActionWithRepeat } from '../../classes/combat/CombatAction';
+import IActionExecutor from '../../classes/combat/IActionExecutor';
 
 const useBasicActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[], setComboList:(newList:CombatActionWithRepeat[]) => void):IActionExecutor => {
     const ACTION_DELAY = 400;

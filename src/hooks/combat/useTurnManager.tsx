@@ -1,6 +1,6 @@
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
-import TurnManager from '../classes/combat/TurnManager';
-import TurnTaker from '../classes/combat/TurnTaker';
+import TurnManager from '../../classes/combat/TurnManager';
+import TurnTaker from '../../classes/combat/TurnTaker';
 import useRefState from './useRefState';
 
 const useTurnManager = (): [TurnManager, ()=>boolean] => {

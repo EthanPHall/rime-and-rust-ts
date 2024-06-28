@@ -1,4 +1,4 @@
-import { ImprovedMotionAnimation } from "../../hooks/useCombatHazardAnimations";
+import { ImprovedMotionAnimation } from "../../hooks/combat/useCombatHazardAnimations";
 import AnimationDetails from "../animation/AnimationDetails";
 import CombatAnimationFactory, { CombatAnimationNames } from "../animation/CombatAnimationFactory";
 import Directions from "../utility/Directions";

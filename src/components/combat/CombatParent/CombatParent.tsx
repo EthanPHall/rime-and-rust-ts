@@ -21,14 +21,14 @@ import CombatEnemy, { RustedBrute, RustedShambler } from '../../../classes/comba
 import CombatHazard, { BurningFloor, VolatileCanister, Wall } from '../../../classes/combat/CombatHazard';
 import CombatPlayer from '../../../classes/combat/CombatPlayer';
 import TurnManager from '../../../classes/combat/TurnManager';
-import useTurnManager from '../../../hooks/useTurnManager';
+import useTurnManager from '../../../hooks/combat/useTurnManager';
 import IdGenerator from '../../../classes/utility/IdGenerator';
 import CombatEntity from '../../../classes/combat/CombatEntity';
 import CSSCombatAnimator from '../../../classes/animation/CSSCombatAnimator';
-import useRefState from '../../../hooks/useRefState';
+import useRefState from '../../../hooks/combat/useRefState';
 import IActionExecutor from '../../../classes/combat/IActionExecutor';
-import useActionExecutor from '../../../hooks/useActionExecutor';
-import useBasicActionExecutor from '../../../hooks/useBasicActionExecutor';
+import useActionExecutor from '../../../hooks/combat/useActionExecutor';
+import useBasicActionExecutor from '../../../hooks/combat/useBasicActionExecutor';
 import CombatMapFramerMotion from '../CombatMapFramerMotion/CombatMapFramerMotion';
 import { AnimationPlaybackControls, TargetAndTransition, useAnimate } from 'framer-motion';
 import MotionCombatAnimator from '../../../classes/animation/MotionCombatAnimator';
@@ -36,7 +36,7 @@ import { MotionAnimation } from '../../../classes/animation/CombatAnimationDetai
 import CombatEnemyFactory from '../../../classes/combat/CombatEnemyFactory';
 import TurnTaker from '../../../classes/combat/TurnTaker';
 import CombatAnimationFactory, { CombatAnimationNames } from '../../../classes/animation/CombatAnimationFactory';
-import useCombatHazardAnimations from '../../../hooks/useCombatHazardAnimations';
+import useCombatHazardAnimations from '../../../hooks/combat/useCombatHazardAnimations';
 import CombatActionFactory, { CombatActionNames } from '../../../classes/combat/CombatActionFactory';
 
 interface CombatParentProps {}

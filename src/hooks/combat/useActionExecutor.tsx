@@ -1,15 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
-import CombatMapData from '../classes/combat/CombatMapData';
-import CombatAction, { CombatActionWithRepeat } from '../classes/combat/CombatAction';
+import CombatMapData from '../../classes/combat/CombatMapData';
+import CombatAction, { CombatActionWithRepeat } from '../../classes/combat/CombatAction';
 import { exec } from 'child_process';
-import IAnimator, { IAnimationCleanup } from '../classes/animation/IAnimator';
-import AnimationDetails from '../classes/animation/AnimationDetails';
-import IActionExecutor from '../classes/combat/IActionExecutor';
-import TurnManager from '../classes/combat/TurnManager';
-import CombatHazard from '../classes/combat/CombatHazard';
-import CombatEntity from '../classes/combat/CombatEntity';
-import CombatPlayer from '../classes/combat/CombatPlayer';
-import CombatEnemy, { Reaction } from '../classes/combat/CombatEnemy';
+import IAnimator, { IAnimationCleanup } from '../../classes/animation/IAnimator';
+import AnimationDetails from '../../classes/animation/AnimationDetails';
+import IActionExecutor from '../../classes/combat/IActionExecutor';
+import TurnManager from '../../classes/combat/TurnManager';
+import CombatHazard from '../../classes/combat/CombatHazard';
+import CombatEntity from '../../classes/combat/CombatEntity';
+import CombatPlayer from '../../classes/combat/CombatPlayer';
+import CombatEnemy, { Reaction } from '../../classes/combat/CombatEnemy';
 import { start } from 'repl';
 
 enum ActionSteps{

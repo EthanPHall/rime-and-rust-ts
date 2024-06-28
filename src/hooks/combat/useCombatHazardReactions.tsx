@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import CombatEnemy from "../classes/combat/CombatEnemy";
-import CombatPlayer from "../classes/combat/CombatPlayer";
-import CombatHazard from "../classes/combat/CombatHazard";
-import CombatMapData from "../classes/combat/CombatMapData";
-import CombatEntity from "../classes/combat/CombatEntity";
+import CombatEnemy from "../../classes/combat/CombatEnemy";
+import CombatPlayer from "../../classes/combat/CombatPlayer";
+import CombatHazard from "../../classes/combat/CombatHazard";
+import CombatMapData from "../../classes/combat/CombatMapData";
+import CombatEntity from "../../classes/combat/CombatEntity";
 
 
 function useCombatHazardReactions(player:CombatPlayer, enemies:CombatEnemy[], hazards:CombatHazard[], map:CombatMapData, updateEntity:(id: number, newEntity: CombatEntity) => void){
