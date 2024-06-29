@@ -1,36 +1,31 @@
 import React, { FC } from 'react';
 import './Messages.css';
 
-interface MessagesProps {}
+class Message {
+  message: string;
+  isTanya: boolean;
 
-const Messages: FC<MessagesProps> = () => (
-  <div className="messages" data-testid="messages">
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div className='tanya-dialogue'>Tanya Dialogue. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div className='tanya-dialogue'>Tanya Dialogue. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-    <div>Message. Lorem Ipsum Whatever.</div>
-  </div>
-);
+  constructor(message: string, isTanya: boolean) {
+    this.message = message;
+    this.isTanya = isTanya;
+  }
+}
+
+interface MessagesProps {
+  messages:Message[];
+}
+
+const Messages: FC<MessagesProps> = ({messages}) => {
+  
+
+  return (
+    <div className="messages" data-testid="messages">
+      {messages.map((message, index) => {
+        return <div className={`${message.isTanya && "tanya-dialogue"}`}>{message.message}</div>
+      })}
+    </div>
+  );
+}
 
 export default Messages;
+export { Message };

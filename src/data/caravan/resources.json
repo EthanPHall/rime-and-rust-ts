@@ -1,0 +1,28 @@
+{
+    "scrap": {
+        "name": "Scrap",
+        "craftingRecipe": []
+    },
+    "psychiumScrap": 
+    {
+        "name": "Psychium Scrap",
+        "craftingRecipe": 
+        [
+            {
+                "resource": "scrap",
+                "quantity": 50
+            }
+        ]
+    },
+    "purePsychium": 
+    {
+        "name": "Pure Psychium",
+        "craftingRecipe": 
+        [
+            {
+                "resource": "psychium scrap",
+                "quantity": 100
+            }
+        ]
+    }
+}
