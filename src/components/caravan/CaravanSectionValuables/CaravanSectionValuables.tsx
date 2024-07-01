@@ -5,18 +5,18 @@ import resourcesDefinition from '../../../data/caravan/resources.json';
 
 type Resource = {
   name:string;
-  craftingRecipe:ResourceNamePlusQuanity[];
-  tradingRecipe:ResourceNamePlusQuanity[];
+  craftingRecipe:ResourceNamePlusQuantity[];
+  tradingRecipe:ResourceNamePlusQuantity[];
 }
 
-type ResourceNamePlusQuanity = {resource: string, quantity: number};
+type ResourceNamePlusQuantity = {resource: string, quantity: number};
 
 type ResourcePlusQuantity = {
   resource:Resource;
   quantity:number;
 }
 
-class ResourceFactory{
+class ResourceUtils{
   static createResource(name:string):Resource{
     const resourcesList:ResourcesList = resourcesDefinition;
     let newResource:Resource|undefined = resourcesList[name];
@@ -31,9 +31,7 @@ class ResourceFactory{
 
     return newResource;
   }
-}
 
-class ResourceUtils{
   static stringifyCraftingRecipe(resource:Resource):string{
     return resource.craftingRecipe.map((recipe) => {
       return recipe.resource + ": " + recipe.quantity;
@@ -44,6 +42,23 @@ class ResourceUtils{
     return resource.tradingRecipe.map((recipe) => {
       return recipe.resource + ": " + recipe.quantity;
     }).join("\n");
+  }
+}
+
+class ResourcePlusQuantityUtil{
+  static create(name:string, quantity:number):ResourcePlusQuantity{
+    const resourcesList:ResourcesList = resourcesDefinition;
+    let newResource:Resource|undefined = resourcesList[name];
+
+    if(newResource === undefined){
+      newResource = {
+        name: name,
+        craftingRecipe: [],
+        tradingRecipe: [],
+      }
+    }
+
+    return {resource: newResource, quantity: quantity};
   }
 }
 
@@ -75,5 +90,5 @@ const CaravanSectionValuables: FC<CaravanSectionValuablesProps> = ({resources}) 
 );
 
 export default CaravanSectionValuables;
-export type { ResourcesList, ResourcePlusQuantityList, ResourcePlusQuantity, Resource, ResourceNamePlusQuanity as Recipe};
-export { ResourceFactory, ResourceUtils};
+export type { ResourcesList, ResourcePlusQuantityList, ResourcePlusQuantity, Resource, ResourceNamePlusQuantity};
+export { ResourceUtils as ResourceFactory, ResourceUtils, ResourcePlusQuantityUtil};

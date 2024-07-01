@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import './CaravanSectionCrafting.css';
-import { Recipe, Resource, ResourceUtils, ResourcesList } from '../CaravanSectionValuables/CaravanSectionValuables';
+import { ResourceNamePlusQuantity, Resource, ResourcePlusQuantityList, ResourceUtils, ResourcesList } from '../CaravanSectionValuables/CaravanSectionValuables';
 import HoverButton from '../../misc/HoverButton/HoverButton';
 
 type Sled = {
@@ -11,9 +11,10 @@ type Sled = {
 interface CaravanSectionCraftingProps {
   sleds: Sled[];
   tradeResources: ResourcesList;
+  exchangeResources: (resourceMods:ResourceNamePlusQuantity[], newResource:Resource) => void;
 }
 
-const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeResources}) => {
+const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeResources, exchangeResources}) => {
 
   return (
   <div className="caravan-section-crafting" data-testid="caravan-section-crafting">
@@ -36,8 +37,17 @@ const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeRe
 
                 return (
                   <div className='sled-crafting-recipes'>
-                    <HoverButton buttonText={resource1.name} popupText={ResourceUtils.stringifyCraftingRecipe(resource1)} onClick={() => {}}></HoverButton>
-                    {resource2 && <HoverButton buttonText={resource2.name} popupText={ResourceUtils.stringifyCraftingRecipe(resource2)} onClick={() => {}}></HoverButton>}
+                    <HoverButton 
+                      buttonText={resource1.name} 
+                      popupText={ResourceUtils.stringifyCraftingRecipe(resource1)} 
+                      onClick={() => {exchangeResources(resource1.craftingRecipe, resource1)}}
+                    ></HoverButton>
+                    {resource2 && 
+                      <HoverButton
+                        buttonText={resource2.name}
+                        popupText={ResourceUtils.stringifyCraftingRecipe(resource2)}
+                        onClick={() => {exchangeResources(resource2.craftingRecipe, resource2)}}
+                      ></HoverButton>}
                   </div>
                 );
               })}
@@ -56,7 +66,7 @@ const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeRe
               <HoverButton
                 buttonText={tradeResources[key].name}
                 popupText={ResourceUtils.stringifyTradingRecipe(tradeResources[key])}
-                onClick={() => {}}
+                onClick={() => {exchangeResources(tradeResources[key].tradingRecipe, tradeResources[key])}}
               ></HoverButton>
             );})
         }
