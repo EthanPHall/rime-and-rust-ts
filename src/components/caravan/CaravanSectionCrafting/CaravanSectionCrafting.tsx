@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import './CaravanSectionCrafting.css';
-import { Recipe, Resource } from '../CaravanSectionValuables/CaravanSectionValuables';
+import { Recipe, Resource, ResourceUtils, ResourcesList } from '../CaravanSectionValuables/CaravanSectionValuables';
+import HoverButton from '../../misc/HoverButton/HoverButton';
 
 type Sled = {
   name: string;
@@ -9,9 +10,10 @@ type Sled = {
 
 interface CaravanSectionCraftingProps {
   sleds: Sled[];
+  tradeResources: ResourcesList;
 }
 
-const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds}) => {
+const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeResources}) => {
 
   return (
   <div className="caravan-section-crafting" data-testid="caravan-section-crafting">
@@ -34,8 +36,8 @@ const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds}) => {
 
                 return (
                   <div className='sled-crafting-recipes'>
-                    <button>{resource1.name}</button>
-                    {resource2 && <button>{resource2.name}</button>}
+                    <HoverButton buttonText={resource1.name} popupText={ResourceUtils.stringifyCraftingRecipe(resource1)} onClick={() => {}}></HoverButton>
+                    {resource2 && <HoverButton buttonText={resource2.name} popupText={ResourceUtils.stringifyCraftingRecipe(resource2)} onClick={() => {}}></HoverButton>}
                   </div>
                 );
               })}
@@ -48,12 +50,16 @@ const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds}) => {
         <div className='trade-section-title'>
           Trade
         </div>
-        <button>Item 1</button>
-        <button>Item 2</button>
-        <button>Item 3</button>
-        <button>Item 4</button>
-        <button>Item 5</button>
-        <button>Item 6</button>
+        {
+          Object.keys(tradeResources).map((key) => {
+            return (
+              <HoverButton
+                buttonText={tradeResources[key].name}
+                popupText={ResourceUtils.stringifyTradingRecipe(tradeResources[key])}
+                onClick={() => {}}
+              ></HoverButton>
+            );})
+        }
       </div>
     </div>
   </div>

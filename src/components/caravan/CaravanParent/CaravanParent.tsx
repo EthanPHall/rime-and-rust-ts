@@ -33,7 +33,13 @@ const CaravanParent: FC<CaravanParentProps> = () => {
         ResourceFactory.createResource("scrap"),
       ]
     },
-  ]); 
+  ]);
+
+  const [tradableList, setTradableList] = useState<ResourcesList>({
+    "scrap": ResourceFactory.createResource("scrap"),
+    "psychiumScrap": ResourceFactory.createResource("psychiumScrap"),
+    "purePsychium": ResourceFactory.createResource("purePsychium"),
+  });
 
   return (
     <div className='caravan-parent'>
@@ -41,7 +47,7 @@ const CaravanParent: FC<CaravanParentProps> = () => {
         <MessagesParent></MessagesParent>
         <div className='nav-rendered-composite'>
           <CaravanSectionNavBar></CaravanSectionNavBar>
-          <CaravanSectionCrafting sleds={sleds}></CaravanSectionCrafting>
+          <CaravanSectionCrafting sleds={sleds} tradeResources={tradableList}></CaravanSectionCrafting>
           {/* <CaravanSectionSleds></CaravanSectionSleds> */}
           {/* <CaravanSectionExploration></CaravanSectionExploration> */}
         </div>

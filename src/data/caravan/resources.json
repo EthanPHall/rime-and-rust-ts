@@ -1,7 +1,8 @@
 {
     "scrap": {
         "name": "Scrap",
-        "craftingRecipe": []
+        "craftingRecipe": [],
+        "tradingRecipe": []
     },
     "psychiumScrap": 
     {
@@ -12,7 +13,8 @@
                 "resource": "scrap",
                 "quantity": 50
             }
-        ]
+        ],
+        "tradingRecipe": []
     },
     "purePsychium": 
     {
@@ -22,6 +24,21 @@
             {
                 "resource": "psychium scrap",
                 "quantity": 100
+            },
+            {
+                "resource": "scrap",
+                "quantity": 50
+            }
+        ],
+        "tradingRecipe": 
+        [
+            {
+                "resource": "psychium scrap",
+                "quantity": 100
+            },
+            {
+                "resource": "scrap",
+                "quantity": 50
             }
         ]
     }

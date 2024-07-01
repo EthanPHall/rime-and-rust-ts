@@ -1,4 +1,6 @@
 import { FC } from "react";
+import Popup from "reactjs-popup";
+import './HoverButton.css';
 
 interface HoverButtonProps {
     buttonText:string;
@@ -7,11 +9,14 @@ interface HoverButtonProps {
 }
   
 const HoverButton: FC<HoverButtonProps> = ({buttonText, popupText, onClick}) => {
-
-    
-
     return (
-        <button onClick={onClick}>{buttonText}</button>
+        <Popup 
+            trigger={<button onClick={onClick}>{buttonText}</button>}
+            on={['hover', 'focus']}
+        >
+            <div className="tooltip">{popupText}</div>
+        </Popup>
     );
 }
-  
+
+export default HoverButton;

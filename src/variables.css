@@ -1,6 +1,7 @@
 :root{
     --standard-section-height: 85%;
     --standard-section-width: 80%;
+    --small-gap: 5px;
     --standard-gap: 10px;
     --large-gap: 20px;
     --very-large-gap: 30px;
@@ -10,6 +11,7 @@
     --outline-color: #d7d9db;
     --text-color: #d7d9db;
     --text-color-tanya: #ff762c;
+    --background-color-tooltip: #04080b;
 
     --font-size-smaller: .5em;
     --font-size-small: .75em;

@@ -5,10 +5,11 @@ import resourcesDefinition from '../../../data/caravan/resources.json';
 
 type Resource = {
   name:string;
-  craftingRecipe:Recipe[];
+  craftingRecipe:ResourceNamePlusQuanity[];
+  tradingRecipe:ResourceNamePlusQuanity[];
 }
 
-type Recipe = {resource: string, quantity: number};
+type ResourceNamePlusQuanity = {resource: string, quantity: number};
 
 type ResourcePlusQuantity = {
   resource:Resource;
@@ -23,11 +24,26 @@ class ResourceFactory{
     if(newResource === undefined){
       newResource = {
         name: name,
-        craftingRecipe: []
+        craftingRecipe: [],
+        tradingRecipe: [],
       }
     }
 
     return newResource;
+  }
+}
+
+class ResourceUtils{
+  static stringifyCraftingRecipe(resource:Resource):string{
+    return resource.craftingRecipe.map((recipe) => {
+      return recipe.resource + ": " + recipe.quantity;
+    }).join("\n");
+  }
+  
+  static stringifyTradingRecipe(resource:Resource):string{
+    return resource.tradingRecipe.map((recipe) => {
+      return recipe.resource + ": " + recipe.quantity;
+    }).join("\n");
   }
 }
 
@@ -59,5 +75,5 @@ const CaravanSectionValuables: FC<CaravanSectionValuablesProps> = ({resources}) 
 );
 
 export default CaravanSectionValuables;
-export type { ResourcesList, ResourcePlusQuantityList, ResourcePlusQuantity, Resource, Recipe};
-export { ResourceFactory };
+export type { ResourcesList, ResourcePlusQuantityList, ResourcePlusQuantity, Resource, ResourceNamePlusQuanity as Recipe};
+export { ResourceFactory, ResourceUtils};
