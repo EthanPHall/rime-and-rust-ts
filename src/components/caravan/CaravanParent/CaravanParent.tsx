@@ -15,31 +15,31 @@ interface CaravanParentProps {}
 
 const CaravanParent: FC<CaravanParentProps> = () => {
   const [resources, getResources, setResources] = useRefState<ResourcePlusQuantityList>({
-    "scrap": {resource: ResourceFactory.createResource("scrap"), quantity: 1000},
+    "Scrap": {resource: ResourceFactory.createResource("Scrap"), quantity: 1000},
     "wood": {resource: ResourceFactory.createResource("wood"), quantity: 5},
   });
 
   const [sleds, setSleds] = useState<Sled[]>([
     {
       name: "Scavenger Sled",
-      canCraftList: [ResourceFactory.createResource("scrap"), ResourceFactory.createResource("psychiumScrap")]
+      canCraftList: [ResourceFactory.createResource("Scrap"), ResourceFactory.createResource("Psychium Scrap")]
     },
     {
       name: "Sled 2",
       canCraftList: [
-        ResourceFactory.createResource("scrap"), 
-        ResourceFactory.createResource("psychiumScrap"), 
-        ResourceFactory.createResource("purePsychium"),
-        ResourceFactory.createResource("scrap"),
-        ResourceFactory.createResource("scrap"),
+        ResourceFactory.createResource("Scrap"), 
+        ResourceFactory.createResource("Psychium Scrap"), 
+        ResourceFactory.createResource("Pure Psychium"),
+        ResourceFactory.createResource("Scrap"),
+        ResourceFactory.createResource("Scrap"),
       ]
     },
   ]);
 
   const [tradableList, setTradableList] = useState<ResourcesList>({
-    "scrap": ResourceFactory.createResource("scrap"),
-    "psychiumScrap": ResourceFactory.createResource("psychiumScrap"),
-    "purePsychium": ResourceFactory.createResource("purePsychium"),
+    "Scrap": ResourceFactory.createResource("Scrap"),
+    "Psychium Scrap": ResourceFactory.createResource("Psychium Scrap"),
+    "Pure Psychium": ResourceFactory.createResource("Pure Psychium"),
   });
 
   function modifyResources(resourceMods:ResourceNamePlusQuantity[]): boolean{

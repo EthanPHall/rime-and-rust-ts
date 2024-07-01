@@ -1,43 +1,43 @@
 {
-    "scrap": {
+    "Scrap": {
         "name": "Scrap",
         "craftingRecipe": [],
         "tradingRecipe": []
     },
-    "psychiumScrap": 
+    "Psychium Scrap": 
     {
         "name": "Psychium Scrap",
         "craftingRecipe": 
         [
             {
-                "resource": "scrap",
+                "resource": "Scrap",
                 "quantity": 50
             }
         ],
         "tradingRecipe": []
     },
-    "purePsychium": 
+    "Pure Psychium": 
     {
         "name": "Pure Psychium",
         "craftingRecipe": 
         [
             {
-                "resource": "psychium scrap",
+                "resource": "Psychium Scrap",
                 "quantity": 100
             },
             {
-                "resource": "scrap",
+                "resource": "Scrap",
                 "quantity": 50
             }
         ],
         "tradingRecipe": 
         [
             {
-                "resource": "psychium scrap",
+                "resource": "Psychium Scrap",
                 "quantity": 100
             },
             {
-                "resource": "scrap",
+                "resource": "Scrap",
                 "quantity": 50
             }
         ]
