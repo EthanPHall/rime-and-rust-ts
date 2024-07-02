@@ -25,6 +25,14 @@ const CaravanParent: FC<CaravanParentProps> = () => {
     Sled.create("Forge Sled"),
     Sled.create("Scavenger Sled"),
     Sled.create("Scavenger Sled"),
+    Sled.create("Scavenger Sled"),
+    Sled.create("Scavenger Sled"),
+    Sled.create("Scavenger Sled"),
+    Sled.create("Scavenger Sled"),
+    Sled.create("Scavenger Sled"),
+    Sled.create("Scavenger Sled"),
+    Sled.create("Scavenger Sled"),
+    Sled.create("Scavenger Sled"),
   ]);
 
   const [tradableList, setTradableList] = useState<ResourcesList>({

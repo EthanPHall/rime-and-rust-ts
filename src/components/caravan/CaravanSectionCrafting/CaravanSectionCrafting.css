@@ -1,10 +1,13 @@
 .caravan-section-crafting{
     display: flex;
     justify-content: center;
+
+    height: 100%;
 }
 
 .caravan-section-crafting .grid-parent{
     height: 100%;
+    /* max-height: 525px; */
     width: 95%;
 
     display: grid;
@@ -16,6 +19,14 @@
     /* outline: 1px solid white; */
 }
 
+.caravan-section-crafting .crafting-section{
+    /* 
+    Trying to get the height of the crafting section to stay static at 100% of the grid height
+    is a hassle, and not worth it. Only revisit if there's literally nothing else important to do.
+    */
+    /* overflow-y: auto;
+    overflow-x: hidden; */
+}
 .caravan-section-crafting .sled-crafting-section{
     margin-top: var(--large-gap);
     width: 100%;
@@ -26,6 +37,8 @@
     width: 100%;
 
     margin-top: var(--standard-gap);
+    margin-left: var(--small-gap);
+    margin-bottom: var(--small-gap);
     
     display: flex;
     
