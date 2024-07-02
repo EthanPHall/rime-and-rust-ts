@@ -20,20 +20,11 @@ const CaravanParent: FC<CaravanParentProps> = () => {
   });
 
   const [sleds, setSleds] = useState<Sled[]>([
-    {
-      name: "Scavenger Sled",
-      canCraftList: [ResourceFactory.createResource("Scrap"), ResourceFactory.createResource("Psychium Scrap")]
-    },
-    {
-      name: "Sled 2",
-      canCraftList: [
-        ResourceFactory.createResource("Scrap"), 
-        ResourceFactory.createResource("Psychium Scrap"), 
-        ResourceFactory.createResource("Pure Psychium"),
-        ResourceFactory.createResource("Scrap"),
-        ResourceFactory.createResource("Scrap"),
-      ]
-    },
+    Sled.create("Scavenger Sled"),
+    Sled.create("Scavenger Sled"),
+    Sled.create("Forge Sled"),
+    Sled.create("Scavenger Sled"),
+    Sled.create("Scavenger Sled"),
   ]);
 
   const [tradableList, setTradableList] = useState<ResourcesList>({
@@ -79,8 +70,8 @@ const CaravanParent: FC<CaravanParentProps> = () => {
     return result;
   }
 
-  function exchangeResources(resourceMods:ResourceNamePlusQuantity[], newResource:Resource){
-    const resourceModsNegative:ResourceNamePlusQuantity[] = resourceMods.map((resourceMod) => {
+  function exchangeResources(toConsume:ResourceNamePlusQuantity[], toGenerate:ResourceNamePlusQuantity[]){
+    const resourceModsNegative:ResourceNamePlusQuantity[] = toConsume.map((resourceMod) => {
       if(resourceMod.quantity > 0){
         return {resource: resourceMod.resource, quantity: -resourceMod.quantity};
       }
@@ -89,7 +80,7 @@ const CaravanParent: FC<CaravanParentProps> = () => {
     });
 
     if(modifyResources(resourceModsNegative)){
-      modifyResources([{resource: newResource.name, quantity: 1}]);
+      modifyResources(toGenerate);
     }
   }
 

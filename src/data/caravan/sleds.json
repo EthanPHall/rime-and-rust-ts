@@ -1,0 +1,30 @@
+{
+    "Scavenger Sled":{
+        "name":"Scavenger Sled",
+        "canCraftList": ["Scrap"],
+        "toGenerate": [
+            {
+                "resource": "Scrap",
+                "quantity": 1
+            }
+        ],
+        "toConsume": []
+    },
+    "Forge Sled":{
+        "name":"Forge Sled",
+        "canCraftList": ["Psychium Scrap", "Scrap", "Scrap", "Scrap"],
+        "toGenerate": [
+            {
+                "resource": "Psychium Scrap",
+                "quantity": 1
+            }
+        ],
+        "toConsume": []
+    },
+    "Invalid Sled":{
+        "name":"Invalid Sled",
+        "canCraftList": [],
+        "toGenerate": [],
+        "toConsume": []
+    }
+}
