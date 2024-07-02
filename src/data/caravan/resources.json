@@ -100,7 +100,10 @@
                     "quantity": 75
                 }
             ],
-            "flagsThatUnlockThis":[]
+            "flagsThatUnlockThis":
+            [
+                "Obtained Psychium Scrap"
+            ]
         }
     },
     "Pure Psychium": 

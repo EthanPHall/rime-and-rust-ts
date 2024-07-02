@@ -111,7 +111,7 @@ const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeRe
               return false;
             }
 
-            const result = ResourceUtils.recipeFlagsAreSet(resource.craftingRecipe, progressionContext.flags);
+            const result = ResourceUtils.recipeFlagsAreSet(resource.tradingRecipe, progressionContext.flags);
             return result;
           }).map((key) => {
             return (

@@ -1,7 +1,7 @@
 {
     "Scavenger Sled":{
         "name":"Scavenger Sled",
-        "canCraftList": ["Scrap", "Not Tradeable"],
+        "canCraftList": ["Scrap", "Debug Psychium Scrap"],
         "toGenerate": [
             {
                 "resource": "Scrap",
