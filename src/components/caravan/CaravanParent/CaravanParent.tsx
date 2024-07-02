@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import './CaravanParent.css';
 import CaravanSectionCrafting, { Sled } from '../CaravanSectionCrafting/CaravanSectionCrafting';
 import CaravanSectionNavBar from '../CaravanSectionNavBar/CaravanSectionNavBar';
@@ -10,6 +10,7 @@ import MessagesParent from '../../messages/MessagesParent/MessagesParent';
 import { ResourceNamePlusQuantity } from '../CaravanSectionValuables/CaravanSectionValuables';
 import { Resource } from '../CaravanSectionValuables/CaravanSectionValuables';
 import useRefState from '../../../hooks/combat/useRefState';
+import { ProgressionContext, ProgressionContextType, ProgressionFlagNames } from '../../../App';
 
 enum CaravanSectionNames{
   CRAFTING="CRAFTING",
@@ -21,12 +22,34 @@ interface CaravanParentProps {}
 
 const CaravanParent: FC<CaravanParentProps> = () => {
   
+  const progressionContext:ProgressionContextType = useContext(ProgressionContext);
+
   const [sectionToDisplay, getSectionToDisplay, setSectionToDisplay] = useRefState<CaravanSectionNames>(CaravanSectionNames.CRAFTING);
   
   const [resources, getResources, setResources] = useRefState<ResourcePlusQuantityList>({
     "Scrap": {resource: ResourceFactory.createResource("Scrap"), quantity: 1000},
     "wood": {resource: ResourceFactory.createResource("wood"), quantity: 5},
   });
+  useEffect(() => {
+    const newFlags:Map<ProgressionFlagNames, boolean> = new Map(progressionContext.flags);
+
+    Object.keys(resources).forEach((key) => {
+      switch(key){
+        case "Scrap":
+          newFlags.set(ProgressionFlagNames.COLLECTED_SCRAP, true);
+          break;
+        case "Psychium Scrap":
+          newFlags.set(ProgressionFlagNames.COLLECTED_PSYCHIUM_SCRAP, true);
+          break;
+        case "Pure Psychium":
+          newFlags.set(ProgressionFlagNames.COLLECTED_PURE_PSYCHIUM, true);
+          break;
+      }
+    });
+
+    console.log(progressionContext);
+    progressionContext.setFlags(newFlags);
+  }, [resources]);
 
   const [sleds, setSleds] = useState<Sled[]>([
     Sled.create("Scavenger Sled"),
