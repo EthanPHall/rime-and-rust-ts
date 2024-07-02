@@ -10,7 +10,7 @@ import MessagesParent from '../../messages/MessagesParent/MessagesParent';
 import { ResourceNamePlusQuantity } from '../CaravanSectionValuables/CaravanSectionValuables';
 import { Resource } from '../CaravanSectionValuables/CaravanSectionValuables';
 import useRefState from '../../../hooks/combat/useRefState';
-import { ProgressionContext, ProgressionContextType, ProgressionFlagNames } from '../../../App';
+import { ProgressionContext, ProgressionContextType, ProgressionFlags } from '../../../App';
 
 enum CaravanSectionNames{
   CRAFTING="CRAFTING",
@@ -31,20 +31,10 @@ const CaravanParent: FC<CaravanParentProps> = () => {
     "wood": {resource: ResourceFactory.createResource("wood"), quantity: 5},
   });
   useEffect(() => {
-    const newFlags:Map<ProgressionFlagNames, boolean> = new Map(progressionContext.flags);
+    const newFlags:ProgressionFlags = progressionContext.flags.clone();
 
     Object.keys(resources).forEach((key) => {
-      switch(key){
-        case "Scrap":
-          newFlags.set(ProgressionFlagNames.COLLECTED_SCRAP, true);
-          break;
-        case "Psychium Scrap":
-          newFlags.set(ProgressionFlagNames.COLLECTED_PSYCHIUM_SCRAP, true);
-          break;
-        case "Pure Psychium":
-          newFlags.set(ProgressionFlagNames.COLLECTED_PURE_PSYCHIUM, true);
-          break;
-      }
+      newFlags.setFlag("Obtained " + key);
     });
 
     console.log(progressionContext);

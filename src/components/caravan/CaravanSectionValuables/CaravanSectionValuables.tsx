@@ -2,11 +2,18 @@ import React, { FC } from 'react';
 import './CaravanSectionValuables.css';
 import SectionLabel from '../../misc/SectionLabel/SectionLabel';
 import resourcesDefinition from '../../../data/caravan/resources.json';
+import { ProgressionFlags } from '../../../App';
 
 type Resource = {
   name:string;
-  craftingRecipe:ResourceNamePlusQuantity[];
-  tradingRecipe:ResourceNamePlusQuantity[];
+  craftingRecipe:Recipe;
+  tradingRecipe:Recipe;
+}
+
+
+type Recipe = {
+  costs:ResourceNamePlusQuantity[],
+  flagsThatUnlockThis: string[]
 }
 
 type ResourceNamePlusQuantity = {resource: string, quantity: number};
@@ -22,26 +29,34 @@ class ResourceUtils{
     let newResource:Resource|undefined = resourcesList[name];
 
     if(newResource === undefined){
-      newResource = {
-        name: name,
-        craftingRecipe: [],
-        tradingRecipe: [],
-      }
+      newResource = this.createResource("Sample");
     }
 
     return newResource;
   }
 
   static stringifyCraftingRecipe(resource:Resource):string{
-    return resource.craftingRecipe.map((recipe) => {
+    return resource.craftingRecipe.costs.map((recipe) => {
       return recipe.resource + ": " + recipe.quantity;
     }).join("\n");
   }
   
   static stringifyTradingRecipe(resource:Resource):string{
-    return resource.tradingRecipe.map((recipe) => {
+    return resource.tradingRecipe.costs.map((recipe) => {
       return recipe.resource + ": " + recipe.quantity;
     }).join("\n");
+  }
+
+  static recipeFlagsAreSet(recipe:Recipe, progressionFlags:ProgressionFlags){
+    let result = true;
+    
+    recipe.flagsThatUnlockThis.forEach((flagName) => {
+      if(!progressionFlags.getFlag(flagName)){
+        result = false;
+      }
+    });
+
+    return result;
   }
 }
 
@@ -51,11 +66,7 @@ class ResourcePlusQuantityUtil{
     let newResource:Resource|undefined = resourcesList[name];
 
     if(newResource === undefined){
-      newResource = {
-        name: name,
-        craftingRecipe: [],
-        tradingRecipe: [],
-      }
+      newResource = ResourceUtils.createResource("Sample");
     }
 
     return {resource: newResource, quantity: quantity};

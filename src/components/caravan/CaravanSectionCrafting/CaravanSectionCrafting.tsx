@@ -1,8 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import './CaravanSectionCrafting.css';
 import { ResourceNamePlusQuantity, Resource, ResourcePlusQuantityList, ResourceUtils, ResourcesList } from '../CaravanSectionValuables/CaravanSectionValuables';
 import HoverButton from '../../misc/HoverButton/HoverButton';
 import sleds from '../../../data/caravan/sleds.json';
+import { ProgressionContext } from '../../../App';
 
 type SledSeed = {
   name: string;
@@ -51,6 +52,7 @@ interface CaravanSectionCraftingProps {
 }
 
 const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeResources, exchangeResources}) => {
+  const progressionContext = useContext(ProgressionContext);
 
   return (
   <div className="caravan-section-crafting" data-testid="caravan-section-crafting">
@@ -66,27 +68,33 @@ const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeRe
             return (
             <div className='sled-crafting-section'>
               <div className={sledNameClass}>{sled.name}</div>
-              {sled.canCraftList.map((resource1, index) => {
-                if(index % 2 != 0) return;
-                
-                const resource2:Resource|undefined = sled.canCraftList?.[index + 1];
+              {sled.canCraftList.filter(
+                (resource) => {
+                  const result = ResourceUtils.recipeFlagsAreSet(resource.craftingRecipe, progressionContext.flags);
+                  return result;
+                }).map(
+                  (resource1, index, filteredList) => 
+                    {
+                      if(index % 2 != 0) return;
+                      
+                      const resource2:Resource|undefined = filteredList?.[index + 1];
 
-                return (
-                  <div className='sled-crafting-recipes'>
-                    <HoverButton 
-                      buttonText={resource1.name} 
-                      popupText={ResourceUtils.stringifyCraftingRecipe(resource1)} 
-                      onClick={() => {exchangeResources(resource1.craftingRecipe, [{resource:resource1.name, quantity:1}])}}
-                    ></HoverButton>
-                    {resource2 && 
-                      <HoverButton
-                        buttonText={resource2.name}
-                        popupText={ResourceUtils.stringifyCraftingRecipe(resource2)}
-                        onClick={() => {exchangeResources(resource2.craftingRecipe, [{resource:resource2.name, quantity:1}])}}
-                      ></HoverButton>}
-                  </div>
-                );
-              })}
+                      return (
+                        <div className='sled-crafting-recipes'>
+                          <HoverButton 
+                            buttonText={resource1.name} 
+                            popupText={ResourceUtils.stringifyCraftingRecipe(resource1)} 
+                            onClick={() => {exchangeResources(resource1.craftingRecipe.costs, [{resource:resource1.name, quantity:1}])}}
+                          ></HoverButton>
+                          {resource2 && 
+                            <HoverButton
+                              buttonText={resource2.name}
+                              popupText={ResourceUtils.stringifyCraftingRecipe(resource2)}
+                              onClick={() => {exchangeResources(resource2.craftingRecipe.costs, [{resource:resource2.name, quantity:1}])}}
+                            ></HoverButton>}
+                        </div>
+                      );
+                    })}
             </div>
             )
           })
@@ -102,9 +110,10 @@ const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeRe
               <HoverButton
                 buttonText={tradeResources[key].name}
                 popupText={ResourceUtils.stringifyTradingRecipe(tradeResources[key])}
-                onClick={() => {exchangeResources(tradeResources[key].tradingRecipe, [{resource:tradeResources[key].name, quantity: 1}])}}
+                onClick={() => {exchangeResources(tradeResources[key].tradingRecipe.costs, [{resource:tradeResources[key].name, quantity: 1}])}}
               ></HoverButton>
-            );})
+            );
+          })
         }
       </div>
     </div>

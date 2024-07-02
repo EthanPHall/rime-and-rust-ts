@@ -6,18 +6,40 @@ import CaravanParent from './components/caravan/CaravanParent/CaravanParent';
 import MapParent from './components/map/MapParent/MapParent';
 import CombatParent from './components/combat/CombatParent/CombatParent';
 import EventParent from './components/events/EventParent/EventParent';
+import progressionFlagsData from './data/global/progression-flags.json';
 
-enum ProgressionFlagNames{
-  COLLECTED_SCRAP = "COLLECTED_SCRAP",
-  COLLECTED_PSYCHIUM_SCRAP = "COLLECTED_PSYCHIUM_SCRAP",
-  COLLECTED_PURE_PSYCHIUM = "COLLECTED_PURE_PSYCHIUM",
+type ProgressionFlagsSeed = {
+  [key: string]: boolean;
 }
 
-type ProgressionContextType = {flags: Map<ProgressionFlagNames, boolean>, setFlags: (newFlags:Map<ProgressionFlagNames, boolean>) => void};
-const ProgressionContext = createContext<ProgressionContextType>({flags: new Map(), setFlags: () => {}});
+class ProgressionFlags{
+  private flags:ProgressionFlagsSeed;
+
+  constructor(flags:ProgressionFlagsSeed){
+    this.flags = flags;
+  }
+
+  clone():ProgressionFlags{
+    return new ProgressionFlags({...this.flags});
+  }
+
+  setFlag(flagName:string){
+    this.flags[flagName] = true;
+  }
+  unsetFlag(flagName:string){
+    this.flags[flagName] = false;
+  }
+
+  getFlag(flagName:string):boolean{
+    return this.flags[flagName];
+  }
+}
+
+type ProgressionContextType = {flags: ProgressionFlags, setFlags: (newFlags:ProgressionFlags) => void};
+const ProgressionContext = createContext<ProgressionContextType>({flags: new ProgressionFlags(progressionFlagsData), setFlags: () => {}});
 
 function App() {
-  const [progressionFlags, setProgressionFlags] = React.useState<Map<ProgressionFlagNames, boolean>>(new Map());
+  const [progressionFlags, setProgressionFlags] = React.useState<ProgressionFlags>(new ProgressionFlags(progressionFlagsData));
 
   return (
     <ProgressionContext.Provider value={{flags:progressionFlags, setFlags:setProgressionFlags}}>
@@ -32,5 +54,5 @@ function App() {
 }
 
 export default App;
-export {ProgressionContext, ProgressionFlagNames}
+export {ProgressionContext, ProgressionFlags}
 export type {ProgressionContextType}

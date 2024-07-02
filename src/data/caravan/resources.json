@@ -1,45 +1,107 @@
 {
+    "Sample":{
+        "name":"Sample",
+        "craftingRecipe":
+        {
+            "costs":
+            [
+                {
+                    "resource":"",
+                    "quantity": 0
+                }
+            ],
+            "flagsThatUnlockThis": [""]
+        },
+        "tradingRecipe":
+        {
+            "costs":
+            [
+                {
+                    "resource":"",
+                    "quantity": 0
+                }
+            ],
+            "flagsThatUnlockThis": [""]
+        }
+    },
     "Scrap": {
         "name": "Scrap",
-        "craftingRecipe": [],
-        "tradingRecipe": []
+        "craftingRecipe":
+        {
+            "costs": [],
+            "flagsThatUnlockThis": []
+        },
+        "tradingRecipe":
+        {
+            "costs": [],
+            "flagsThatUnlockThis": []
+        }
     },
     "Psychium Scrap": 
     {
         "name": "Psychium Scrap",
         "craftingRecipe": 
-        [
-            {
-                "resource": "Scrap",
-                "quantity": 50
-            }
-        ],
-        "tradingRecipe": []
+        {
+            "costs":
+            [
+                {
+                    "resource": "Scrap",
+                    "quantity": 50
+                }
+            ],
+            "flagsThatUnlockThis":
+            [
+                "Obtained Psychium Scrap"
+            ]
+        },
+        "tradingRecipe":
+        {
+            "costs":
+            [
+                {
+                    "resource": "Scrap",
+                    "quantity": 75
+                }
+            ],
+            "flagsThatUnlockThis":[]
+        }
     },
     "Pure Psychium": 
     {
         "name": "Pure Psychium",
         "craftingRecipe": 
-        [
-            {
-                "resource": "Psychium Scrap",
-                "quantity": 100
-            },
-            {
-                "resource": "Scrap",
-                "quantity": 50
-            }
-        ],
+        {
+            "costs":[
+                {
+                    "resource": "Psychium Scrap",
+                    "quantity": 100
+                },
+                {
+                    "resource": "Scrap",
+                    "quantity": 50
+                }
+            ],
+            "flagsThatUnlockThis":
+            [
+                "Obtained Pure Psychium"
+            ]
+        },
         "tradingRecipe": 
-        [
-            {
-                "resource": "Psychium Scrap",
-                "quantity": 100
-            },
-            {
-                "resource": "Scrap",
-                "quantity": 50
-            }
-        ]
+        {
+            "costs":[
+                {
+                    "resource": "Psychium Scrap",
+                    "quantity": 100
+                },
+                {
+                    "resource": "Scrap",
+                    "quantity": 50
+                }
+            ],
+            "flagsThatUnlockThis":
+            [
+                "Obtained Pure Psychium"
+            ]
+        }
     }
 }
