@@ -1,7 +1,7 @@
 {
     "Scavenger Sled":{
         "name":"Scavenger Sled",
-        "canCraftList": ["Scrap"],
+        "canCraftList": ["Scrap", "Not Tradeable"],
         "toGenerate": [
             {
                 "resource": "Scrap",

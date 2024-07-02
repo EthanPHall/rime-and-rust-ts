@@ -24,6 +24,38 @@
             "flagsThatUnlockThis": [""]
         }
     },
+    "Not Tradeable":{
+        "name":"Not Tradeable",
+        "craftingRecipe":
+        {
+            "costs":
+            [
+                {
+                    "resource":"Scrap",
+                    "quantity": 1
+                }
+            ],
+            "flagsThatUnlockThis": []
+        },
+        "tradingRecipe":
+        {
+            "costs":[],
+            "flagsThatUnlockThis": []
+        }
+    },
+    "Junk": {
+        "name": "Junk",
+        "craftingRecipe":
+        {
+            "costs": [],
+            "flagsThatUnlockThis": []
+        },
+        "tradingRecipe":
+        {
+            "costs": [],
+            "flagsThatUnlockThis": []
+        }
+    },
     "Scrap": {
         "name": "Scrap",
         "craftingRecipe":
@@ -33,7 +65,12 @@
         },
         "tradingRecipe":
         {
-            "costs": [],
+            "costs": [
+                {
+                    "resource": "Junk",
+                    "quantity": 2
+                }
+            ],
             "flagsThatUnlockThis": []
         }
     },

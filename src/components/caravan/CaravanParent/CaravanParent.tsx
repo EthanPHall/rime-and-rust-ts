@@ -2,7 +2,7 @@ import React, { FC, useContext, useEffect, useState } from 'react';
 import './CaravanParent.css';
 import CaravanSectionCrafting, { Sled } from '../CaravanSectionCrafting/CaravanSectionCrafting';
 import CaravanSectionNavBar from '../CaravanSectionNavBar/CaravanSectionNavBar';
-import CaravanSectionValuables, { ResourceFactory, ResourcePlusQuantity, ResourcePlusQuantityList, ResourcePlusQuantityUtil, ResourcesList } from '../CaravanSectionValuables/CaravanSectionValuables';
+import CaravanSectionValuables, { ResourceFactory, ResourcePlusQuantity, ResourcePlusQuantityList, ResourcePlusQuantityUtil, ResourceUtils, ResourcesList } from '../CaravanSectionValuables/CaravanSectionValuables';
 import CaravanSectionOptions from '../CaravanSectionOptions/CaravanSectionOptions';
 import CaravanSectionSleds from '../CaravanSectionSleds/CaravanSectionSleds';
 import CaravanSectionExploration from '../CaravanSectionExploration/CaravanSectionExploration';
@@ -11,6 +11,7 @@ import { ResourceNamePlusQuantity } from '../CaravanSectionValuables/CaravanSect
 import { Resource } from '../CaravanSectionValuables/CaravanSectionValuables';
 import useRefState from '../../../hooks/combat/useRefState';
 import { ProgressionContext, ProgressionContextType, ProgressionFlags } from '../../../App';
+import resourceData from '../../../data/caravan/resources.json';
 
 enum CaravanSectionNames{
   CRAFTING="CRAFTING",
@@ -28,7 +29,7 @@ const CaravanParent: FC<CaravanParentProps> = () => {
   
   const [resources, getResources, setResources] = useRefState<ResourcePlusQuantityList>({
     "Scrap": {resource: ResourceFactory.createResource("Scrap"), quantity: 1000},
-    "wood": {resource: ResourceFactory.createResource("wood"), quantity: 5},
+    "Junk": {resource: ResourceFactory.createResource("Junk"), quantity: 1000},
   });
   useEffect(() => {
     const newFlags:ProgressionFlags = progressionContext.flags.clone();
@@ -49,11 +50,18 @@ const CaravanParent: FC<CaravanParentProps> = () => {
     Sled.create("Scavenger Sled"),
   ]);
 
-  const [tradableList, setTradableList] = useState<ResourcesList>({
-    "Scrap": ResourceFactory.createResource("Scrap"),
-    "Psychium Scrap": ResourceFactory.createResource("Psychium Scrap"),
-    "Pure Psychium": ResourceFactory.createResource("Pure Psychium"),
-  });
+  //Load the tradable list with all resources that are tradeable
+  const resourcesList:ResourcesList = resourceData;
+  const tradableListDefault:ResourcesList = {};
+  Object.keys(resourcesList).forEach((key) => {
+    const currentResource = resourcesList[key];
+    if(currentResource && ResourceUtils.isTradeable(currentResource)){
+      tradableListDefault[key] = currentResource;
+    }
+  })
+  const [tradableList, setTradableList] = useState<ResourcesList>(
+    tradableListDefault
+  );
 
   function modifyResources(resourceMods:ResourceNamePlusQuantity[]): boolean{
     let result:boolean = true;

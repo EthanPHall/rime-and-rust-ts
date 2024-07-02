@@ -58,6 +58,10 @@ class ResourceUtils{
 
     return result;
   }
+
+  static isTradeable(resource:Resource):boolean{
+    return resource.tradingRecipe.costs.length > 0;
+  }
 }
 
 class ResourcePlusQuantityUtil{

@@ -105,7 +105,15 @@ const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeRe
           Trade
         </div>
         {
-          Object.keys(tradeResources).map((key) => {
+          Object.keys(tradeResources).filter((key) => {
+            const resource = tradeResources[key];
+            if(!resource){
+              return false;
+            }
+
+            const result = ResourceUtils.recipeFlagsAreSet(resource.craftingRecipe, progressionContext.flags);
+            return result;
+          }).map((key) => {
             return (
               <HoverButton
                 buttonText={tradeResources[key].name}
