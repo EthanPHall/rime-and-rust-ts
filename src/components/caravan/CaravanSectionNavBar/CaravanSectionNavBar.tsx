@@ -3,16 +3,20 @@ import './CaravanSectionNavBar.css';
 import NavButtonCaravan from '../NavButtonCaravan/NavButtonCaravan';
 import NavButtonSleds from '../NavButtonSleds/NavButtonSleds';
 import NavButtonExploration from '../NavButtonExploration/NavButtonExploration';
+import { CaravanSectionNames } from '../CaravanParent/CaravanParent';
 
-interface CaravanSectionNavBarProps {}
+interface CaravanSectionNavBarProps {
+  setSectionToDisplay: (newSectionName:CaravanSectionNames) => void;
+  getSectionBeingDisplayed: () => CaravanSectionNames;
+}
 
-const CaravanSectionNavBar: FC<CaravanSectionNavBarProps> = () => (
+const CaravanSectionNavBar: FC<CaravanSectionNavBarProps> = ({setSectionToDisplay, getSectionBeingDisplayed}) => (
   <div className="caravan-section-navbar" data-testid="caravan-section-navbar">
-    <NavButtonCaravan></NavButtonCaravan>
+    <NavButtonCaravan setSectionToDisplay={setSectionToDisplay} getSectionBeingDisplayed={getSectionBeingDisplayed}></NavButtonCaravan>
     <span className='divider'>|</span>
-    <NavButtonSleds></NavButtonSleds>
+    <NavButtonSleds setSectionToDisplay={setSectionToDisplay} getSectionBeingDisplayed={getSectionBeingDisplayed}></NavButtonSleds>
     <span className='divider'>|</span>
-    <NavButtonExploration></NavButtonExploration>
+    <NavButtonExploration setSectionToDisplay={setSectionToDisplay} getSectionBeingDisplayed={getSectionBeingDisplayed}></NavButtonExploration>
   </div>
 );
 

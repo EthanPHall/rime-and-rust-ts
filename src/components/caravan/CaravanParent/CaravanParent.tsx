@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import './CaravanParent.css';
 import CaravanSectionCrafting, { Sled } from '../CaravanSectionCrafting/CaravanSectionCrafting';
 import CaravanSectionNavBar from '../CaravanSectionNavBar/CaravanSectionNavBar';
@@ -11,9 +11,18 @@ import { ResourceNamePlusQuantity } from '../CaravanSectionValuables/CaravanSect
 import { Resource } from '../CaravanSectionValuables/CaravanSectionValuables';
 import useRefState from '../../../hooks/combat/useRefState';
 
+enum CaravanSectionNames{
+  CRAFTING="CRAFTING",
+  SLEDS="SLEDS",
+  EXPLORATION="EXPLORATION"
+}
+
 interface CaravanParentProps {}
 
 const CaravanParent: FC<CaravanParentProps> = () => {
+  
+  const [sectionToDisplay, getSectionToDisplay, setSectionToDisplay] = useRefState<CaravanSectionNames>(CaravanSectionNames.CRAFTING);
+  
   const [resources, getResources, setResources] = useRefState<ResourcePlusQuantityList>({
     "Scrap": {resource: ResourceFactory.createResource("Scrap"), quantity: 1000},
     "wood": {resource: ResourceFactory.createResource("wood"), quantity: 5},
@@ -23,14 +32,6 @@ const CaravanParent: FC<CaravanParentProps> = () => {
     Sled.create("Scavenger Sled"),
     Sled.create("Scavenger Sled"),
     Sled.create("Forge Sled"),
-    Sled.create("Scavenger Sled"),
-    Sled.create("Scavenger Sled"),
-    Sled.create("Scavenger Sled"),
-    Sled.create("Scavenger Sled"),
-    Sled.create("Scavenger Sled"),
-    Sled.create("Scavenger Sled"),
-    Sled.create("Scavenger Sled"),
-    Sled.create("Scavenger Sled"),
     Sled.create("Scavenger Sled"),
     Sled.create("Scavenger Sled"),
   ]);
@@ -97,10 +98,11 @@ const CaravanParent: FC<CaravanParentProps> = () => {
       <div className='grid-parent'>
         <MessagesParent></MessagesParent>
         <div className='nav-rendered-composite'>
-          <CaravanSectionNavBar></CaravanSectionNavBar>
-          <CaravanSectionCrafting sleds={sleds} tradeResources={tradableList} exchangeResources={exchangeResources}></CaravanSectionCrafting>
-          {/* <CaravanSectionSleds></CaravanSectionSleds> */}
-          {/* <CaravanSectionExploration></CaravanSectionExploration> */}
+          <CaravanSectionNavBar getSectionBeingDisplayed={getSectionToDisplay} setSectionToDisplay={setSectionToDisplay}></CaravanSectionNavBar>
+          
+          {sectionToDisplay==CaravanSectionNames.CRAFTING && <CaravanSectionCrafting sleds={sleds} tradeResources={tradableList} exchangeResources={exchangeResources}></CaravanSectionCrafting>}
+          {sectionToDisplay==CaravanSectionNames.SLEDS && <CaravanSectionSleds></CaravanSectionSleds>}
+          {sectionToDisplay==CaravanSectionNames.EXPLORATION && <CaravanSectionExploration></CaravanSectionExploration>}
         </div>
         <CaravanSectionValuables resources={resources}></CaravanSectionValuables>
         <CaravanSectionOptions></CaravanSectionOptions>
@@ -110,3 +112,4 @@ const CaravanParent: FC<CaravanParentProps> = () => {
 }
 
 export default CaravanParent;
+export {CaravanSectionNames}
