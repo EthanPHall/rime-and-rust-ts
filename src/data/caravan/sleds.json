@@ -1,7 +1,7 @@
 {
     "Scavenger Sled":{
         "name":"Scavenger Sled",
-        "canCraftList": ["Scrap", "Debug Psychium Scrap"],
+        "canCraftList": ["Scrap", "Debug Pure Psychium"],
         "toGenerate": [
             {
                 "resource": "Scrap",

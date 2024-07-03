@@ -97,7 +97,7 @@
             [
                 {
                     "resource": "Scrap",
-                    "quantity": 75
+                    "quantity": 100
                 }
             ],
             "flagsThatUnlockThis":
@@ -117,8 +117,8 @@
                     "quantity": 100
                 },
                 {
-                    "resource": "Scrap",
-                    "quantity": 50
+                    "resource": "Junk",
+                    "quantity": 300
                 }
             ],
             "flagsThatUnlockThis":
@@ -131,11 +131,47 @@
             "costs":[
                 {
                     "resource": "Psychium Scrap",
-                    "quantity": 100
+                    "quantity": 200
                 },
                 {
                     "resource": "Scrap",
-                    "quantity": 50
+                    "quantity": 300
+                },
+                {
+                    "resource": "Junk",
+                    "quantity": 600
+                }
+            ],
+            "flagsThatUnlockThis":
+            [
+                "Obtained Pure Psychium"
+            ]
+        }
+    },
+    "Debug Pure Psychium": 
+    {
+        "name": "Pure Psychium",
+        "craftingRecipe": 
+        {
+            "costs":[],
+            "flagsThatUnlockThis":
+            [
+            ]
+        },
+        "tradingRecipe": 
+        {
+            "costs":[
+                {
+                    "resource": "Psychium Scrap",
+                    "quantity": 200
+                },
+                {
+                    "resource": "Scrap",
+                    "quantity": 300
+                },
+                {
+                    "resource": "Junk",
+                    "quantity": 600
                 }
             ],
             "flagsThatUnlockThis":
