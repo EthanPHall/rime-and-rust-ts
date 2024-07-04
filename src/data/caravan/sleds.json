@@ -1,30 +1,181 @@
 {
-    "Scavenger Sled":{
-        "name":"Scavenger Sled",
-        "canCraftList": ["Scrap", "Debug Pure Psychium"],
-        "toGenerate": [
+    "Example Sled": {
+        "key": "Example Sled",
+        "name": "Example Sled",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "exampleResource",
+                    "quantity": 2
+                },
+                {
+                    "key": "anotherResource",
+                    "quantity": 1
+                }
+            ],
+            "results": [
+                {
+                    "key": "craftedItem",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": ["flag1", "flag2"],
+        "passiveRecipe": {
+            "costs": [
+                {
+                    "key": "passiveResource",
+                    "quantity": 1
+                }
+            ],
+            "results": [
+                {
+                    "key": "passiveResult",
+                    "quantity": 2
+                }
+            ]
+        },
+        "workers": 3,
+        "canCraftList": [
             {
-                "resource": "Scrap",
-                "quantity": 1
-            }
-        ],
-        "toConsume": []
-    },
-    "Forge Sled":{
-        "name":"Forge Sled",
-        "canCraftList": ["Psychium Scrap", "Scrap", "Scrap", "Scrap"],
-        "toGenerate": [
+                "key": "craftableItem1"
+            },
             {
-                "resource": "Psychium Scrap",
-                "quantity": 1
+                "key": "craftableItem2"
             }
-        ],
-        "toConsume": []
+        ]
     },
-    "Invalid Sled":{
-        "name":"Invalid Sled",
-        "canCraftList": [],
-        "toGenerate": [],
-        "toConsume": []
+    "Scavenger Sled": {
+        "key": "Scavenger Sled",
+        "name": "Scavenger Sled",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 100
+                },
+                {
+                    "key": "Junk",
+                    "quantity": 50
+                }
+            ],
+            "results": []
+        },
+        "unlockFlags": [],
+        "passiveRecipe": {
+            "costs": [],
+            "results": [
+                {
+                    "key": "Scrap",
+                    "quantity": 1
+                }
+            ]
+        },
+        "workers": 0,
+        "canCraftList": [
+            {
+                "key": "Scrap"
+            },
+            {
+                "key": "Debug Pure Psychium"
+            }
+        ]
+    },
+    "Scavenger Sled Cheap": {
+        "key": "Scavenger Sled Cheap",
+        "name": "Scavenger Sled Cheap",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 1
+                },
+                {
+                    "key": "Junk",
+                    "quantity": 1
+                }
+            ],
+            "results": [
+                {
+                    "key": "Scavenger Sled Cheap",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [],
+        "passiveRecipe": {
+            "costs": [],
+            "results": [
+                {
+                    "key": "Scrap",
+                    "quantity": 1
+                }
+            ]
+        },
+        "workers": 0,
+        "canCraftList": [
+            {
+                "key": "Scrap"
+            },
+            {
+                "key": "Pure Psychium"
+            }
+        ]
+    },
+    "Forge Sled": {
+        "key": "Forge Sled",
+        "name": "Forge Sled",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 300
+                },
+                {
+                    "key": "Psychium Scrap",
+                    "quantity": 20
+                }
+            ],
+            "results": []
+        },
+        "unlockFlags": [],
+        "passiveRecipe": {
+            "costs": [],
+            "results": [
+                {
+                    "key": "Psychium Scrap",
+                    "quantity": 1
+                }
+            ]
+        },
+        "workers": 0,
+        "canCraftList": [
+            {
+                "key": "Psychium Scrap"
+            },
+            {
+                "key": "Scrap"
+            }
+        ]
+    },
+    "Invalid Sled": {
+        "key": "Invalid Sled",
+        "name": "Invalid Sled",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 1
+                }
+            ],
+            "results": []
+        },
+        "unlockFlags": [],
+        "passiveRecipe": {
+            "costs": [],
+            "results": []
+        },
+        "workers": 0,
+        "canCraftList": []
     }
 }

@@ -1,183 +1,110 @@
 {
-    "Sample":{
-        "name":"Sample",
-        "craftingRecipe":
-        {
-            "costs":
-            [
-                {
-                    "resource":"",
-                    "quantity": 0
-                }
+    "Example": {
+        "key": "Example",
+        "name": "Example Resource",
+        "recipe": {
+            "costs": [
+                { "key": "Item 1", "quantity": 1 },
+                { "key": "Item 2", "quantity": 2 }
             ],
-            "flagsThatUnlockThis": [""]
+            "results": [
+                { "key": "Item 3", "quantity": 3 },
+                { "key": "Item 4", "quantity": 4 }
+            ]
         },
-        "tradingRecipe":
-        {
-            "costs":
-            [
-                {
-                    "resource":"",
-                    "quantity": 0
-                }
-            ],
-            "flagsThatUnlockThis": [""]
-        }
+        "unlockFlags": ["flag1", "flag2"]
     },
-    "Not Tradeable":{
-        "name":"Not Tradeable",
-        "craftingRecipe":
-        {
-            "costs":
-            [
+    "Not Tradeable": {
+        "key": "Not Tradeable",
+        "name": "Not Tradeable",
+        "recipe": {
+            "costs": [
                 {
-                    "resource":"Scrap",
+                    "key": "Scrap",
                     "quantity": 1
                 }
             ],
-            "flagsThatUnlockThis": []
+            "results": []
         },
-        "tradingRecipe":
-        {
-            "costs":[],
-            "flagsThatUnlockThis": []
-        }
+        "unlockFlags": []
     },
     "Junk": {
+        "key": "Junk",
         "name": "Junk",
-        "craftingRecipe":
-        {
+        "recipe": {
             "costs": [],
-            "flagsThatUnlockThis": []
+            "results": [
+                {
+                    "key": "Junk",
+                    "quantity": 1
+                }
+            ]
         },
-        "tradingRecipe":
-        {
-            "costs": [],
-            "flagsThatUnlockThis": []
-        }
+        "unlockFlags": []
     },
     "Scrap": {
+        "key": "Scrap",
         "name": "Scrap",
-        "craftingRecipe":
-        {
-            "costs": [],
-            "flagsThatUnlockThis": []
-        },
-        "tradingRecipe":
-        {
+        "recipe": {
             "costs": [
                 {
-                    "resource": "Junk",
-                    "quantity": 2
+                    "key": "Junk",
+                    "quantity": 1
                 }
             ],
-            "flagsThatUnlockThis": []
-        }
-    },
-    "Psychium Scrap": 
-    {
-        "name": "Psychium Scrap",
-        "craftingRecipe": 
-        {
-            "costs":
-            [
+            "results": [
                 {
-                    "resource": "Scrap",
+                    "key": "Scrap",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": []
+    },
+    "Psychium Scrap": {
+        "key": "Psychium Scrap",
+        "name": "Psychium Scrap",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
                     "quantity": 50
                 }
             ],
-            "flagsThatUnlockThis":
-            [
-                "Obtained Psychium Scrap"
-            ]
+            "results": []
         },
-        "tradingRecipe":
-        {
-            "costs":
-            [
-                {
-                    "resource": "Scrap",
-                    "quantity": 100
-                }
-            ],
-            "flagsThatUnlockThis":
-            [
-                "Obtained Psychium Scrap"
-            ]
-        }
+        "unlockFlags": ["Obtained Psychium Scrap"]
     },
-    "Pure Psychium": 
-    {
+    "Pure Psychium": {
+        "key": "Pure Psychium",
         "name": "Pure Psychium",
-        "craftingRecipe": 
-        {
-            "costs":[
+        "recipe": {
+            "costs": [
                 {
-                    "resource": "Psychium Scrap",
+                    "key": "Psychium Scrap",
                     "quantity": 100
                 },
                 {
-                    "resource": "Junk",
+                    "key": "Junk",
                     "quantity": 300
                 }
             ],
-            "flagsThatUnlockThis":
-            [
-                "Obtained Pure Psychium"
+            "results": [
+                {
+                    "key": "Pure Psychium",
+                    "quantity": 1
+                }
             ]
         },
-        "tradingRecipe": 
-        {
-            "costs":[
-                {
-                    "resource": "Psychium Scrap",
-                    "quantity": 200
-                },
-                {
-                    "resource": "Scrap",
-                    "quantity": 300
-                },
-                {
-                    "resource": "Junk",
-                    "quantity": 600
-                }
-            ],
-            "flagsThatUnlockThis":
-            [
-                "Obtained Pure Psychium"
-            ]
-        }
+        "unlockFlags": ["Obtained Pure Psychium"]
     },
-    "Debug Pure Psychium": 
-    {
+    "Debug Pure Psychium": {
+        "key": "Debug Pure Psychium",
         "name": "Pure Psychium",
-        "craftingRecipe": 
-        {
-            "costs":[],
-            "flagsThatUnlockThis":
-            [
-            ]
+        "recipe": {
+            "costs": [],
+            "results": []
         },
-        "tradingRecipe": 
-        {
-            "costs":[
-                {
-                    "resource": "Psychium Scrap",
-                    "quantity": 200
-                },
-                {
-                    "resource": "Scrap",
-                    "quantity": 300
-                },
-                {
-                    "resource": "Junk",
-                    "quantity": 600
-                }
-            ],
-            "flagsThatUnlockThis":
-            [
-                "Obtained Pure Psychium"
-            ]
-        }
+        "unlockFlags": ["Obtained Pure Psychium"]
     }
 }
