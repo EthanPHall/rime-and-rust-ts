@@ -28,3 +28,10 @@
     margin-top: 2vh;
     font-size: var(--font-size-larger);
 }
+
+.caravan-section-sleds .add-subtract-section{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}

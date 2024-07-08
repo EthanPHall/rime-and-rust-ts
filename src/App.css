@@ -18,6 +18,24 @@
   color: var(--disabled-text-color);
 }
 
+.tooltip{
+  min-width: 100px;
+
+  background-color: var(--background-color-tooltip);
+  color: var(--text-color);
+  border: 1px solid var(--outline-color);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: center;
+  gap: var(--standard-gap);
+
+  padding: var(--standard-gap);
+
+  white-space: pre-wrap;
+}
+
 .App {
   text-align: center;
 

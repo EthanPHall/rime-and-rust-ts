@@ -68,7 +68,7 @@ const CaravanParent: FC<CaravanParentProps> = (
           <CaravanSectionNavBar getSectionBeingDisplayed={getSectionToDisplay} setSectionToDisplay={setSectionToDisplay}></CaravanSectionNavBar>
           
           {sectionToDisplay==CaravanSectionNames.CRAFTING && <CaravanSectionCrafting sleds={Sled.pickOutSleds(inventory)} tradeResources={tradableList} executeRecipe={executeRecipe}></CaravanSectionCrafting>}
-          {sectionToDisplay==CaravanSectionNames.SLEDS && <CaravanSectionSleds sleds={Sled.pickOutSledQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)} workers={workers} executeRecipe={executeRecipe}></CaravanSectionSleds>}
+          {sectionToDisplay==CaravanSectionNames.SLEDS && <CaravanSectionSleds sledQuantities={Sled.pickOutSledQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)} workers={workers} setWorkers={setWorkers} executeRecipe={executeRecipe}></CaravanSectionSleds>}
           {sectionToDisplay==CaravanSectionNames.EXPLORATION && <CaravanSectionExploration></CaravanSectionExploration>}
         </div>
         <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)}></CaravanSectionValuables>

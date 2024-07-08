@@ -272,6 +272,24 @@ class Sled implements IItem{
         return this.canCraftList;
     }
 
+    getWorkerAdjustedPassiveRecipe(itemFactory:IItemFactory):Recipe{
+        const recipe:Recipe = this.passiveRecipe.convertToRecipe(itemFactory);
+        
+        const adjustedCosts = recipe.getCosts().map((cost) => {
+          const newCost = cost.deepClone(itemFactory);
+          newCost.setQuantity(newCost.getQuantity() * this.workers);
+          return newCost;
+        });
+    
+        const adjustedResults = recipe.getResults().map((result) => {
+          const newResult = result.deepClone(itemFactory);
+          newResult.setQuantity(newResult.getQuantity() * this.workers);
+          return newResult;
+        });
+    
+        return new Recipe(adjustedCosts, adjustedResults);
+      }
+
     static pickOutSleds(list:UniqueItemQuantitiesList|IItem[]): Sled[]{
         if(list instanceof UniqueItemQuantitiesList){
             const filteredList = list.filter((itemQuantity) => {
