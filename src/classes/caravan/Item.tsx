@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { ItemFactoryContext, ProgressionContext, ProgressionContextType, ProgressionFlags } from "../../App";
 import resourceData from "../../data/caravan/resources.json";
 import sledData from  "../../data/caravan/sleds.json";
+import sledDogData from "../../data/caravan/sled-dogs.json";
 
 type ItemJson = {
     key: string;
@@ -160,6 +161,8 @@ class Sled implements IItem{
 
     private factory:IItemFactory;
 
+    private getExistingSledCount:()=>number;
+
     constructor(
         key:string, 
         name:string, 
@@ -168,7 +171,8 @@ class Sled implements IItem{
         passiveRecipe:RecipeSeed,
         workers:number,
         canCraftList: ItemSeed[],
-        factory:IItemFactory
+        factory:IItemFactory,
+        getExistingSledCount:()=>number
     ){
         this.key = key;
         this.name= name;
@@ -180,6 +184,8 @@ class Sled implements IItem{
         this.canCraftList = canCraftList;
 
         this.factory = factory;
+
+        this.getExistingSledCount = getExistingSledCount;
     }
 
     getKey():string{
@@ -189,12 +195,56 @@ class Sled implements IItem{
         return this.name;
     }
     getRecipe():RecipeSeed{
-        return this.recipe;
+        return this.getRecipeWithDogs(this.getExistingSledCount());
     }
     isUnlocked(flags: ProgressionFlags):boolean{
         return this.unlockFlags.some((flag) => {
             return !flags.getFlag(flag);
         })
+    }
+
+    private getRecipeWithDogs(existingSleds:number):RecipeSeed{
+        //using the existing sleds number, determine how many dogs are needed for this sled
+        let howManyDogs = 0;
+        switch(existingSleds){
+            case 0:
+            case 1:
+                howManyDogs = 1;
+                break;
+            case 2:
+            case 3:
+            case 4:
+                howManyDogs = 3;
+                break;
+            case 5:
+            case 6:
+            case 7:
+                howManyDogs = 6;
+                break;
+            case 8:
+            case 9:
+            case 10:
+                howManyDogs = 11;
+                break;
+            case 11:
+                howManyDogs = 18;
+                break;
+            default:
+                howManyDogs = 999;
+        }
+
+        //create a new list of costs, which is the regular recipe costs with the new dog cost
+        const newCosts:ItemQuantitySeed[] = [...this.recipe.costs];
+        newCosts.push(new ItemQuantitySeed(sledDogData["Default Key"], howManyDogs));
+
+        //create a new Recipe with the new cost but the same results
+        const newRecipe = new RecipeSeed({
+            costs: newCosts,
+            results: this.recipe.results
+        });
+
+        //return the new Recipe
+        return newRecipe;
     }
 
     getSellRecipe():Recipe{
@@ -262,6 +312,125 @@ class Sled implements IItem{
     }
 }
 
+type SledDogJson = {
+    key: string;
+    name: string;
+    recipe: RecipeJson;
+    unlockFlags: string[];
+}
+class SledDogSeed{
+    key: string;
+    name: string;
+    recipe: RecipeSeed;
+    unlockFlags: string[];
+
+    constructor(
+        json: SledDogJson
+    ){
+        this.key = json.key;
+        this.name = json.name;
+        this.recipe = new RecipeSeed(json.recipe);
+        this.unlockFlags = json.unlockFlags;
+    }
+
+    convertToSledDog(factory:IItemFactory):SledDog{
+        return factory.createItem(this.key) as SledDog;
+    }
+};
+class SledDog implements IItem{
+    private key:string;
+    private name:string;
+    private recipe:RecipeSeed;
+    private unlockFlags:string[];
+
+    constructor(
+        key:string, 
+        name:string, 
+        recipe:RecipeSeed, 
+        unlockFlags:string[]
+    ){
+        this.key = key;
+        this.name= name;
+        this.recipe = recipe;
+        this.unlockFlags = unlockFlags;
+    }
+
+    getKey():string{
+        return this.key;
+    }
+    getName():string{
+        return this.name;
+    }
+    getRecipe():RecipeSeed{
+        return this.recipe;
+    }
+    isUnlocked(flags: ProgressionFlags):boolean{
+        return this.unlockFlags.some((flag) => {
+            return !flags.getFlag(flag);
+        })
+    }
+
+    static pickOutSledDogs(list:UniqueItemQuantitiesList|IItem[]): SledDog[]{
+        if(list instanceof UniqueItemQuantitiesList){
+            const filteredList = list.filter((itemQuantity) => {
+                return itemQuantity.getItem() instanceof SledDog;
+            });
+    
+            return filteredList.map((quantity) => {
+                return quantity.getItem() as SledDog;
+            });
+        }
+        else{
+            const filteredList = list.filter((itemQuantity) => {
+                return itemQuantity instanceof SledDog;
+            });
+    
+            return filteredList as SledDog[];
+        }
+    }
+
+    static pickOutSledDogQuantities(list:UniqueItemQuantitiesList|ItemQuantity[]): SledDogQuantity[]{
+        if(list instanceof UniqueItemQuantitiesList){
+            const filteredList = list.filter((itemQuantity) => {
+                return itemQuantity.getItem() instanceof SledDog;
+            });
+    
+            return filteredList.map((quantity) => {
+                return new SledDogQuantity(quantity.getItem() as SledDog, quantity.getQuantity())
+            });
+        }
+        else{
+            const filteredList = list.filter((itemQuantity) => {
+                return itemQuantity.getItem() instanceof SledDog;
+            });
+    
+            return filteredList.map((quantity) => {
+                return new SledDogQuantity(quantity.getItem() as SledDog, quantity.getQuantity())
+            });
+        }
+    }
+}
+class SledDogQuantity{
+    private sledDog:SledDog;
+    private quantity:number;
+
+    constructor(
+        sledDog:SledDog,
+        quantity:number
+    ){
+        this.sledDog = sledDog;
+        this.quantity = quantity;
+    }
+
+    getSledDog():SledDog{
+        return this.sledDog;
+    }
+    getQuantity():number{
+        return this.quantity;
+    }
+}
+
+
 class UniqueItemQuantitiesList{
     private list:ItemQuantity[];
 
@@ -304,6 +473,12 @@ class UniqueItemQuantitiesList{
     allQuantitiesArePositive():boolean{
         return this.list.every((itemQuantity) => {
             return itemQuantity.getQuantity() >= 0;
+        });
+    }
+
+    getNegativeQuantities():ItemQuantity[]{
+        return this.list.filter((itemQuantity) => {
+            return itemQuantity.getQuantity() < 0;
         });
     }
 
@@ -466,6 +641,29 @@ class Recipe{
         }).join("\n");
     }
 }
+interface IRecipeFail{
+    getRecipe():Recipe;
+    getReasons():string[];
+}
+class RecipeFail implements IRecipeFail{
+    private _recipe:Recipe;
+    private _reasons:string[];
+
+    constructor(
+        recipe:Recipe,
+        reasons:string[]
+    ){
+        this._recipe = recipe;
+        this._reasons = reasons;
+    }
+
+    getRecipe():Recipe{
+        return this._recipe;
+    }
+    getReasons():string[]{
+        return this._reasons;
+    }
+}
 
 interface IItemFactory{
     createItem: (key:string) => IItem;
@@ -473,14 +671,24 @@ interface IItemFactory{
 }
 
 class ItemFactoryJSON implements IItemFactory{
-    resourceJsons:{[key:string]: ResourceJson} = resourceData;
-    sledJsons:{[key:string]: SledJson} = sledData;
-    allItems:IItem[];
+    private resourceJsons:{[key:string]: ResourceJson} = resourceData;
+    private sledJsons:{[key:string]: SledJson} = sledData;
+    private sledDogJsons:{[key:string]: SledDogJson} = sledDogData["Dog Data"];
 
-    constructor(){
+    private allItems:IItem[];
+
+    private getExistingSledCount:()=>number;
+
+    constructor(getExistingSledCount:()=>number){
+        this.getExistingSledCount = getExistingSledCount;
+
         this.allItems = Object.keys(this.resourceJsons).map((key) => {
             return this.createItem(key);
         }).concat(
+            Object.keys(this.sledDogJsons).map((key) => {
+                return this.createItem(key);
+            }
+        )).concat(
             Object.keys(this.sledJsons).map((key) => {
                 return this.createItem(key);
             }
@@ -513,7 +721,18 @@ class ItemFactoryJSON implements IItemFactory{
                 this.sledJsons[key].canCraftList.map((itemJson) => {
                     return new ItemSeed(itemJson);
                 }),
-                this
+                this,
+                this.getExistingSledCount
+            );
+        }
+        else if(Object.keys(this.sledDogJsons).some((sledDogKey) => {
+            return key == sledDogKey;
+        })){
+            return new SledDog(
+                this.sledDogJsons[key].key,
+                this.sledDogJsons[key].name,
+                new RecipeSeed(this.sledDogJsons[key].recipe),
+                this.sledDogJsons[key].unlockFlags
             );
         }
         //if it's not, return a dummy Resource
@@ -548,5 +767,5 @@ function useTradeManagerProgressionBased():ITradeManager{
     return {getTradeRecipe};
 }
 
-export {Resource, Sled, UniqueItemQuantitiesList, ItemQuantity, ResourceQuantity, SledQuantity, Recipe, ItemFactoryJSON, useTradeManagerProgressionBased, ItemSeed, ResourceSeed, SledSeed, RecipeSeed, ItemQuantitySeed}
-export type {ItemJson, ResourceJson, SledJson, RecipeJson, ItemQuantityJson, IItem, IItemFactory, ITradeManager}
+export {SledDogQuantity, SledDog, SledDogSeed, RecipeFail, Resource, Sled, UniqueItemQuantitiesList, ItemQuantity, ResourceQuantity, SledQuantity, Recipe, ItemFactoryJSON, useTradeManagerProgressionBased, ItemSeed, ResourceSeed, SledSeed, RecipeSeed, ItemQuantitySeed}
+export type {IRecipeFail, ItemJson, ResourceJson, SledJson, RecipeJson, ItemQuantityJson, IItem, IItemFactory, ITradeManager}

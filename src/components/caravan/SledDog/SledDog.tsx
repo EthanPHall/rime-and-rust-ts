@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import './SledDog.css';
 
-interface SledDogProps {}
+interface SledDogComponentProps {}
 
-const SledDog: FC<SledDogProps> = () => (
+const SledDogComponent: FC<SledDogComponentProps> = () => (
   <div className="SledDog" data-testid="SledDog">
     SledDog Component
   </div>
 );
 
-export default SledDog;
+export default SledDogComponent;

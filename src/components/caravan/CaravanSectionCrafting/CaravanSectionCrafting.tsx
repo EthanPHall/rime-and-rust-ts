@@ -47,7 +47,7 @@ const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeRe
                       
                       const item2:IItem|undefined = filteredList?.[index + 1]?.convertToItem(itemFactory);
 
-                      console.log(item1.getRecipe());
+                      // console.log(item1.getRecipe());
 
                       return (
                         <div className='sled-crafting-recipes'>

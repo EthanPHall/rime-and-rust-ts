@@ -1,0 +1,20 @@
+{
+    "Default Key": "Sled Dog",
+
+    "Dog Data":{
+        "Sled Dog": {
+            "key": "Sled Dog",
+            "name": "Sled Dog",
+            "recipe": {
+                "costs": [
+                    { "key": "Scrap", "quantity": 1 },
+                    { "key": "Junk", "quantity": 1 }
+                ],
+                "results": [
+                    { "key": "Sled Dog", "quantity": 1 }
+                ]
+            },
+            "unlockFlags": []
+        }
+    }
+}

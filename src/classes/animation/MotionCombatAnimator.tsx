@@ -27,7 +27,6 @@ class MotionCombatAnimator implements IAnimator{
         
         return new Promise<IAnimationCleanup>(async (resolve) => {
             let keyFrameIndex = 0;
-            // console.log("Sets",animationSets);
 
             //i increments when all animations in the set are complete
             for(let animationSetIndex = 0; animationSetIndex < animationSets.length;){
@@ -39,10 +38,8 @@ class MotionCombatAnimator implements IAnimator{
                     const positionToAnimate: Vector2|undefined = currentAnimation.positionToAnimate ? currentAnimation.positionToAnimate : mapData.getEntityById(currentAnimation.entityIdToAnimate)?.position; 
                     
                     if(!positionToAnimate){
-                        // console.log("No position to animate",currentAnimation);
                         continue;
                     }
-                    // console.log("current animation",currentAnimation);
 
                     if(keyFrameIndex < currentAnimation.keyframes.length){
                         playbackControls.push(
@@ -52,19 +49,15 @@ class MotionCombatAnimator implements IAnimator{
                 }
 
                 if(playbackControls.length > 0){
-                    // console.log("Should be waiting",playbackControls);
                     await Promise.all(playbackControls);
                     keyFrameIndex++;
-                    // console.log("KeyframeIndex++",keyFrameIndex);
                 }
                 else{
                     animationSetIndex++;
-                    // console.log("setIndex++",setIndex);
                     keyFrameIndex = 0;
                 }
             }
             
-            // console.log("------DONE------");
             resolve({cleanupAnimations: this.cleanupAnimations, args: [this.getMapData, this.mapAnimate]});
         });
     }
