@@ -177,7 +177,7 @@ function App() {
 
 
   useEffect(() => {
-    const passiveRecipeTimeout = setTimeout(executePassiveRecipes, 10000);
+    const passiveRecipeTimeout = setTimeout(executePassiveRecipes, 1000);
 
     return () => {
       clearTimeout(passiveRecipeTimeout);
@@ -208,7 +208,7 @@ function App() {
       });
     });
 
-    setTimeout(executePassiveRecipes, 10000);
+    setTimeout(executePassiveRecipes, 1000);
   }
 
   function getAdjustedRecipe(recipe:Recipe, workers:number):Recipe{

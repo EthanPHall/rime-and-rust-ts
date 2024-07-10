@@ -63,7 +63,12 @@
         },
         "unlockFlags": [],
         "passiveRecipe": {
-            "costs": [],
+            "costs": [
+                {
+                    "key": "Junk",
+                    "quantity": 1
+                }
+            ],
             "results": [
                 {
                     "key": "Scrap",
