@@ -177,11 +177,11 @@ function App() {
 
 
   useEffect(() => {
-    setTimeout(executePassiveRecipes, 10000);
+    const passiveRecipeTimeout = setTimeout(executePassiveRecipes, 10000);
 
-    // const itemQuantityDebug = new ItemQuantity(itemFactoryContext.createItem('Sled Dog'), -1, itemFactoryContext);
-    // itemQuantityDebug.modifyQuantity(-2);
-    // console.log("Debug ItemQuantity: ", itemQuantityDebug);d
+    return () => {
+      clearTimeout(passiveRecipeTimeout);
+    }
   }, [])
 
   function executePassiveRecipes(){
@@ -192,12 +192,13 @@ function App() {
     sleds.forEach((sledQuantity) => {
       sledQuantity.getList().forEach((sled) => {
         const recipe = sled.getPassiveRecipe().convertToRecipe(itemFactoryContext);
-
+        
         if(recipe){
           for(let i = sled.getWorkers(); i > 0; i--){
             const adjustedRecipe:Recipe = getAdjustedRecipe(recipe, i);
             if(recipeWillWork(adjustedRecipe)){
               executeRecipe(adjustedRecipe);
+              break;
             }
             else{
               continue;
@@ -213,13 +214,13 @@ function App() {
   function getAdjustedRecipe(recipe:Recipe, workers:number):Recipe{
     const adjustedCosts = recipe.getCosts().map((cost) => {
       const newCost = cost.deepClone(itemFactoryContext);
-      newCost.modifyQuantity(newCost.getQuantity() * workers);
+      newCost.setQuantity(newCost.getQuantity() * workers);
       return newCost;
     });
 
     const adjustedResults = recipe.getResults().map((result) => {
       const newResult = result.deepClone(itemFactoryContext);
-      newResult.modifyQuantity(newResult.getQuantity() * workers);
+      newResult.setQuantity(newResult.getQuantity() * workers);
       return newResult;
     });
 

@@ -50,8 +50,6 @@ const CaravanParent: FC<CaravanParentProps> = (
 
     // console.log(progressionContext);
     progressionContext.setFlags(newFlags);
-
-    console.log("Inventory = ", inventory)
   }, [inventory]);
 
   //Load the tradable list with all resources that are tradeable

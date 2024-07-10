@@ -555,7 +555,6 @@ class UniqueItemQuantitiesList{
     deepClone(factory:IItemFactory):UniqueItemQuantitiesList{
         return new UniqueItemQuantitiesList(
             this.list.map((itemQuantity) => {
-                console.log(itemQuantity);
                 return itemQuantity.deepClone(factory);
             })
         );
@@ -683,6 +682,20 @@ class ItemQuantity{
             this.items = this.items.slice(0, Math.max(this.items.length + mod, 0));
         }
     }
+
+    setQuantity(newQuantity:number){
+        this.quantity = newQuantity;
+
+        if(newQuantity > this.items.length){
+            for(let i = this.items.length; i < newQuantity; i++){
+                this.items.push(this.factory.createItem(this.baseItem.getKey()));
+            }
+        }
+        else{
+            this.items = this.items.slice(0, Math.max(newQuantity, 0));
+        }
+    }
+
     removeViaIds(idsToRemove:number[]){
         this.items = this.items.filter((item) => {
             return !idsToRemove.includes(item.getId());
