@@ -9,7 +9,7 @@ import MessagesParent from '../../messages/MessagesParent/MessagesParent';
 import useRefState from '../../../hooks/combat/useRefState';
 import { ItemFactoryContext, MessageHandlingContext, ProgressionContext, ProgressionContextType, ProgressionFlags } from '../../../App';
 import resourceData from '../../../data/caravan/resources.json';
-import { IItem, IItemFactory, ItemFactoryJSON, ItemQuantity, Recipe, Resource, UniqueItemQuantitiesList,Sled, IRecipeFail, RecipeFail, SledDog } from '../../../classes/caravan/Item';
+import { IItem, IItemFactory, ItemFactoryJSON, ItemQuantity, Recipe, Resource, UniqueItemQuantitiesList,Sled, IRecipeFail, RecipeFail, SledDog, SledQuantity } from '../../../classes/caravan/Item';
 import CaravanSectionValuables from '../CaravanSectionValuables/CaravanSectionValuables';
 import tradableItems from '../../../data/caravan/tradable-items.json';
 import SledDogComponent from '../SledDog/SledDog';
@@ -45,11 +45,13 @@ const CaravanParent: FC<CaravanParentProps> = (
     const newFlags:ProgressionFlags = progressionContext.flags.clone();
 
     inventory.forEach((itemQuantity) => {
-      newFlags.setFlag("Obtained " + itemQuantity.getItem().getKey());
+      newFlags.setFlag("Obtained " + itemQuantity.getBaseItem().getKey());
     });
 
     // console.log(progressionContext);
     progressionContext.setFlags(newFlags);
+
+    console.log("Inventory = ", inventory)
   }, [inventory]);
 
   //Load the tradable list with all resources that are tradeable
@@ -60,6 +62,32 @@ const CaravanParent: FC<CaravanParentProps> = (
     })
   );
 
+  //
+  function updateSledWorkers(sledsToUpdate:Sled[]){
+    //Get a clone of the current inventory
+    const newInventory:UniqueItemQuantitiesList = getInventory().shallowClone();
+
+    //Get all of the sleds in the inventory
+    const inventorySleds:Sled[] = Sled.pickOutSledQuantities(newInventory, itemFactoryContext).map((currentSledQuantity) => {
+        return currentSledQuantity.getBaseSled();
+      });
+
+      sledsToUpdate.forEach((currentSledToUpdate) => {
+      //For each newSledQuantity, find the corresponding sled in the inventory
+      const toUpdate = inventorySleds.find((currentSledQuantity) => {
+        return currentSledQuantity.getId() == currentSledToUpdate.getId();
+      });
+
+      //If the sled is found, update the sled workers
+      if(toUpdate){
+        toUpdate.setWorkers(currentSledToUpdate.getWorkers());
+      }
+    });
+
+    //Set the new inventory
+    setInventory(newInventory);
+  }
+
   return (
     <div className='caravan-parent'>
       <div className='grid-parent'>
@@ -68,10 +96,10 @@ const CaravanParent: FC<CaravanParentProps> = (
           <CaravanSectionNavBar getSectionBeingDisplayed={getSectionToDisplay} setSectionToDisplay={setSectionToDisplay}></CaravanSectionNavBar>
           
           {sectionToDisplay==CaravanSectionNames.CRAFTING && <CaravanSectionCrafting sleds={Sled.pickOutSleds(inventory)} tradeResources={tradableList} executeRecipe={executeRecipe}></CaravanSectionCrafting>}
-          {sectionToDisplay==CaravanSectionNames.SLEDS && <CaravanSectionSleds sledQuantities={Sled.pickOutSledQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)} workers={workers} setWorkers={setWorkers} executeRecipe={executeRecipe}></CaravanSectionSleds>}
+          {sectionToDisplay==CaravanSectionNames.SLEDS && <CaravanSectionSleds sledQuantities={Sled.pickOutSledQuantities(inventory, itemFactoryContext)} updateSledWorkers={updateSledWorkers} dogs={SledDog.pickOutSledDogQuantities(inventory, itemFactoryContext)} workers={workers} setWorkers={setWorkers} executeRecipe={executeRecipe}></CaravanSectionSleds>}
           {sectionToDisplay==CaravanSectionNames.EXPLORATION && <CaravanSectionExploration></CaravanSectionExploration>}
         </div>
-        <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)}></CaravanSectionValuables>
+        <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(inventory, itemFactoryContext)} dogs={SledDog.pickOutSledDogQuantities(inventory, itemFactoryContext)}></CaravanSectionValuables>
         <CaravanSectionOptions></CaravanSectionOptions>
       </div>
     </div>

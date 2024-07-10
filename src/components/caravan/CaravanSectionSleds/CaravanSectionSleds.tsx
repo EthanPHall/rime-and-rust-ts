@@ -8,125 +8,69 @@ import IdGenerator from '../../../classes/utility/IdGenerator';
 
 interface CaravanSectionSledsProps {
   sledQuantities:SledQuantity[];
+  updateSledWorkers:(sledsToUpdate:Sled[]) => void;
   dogs:SledDogQuantity[];
   workers:number;
   setWorkers:React.Dispatch<React.SetStateAction<number>>
   executeRecipe:(recipe:Recipe) => void;
 }
 
-const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sledQuantities, dogs, workers, setWorkers, executeRecipe}) => {
+const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sledQuantities, updateSledWorkers, dogs, workers, setWorkers, executeRecipe}) => {
   const itemFactory:IItemFactory = useContext(ItemFactoryContext);
   
-  type SledPlusId = {
-    id:number;
-    sled:Sled;
-  }
-  const [sleds, setSleds] = useState<SledPlusId[]>([]);
-  useEffect(() => {
-    let newSledsList:SledPlusId[] = [];
-
-    if(sleds.length == 0){
-      sledQuantities.forEach((quantity) => {
-        for(let i = 0; i < quantity.getQuantity(); i++){
-          newSledsList.push(
-            {
-              id: IdGenerator.generateUniqueId(),
-              sled: itemFactory.createItem(quantity.getSled().getKey()) as Sled
-            }
-          );
-        }
-      });
-    }
-    else{
-      //There are already sleds, and their data needs to be preserved.
-      //So, foreach quantity, filter the sleds list for sleds of that quantity's type.
-      //Once we have that list (currentList), we keep track of it in another list[][] (aggregateList).
-      //With currentList, does the length equal the quantity's quantity? If so, move on. If it's less than the quantity, 
-      //make a new sled and push it onto the currentList. If it's greater than, then I've messed up elsewhere, because 
-      //there's no way to know which extra sled to delete. If there's ever another cmponent that can add/delete sleds,
-      //this algorithm will need to be revisited.
-
-      const aggregateList:SledPlusId[][] = [];
-      sledQuantities.forEach((quantity) => {
-        const filteredList = sleds.filter((sledPlusId) => {
-          return sledPlusId.sled.getKey() == quantity.getSled().getKey();
-        });
-
-        if(filteredList.length < quantity.getQuantity()){
-          filteredList.push({
-              id: IdGenerator.generateUniqueId(),
-              sled: itemFactory.createItem(quantity.getSled().getKey()) as Sled
-            }
-          )
-        }
-        else if (filteredList.length > quantity.getQuantity()){
-          console.log("CaravanSectionSleds: useEffect[sledQuantities]: Can't determine which sled to delete.");
-        }
-
-        aggregateList.push(filteredList);
-      });
-
-      newSledsList = aggregateList.reduce<SledPlusId[]>((p, c) => {
-        return [...p, ...c];
-      }, []);
-    }
-    
-    setSleds(newSledsList);
-  }, [sledQuantities]);
-
-
-
-  function removeWorkersFromSled(sledPlusId:SledPlusId, amount:number){
-    const newSledsList = [...sleds];
-    if(sledPlusId.sled.getWorkers() >= amount){
-      const sledToChange = newSledsList.find((currentSledId) => {
-        return currentSledId.id == sledPlusId.id;
+  function removeWorkersFromSled(sled:Sled, amount:number){
+    const newSledsList = [...sledQuantities];
+    if(sled.getWorkers() >= amount){
+      const sledToChange = newSledsList.find((currentSledQuantity) => {
+        return currentSledQuantity.getBaseSled().getId() == sled.getId();
       });
 
       if(sledToChange){
-        sledToChange.sled.setWorkers(sledToChange.sled.getWorkers() - amount);
+        sledToChange.getBaseSled().setWorkers(sledToChange.getBaseSled().getWorkers() - amount);
 
-        setSleds(newSledsList);
+        updateSledWorkers(newSledsList.map((sledQuantity) => {return sledQuantity.getBaseSled()}));
         setWorkers(workers + amount);
       }
     }
   }
-  function addWorkersToSled(sledPlusId:SledPlusId, amount:number){
-    const newSledsList = [...sleds];
+  function addWorkersToSled(sled:Sled, amount:number){
+    const newSledQuantitiesList = [...sledQuantities];
     if(workers >= amount){
-      const sledToChange = newSledsList.find((currentSledId) => {
-        return currentSledId.id == sledPlusId.id;
+      const sledQuantityToChange:SledQuantity|undefined = newSledQuantitiesList.find((currentSledQuantity) => {
+        return currentSledQuantity.getList().find((currentSled) => {
+          return currentSled.getId() == sled.getId();
+        });
       });
 
-      if(sledToChange){
-        sledToChange.sled.setWorkers(sledToChange.sled.getWorkers() + amount);
-
-        setSleds(newSledsList);
-        setWorkers(workers - amount);
+      if(sledQuantityToChange){
+        const sledToChange:Sled|undefined = sledQuantityToChange.getSledById(sled.getId());
+        sledToChange?.setWorkers(sledToChange.getWorkers() + amount);
       }
     }
+    updateSledWorkers(newSledQuantitiesList.map((sledQuantity) => {return sledQuantity.getBaseSled()}));
+    setWorkers(workers - amount);
   }
 
 
   
   // Split sleds into groups of 3
-  const sledGroups:SledPlusId[][] = [];
-  sleds.forEach((sledPlusId, i) => {
-    if(i % 3 == 0){
-      console.log('Adding new sled group');
-      sledGroups.push([sledPlusId]);
-    }
-    else{
-      console.log('Adding sled to existing group');
-      sledGroups[sledGroups.length - 1].push(sledPlusId);
-    }
+  const sledGroups:Sled[][] = [];
+  sledQuantities.forEach((sledQuantity) => {
+    sledQuantity.getList().forEach((sled, i) => {
+      if(i % 3 == 0){
+        sledGroups.push([sled]);
+      }
+      else{
+        sledGroups[sledGroups.length - 1].push(sled);
+      }
+    });
   });
 
-  function sledGroupToJSX(group:SledPlusId[]):JSX.Element{
+  function sledGroupToJSX(group:Sled[]):JSX.Element{
     return(
     <>
         {
-          group.map((sledPlusId, index) => {
+          group.map((sled, index) => {
             return (
 <>
   {index == 0 && <div className='sled-dog'>
@@ -155,7 +99,7 @@ const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sledQuantities, dogs
 trigger=
 {
 <div className='sled'>
-    {sledPlusId.sled.getName()}     
+    {sled.getName()}     
     {`
     
                       +++ 
@@ -171,14 +115,14 @@ trigger=
 on={['hover', 'focus']}
 >
   <div className='tooltip'>
-    Workers: {sledPlusId.sled.getWorkers()}
+    Workers: {sled.getWorkers()}
     <div className='add-subtract-section'>
-      <button onClick={() => {removeWorkersFromSled(sledPlusId, 1)}}>- workers</button>
-      <button onClick={() => {addWorkersToSled(sledPlusId, 1)}}>+ workers</button>
+      <button onClick={() => {removeWorkersFromSled(sled, 1)}}>- workers</button>
+      <button onClick={() => {addWorkersToSled(sled, 1)}}>+ workers</button>
     </div>
     <div className='add-subtract-section'>
-      <button onClick={() => {removeWorkersFromSled(sledPlusId, 5)}}>-5 workers</button>
-      <button onClick={() => {addWorkersToSled(sledPlusId, 5)}}>+5 workers</button>
+      <button onClick={() => {removeWorkersFromSled(sled, 5)}}>-5 workers</button>
+      <button onClick={() => {addWorkersToSled(sled, 5)}}>+5 workers</button>
     </div>
   </div>
 </Popup>

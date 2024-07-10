@@ -51,11 +51,14 @@ function App() {
   const [progressionFlags, setProgressionFlags] = React.useState<ProgressionFlags>(new ProgressionFlags(progressionFlagsData));
   const [messageHandlingContext, setMessageHandlingContext] = React.useState<MessageContext>(new MessageContext(messageFactory, messageManager));
 
-  const [inventory, getInventory, setInventory] = useRefState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([]));
+  const itemFactoryContext = new ItemFactoryJSON(getExistingSledCount);
+  const [inventory, getInventory, setInventory] = useRefState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([
+    new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled"), 3, itemFactoryContext)
+  ]));
 
   function getExistingSledCount():number{
     //Get all of the sleds quantities in inventory
-    const sledQuantities = Sled.pickOutSledQuantities(getInventory());
+    const sledQuantities = Sled.pickOutSledQuantities(getInventory(), itemFactoryContext);
 
     //Sum up the sleds quantities
     const sledCount = sledQuantities.map((sledQuantity) => {
@@ -68,10 +71,6 @@ function App() {
     return sledCount;
   }
 
-  const itemFactoryContext = new ItemFactoryJSON(getExistingSledCount);
-
-
-
   //This function will be passed as props, so I'm using getInventory() instead of inventory
   function executeRecipe(recipe:Recipe){
     const negativeCosts = getNewQuantitiesThatMatchSign(recipe.getCosts(), -1);
@@ -82,21 +81,21 @@ function App() {
     }
 
     applyItemChanges(negativeCosts, newInventory);
-
+    
     if(!newInventory.allQuantitiesArePositive()){
       const recipeFail:RecipeFail = new RecipeFail(
         recipe,
         newInventory.getNegativeQuantities().map((quantity) => {
-          return quantity.getItem().getName()
+          return quantity.getBaseItem().getName()
         })
       );
-
+      
       messageHandlingContext.getManager().addMessage(messageHandlingContext.getFactory().createFailedRecipeMessage(recipeFail));
       setMessageHandlingContext(messageHandlingContext.clone());
-
+      
       return;
     }
-
+    
     applyItemChanges(recipe.getResults(), newInventory);
     setInventory(newInventory);
   }
@@ -110,7 +109,7 @@ function App() {
     //Get a list of item quantities from the recipe arg where the items are in the unconsumedCosts list, 
     //and map that list to a new list of ItemQuantityBooleans
     const itemQuantityBooleans:ItemQuantityBool[] = recipe.getCosts().filter((cost) => {
-      return unconsumedCosts.includes(cost.getItem().getKey());
+      return unconsumedCosts.includes(cost.getBaseItem().getKey());
     }).map((cost) => {
       return {itemQuantity:cost, bool:false};
     });
@@ -118,10 +117,10 @@ function App() {
     //Check the inventory for each item in that list and see if there are enough of the prerequisite items in inventory. 
     //If so, set the boolean to true. If not, set the boolean to false.
     itemQuantityBooleans.forEach((itemQuantityBool) => {
-      const iqbItem:IItem = itemQuantityBool.itemQuantity.getItem();
+      const iqbItem:IItem = itemQuantityBool.itemQuantity.getBaseItem();
       const iqbQuantity:number = itemQuantityBool.itemQuantity.getQuantity();
 
-      if(inventory.find((itemQuantity) => itemQuantity.getItem().getKey() == iqbItem.getKey() && itemQuantity.getQuantity() >= iqbQuantity) != undefined){
+      if(inventory.find((itemQuantity) => itemQuantity.getBaseItem().getKey() == iqbItem.getKey() && itemQuantity.getQuantity() >= iqbQuantity) != undefined){
         itemQuantityBool.bool = true;
       }
     });
@@ -131,7 +130,7 @@ function App() {
       const recipeFail:RecipeFail = new RecipeFail(
         recipe,
         itemQuantityBooleans.filter((itemQuantityBool) => itemQuantityBool.bool == false).map((itemQuantityBool) => {
-          return itemQuantityBool.itemQuantity.getItem().getName();
+          return itemQuantityBool.itemQuantity.getBaseItem().getName();
         })
       );
 
@@ -151,7 +150,9 @@ function App() {
       const newItemQuantity = itemQuantity.deepClone(itemFactoryContext);
 
       if(newItemQuantity.getQuantity() * sign < 0){
-        newItemQuantity.setQuantity(-newItemQuantity.getQuantity());
+        //modifyQuantity() used to set the quantity directly, but now it's used to add or subtract from the quantity.
+        //So, if we want the resulting quantity to be existing quantity but negative, then we need to remove twice the existing quantity. 
+        newItemQuantity.modifyQuantity(-newItemQuantity.getQuantity() * 2);
       }
 
       return newItemQuantity;
@@ -159,15 +160,15 @@ function App() {
   }
   function applyItemChanges(itemQuantities:ItemQuantity[], inventory:UniqueItemQuantitiesList){
     itemQuantities.forEach((itemQuantity) => {
-      const item = itemQuantity.getItem();
+      const item = itemQuantity.getBaseItem();
 
       //Unconsumed costs can't be reduced, at least by this method, but they can be increased.
       if(itemQuantity.getQuantity() < 0 && unconsumedCosts.includes(item.getKey())) return;
 
-      const existingItemQuantity = inventory.find((existingItemQuantity) => existingItemQuantity.getItem().getKey() == item.getKey());
+      const existingItemQuantity = inventory.find((existingItemQuantity) => existingItemQuantity.getBaseItem().getKey() == item.getKey());
 
       if(existingItemQuantity){
-        existingItemQuantity.setQuantity(existingItemQuantity.getQuantity() + itemQuantity.getQuantity());
+        existingItemQuantity.modifyQuantity(itemQuantity.getQuantity());
       }else{
         inventory.modify(itemQuantity);
       }
@@ -177,27 +178,33 @@ function App() {
 
   useEffect(() => {
     setTimeout(executePassiveRecipes, 10000);
+
+    // const itemQuantityDebug = new ItemQuantity(itemFactoryContext.createItem('Sled Dog'), -1, itemFactoryContext);
+    // itemQuantityDebug.modifyQuantity(-2);
+    // console.log("Debug ItemQuantity: ", itemQuantityDebug);d
   }, [])
 
   function executePassiveRecipes(){
     console.log('Executing passive recipes');
 
-    const sleds:SledQuantity[] = Sled.pickOutSledQuantities(getInventory());
-    sleds.forEach((sledQuantity) => {
-      const sled = sledQuantity.getSled();
-      const recipe = sled.getPassiveRecipe().convertToRecipe(itemFactoryContext);
+    const sleds:SledQuantity[] = Sled.pickOutSledQuantities(getInventory(), itemFactoryContext);
 
-      if(recipe){
-        for(let i = sled.getWorkers(); i > 0; i--){
-          const adjustedRecipe:Recipe = getAdjustedRecipe(recipe, i);
-          if(recipeWillWork(adjustedRecipe)){
-            executeRecipe(adjustedRecipe);
-          }
-          else{
-            continue;
+    sleds.forEach((sledQuantity) => {
+      sledQuantity.getList().forEach((sled) => {
+        const recipe = sled.getPassiveRecipe().convertToRecipe(itemFactoryContext);
+
+        if(recipe){
+          for(let i = sled.getWorkers(); i > 0; i--){
+            const adjustedRecipe:Recipe = getAdjustedRecipe(recipe, i);
+            if(recipeWillWork(adjustedRecipe)){
+              executeRecipe(adjustedRecipe);
+            }
+            else{
+              continue;
+            }
           }
         }
-      }
+      });
     });
 
     setTimeout(executePassiveRecipes, 10000);
@@ -206,13 +213,13 @@ function App() {
   function getAdjustedRecipe(recipe:Recipe, workers:number):Recipe{
     const adjustedCosts = recipe.getCosts().map((cost) => {
       const newCost = cost.deepClone(itemFactoryContext);
-      newCost.setQuantity(newCost.getQuantity() * workers);
+      newCost.modifyQuantity(newCost.getQuantity() * workers);
       return newCost;
     });
 
     const adjustedResults = recipe.getResults().map((result) => {
       const newResult = result.deepClone(itemFactoryContext);
-      newResult.setQuantity(newResult.getQuantity() * workers);
+      newResult.modifyQuantity(newResult.getQuantity() * workers);
       return newResult;
     });
 
