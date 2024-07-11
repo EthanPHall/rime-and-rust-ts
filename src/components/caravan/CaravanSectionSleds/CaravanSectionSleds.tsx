@@ -19,17 +19,22 @@ const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sledQuantities, upda
   const itemFactory:IItemFactory = useContext(ItemFactoryContext);
   
   function removeWorkersFromSled(sled:Sled, amount:number){
-    const newSledsList = [...sledQuantities];
+    const newSledQuantitiesList = [...sledQuantities];
     if(sled.getWorkers() >= amount){
-      const sledToChange = newSledsList.find((currentSledQuantity) => {
-        return currentSledQuantity.getBaseSled().getId() == sled.getId();
+      const sledQuantityToChange:SledQuantity|undefined = newSledQuantitiesList.find((currentSledQuantity) => {
+        return currentSledQuantity.getList().find((currentSled) => {
+          return currentSled.getId() == sled.getId();
+        });
       });
 
-      if(sledToChange){
-        sledToChange.getBaseSled().setWorkers(sledToChange.getBaseSled().getWorkers() - amount);
-
-        updateSledWorkers(newSledsList.map((sledQuantity) => {return sledQuantity.getBaseSled()}));
-        setWorkers(workers + amount);
+      if(sledQuantityToChange){
+        const sledToChange:Sled|undefined = sledQuantityToChange.getSledById(sled.getId());
+        
+        if(sledToChange){
+          sledToChange.setWorkers(sledToChange.getWorkers() - amount);
+          updateSledWorkers(newSledQuantitiesList.map((sledQuantity) => {return sledQuantity.getBaseSled()}));
+          setWorkers(workers + amount);
+        }
       }
     }
   }
@@ -44,11 +49,14 @@ const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sledQuantities, upda
 
       if(sledQuantityToChange){
         const sledToChange:Sled|undefined = sledQuantityToChange.getSledById(sled.getId());
-        sledToChange?.setWorkers(sledToChange.getWorkers() + amount);
+
+        if(sledToChange){
+          sledToChange?.setWorkers(sledToChange.getWorkers() + amount);
+          updateSledWorkers(newSledQuantitiesList.map((sledQuantity) => {return sledQuantity.getBaseSled()}));
+          setWorkers(workers - amount);
+        }
       }
     }
-    updateSledWorkers(newSledQuantitiesList.map((sledQuantity) => {return sledQuantity.getBaseSled()}));
-    setWorkers(workers - amount);
   }
 
 

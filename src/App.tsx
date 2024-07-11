@@ -185,8 +185,6 @@ function App() {
   useEffect(() => {
     const passiveRecipeTimeout = createPassiveRecipeTimeout();
 
-    console.log('Setting up passive recipes');
-
     return () => {
       clearTimeout(passiveRecipeTimeout);
     }
@@ -197,8 +195,6 @@ function App() {
   }
 
   function executePassiveRecipes(){
-    console.log('Executing passive recipes');
-
     const sleds:SledQuantity[] = Sled.pickOutSledQuantities(getInventory(), itemFactoryContext);
 
     sleds.forEach((sledQuantity) => {
