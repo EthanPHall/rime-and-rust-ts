@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Slow",
+        "speedMult": 1.5
+    },
+    {
+        "name": "Normal",
+        "speedMult": 1
+    },
+    {
+        "name": "Fast",
+        "speedMult": 0.1
+    }
+]

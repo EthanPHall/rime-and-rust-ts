@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import './variables.css';
@@ -11,6 +11,7 @@ import { IItem, IItemFactory, ItemFactoryJSON, ItemQuantity, Recipe, RecipeFail,
 import { IMessageFactory, IMessageManager, MessageContext, MessageFactoryJson, MessageManager } from './classes/caravan/Message';
 import useRefState from './hooks/combat/useRefState';
 import unconsumedCosts from './data/caravan/unconsumed-costs.json';
+import { ISettingsManager, SettingsContext, SettingsContextType, SettingsManager } from './context/misc/SettingsContext';
 
 type ProgressionFlagsSeed = {
   [key: string]: boolean;
@@ -50,10 +51,12 @@ const MessageHandlingContext = createContext<{messageHandling:MessageContext, se
 function App() {
   const [progressionFlags, setProgressionFlags] = React.useState<ProgressionFlags>(new ProgressionFlags(progressionFlagsData));
   const [messageHandlingContext, setMessageHandlingContext] = React.useState<MessageContext>(new MessageContext(messageFactory, messageManager));
+  const [settingsManagerContext, setSettingsManagerContext] = React.useState<ISettingsManager>(new SettingsManager());
+  const settingsManagerContextRef = useRef<ISettingsManager>(settingsManagerContext);
 
   const itemFactoryContext = new ItemFactoryJSON(getExistingSledCount);
   const [inventory, getInventory, setInventory] = useRefState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([
-    new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled"), 3, itemFactoryContext)
+    new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 3, itemFactoryContext)
   ]));
 
   function getExistingSledCount():number{
@@ -175,14 +178,23 @@ function App() {
     });
   }
 
+  useEffect(() => {
+    settingsManagerContextRef.current = settingsManagerContext;
+  }, [settingsManagerContext]);
 
   useEffect(() => {
-    const passiveRecipeTimeout = setTimeout(executePassiveRecipes, 1000);
+    const passiveRecipeTimeout = createPassiveRecipeTimeout();
+
+    console.log('Setting up passive recipes');
 
     return () => {
       clearTimeout(passiveRecipeTimeout);
     }
   }, [])
+
+  function createPassiveRecipeTimeout():NodeJS.Timeout{
+    return setTimeout(executePassiveRecipes, settingsManagerContextRef.current.getCorrectTiming(10000));
+  }
 
   function executePassiveRecipes(){
     console.log('Executing passive recipes');
@@ -208,7 +220,7 @@ function App() {
       });
     });
 
-    setTimeout(executePassiveRecipes, 1000);
+    createPassiveRecipeTimeout();
   }
 
   function getAdjustedRecipe(recipe:Recipe, workers:number):Recipe{
@@ -236,18 +248,20 @@ function App() {
   }
   
   return (
-    <MessageHandlingContext.Provider value={{messageHandling:messageHandlingContext, setMessageHandling:setMessageHandlingContext}}>
-      <ItemFactoryContext.Provider value={itemFactoryContext}>
-        <ProgressionContext.Provider value={{flags:progressionFlags, setFlags:setProgressionFlags}}>
-          <div className="App">
-            {/* <EventParent></EventParent> */}
-            {/* <CombatParent></CombatParent> */}
-            <CaravanParent inventory={inventory} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe}></CaravanParent>
-            {/* <MapParent></MapParent> */}
-          </div>
-        </ProgressionContext.Provider>
-      </ItemFactoryContext.Provider>
-    </MessageHandlingContext.Provider>
+    <SettingsContext.Provider value={{settingsManager:settingsManagerContext, setSettingsManager:setSettingsManagerContext}}>
+      <MessageHandlingContext.Provider value={{messageHandling:messageHandlingContext, setMessageHandling:setMessageHandlingContext}}>
+        <ItemFactoryContext.Provider value={itemFactoryContext}>
+          <ProgressionContext.Provider value={{flags:progressionFlags, setFlags:setProgressionFlags}}>
+            <div className="App">
+              {/* <EventParent></EventParent> */}
+              {/* <CombatParent></CombatParent> */}
+              <CaravanParent inventory={inventory} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe}></CaravanParent>
+              {/* <MapParent></MapParent> */}
+            </div>
+          </ProgressionContext.Provider>
+        </ItemFactoryContext.Provider>
+      </MessageHandlingContext.Provider>
+    </SettingsContext.Provider>
   );
 }
 
