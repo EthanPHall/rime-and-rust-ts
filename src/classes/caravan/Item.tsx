@@ -108,14 +108,14 @@ class Resource implements IItem{
             return item instanceof Resource;
         }) as Resource[];
     }
-    static pickOutResourceQuantities(list:UniqueItemQuantitiesList|ItemQuantity[], factory:IItemFactory): ResourceQuantity[]{
+    static pickOutResourceQuantities(list:UniqueItemQuantitiesList|ItemQuantity[]): ResourceQuantity[]{
         if(list instanceof UniqueItemQuantitiesList){
             const filteredList = list.filter((itemQuantity) => {
                 return itemQuantity.getBaseItem() instanceof Resource;
             });
     
             return filteredList.map((quantity) => {
-                return new ResourceQuantity(quantity.getBaseItem() as Resource, quantity.getQuantity(), factory)
+                return new ResourceQuantity(quantity.getBaseItem() as Resource, quantity.getQuantity())
             });
         }
         else{
@@ -124,7 +124,7 @@ class Resource implements IItem{
             });
     
             return filteredList.map((quantity) => {
-                return new ResourceQuantity(quantity.getBaseItem() as Resource, quantity.getQuantity(), factory)
+                return new ResourceQuantity(quantity.getBaseItem() as Resource, quantity.getQuantity())
             });
         }
     }
@@ -253,15 +253,15 @@ class Sled implements IItem{
             case 5:
             case 6:
             case 7:
-                howManyDogs = 6;
+                howManyDogs = 7;
                 break;
             case 8:
             case 9:
             case 10:
-                howManyDogs = 12;
+                howManyDogs = 16;
                 break;
             case 11:
-                howManyDogs = 24;
+                howManyDogs = 35;
                 break;
             default:
                 howManyDogs = 999;
@@ -283,11 +283,11 @@ class Sled implements IItem{
 
     getSellRecipe(itemFactory:IItemFactory):Recipe{
         //Get the new costs list, which is just this Item with quantity 1
-        const costs:ItemQuantity[] = [new ItemQuantity(this, 1, itemFactory)];
+        const costs:ItemQuantity[] = [new ItemQuantity(this, 1)];
 
         //Get the new results list, which is the regular recipe costs with halved quantities
         const results:ItemQuantity[] = this.recipe.convertToRecipe(this.factory).getCosts().map((cost) => {
-            return new ItemQuantity(cost.getBaseItem(), Math.floor(cost.getQuantity() / 2), itemFactory);
+            return new ItemQuantity(cost.getBaseItem(), Math.floor(cost.getQuantity() / 2));
         });
         
         //return a new Recipe with these components.
@@ -313,13 +313,13 @@ class Sled implements IItem{
         const recipe:Recipe = this.passiveRecipe.convertToRecipe(itemFactory);
         
         const adjustedCosts = recipe.getCosts().map((cost) => {
-          const newCost = cost.deepClone(itemFactory);
+          const newCost = cost.clone();
           newCost.modifyQuantity(newCost.getQuantity() * this.workers);
           return newCost;
         });
     
         const adjustedResults = recipe.getResults().map((result) => {
-          const newResult = result.deepClone(itemFactory);
+          const newResult = result.clone();
           newResult.modifyQuantity(newResult.getQuantity() * this.workers);
           return newResult;
         });
@@ -346,35 +346,30 @@ class Sled implements IItem{
         }
     }
 
-    //TODO: the other pick out methods should be refactored to be like this one. 
-    static pickOutSledQuantities(list:UniqueItemQuantitiesList|ItemQuantity[], factory:IItemFactory): SledQuantity[]{
+    //TODO: the other pick out methods should be refactored to be like this one.
+    /**
+     * 
+     * @param list The list to look through to find ItemQuantities whose baseItem is a Sled
+     * @returns A list of copied SledQuantities
+     */
+    static pickOutSledQuantities(list:UniqueItemQuantitiesList|ItemQuantity[]): SledQuantity[]{
         if(list instanceof UniqueItemQuantitiesList){
             const filteredList = list.filter((itemQuantity) => {
                 return itemQuantity.getBaseItem() instanceof Sled;
             });
-
-            const result:SledQuantity[] = [];
-            filteredList.forEach((itemQuantity) => {
-                const convertedQuantity:SledQuantity = new SledQuantity(itemQuantity.getBaseItem() as Sled, 0, factory);
-                convertedQuantity.setSleds(itemQuantity.getItems() as Sled[]);
-                result.push(convertedQuantity);
-            });
     
-            return result;
+            return filteredList.map((quantity) => {
+                return new SledQuantity(quantity.getBaseItem() as Sled, quantity.getQuantity());
+            });
         }
         else{
             const filteredList = list.filter((itemQuantity) => {
                 return itemQuantity.getBaseItem() instanceof Sled;
             });
-    
-            const result:SledQuantity[] = [];
-            filteredList.forEach((itemQuantity) => {
-                const convertedQuantity:SledQuantity = new SledQuantity(itemQuantity.getBaseItem() as Sled, 0, factory);
-                convertedQuantity.setSleds(itemQuantity.getItems() as Sled[]);
-                result.push(convertedQuantity);
-            });
 
-            return result;
+            return filteredList.map((quantity) => {
+                return new SledQuantity(quantity.getBaseItem() as Sled, quantity.getQuantity());
+            });
         }
     }
 }
@@ -476,14 +471,14 @@ class SledDog implements IItem{
         }
     }
 
-    static pickOutSledDogQuantities(list: UniqueItemQuantitiesList | ItemQuantity[], factory:IItemFactory): SledDogQuantity[] {
+    static pickOutSledDogQuantities(list: UniqueItemQuantitiesList | ItemQuantity[]): SledDogQuantity[] {
         if (list instanceof UniqueItemQuantitiesList) {
             const filteredList = list.filter((itemQuantity) => {
                 return itemQuantity.getBaseItem() instanceof SledDog;
             });
 
             return filteredList.map((quantity) => {
-                return new SledDogQuantity(quantity.getBaseItem() as SledDog, quantity.getQuantity(), factory);
+                return new SledDogQuantity(quantity.getBaseItem() as SledDog, quantity.getQuantity());
             });
         } else {
             const filteredList = list.filter((itemQuantity) => {
@@ -491,30 +486,21 @@ class SledDog implements IItem{
             });
 
             return filteredList.map((quantity) => {
-                return new SledDogQuantity(quantity.getBaseItem() as SledDog, quantity.getQuantity(), factory);
+                return new SledDogQuantity(quantity.getBaseItem() as SledDog, quantity.getQuantity());
             });
         }
     }
 }
 class SledDogQuantity{
     private baseSledDog:SledDog;
-    private dogs:SledDog[];
-    private factory:IItemFactory;
     private quantity:number;
 
     constructor(
         sledDog:SledDog,
         quantity:number,
-        factory:IItemFactory
     ){
         this.baseSledDog = sledDog;
-        this.factory = factory;
         this.quantity = quantity;
-        this.dogs = [];
-
-        for(let i = 0; i < quantity; i++){
-            this.dogs.push(factory.createItem(sledDog.getKey()) as SledDog);
-        }
     }
 
     getSledDog():SledDog{
@@ -525,22 +511,9 @@ class SledDogQuantity{
     }
     modifyQuantity(mod:number){
         this.quantity += mod;
-
-        if(mod > 0){
-            for(let i = this.dogs.length; i < this.quantity; i++){
-                this.dogs.push(this.factory.createItem(this.baseSledDog.getKey()) as SledDog);
-            }
-        }
-        else{
-            this.dogs = this.dogs.slice(0, Math.max(this.dogs.length + mod, 0));
-        }
     }
-    removeViaIds(idsToRemove:number[]){
-        this.dogs = this.dogs.filter((dog) => {
-            return !idsToRemove.includes(dog.getId());
-        });
-
-        this.quantity = this.dogs.length;
+    setQuantity(newQuantity:number){
+        this.quantity = newQuantity;
     }
 }
 
@@ -552,20 +525,22 @@ class UniqueItemQuantitiesList{
         this.list = list;
     }
 
-    deepClone(factory:IItemFactory):UniqueItemQuantitiesList{
-        return new UniqueItemQuantitiesList(
-            this.list.map((itemQuantity) => {
-                return itemQuantity.deepClone(factory);
-            })
-        );
-    }
-    shallowClone():UniqueItemQuantitiesList{
+    clone():UniqueItemQuantitiesList{
         return new UniqueItemQuantitiesList(this.list);
+    }
+    deepClone():UniqueItemQuantitiesList{
+        return new UniqueItemQuantitiesList(this.list.map((itemQuantity) => {
+            return itemQuantity.clone();
+        }));
     }
     getListCopy():ItemQuantity[]{
         return [...this.list];
     }
 
+    /**
+     * 
+     * @param newItemQuantity The new ItemQuantity to add to the list. If the item associated with the new quantity already exists in the list, increment the existing quantity. Otherwise, add the new quantity to the list.
+     */
     modify(newItemQuantity:ItemQuantity){
         let existingIndex:number = -1;
         this.list.forEach((currentItemQuantity, index) => {
@@ -629,39 +604,24 @@ class ItemQuantitySeed{
     }
 
     convertToItemQuantity(factory:IItemFactory):ItemQuantity{
-        return new ItemQuantity(factory.createItem(this.key), this.quantity, factory);
+        return new ItemQuantity(factory.createItem(this.key), this.quantity);
     }
 };
 
 class ItemQuantity{
     private baseItem:IItem;
-    private items:IItem[];
-    private factory:IItemFactory;
     private quantity:number;
 
     constructor(
         item:IItem,
         quantity:number,
-        factory:IItemFactory
     ){
         this.baseItem = item;
-        this.factory = factory;
         this.quantity = quantity;
-        this.items = [];
-
-        for(let i = 0; i < quantity; i++){
-            this.items.push(factory.createItem(item.getKey()));
-        }
     }
 
-    //did some refactoring, this method still has the factory arg to maintain the deepClone signature
-    deepClone(factory?:IItemFactory):ItemQuantity{
-        const result:ItemQuantity = new ItemQuantity(this.factory.createItem(this.baseItem.getKey()), this.quantity, this.factory);
-
-        result.items.forEach((item, index) => {
-            item.inheritExistingData(this.items[index]);
-        });
-        return result;
+    clone():ItemQuantity{
+        return new ItemQuantity(this.baseItem, this.quantity);
     }
 
     getBaseItem():IItem{
@@ -672,68 +632,23 @@ class ItemQuantity{
     }
     modifyQuantity(mod:number){
         this.quantity += mod;
-
-        if(mod > 0){
-            for(let i = this.items.length; i < this.quantity; i++){
-                this.items.push(this.factory.createItem(this.baseItem.getKey()));
-            }
-        }
-        else{
-            this.items = this.items.slice(0, Math.max(this.items.length + mod, 0));
-        }
     }
 
     setQuantity(newQuantity:number){
         this.quantity = newQuantity;
-
-        if(newQuantity > this.items.length){
-            for(let i = this.items.length; i < newQuantity; i++){
-                this.items.push(this.factory.createItem(this.baseItem.getKey()));
-            }
-        }
-        else{
-            this.items = this.items.slice(0, Math.max(newQuantity, 0));
-        }
-    }
-
-    removeViaIds(idsToRemove:number[]){
-        this.items = this.items.filter((item) => {
-            return !idsToRemove.includes(item.getId());
-        });
-
-        this.quantity = this.items.length;
-    }
-
-    getItemById(id:number):IItem|undefined{
-        return this.items.find((item) => {
-            return item.getId() == id;
-        });
-    }
-
-    getItems():IItem[]{
-        return this.items;
     }
 }
 
 class ResourceQuantity{
     private baseResource:Resource;
-    private resources:Resource[];
-    private factory:IItemFactory;
     private quantity:number;
 
     constructor(
         resource:Resource,
         quantity:number,
-        factory:IItemFactory
     ){
         this.baseResource = resource;
-        this.factory = factory;
         this.quantity = quantity;
-        this.resources = [];
-
-        for(let i = 0; i < quantity; i++){
-            this.resources.push(factory.createItem(resource.getKey()) as Resource);
-        }
     }
 
     getResource():Resource{
@@ -744,49 +659,22 @@ class ResourceQuantity{
     }
     modifyQuantity(newQuantity:number){
         this.quantity += newQuantity;
-
-        if(newQuantity > 0){
-            for(let i = this.resources.length; i < this.quantity; i++){
-                this.resources.push(this.factory.createItem(this.baseResource.getKey()) as Resource);
-            }
-        }
-        else{
-            this.resources = this.resources.slice(0, Math.max(this.resources.length + newQuantity, 0));
-        }
     }
-    removeViaIds(idsToRemove:number[]){
-        this.resources = this.resources.filter((resource) => {
-            return !idsToRemove.includes(resource.getId());
-        });
-
-        this.quantity = this.resources.length;
+    setQuantity(newQuantity:number){
+        this.quantity = newQuantity;
     }
 }
 
 class SledQuantity{
     private baseSled:Sled;
-    private sleds:Sled[];
     private quantity:number;
-    private factory:IItemFactory;
 
     constructor(
         sled:Sled,
         quantity:number,
-        factory:IItemFactory
     ){
         this.baseSled = sled;
-        this.factory = factory;
         this.quantity = quantity;
-        this.sleds = [];
-
-        for(let i = 0; i < quantity; i++){
-            this.sleds.push(sled);
-        }
-    }
-
-    setSleds(sleds:Sled[]){
-        this.sleds = sleds;
-        this.quantity = sleds.length;
     }
 
     getBaseSled():Sled{
@@ -796,35 +684,12 @@ class SledQuantity{
         return this.quantity;
     }
 
-    getSledById(id:number):Sled|undefined{
-        return this.sleds.find((sled) => {
-            return sled.getId() == id;
-        });
-    }
-
-    getList():Sled[]{
-        return this.sleds;
-    }
-
     modifyQuantity(mod:number){
         this.quantity += mod;
-
-        if(mod > 0){
-            for(let i = this.sleds.length; i < this.quantity; i++){
-                this.sleds.push(this.factory.createItem(this.baseSled.getKey()) as Sled);
-            }
-        }
-        else{
-            this.sleds = this.sleds.slice(0, Math.max(this.sleds.length + mod, 0));
-        }
     }
 
-    removeViaIds(idsToRemove:number[]){
-        this.sleds = this.sleds.filter((sled) => {
-            return !idsToRemove.includes(sled.getId());
-        });
-
-        this.quantity = this.sleds.length;
+    setQuantity(newQuantity:number){
+        this.quantity = newQuantity;
     }
 }
 
@@ -850,10 +715,10 @@ class RecipeSeed{
     convertToRecipe(factory:IItemFactory):Recipe{
         return new Recipe(
             this.costs.map((cost) => {
-                return new ItemQuantity(factory.createItem(cost.key), cost.quantity, factory);
+                return new ItemQuantity(factory.createItem(cost.key), cost.quantity);
             }),
             this.results.map((result) => {
-                return new ItemQuantity(factory.createItem(result.key), result.quantity, factory);
+                return new ItemQuantity(factory.createItem(result.key), result.quantity);
             })
         );
     }
@@ -1001,7 +866,7 @@ function useTradeManagerProgressionBased():ITradeManager{
         const multiplier = 2;
 
         const newRecipeCosts:ItemQuantity[] = recipe.getCosts().map((cost) => {
-            return new ItemQuantity(cost.getBaseItem(), cost.getQuantity() * multiplier, itemFactoryContext);
+            return new ItemQuantity(cost.getBaseItem(), cost.getQuantity() * multiplier);
         });
 
         return new Recipe(newRecipeCosts, recipe.getResults());

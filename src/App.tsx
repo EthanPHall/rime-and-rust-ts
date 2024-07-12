@@ -54,14 +54,137 @@ function App() {
   const [settingsManagerContext, setSettingsManagerContext] = React.useState<ISettingsManager>(new SettingsManager());
   const settingsManagerContextRef = useRef<ISettingsManager>(settingsManagerContext);
 
+  const [workers, setWorkers] = useState<number>(20);
+
   const itemFactoryContext = new ItemFactoryJSON(getExistingSledCount);
   const [inventory, getInventory, setInventory] = useRefState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([
-    new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 3, itemFactoryContext)
+    new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 3)
   ]));
+
+  const [sledsList, setSledsList] = useState<Sled[]>([]);
+  const sledsListRef = useRef<Sled[]>(sledsList);
+
+
+  
+  useEffect(() => {
+    const inventorySledQuantities:SledQuantity[] = Sled.pickOutSledQuantities(getInventory());
+    const sledsGroupedByKey:Sled[][] = groupSledsByKey(sledsList);
+    let changed = false;
+
+    inventorySledQuantities.forEach((sledQuantity) => {
+      
+      const sledKey = sledQuantity.getBaseSled().getKey();
+      const sledGroup = sledsGroupedByKey.find((sledGroup) => sledGroup[0].getKey() == sledKey);
+      
+      if(!sledGroup){
+        const newSleds:Sled[] = [];
+        for(let i = 0; i < sledQuantity.getQuantity(); i++){
+          newSleds.push(itemFactoryContext.createItem(sledKey) as Sled);
+        }
+
+        sledsGroupedByKey.push(newSleds);
+
+        changed = true;
+      }
+      else if(sledGroup.length > sledQuantity.getQuantity()){
+        for(let i = 0; i < sledGroup.length - sledQuantity.getQuantity(); i++){
+          const sledToRemove = sledGroup.pop();
+          refundSledWorkers(sledToRemove as Sled);
+        }
+        changed = true;
+      }
+      else if(sledGroup.length < sledQuantity.getQuantity()){
+        for(let i = 0; i < sledQuantity.getQuantity() - sledGroup.length; i++){
+          sledGroup.push(itemFactoryContext.createItem(sledKey) as Sled);
+        }
+        changed = true;
+      }
+    });
+
+    if(changed){
+      const newSledsList:Sled[] = sledsGroupedByKey.reduce((previous, current) => {
+        return previous.concat(current);
+      }, []);
+
+      setSledsList(newSledsList);
+    }
+  }, [inventory]);
+
+
+
+  useEffect(() => {
+    sledsListRef.current = sledsList;
+
+    const inventorySledQuantities:SledQuantity[] = Sled.pickOutSledQuantities(getInventory());
+    const sledsGroupedByKey:Sled[][] = groupSledsByKey(sledsList);
+    let changed = false;
+
+    sledsGroupedByKey.forEach((sledGroup) => {
+      const sledKey = sledGroup[0].getKey();
+      const sledQuantity = inventorySledQuantities.find((sledQuantity) => sledQuantity.getBaseSled().getKey() == sledKey);
+
+      if(!sledQuantity){
+        changed = true;
+        inventorySledQuantities.push(new SledQuantity(itemFactoryContext.createItem(sledKey) as Sled, sledGroup.length));
+      }
+      else if(sledQuantity.getQuantity() != sledGroup.length){
+        changed = true;
+        sledQuantity.setQuantity(sledGroup.length);
+      }
+    });
+
+    if(changed){
+      const newInventory = inventory.clone();
+      inventorySledQuantities.forEach((sledQuantity) => {
+        newInventory.modify(new ItemQuantity(sledQuantity.getBaseSled(), sledQuantity.getQuantity()));
+      });
+
+      setInventory(newInventory);
+    }
+  }, [sledsList]);
+
+
+
+  useEffect(() => {
+    settingsManagerContextRef.current = settingsManagerContext;
+  }, [settingsManagerContext]);
+
+  useEffect(() => {
+    const passiveRecipeTimeout = createPassiveRecipeTimeout();
+
+    return () => {
+      clearTimeout(passiveRecipeTimeout);
+    }
+  }, [])
+
+
+
+  function groupSledsByKey(sleds:Sled[]):Sled[][]{
+    const sledsByKey = new Map<string, Sled[]>();
+
+    sleds.forEach((sled) => {
+      const key = sled.getKey();
+      const existingSleds = sledsByKey.get(key);
+
+      if(existingSleds){
+        existingSleds.push(sled);
+      }else{
+        sledsByKey.set(key, [sled]);
+      }
+    });
+
+    return Array.from(sledsByKey.values());
+  }
+
+  function refundSledWorkers(sled:Sled){
+    setWorkers((current) => {
+      return current + sled.getWorkers();
+    });
+  }
 
   function getExistingSledCount():number{
     //Get all of the sleds quantities in inventory
-    const sledQuantities = Sled.pickOutSledQuantities(getInventory(), itemFactoryContext);
+    const sledQuantities = Sled.pickOutSledQuantities(getInventory());
 
     //Sum up the sleds quantities
     const sledCount = sledQuantities.map((sledQuantity) => {
@@ -77,7 +200,7 @@ function App() {
   //This function will be passed as props, so I'm using getInventory() instead of inventory
   function executeRecipe(recipe:Recipe){
     const negativeCosts = getNewQuantitiesThatMatchSign(recipe.getCosts(), -1);
-    const newInventory = getInventory().deepClone(itemFactoryContext);
+    const newInventory = getInventory().deepClone();
 
     if(!arePrerequisitesMet(recipe, newInventory)){
       return;
@@ -150,7 +273,7 @@ function App() {
 
   function getNewQuantitiesThatMatchSign(itemQuantities:ItemQuantity[], sign:number):ItemQuantity[]{
     return itemQuantities.map((itemQuantity) => {
-      const newItemQuantity = itemQuantity.deepClone(itemFactoryContext);
+      const newItemQuantity = itemQuantity.clone();
 
       if(newItemQuantity.getQuantity() * sign < 0){
         //modifyQuantity() used to set the quantity directly, but now it's used to add or subtract from the quantity.
@@ -178,27 +301,14 @@ function App() {
     });
   }
 
-  useEffect(() => {
-    settingsManagerContextRef.current = settingsManagerContext;
-  }, [settingsManagerContext]);
-
-  useEffect(() => {
-    const passiveRecipeTimeout = createPassiveRecipeTimeout();
-
-    return () => {
-      clearTimeout(passiveRecipeTimeout);
-    }
-  }, [])
-
   function createPassiveRecipeTimeout():NodeJS.Timeout{
     return setTimeout(executePassiveRecipes, settingsManagerContextRef.current.getCorrectTiming(10000));
   }
 
   function executePassiveRecipes(){
-    const sleds:SledQuantity[] = Sled.pickOutSledQuantities(getInventory(), itemFactoryContext);
+    const sleds:Sled[] = sledsListRef.current;
 
-    sleds.forEach((sledQuantity) => {
-      sledQuantity.getList().forEach((sled) => {
+    sleds.forEach((sled) => {
         const recipe = sled.getPassiveRecipe().convertToRecipe(itemFactoryContext);
         
         if(recipe){
@@ -213,7 +323,6 @@ function App() {
             }
           }
         }
-      });
     });
 
     createPassiveRecipeTimeout();
@@ -221,13 +330,13 @@ function App() {
 
   function getAdjustedRecipe(recipe:Recipe, workers:number):Recipe{
     const adjustedCosts = recipe.getCosts().map((cost) => {
-      const newCost = cost.deepClone(itemFactoryContext);
+      const newCost = cost.clone();
       newCost.setQuantity(newCost.getQuantity() * workers);
       return newCost;
     });
 
     const adjustedResults = recipe.getResults().map((result) => {
-      const newResult = result.deepClone(itemFactoryContext);
+      const newResult = result.clone();
       newResult.setQuantity(newResult.getQuantity() * workers);
       return newResult;
     });
@@ -237,7 +346,7 @@ function App() {
 
   function recipeWillWork(recipe:Recipe):boolean{
     const negativeCosts = getNewQuantitiesThatMatchSign(recipe.getCosts(), -1);
-    const newInventory = getInventory().deepClone(itemFactoryContext);
+    const newInventory = getInventory().clone();
     applyItemChanges(negativeCosts, newInventory);
 
     return newInventory.allQuantitiesArePositive();
@@ -251,7 +360,7 @@ function App() {
             <div className="App">
               {/* <EventParent></EventParent> */}
               {/* <CombatParent></CombatParent> */}
-              <CaravanParent inventory={inventory} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe}></CaravanParent>
+              <CaravanParent inventory={inventory} sleds={sledsList} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers}></CaravanParent>
               {/* <MapParent></MapParent> */}
             </div>
           </ProgressionContext.Provider>

@@ -7,55 +7,31 @@ import Popup from 'reactjs-popup';
 import IdGenerator from '../../../classes/utility/IdGenerator';
 
 interface CaravanSectionSledsProps {
-  sledQuantities:SledQuantity[];
-  updateSledWorkers:(sledsToUpdate:Sled[]) => void;
+  sleds:Sled[];
+  setSleds:React.Dispatch<React.SetStateAction<Sled[]>>;
   dogs:SledDogQuantity[];
   workers:number;
   setWorkers:React.Dispatch<React.SetStateAction<number>>
   executeRecipe:(recipe:Recipe) => void;
 }
 
-const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sledQuantities, updateSledWorkers, dogs, workers, setWorkers, executeRecipe}) => {
-  const itemFactory:IItemFactory = useContext(ItemFactoryContext);
+const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sleds, setSleds, dogs, workers, setWorkers, executeRecipe}) => {
+  const SLED_MAX_WORKERS = 10;
   
-  function removeWorkersFromSled(sled:Sled, amount:number){
-    const newSledQuantitiesList = [...sledQuantities];
-    if(sled.getWorkers() >= amount){
-      const sledQuantityToChange:SledQuantity|undefined = newSledQuantitiesList.find((currentSledQuantity) => {
-        return currentSledQuantity.getList().find((currentSled) => {
-          return currentSled.getId() == sled.getId();
-        });
-      });
+  const itemFactory:IItemFactory = useContext(ItemFactoryContext);
 
-      if(sledQuantityToChange){
-        const sledToChange:Sled|undefined = sledQuantityToChange.getSledById(sled.getId());
-        
-        if(sledToChange){
-          sledToChange.setWorkers(sledToChange.getWorkers() - amount);
-          updateSledWorkers(newSledQuantitiesList.map((sledQuantity) => {return sledQuantity.getBaseSled()}));
-          setWorkers(workers + amount);
-        }
-      }
+  function removeWorkersFromSled(sled:Sled, amount:number){
+    if(sled.getWorkers() >= amount){
+      sled.setWorkers(sled.getWorkers() - amount);
+      setWorkers(workers + amount);
+      setSleds([...sleds]);
     }
   }
   function addWorkersToSled(sled:Sled, amount:number){
-    const newSledQuantitiesList = [...sledQuantities];
-    if(workers >= amount){
-      const sledQuantityToChange:SledQuantity|undefined = newSledQuantitiesList.find((currentSledQuantity) => {
-        return currentSledQuantity.getList().find((currentSled) => {
-          return currentSled.getId() == sled.getId();
-        });
-      });
-
-      if(sledQuantityToChange){
-        const sledToChange:Sled|undefined = sledQuantityToChange.getSledById(sled.getId());
-
-        if(sledToChange){
-          sledToChange?.setWorkers(sledToChange.getWorkers() + amount);
-          updateSledWorkers(newSledQuantitiesList.map((sledQuantity) => {return sledQuantity.getBaseSled()}));
-          setWorkers(workers - amount);
-        }
-      }
+    if(workers >= amount && sled.getWorkers() + amount <= SLED_MAX_WORKERS){
+      sled.setWorkers(sled.getWorkers() + amount);
+      setWorkers(workers - amount);
+      setSleds([...sleds]);
     }
   }
 
@@ -63,15 +39,13 @@ const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sledQuantities, upda
   
   // Split sleds into groups of 3
   const sledGroups:Sled[][] = [];
-  sledQuantities.forEach((sledQuantity) => {
-    sledQuantity.getList().forEach((sled, i) => {
+  sleds.forEach((sled, i) => {
       if(i % 3 == 0){
         sledGroups.push([sled]);
       }
       else{
         sledGroups[sledGroups.length - 1].push(sled);
       }
-    });
   });
 
   function sledGroupToJSX(group:Sled[]):JSX.Element{
@@ -155,7 +129,7 @@ on={['hover', 'focus']}
   }
 
   return (<div className="caravan-section-sleds" data-testid="caravan-section-sleds">
-    <div className='survivors-count'>Survivors: {workers}, Sleds: {sledQuantities.map((sledQuant) => {return sledQuant.getQuantity()}).reduce((p, c) => {return p + c}, 0)}</div>
+    <div className='survivors-count'>Survivors: {workers}, Sleds: {sleds.length}</div>
     {
       sledGroups.map((group) => {
         return (

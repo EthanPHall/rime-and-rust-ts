@@ -22,14 +22,17 @@ enum CaravanSectionNames{
 
 interface CaravanParentProps {
   inventory:UniqueItemQuantitiesList;
+  sleds:Sled[];
+  setSleds:React.Dispatch<React.SetStateAction<Sled[]>>;
   getInventory:()=>UniqueItemQuantitiesList;
   setInventory:(newInventory:UniqueItemQuantitiesList)=>void;
   executeRecipe:(recipe:Recipe)=>void;
-
+  workers:number;
+  setWorkers:React.Dispatch<React.SetStateAction<number>>;
 }
 
 const CaravanParent: FC<CaravanParentProps> = (
-  {inventory, getInventory, setInventory, executeRecipe}
+  {inventory, sleds, getInventory, setInventory, executeRecipe, setSleds, workers, setWorkers}
 ) => {
   const messageHandlingContext = useContext(MessageHandlingContext);
 
@@ -38,8 +41,6 @@ const CaravanParent: FC<CaravanParentProps> = (
   const itemFactoryContext = useContext(ItemFactoryContext);
   
   const [sectionToDisplay, getSectionToDisplay, setSectionToDisplay] = useRefState<CaravanSectionNames>(CaravanSectionNames.CRAFTING);
-
-  const [workers, setWorkers] = useState<number>(10);
 
   useEffect(() => {
     const newFlags:ProgressionFlags = progressionContext.flags.clone();
@@ -63,10 +64,10 @@ const CaravanParent: FC<CaravanParentProps> = (
   //
   function updateSledWorkers(sledsToUpdate:Sled[]){
     //Get a clone of the current inventory
-    const newInventory:UniqueItemQuantitiesList = getInventory().shallowClone();
+    const newInventory:UniqueItemQuantitiesList = getInventory().clone();
 
     //Get all of the sleds in the inventory
-    const inventorySleds:Sled[] = Sled.pickOutSledQuantities(newInventory, itemFactoryContext).map((currentSledQuantity) => {
+    const inventorySleds:Sled[] = Sled.pickOutSledQuantities(newInventory).map((currentSledQuantity) => {
         return currentSledQuantity.getBaseSled();
       });
 
@@ -94,10 +95,10 @@ const CaravanParent: FC<CaravanParentProps> = (
           <CaravanSectionNavBar getSectionBeingDisplayed={getSectionToDisplay} setSectionToDisplay={setSectionToDisplay}></CaravanSectionNavBar>
           
           {sectionToDisplay==CaravanSectionNames.CRAFTING && <CaravanSectionCrafting sleds={Sled.pickOutSleds(inventory)} tradeResources={tradableList} executeRecipe={executeRecipe}></CaravanSectionCrafting>}
-          {sectionToDisplay==CaravanSectionNames.SLEDS && <CaravanSectionSleds sledQuantities={Sled.pickOutSledQuantities(inventory, itemFactoryContext)} updateSledWorkers={updateSledWorkers} dogs={SledDog.pickOutSledDogQuantities(inventory, itemFactoryContext)} workers={workers} setWorkers={setWorkers} executeRecipe={executeRecipe}></CaravanSectionSleds>}
+          {sectionToDisplay==CaravanSectionNames.SLEDS && <CaravanSectionSleds sleds={sleds} setSleds={setSleds} dogs={SledDog.pickOutSledDogQuantities(inventory)} workers={workers} setWorkers={setWorkers} executeRecipe={executeRecipe}></CaravanSectionSleds>}
           {sectionToDisplay==CaravanSectionNames.EXPLORATION && <CaravanSectionExploration></CaravanSectionExploration>}
         </div>
-        <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(inventory, itemFactoryContext)} dogs={SledDog.pickOutSledDogQuantities(inventory, itemFactoryContext)}></CaravanSectionValuables>
+        <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)}></CaravanSectionValuables>
         <CaravanSectionOptions></CaravanSectionOptions>
       </div>
     </div>
