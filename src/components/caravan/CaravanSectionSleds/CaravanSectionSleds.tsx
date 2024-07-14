@@ -13,9 +13,10 @@ interface CaravanSectionSledsProps {
   workers:number;
   setWorkers:React.Dispatch<React.SetStateAction<number>>
   executeRecipe:(recipe:Recipe) => void;
+  sellSled:(sled:Sled) => void;
 }
 
-const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sleds, setSleds, dogs, workers, setWorkers, executeRecipe}) => {
+const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sleds, setSleds, dogs, workers, setWorkers, executeRecipe, sellSled}) => {
   const SLED_MAX_WORKERS = 10;
   
   const itemFactory:IItemFactory = useContext(ItemFactoryContext);
@@ -81,10 +82,10 @@ const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sleds, setSleds, dog
 trigger=
 {
 <div className='sled'>
-    {sled.getName()}     
+    {sled.getName()}
+    <br/>    
+    {sled.getWorkers()}/{SLED_MAX_WORKERS}     
     {`
-    
-                      +++ 
                       +#+
 ++-                 ++-##+
   ++++-        -+++-+++##+
@@ -93,6 +94,8 @@ trigger=
     `} 
 </div>
 }
+
+position={['bottom center', 'top center']}
 
 on={['hover', 'focus']}
 >
@@ -105,6 +108,33 @@ on={['hover', 'focus']}
     <div className='add-subtract-section'>
       <button onClick={() => {removeWorkersFromSled(sled, 5)}}>-5 workers</button>
       <button onClick={() => {addWorkersToSled(sled, 5)}}>+5 workers</button>
+    </div>
+    <div className='passive-recipe-section'>
+      <div className='resources-separator'></div>
+      {
+        sled.getWorkerAdjustedPassiveRecipe(itemFactory).getCosts().map((cost, index) => {
+          return (
+            <div key={`passive-recipe-costs-entry-${index}`} className='passive-recipe-entry'>
+              <div className='cost-name'>{cost.getBaseItem().getName()}:</div>
+              <div className='cost-amount'>-{cost.getQuantity()}</div>
+            </div>
+          )
+        })
+      }
+      <div className='resources-separator'></div>
+      {
+        sled.getWorkerAdjustedPassiveRecipe(itemFactory).getResults().map((cost, index) => {
+          return (
+            <div key={`passive-recipe-result-entry-${index}`} className='passive-recipe-entry'>
+              <div className='result-name'>{cost.getBaseItem().getName()}:</div>
+              <div className='result-amount'>+{cost.getQuantity()}</div>
+            </div>
+          )
+        })
+      }
+    </div>
+    <div className='sell-section'>
+      <button onClick={() => {sellSled(sled)}}>Sell</button>
     </div>
   </div>
 </Popup>

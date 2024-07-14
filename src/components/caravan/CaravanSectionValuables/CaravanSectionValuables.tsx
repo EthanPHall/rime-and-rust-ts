@@ -20,14 +20,12 @@ const CaravanSectionValuables: FC<CaravanSectionValuablesProps> = ({resources, d
             <div className='resource-amount'>{dogAmount}</div>
           </div>         
         }
-        <br></br>
         <div className='resources-separator'></div>
-        <br></br>
         {
           resources.map((currentResourceQuantity) => {
             return (
-              <div className='resource-entry'>
-                <div className='resource-name'>{currentResourceQuantity.getResource().getName()}</div>
+              <div key={`resource-entry-${currentResourceQuantity.getBaseResource().getName()}`} className='resource-entry'>
+                <div className='resource-name'>{currentResourceQuantity.getBaseResource().getName()}</div>
                 <div className='resource-amount'>{currentResourceQuantity.getQuantity()}</div>
               </div>    
             );

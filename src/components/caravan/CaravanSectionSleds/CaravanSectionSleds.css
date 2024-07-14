@@ -35,3 +35,14 @@
     justify-content: space-around;
     align-items: center;
 }
+
+.passive-recipe-entry{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.passive-recipe-section{
+    width:100%;
+}

@@ -29,10 +29,11 @@ interface CaravanParentProps {
   executeRecipe:(recipe:Recipe)=>void;
   workers:number;
   setWorkers:React.Dispatch<React.SetStateAction<number>>;
+  sellSled:(sled:Sled)=>void;
 }
 
 const CaravanParent: FC<CaravanParentProps> = (
-  {inventory, sleds, getInventory, setInventory, executeRecipe, setSleds, workers, setWorkers}
+  {inventory, sleds, getInventory, setInventory, executeRecipe, setSleds, workers, setWorkers, sellSled}
 ) => {
   const messageHandlingContext = useContext(MessageHandlingContext);
 
@@ -86,7 +87,7 @@ const CaravanParent: FC<CaravanParentProps> = (
     //Set the new inventory
     setInventory(newInventory);
   }
-
+  
   return (
     <div className='caravan-parent'>
       <div className='grid-parent'>
@@ -95,7 +96,7 @@ const CaravanParent: FC<CaravanParentProps> = (
           <CaravanSectionNavBar getSectionBeingDisplayed={getSectionToDisplay} setSectionToDisplay={setSectionToDisplay}></CaravanSectionNavBar>
           
           {sectionToDisplay==CaravanSectionNames.CRAFTING && <CaravanSectionCrafting sleds={Sled.pickOutSleds(inventory)} tradeResources={tradableList} executeRecipe={executeRecipe}></CaravanSectionCrafting>}
-          {sectionToDisplay==CaravanSectionNames.SLEDS && <CaravanSectionSleds sleds={sleds} setSleds={setSleds} dogs={SledDog.pickOutSledDogQuantities(inventory)} workers={workers} setWorkers={setWorkers} executeRecipe={executeRecipe}></CaravanSectionSleds>}
+          {sectionToDisplay==CaravanSectionNames.SLEDS && <CaravanSectionSleds sleds={sleds} setSleds={setSleds} dogs={SledDog.pickOutSledDogQuantities(inventory)} workers={workers} setWorkers={setWorkers} executeRecipe={executeRecipe} sellSled={sellSled}></CaravanSectionSleds>}
           {sectionToDisplay==CaravanSectionNames.EXPLORATION && <CaravanSectionExploration></CaravanSectionExploration>}
         </div>
         <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)}></CaravanSectionValuables>

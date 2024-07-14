@@ -18,6 +18,17 @@
   color: var(--disabled-text-color);
 }
 
+:root .resources-separator{
+  width:90%;
+
+  margin-left: 5%;
+
+  border: 1px solid var(--outline-color);
+
+  margin-top: var(--standard-gap);
+  margin-bottom: var(--standard-gap);
+}
+
 .tooltip{
   min-width: 100px;
 

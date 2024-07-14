@@ -28,13 +28,13 @@
     margin-right: var(--standard-gap);
 }
 
-.caravan-section-valuables .resources-separator{
+/* .caravan-section-valuables .resources-separator{
     width:90%;
 
     margin-left: 5%;
 
     border: 1px solid var(--outline-color);
-}
+} */
 .caravan-section-valuables .resources-separator > div{
     width:100%;
 }

@@ -33,7 +33,7 @@ const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeRe
             }
 
             return (
-            <div className='sled-crafting-section'>
+            <div key={`sled-crafting-section-${index}`} className='sled-crafting-section'>
               <div className={sledNameClass}>{sled.getName()}</div>
               {sled.getCanCraftList().filter(
                 (item) => {
@@ -50,7 +50,7 @@ const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeRe
                       // console.log(item1.getRecipe());
 
                       return (
-                        <div className='sled-crafting-recipes'>
+                        <div key={`recipes-duo-${index}`} className='sled-crafting-recipes'>
                           <HoverButton 
                             buttonText={item1.getName()} 
                             popupText={item1.getRecipe().convertToRecipe(itemFactory).stringifyCosts()} 
@@ -77,9 +77,10 @@ const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeRe
         {
           tradeResources.filter((item:IItem) => {
             return !item.isUnlocked(progressionContext.flags);
-          }).map((item:IItem) => {
+          }).map((item:IItem, index) => {
             return (
               <HoverButton
+                key={`trade-button-${index}`}
                 buttonText={item.getName()}
                 popupText={tradeManager.getTradeRecipe(item.getRecipe().convertToRecipe(itemFactory)).stringifyCosts()}
                 onClick={() => {executeRecipe(tradeManager.getTradeRecipe(item.getRecipe().convertToRecipe(itemFactory)))}}

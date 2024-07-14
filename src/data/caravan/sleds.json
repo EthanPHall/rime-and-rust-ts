@@ -109,7 +109,12 @@
         },
         "unlockFlags": [],
         "passiveRecipe": {
-            "costs": [],
+            "costs": [
+                {
+                    "key": "Junk",
+                    "quantity": 1
+                }
+            ],
             "results": [
                 {
                     "key": "Scrap",
@@ -145,7 +150,16 @@
         },
         "unlockFlags": [],
         "passiveRecipe": {
-            "costs": [],
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 5
+                },
+                {
+                    "key": "Junk",
+                    "quantity": 10
+                }
+            ],
             "results": [
                 {
                     "key": "Psychium Scrap",

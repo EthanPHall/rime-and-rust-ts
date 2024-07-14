@@ -314,13 +314,13 @@ class Sled implements IItem{
         
         const adjustedCosts = recipe.getCosts().map((cost) => {
           const newCost = cost.clone();
-          newCost.modifyQuantity(newCost.getQuantity() * this.workers);
+          newCost.setQuantity(newCost.getQuantity() * this.workers);
           return newCost;
         });
     
         const adjustedResults = recipe.getResults().map((result) => {
           const newResult = result.clone();
-          newResult.modifyQuantity(newResult.getQuantity() * this.workers);
+          newResult.setQuantity(newResult.getQuantity() * this.workers);
           return newResult;
         });
     
@@ -350,7 +350,7 @@ class Sled implements IItem{
     /**
      * 
      * @param list The list to look through to find ItemQuantities whose baseItem is a Sled
-     * @returns A list of copied SledQuantities
+     * @returns A list of new SledQuantities with the same quantities as the ItemQuantities in the list
      */
     static pickOutSledQuantities(list:UniqueItemQuantitiesList|ItemQuantity[]): SledQuantity[]{
         if(list instanceof UniqueItemQuantitiesList){
@@ -561,6 +561,30 @@ class UniqueItemQuantitiesList{
             this.list.push(newItemQuantity);
         }
     }
+    /**
+     * 
+     * @param itemQuantity The ItemQuantity whose quantity should be set in the list. If the item associated with the new quantity already exists in the list, set the existing quantity to the new quantity. Otherwise, add the new quantity to the list.
+     */
+    set(itemQuantity:ItemQuantity){
+        let existingIndex:number = -1;
+        this.list.forEach((currentItemQuantity, index) => {
+            if(currentItemQuantity.getBaseItem().getKey() == itemQuantity.getBaseItem().getKey()){
+                existingIndex = index;
+                return;
+            }
+        })
+
+        //If the item associated with the new quantity already exists in the list, increment the existing quantity
+        if(existingIndex != -1){
+            this.list[existingIndex].setQuantity(
+                itemQuantity.getQuantity()
+            );
+        }
+        //else, add the new quantity to the list
+        else{
+            this.list.push(itemQuantity);
+        }
+    }
 
     allQuantitiesArePositive():boolean{
         return this.list.every((itemQuantity) => {
@@ -651,7 +675,7 @@ class ResourceQuantity{
         this.quantity = quantity;
     }
 
-    getResource():Resource{
+    getBaseResource():Resource{
         return this.baseResource;
     }
     getQuantity():number{
@@ -740,6 +764,10 @@ class Recipe{
     }
     getResults():ItemQuantity[]{
         return this.results;
+    }
+
+    removeCosts():void{
+        this.costs = [];
     }
 
     stringifyCosts():string{

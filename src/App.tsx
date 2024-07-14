@@ -58,13 +58,14 @@ function App() {
 
   const itemFactoryContext = new ItemFactoryJSON(getExistingSledCount);
   const [inventory, getInventory, setInventory] = useRefState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([
-    new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 3)
+    new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 11),
+    new ItemQuantity(itemFactoryContext.createItem("Forge Sled"), 1),
   ]));
 
   const [sledsList, setSledsList] = useState<Sled[]>([]);
   const sledsListRef = useRef<Sled[]>(sledsList);
 
-
+  const sledsListOverrideForInventoryEffect = useRef<Sled[]|null>(null);
   
   useEffect(() => {
     const inventorySledQuantities:SledQuantity[] = Sled.pickOutSledQuantities(getInventory());
@@ -74,7 +75,7 @@ function App() {
     inventorySledQuantities.forEach((sledQuantity) => {
       
       const sledKey = sledQuantity.getBaseSled().getKey();
-      const sledGroup = sledsGroupedByKey.find((sledGroup) => sledGroup[0].getKey() == sledKey);
+      const sledGroup = sledsGroupedByKey.find((sledGroup) => sledGroup[0]?.getKey() == sledKey);
       
       if(!sledGroup){
         const newSleds:Sled[] = [];
@@ -87,9 +88,11 @@ function App() {
         changed = true;
       }
       else if(sledGroup.length > sledQuantity.getQuantity()){
-        for(let i = 0; i < sledGroup.length - sledQuantity.getQuantity(); i++){
-          const sledToRemove = sledGroup.pop();
-          refundSledWorkers(sledToRemove as Sled);
+        if(sledsListOverrideForInventoryEffect.current == null){
+          for(let i = 0; i < sledGroup.length - sledQuantity.getQuantity(); i++){
+            const sledToRemove = sledGroup.pop();
+            refundSledWorkers(sledToRemove as Sled);
+          }  
         }
         changed = true;
       }
@@ -102,47 +105,68 @@ function App() {
     });
 
     if(changed){
-      const newSledsList:Sled[] = sledsGroupedByKey.reduce((previous, current) => {
-        return previous.concat(current);
-      }, []);
-
-      setSledsList(newSledsList);
+      if(sledsListOverrideForInventoryEffect.current){
+        setSledsList(sledsListOverrideForInventoryEffect.current);
+        sledsListOverrideForInventoryEffect.current = null;
+      }
+      else{
+        const newSledsList:Sled[] = sledsGroupedByKey.reduce((previous, current) => {
+          return previous.concat(current);
+        }, []);
+  
+        setSledsList(newSledsList);
+      }
     }
   }, [inventory]);
 
 
 
   useEffect(() => {
-    sledsListRef.current = sledsList;
+    // sledsListRef.current = sledsList;
 
-    const inventorySledQuantities:SledQuantity[] = Sled.pickOutSledQuantities(getInventory());
-    const sledsGroupedByKey:Sled[][] = groupSledsByKey(sledsList);
-    let changed = false;
+    // const inventorySledQuantities:SledQuantity[] = Sled.pickOutSledQuantities(getInventory());
+    // const sledsGroupedByKey:Sled[][] = groupSledsByKey(sledsList);
+    // let changed = false;
 
-    sledsGroupedByKey.forEach((sledGroup) => {
-      const sledKey = sledGroup[0].getKey();
-      const sledQuantity = inventorySledQuantities.find((sledQuantity) => sledQuantity.getBaseSled().getKey() == sledKey);
+    // sledsGroupedByKey.forEach((sledGroup) => {
+    //   const sledKey = sledGroup[0].getKey();
+    //   const sledQuantity = inventorySledQuantities.find((sledQuantity) => sledQuantity.getBaseSled().getKey() == sledKey);
 
-      if(!sledQuantity){
-        changed = true;
-        inventorySledQuantities.push(new SledQuantity(itemFactoryContext.createItem(sledKey) as Sled, sledGroup.length));
-      }
-      else if(sledQuantity.getQuantity() != sledGroup.length){
-        changed = true;
-        sledQuantity.setQuantity(sledGroup.length);
-      }
-    });
+    //   if(!sledQuantity){
+    //     changed = true;
+    //     inventorySledQuantities.push(new SledQuantity(itemFactoryContext.createItem(sledKey) as Sled, sledGroup.length));
+    //   }
+    //   else if(sledQuantity.getQuantity() != sledGroup.length){
+    //     changed = true;
+    //     sledQuantity.setQuantity(sledGroup.length);
+    //   }
+    // });
 
-    if(changed){
-      const newInventory = inventory.clone();
-      inventorySledQuantities.forEach((sledQuantity) => {
-        newInventory.modify(new ItemQuantity(sledQuantity.getBaseSled(), sledQuantity.getQuantity()));
-      });
+    // if(changed){
+    //   const newInventory = inventory.clone();
+    //   inventorySledQuantities.forEach((sledQuantity) => {
+    //     newInventory.set(new ItemQuantity(sledQuantity.getBaseSled(), sledQuantity.getQuantity()));
+    //   });
 
-      setInventory(newInventory);
-    }
+    //   setInventory(newInventory);
+    // }
   }, [sledsList]);
 
+
+  function sellSled(sled:Sled){
+    //Get the sled sell recipe
+    const sledSellRecipe:Recipe = sled.getSellRecipe(itemFactoryContext);
+
+    //refund the workers
+    refundSledWorkers(sled);
+    
+    //Execute the sell recipe
+    executeRecipe(sledSellRecipe);
+
+    //Removing the sled object from the sleds list needs to happen in the inventory effect,
+    //so we'll set the new list to use here, and the effect will handle it.
+    sledsListOverrideForInventoryEffect.current = sledsList.filter((currentSled) => currentSled.getId() != sled.getId());
+  }
 
 
   useEffect(() => {
@@ -198,32 +222,36 @@ function App() {
   }
 
   //This function will be passed as props, so I'm using getInventory() instead of inventory
-  function executeRecipe(recipe:Recipe){
+  function executeRecipe(recipe:Recipe, createFailMessage:boolean = true):boolean{
     const negativeCosts = getNewQuantitiesThatMatchSign(recipe.getCosts(), -1);
     const newInventory = getInventory().deepClone();
 
     if(!arePrerequisitesMet(recipe, newInventory)){
-      return;
+      return false;
     }
 
     applyItemChanges(negativeCosts, newInventory);
     
     if(!newInventory.allQuantitiesArePositive()){
-      const recipeFail:RecipeFail = new RecipeFail(
-        recipe,
-        newInventory.getNegativeQuantities().map((quantity) => {
-          return quantity.getBaseItem().getName()
-        })
-      );
+      if(createFailMessage){
+        const recipeFail:RecipeFail = new RecipeFail(
+          recipe,
+          newInventory.getNegativeQuantities().map((quantity) => {
+            return quantity.getBaseItem().getName()
+          })
+        );
+        
+        messageHandlingContext.getManager().addMessage(messageHandlingContext.getFactory().createFailedRecipeMessage(recipeFail));
+        setMessageHandlingContext(messageHandlingContext.clone());  
+      }
       
-      messageHandlingContext.getManager().addMessage(messageHandlingContext.getFactory().createFailedRecipeMessage(recipeFail));
-      setMessageHandlingContext(messageHandlingContext.clone());
-      
-      return;
+      return false;
     }
     
     applyItemChanges(recipe.getResults(), newInventory);
     setInventory(newInventory);
+
+    return true;
   }
 
 
@@ -312,10 +340,10 @@ function App() {
         const recipe = sled.getPassiveRecipe().convertToRecipe(itemFactoryContext);
         
         if(recipe){
+          //If the recipe for the max amount of workers can't be performed, then try the recipe for the next lowest amount of workers.
           for(let i = sled.getWorkers(); i > 0; i--){
             const adjustedRecipe:Recipe = getAdjustedRecipe(recipe, i);
-            if(recipeWillWork(adjustedRecipe)){
-              executeRecipe(adjustedRecipe);
+            if(executeRecipe(adjustedRecipe, false)){
               break;
             }
             else{
@@ -360,7 +388,7 @@ function App() {
             <div className="App">
               {/* <EventParent></EventParent> */}
               {/* <CombatParent></CombatParent> */}
-              <CaravanParent inventory={inventory} sleds={sledsList} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers}></CaravanParent>
+              <CaravanParent inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers}></CaravanParent>
               {/* <MapParent></MapParent> */}
             </div>
           </ProgressionContext.Provider>
