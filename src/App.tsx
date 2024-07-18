@@ -121,40 +121,6 @@ function App() {
     }
   }, [inventory]);
 
-
-
-  useEffect(() => {
-    // sledsListRef.current = sledsList;
-
-    // const inventorySledQuantities:SledQuantity[] = Sled.pickOutSledQuantities(getInventory());
-    // const sledsGroupedByKey:Sled[][] = groupSledsByKey(sledsList);
-    // let changed = false;
-
-    // sledsGroupedByKey.forEach((sledGroup) => {
-    //   const sledKey = sledGroup[0].getKey();
-    //   const sledQuantity = inventorySledQuantities.find((sledQuantity) => sledQuantity.getBaseSled().getKey() == sledKey);
-
-    //   if(!sledQuantity){
-    //     changed = true;
-    //     inventorySledQuantities.push(new SledQuantity(itemFactoryContext.createItem(sledKey) as Sled, sledGroup.length));
-    //   }
-    //   else if(sledQuantity.getQuantity() != sledGroup.length){
-    //     changed = true;
-    //     sledQuantity.setQuantity(sledGroup.length);
-    //   }
-    // });
-
-    // if(changed){
-    //   const newInventory = inventory.clone();
-    //   inventorySledQuantities.forEach((sledQuantity) => {
-    //     newInventory.set(new ItemQuantity(sledQuantity.getBaseSled(), sledQuantity.getQuantity()));
-    //   });
-
-    //   setInventory(newInventory);
-    // }
-  }, [sledsList]);
-
-
   function sellSled(sled:Sled){
     //Get the sled sell recipe
     const sledSellRecipe:Recipe = sled.getSellRecipe(itemFactoryContext);

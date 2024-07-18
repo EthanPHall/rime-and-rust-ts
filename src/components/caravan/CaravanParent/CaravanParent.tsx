@@ -99,7 +99,7 @@ const CaravanParent: FC<CaravanParentProps> = (
         <div className='nav-rendered-composite'>
           <CaravanSectionNavBar getSectionBeingDisplayed={getSectionToDisplay} setSectionToDisplay={setSectionToDisplay}></CaravanSectionNavBar>
           
-          {sectionToDisplay==CaravanSectionNames.CRAFTING && <CaravanSectionCrafting sleds={Sled.pickOutSleds(inventory)} tradeResources={tradableList} executeRecipe={executeRecipe}></CaravanSectionCrafting>}
+          {sectionToDisplay==CaravanSectionNames.CRAFTING && <CaravanSectionCrafting sleds={Sled.pickOutSleds(inventory, true)} tradeResources={tradableList} executeRecipe={executeRecipe}></CaravanSectionCrafting>}
           {sectionToDisplay==CaravanSectionNames.SLEDS && <CaravanSectionSleds sleds={sleds} setSleds={setSleds} dogs={SledDog.pickOutSledDogQuantities(inventory)} workers={workers} setWorkers={setWorkers} executeRecipe={executeRecipe} sellSled={sellSled}></CaravanSectionSleds>}
           {sectionToDisplay==CaravanSectionNames.EXPLORATION && <CaravanSectionExploration
             inventory={inventory}

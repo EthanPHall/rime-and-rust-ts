@@ -327,10 +327,16 @@ class Sled implements IItem{
         return new Recipe(adjustedCosts, adjustedResults);
       }
 
-    static pickOutSleds(list:UniqueItemQuantitiesList|IItem[]): Sled[]{
+    /**
+     *      
+     * @param list The list to look through to find ItemQuantities whose baseItem is a Sled. Could also be a list of IItems
+     * @param ignoreZeroQuantitySleds If list is a UniqueItemQuantitiesList, should sleds with a quantity of 0 be ignored?
+     * @returns An array of Sled objects
+     */
+    static pickOutSleds(list:UniqueItemQuantitiesList|IItem[], ignoreZeroQuantitySleds:boolean = false): Sled[]{
         if(list instanceof UniqueItemQuantitiesList){
             const filteredList = list.filter((itemQuantity) => {
-                return itemQuantity.getBaseItem() instanceof Sled;
+                return itemQuantity.getBaseItem() instanceof Sled && (ignoreZeroQuantitySleds ? itemQuantity.getQuantity() > 0 : true);
             });
     
             return filteredList.map((quantity) => {
