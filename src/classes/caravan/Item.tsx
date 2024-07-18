@@ -553,7 +553,7 @@ class UniqueItemQuantitiesList{
         //If the item associated with the new quantity already exists in the list, increment the existing quantity
         if(existingIndex != -1){
             this.list[existingIndex].modifyQuantity(
-                this.list[existingIndex].getQuantity() + newItemQuantity.getQuantity()
+                newItemQuantity.getQuantity()
             );
         }
         //else, add the new quantity to the list

@@ -37,3 +37,9 @@
     display: flex;
     gap: var(--standard-gap);
 }
+
+.increment-decrement button{
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 15px;
+}

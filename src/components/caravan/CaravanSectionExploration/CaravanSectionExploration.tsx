@@ -1,13 +1,26 @@
 import React, { FC } from 'react';
 import './CaravanSectionExploration.css';
 import ExplorationResourcesPicker from '../ExplorationResourcesPicker/ExplorationResourcesPicker';
+import { UniqueItemQuantitiesList } from '../../../classes/caravan/Item';
 
-interface CaravanSectionExplorationProps {}
+interface CaravanSectionExplorationProps {
+  inventory:UniqueItemQuantitiesList;
+  setInventory:(inventory:UniqueItemQuantitiesList)=>void;
+  explorationInventory:UniqueItemQuantitiesList;
+  setExplorationInventory:React.Dispatch<React.SetStateAction<UniqueItemQuantitiesList>>;
+}
 
-const CaravanSectionExploration: FC<CaravanSectionExplorationProps> = () => (
+const CaravanSectionExploration: FC<CaravanSectionExplorationProps> = (
+  {inventory, setInventory, explorationInventory, setExplorationInventory}
+) => (
   <div className="caravan-section-exploration" data-testid="caravan-section-exploration">
     <div className='resource-picker-parent'>
-      <ExplorationResourcesPicker></ExplorationResourcesPicker>
+      <ExplorationResourcesPicker
+        inventory={inventory}
+        setInventory={setInventory}
+        explorationInventory={explorationInventory}
+        setExplorationInventory={setExplorationInventory}
+      ></ExplorationResourcesPicker>
       <button className='venture-out-button'>Venture Out</button>
     </div>
     <div className='character-display'>

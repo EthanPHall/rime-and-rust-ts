@@ -12,6 +12,7 @@ import { IMessageFactory, IMessageManager, MessageContext, MessageFactoryJson, M
 import useRefState from './hooks/combat/useRefState';
 import unconsumedCosts from './data/caravan/unconsumed-costs.json';
 import { ISettingsManager, SettingsContext, SettingsContextType, SettingsManager } from './context/misc/SettingsContext';
+import useExplorationInventory from './hooks/caravan/useExplorationInventory';
 
 type ProgressionFlagsSeed = {
   [key: string]: boolean;
@@ -61,6 +62,7 @@ function App() {
     new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 11),
     new ItemQuantity(itemFactoryContext.createItem("Forge Sled"), 1),
   ]));
+  const {explorationInventory, setExplorationInventory} = useExplorationInventory(inventory);
 
   const [sledsList, setSledsList] = useState<Sled[]>([]);
   const sledsListRef = useRef<Sled[]>(sledsList);
@@ -379,7 +381,9 @@ function App() {
 
     return newInventory.allQuantitiesArePositive();
   }
-  
+
+
+
   return (
     <SettingsContext.Provider value={{settingsManager:settingsManagerContext, setSettingsManager:setSettingsManagerContext}}>
       <MessageHandlingContext.Provider value={{messageHandling:messageHandlingContext, setMessageHandling:setMessageHandlingContext}}>
@@ -388,7 +392,10 @@ function App() {
             <div className="App">
               {/* <EventParent></EventParent> */}
               {/* <CombatParent></CombatParent> */}
-              <CaravanParent inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers}></CaravanParent>
+              <CaravanParent inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers} 
+                explorationInventory={explorationInventory}
+                setExplorationInventory={setExplorationInventory}
+              ></CaravanParent>
               {/* <MapParent></MapParent> */}
             </div>
           </ProgressionContext.Provider>

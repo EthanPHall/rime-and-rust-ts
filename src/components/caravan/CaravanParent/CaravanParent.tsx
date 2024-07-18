@@ -21,19 +21,23 @@ enum CaravanSectionNames{
 }
 
 interface CaravanParentProps {
-  inventory:UniqueItemQuantitiesList;
   sleds:Sled[];
   setSleds:React.Dispatch<React.SetStateAction<Sled[]>>;
   getInventory:()=>UniqueItemQuantitiesList;
-  setInventory:(newInventory:UniqueItemQuantitiesList)=>void;
   executeRecipe:(recipe:Recipe)=>void;
   workers:number;
   setWorkers:React.Dispatch<React.SetStateAction<number>>;
   sellSled:(sled:Sled)=>void;
+
+  inventory:UniqueItemQuantitiesList;
+  setInventory:(inventory:UniqueItemQuantitiesList)=>void;
+  // setInventory:React.Dispatch<React.SetStateAction<UniqueItemQuantitiesList>>;
+  explorationInventory:UniqueItemQuantitiesList;
+  setExplorationInventory:React.Dispatch<React.SetStateAction<UniqueItemQuantitiesList>>;
 }
 
 const CaravanParent: FC<CaravanParentProps> = (
-  {inventory, sleds, getInventory, setInventory, executeRecipe, setSleds, workers, setWorkers, sellSled}
+  {sleds, setSleds, getInventory, executeRecipe, workers, setWorkers, sellSled, inventory, setInventory, explorationInventory, setExplorationInventory}
 ) => {
   const messageHandlingContext = useContext(MessageHandlingContext);
 
@@ -97,7 +101,12 @@ const CaravanParent: FC<CaravanParentProps> = (
           
           {sectionToDisplay==CaravanSectionNames.CRAFTING && <CaravanSectionCrafting sleds={Sled.pickOutSleds(inventory)} tradeResources={tradableList} executeRecipe={executeRecipe}></CaravanSectionCrafting>}
           {sectionToDisplay==CaravanSectionNames.SLEDS && <CaravanSectionSleds sleds={sleds} setSleds={setSleds} dogs={SledDog.pickOutSledDogQuantities(inventory)} workers={workers} setWorkers={setWorkers} executeRecipe={executeRecipe} sellSled={sellSled}></CaravanSectionSleds>}
-          {sectionToDisplay==CaravanSectionNames.EXPLORATION && <CaravanSectionExploration></CaravanSectionExploration>}
+          {sectionToDisplay==CaravanSectionNames.EXPLORATION && <CaravanSectionExploration
+            inventory={inventory}
+            setInventory={setInventory}
+            explorationInventory={explorationInventory}
+            setExplorationInventory={setExplorationInventory}
+          ></CaravanSectionExploration>}
         </div>
         <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)}></CaravanSectionValuables>
         <CaravanSectionOptions></CaravanSectionOptions>
