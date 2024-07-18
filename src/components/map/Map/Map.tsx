@@ -4,7 +4,18 @@ import MapLocation from '../MapLocation/MapLocation';
 
 interface MapProps {}
 
-const Map: FC<MapProps> = () => (
+const Map: FC<MapProps> = () => {
+  return (
+    <div className="map" data-testid="map">
+      <div className='row'>
+      </div>
+    </div>
+  );
+}
+
+export default Map;
+
+/*
   <div className="map" data-testid="map">
     <div className='row'>
       <MapLocation></MapLocation>
@@ -1606,6 +1617,5 @@ const Map: FC<MapProps> = () => (
       <MapLocation></MapLocation>
     </div>    
   </div>
-);
 
-export default Map;
+*/

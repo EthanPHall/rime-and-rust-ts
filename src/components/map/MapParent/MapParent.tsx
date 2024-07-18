@@ -11,7 +11,7 @@ const MapParent: FC<MapParentProps> = () => (
       <div className='grid-parent'>
         <MessagesParent></MessagesParent>
         <Map></Map>
-        {/* <CaravanSectionValuables></CaravanSectionValuables> */}
+        {/* <ExplorationSectionValuables></ExplorationSectionValuables> */}
       </div>
   </div>
 );
