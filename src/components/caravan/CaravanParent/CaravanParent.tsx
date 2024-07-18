@@ -7,7 +7,7 @@ import CaravanSectionSleds from '../CaravanSectionSleds/CaravanSectionSleds';
 import CaravanSectionExploration from '../CaravanSectionExploration/CaravanSectionExploration';
 import MessagesParent from '../../messages/MessagesParent/MessagesParent';
 import useRefState from '../../../hooks/combat/useRefState';
-import { ItemFactoryContext, MessageHandlingContext, ProgressionContext, ProgressionContextType, ProgressionFlags } from '../../../App';
+import { ItemFactoryContext, MainGameScreens, MessageHandlingContext, ProgressionContext, ProgressionContextType, ProgressionFlags } from '../../../App';
 import resourceData from '../../../data/caravan/resources.json';
 import { IItem, IItemFactory, ItemFactoryJSON, ItemQuantity, Recipe, Resource, UniqueItemQuantitiesList,Sled, IRecipeFail, RecipeFail, SledDog, SledQuantity } from '../../../classes/caravan/Item';
 import CaravanSectionValuables from '../CaravanSectionValuables/CaravanSectionValuables';
@@ -31,13 +31,14 @@ interface CaravanParentProps {
 
   inventory:UniqueItemQuantitiesList;
   setInventory:(inventory:UniqueItemQuantitiesList)=>void;
-  // setInventory:React.Dispatch<React.SetStateAction<UniqueItemQuantitiesList>>;
   explorationInventory:UniqueItemQuantitiesList;
   setExplorationInventory:React.Dispatch<React.SetStateAction<UniqueItemQuantitiesList>>;
+
+  setMainGameScreen:React.Dispatch<React.SetStateAction<MainGameScreens>>
 }
 
 const CaravanParent: FC<CaravanParentProps> = (
-  {sleds, setSleds, getInventory, executeRecipe, workers, setWorkers, sellSled, inventory, setInventory, explorationInventory, setExplorationInventory}
+  {sleds, setSleds, getInventory, executeRecipe, workers, setWorkers, sellSled, inventory, setInventory, explorationInventory, setExplorationInventory, setMainGameScreen}
 ) => {
   const messageHandlingContext = useContext(MessageHandlingContext);
 
@@ -106,6 +107,7 @@ const CaravanParent: FC<CaravanParentProps> = (
             setInventory={setInventory}
             explorationInventory={explorationInventory}
             setExplorationInventory={setExplorationInventory}
+            setMainGameScreen={setMainGameScreen}
           ></CaravanSectionExploration>}
         </div>
         <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)}></CaravanSectionValuables>

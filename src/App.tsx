@@ -49,6 +49,14 @@ const messageFactory:IMessageFactory = new MessageFactoryJson();
 const messageManager:IMessageManager = new MessageManager(25);
 const MessageHandlingContext = createContext<{messageHandling:MessageContext, setMessageHandling:(newHandling:MessageContext) => void}>({messageHandling: new MessageContext(messageFactory, messageManager), setMessageHandling: () => {}});
 
+enum MainGameScreens{
+  CARAVAN="CARAVAN",
+  MAP="MAP",
+  COMBAT="COMBAT",
+}
+
+
+
 function App() {
   const [progressionFlags, setProgressionFlags] = React.useState<ProgressionFlags>(new ProgressionFlags(progressionFlagsData));
   const [messageHandlingContext, setMessageHandlingContext] = React.useState<MessageContext>(new MessageContext(messageFactory, messageManager));
@@ -68,6 +76,8 @@ function App() {
   const sledsListRef = useRef<Sled[]>(sledsList);
 
   const sledsListOverrideForInventoryEffect = useRef<Sled[]|null>(null);
+
+  const [mainGameScreen, setMainGameScreen] = useState<MainGameScreens>(MainGameScreens.CARAVAN);
   
   useEffect(() => {
     const inventorySledQuantities:SledQuantity[] = Sled.pickOutSledQuantities(getInventory());
@@ -356,13 +366,14 @@ function App() {
         <ItemFactoryContext.Provider value={itemFactoryContext}>
           <ProgressionContext.Provider value={{flags:progressionFlags, setFlags:setProgressionFlags}}>
             <div className="App">
-              {/* <EventParent></EventParent> */}
-              {/* <CombatParent></CombatParent> */}
-              <CaravanParent inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers} 
+              {/* {<EventParent></EventParent>} */}
+              {mainGameScreen == MainGameScreens.COMBAT && <CombatParent></CombatParent>}
+              {mainGameScreen == MainGameScreens.CARAVAN && <CaravanParent inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers} 
                 explorationInventory={explorationInventory}
                 setExplorationInventory={setExplorationInventory}
-              ></CaravanParent>
-              {/* <MapParent></MapParent> */}
+                setMainGameScreen={setMainGameScreen}
+              ></CaravanParent>}
+              {mainGameScreen == MainGameScreens.MAP && <MapParent></MapParent>}
             </div>
           </ProgressionContext.Provider>
         </ItemFactoryContext.Provider>
@@ -372,5 +383,5 @@ function App() {
 }
 
 export default App;
-export {ProgressionContext, ItemFactoryContext, MessageHandlingContext, ProgressionFlags}
+export {ProgressionContext, ItemFactoryContext, MessageHandlingContext, ProgressionFlags, MainGameScreens}
 export type {ProgressionContextType}
