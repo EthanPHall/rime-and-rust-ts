@@ -1,0 +1,16 @@
+{
+    "backgroundLocations":[
+        "background-location-1"
+    ],
+    "locations":[
+        {
+            "key": "background-location-1",
+            "name": "dunes",
+            "description": "An ocean of snow",
+            "visualInfo":{
+                "symbol":",",
+                "styles":""
+            }
+        }
+    ]
+}

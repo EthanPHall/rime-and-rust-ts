@@ -2,43 +2,67 @@ import Vector2 from "../utility/Vector2";
 import IMapLocation from "./IMapLocation";
 import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
+import MapLocationVisualJSON from "./MapLocationVisualJSON";
 
 class MapLocationJSON implements IMapLocation{
+    private position: Vector2;
+    private name: string;
+    private key: string;
+    private cleared: boolean;
+    private revealed: boolean;
+    private floating: boolean;
+
+    constructor(
+        position: Vector2,
+        name: string,
+        key: string,
+        cleared: boolean,
+        revealed: boolean,
+        floating: boolean
+    ){
+        this.position = position;
+        this.name = name;
+        this.key = key;
+        this.cleared = cleared;
+        this.revealed = revealed;
+        this.floating = floating;
+    }
+
     getVisual(): IMapLocationVisual {
-        throw new Error("Method not implemented.");
+        return new MapLocationVisualJSON(this.getData());
     }
     getIsCleared(): boolean {
-        throw new Error("Method not implemented.");
+        return this.cleared;
     }
     getIsRevealed(): boolean {
-        throw new Error("Method not implemented.");
+        return this.revealed;
     }
     getIsFloating(): boolean {
-        throw new Error("Method not implemented.");
+        return this.floating;
     }
     getPostition(): Vector2 {
-        throw new Error("Method not implemented.");
+        return new Vector2(this.position.x, this.position.y);
     }
     setCleared(): void {
-        throw new Error("Method not implemented.");
+        this.cleared = true;
     }
     setRevealed(): void {
-        throw new Error("Method not implemented.");
+        this.revealed = true;
     }
     setFloating(): void {
-        throw new Error("Method not implemented.");
+        this.floating = true;
     }
     setPosition(position: Vector2): void {
-        throw new Error("Method not implemented.");
+        this.position = position;
     }
     getData(): MapLocationData {
-        throw new Error("Method not implemented.");
+        return new MapLocationData(this.position, this.name, this.key, this.cleared, this.revealed, this.floating);
     }
     getName(): string {
-        throw new Error("Method not implemented.");
+        return this.name;
     }
     getKey(): string {
-        throw new Error("Method not implemented.");
+        return this.key;
     }
 }
 

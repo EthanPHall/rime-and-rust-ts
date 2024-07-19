@@ -1,5 +1,6 @@
 import IMapLocationVisual from "./IMapLocationVisual";
 import MapLocationData from "./MapLocationData";
+import explorationLocationData from "../../data/exploration/exploration-location-data.json";
 
 class MapLocationVisualJSON implements IMapLocationVisual{
     locationData:MapLocationData;
@@ -8,15 +9,22 @@ class MapLocationVisualJSON implements IMapLocationVisual{
 
     constructor(locationData:MapLocationData){
         this.locationData = locationData;
+
+        const specificLocationData = explorationLocationData.locations.find(data => data.key === locationData.getKey());
         this.symbol = "";
         this.styles = "";
+
+        if(specificLocationData){
+            this.symbol = specificLocationData.visualInfo.symbol;
+            this.styles = specificLocationData.visualInfo.styles;
+        }
     }
 
     getSymbol(): string {
-        throw new Error("Method not implemented.");
+        return this.symbol;
     }
     getStyles(): string {
-        throw new Error("Method not implemented.");
+        return this.styles;
     }
 }
 
