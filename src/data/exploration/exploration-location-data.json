@@ -1,6 +1,8 @@
 {
     "backgroundLocations":[
-        "background-location-1"
+        "background-location-1",
+        "background-location-2",
+        "background-location-3"
     ],
     "locations":[
         {
@@ -10,7 +12,28 @@
             "visualInfo":{
                 "symbol":",",
                 "styles":""
-            }
+            },
+            "range":{ "min": 0, "max": 33 }
+        },
+        {
+            "key": "background-location-2",
+            "name": "plains",
+            "description": "A desolate tundra",
+            "visualInfo":{
+                "symbol":".",
+                "styles":""
+            },
+            "range":{ "min": 34, "max": 66 }
+        },
+        {
+            "key": "background-location-3",
+            "name": "forest",
+            "description": "Skeletal trees, entomed in ice",
+            "visualInfo":{
+                "symbol":";",
+                "styles":""
+            },
+            "range":{ "min": 67, "max": 100 }
         }
     ]
 }
