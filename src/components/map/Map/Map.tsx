@@ -4,14 +4,14 @@ import MapLocation from '../MapLocation/MapLocation';
 import IMap from '../../../classes/exploration/IMap';
 import ChunkMap from '../../../classes/exploration/ChunkMap';
 import IMapLocationFactory from '../../../classes/exploration/IMapLocationFactory';
-import MapLocationFactoryJSONPerlinNoise from '../../../classes/exploration/MapLocationFactoryJSONPerlinNoise';
+import MapLocationFactoryJSONSimplexNoise from '../../../classes/exploration/MapLocationFactoryJSONSimplexNoise';
 import Vector2 from '../../../classes/utility/Vector2';
 
 interface MapProps {}
 
 const Map: FC<MapProps> = () => {
   const [mapLocationFactory] = useState<IMapLocationFactory>(
-    new MapLocationFactoryJSONPerlinNoise(0)
+    new MapLocationFactoryJSONSimplexNoise(0)
   );
 
   const [map, setMap] = useState<IMap>(
@@ -22,8 +22,18 @@ const Map: FC<MapProps> = () => {
     )
   );
 
+  function regenerateMap(){
+    // setMap(
+    //   new ChunkMap(
+    //     new MapLocationFactoryJSONSimplexNoise(Math.random()),
+    //     new Vector2(7, 7),
+    //     new Vector2(5, 5)
+    //   )
+    // );
+  }
+
   return (
-    <div className="map" data-testid="map">
+    <div className="map" data-testid="map" onClick={regenerateMap}>
       {
         map.get2DRepresentation().map((row, y) => (
           <div key={y} className='row'>

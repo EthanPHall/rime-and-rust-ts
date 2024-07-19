@@ -5,7 +5,7 @@ import MapLocationData from "./MapLocationData";
 import explorationLocationData from "../../data/exploration/exploration-location-data.json";
 import MapLocationJSON from "./MapLocationJSON";
 
-class MapLocationFactoryJSONPerlinNoise implements IMapLocationFactory {
+class MapLocationFactoryJSONSimplexNoise implements IMapLocationFactory {
     private seed: number;
     private noise: Noise;
 
@@ -22,13 +22,15 @@ class MapLocationFactoryJSONPerlinNoise implements IMapLocationFactory {
     }
     createBackgroundLocation(data: MapLocationData): IMapLocation {
         //Get the noise value for the location's position. Multiply is by 100 to fit with the ranges defined in the exploration-location-data.json file.
-        const noiseValue = this.noise.perlin2(data.getPosition().x, data.getPosition().y) * 100;
+        //12 and 9 are arbitrary numbers that seem to work well for the noise function.
+        const noiseValue = Math.abs(this.noise.simplex2(data.getPosition().x / 12, data.getPosition().y / 9) * 100);
+        console.log(`Noise value for location at ${data.getPosition().x}, ${data.getPosition().y}: ${noiseValue}`);
 
         //Get a list of the background locations
         const backgroundLocations = explorationLocationData.locations.filter(location => explorationLocationData.backgroundLocations.includes(location.key));
 
         //Find the background location that fits the noise value
-        const locationData = backgroundLocations.find(location => location.range.min <= noiseValue && location.range.max >= noiseValue);
+        const locationData = backgroundLocations.find(location => location.range.min <= noiseValue && location.range.max > noiseValue);
 
         //Is location data defined?
         if(locationData){
@@ -50,4 +52,4 @@ class MapLocationFactoryJSONPerlinNoise implements IMapLocationFactory {
     }
 }
 
-export default MapLocationFactoryJSONPerlinNoise;
+export default MapLocationFactoryJSONSimplexNoise;

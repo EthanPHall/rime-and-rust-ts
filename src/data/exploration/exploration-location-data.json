@@ -23,7 +23,7 @@
                 "symbol":".",
                 "styles":""
             },
-            "range":{ "min": 34, "max": 66 }
+            "range":{ "min": 33, "max": 66 }
         },
         {
             "key": "background-location-3",
@@ -33,7 +33,7 @@
                 "symbol":";",
                 "styles":""
             },
-            "range":{ "min": 67, "max": 100 }
+            "range":{ "min": 66, "max": 100 }
         }
     ]
 }
