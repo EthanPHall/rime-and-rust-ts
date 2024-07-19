@@ -1,16 +1,20 @@
 import React, { FC, useState } from 'react';
 import './MapLocation.css';
-import { GetRandomBackgroundLocation, MapLocationData } from '../../../data/map-location-data/MapLocationDataHandler';
+import MapLocationData from '../../../classes/exploration/MapLocationData';
+import IMapLocationVisual from '../../../classes/exploration/IMapLocationVisual';
+import { color } from 'framer-motion';
 
-interface MapLocationProps {}
+interface MapLocationProps {
+  locationVisual: IMapLocationVisual;
+}
 
-const MapLocation: FC<MapLocationProps> = () => {
-
-  const [mapLocation, setMapLocation] = useState<MapLocationData>(GetRandomBackgroundLocation());
+const MapLocation: FC<MapLocationProps> = (
+  { locationVisual }
+) => {
 
   return(
-    <span className="map-location" data-testid="map-location">
-      {mapLocation.symbol}
+    <span className={`map-location ${locationVisual.getStyles()}`} data-testid="map-location">
+      {locationVisual.getSymbol()}
     </span>
   );
 }

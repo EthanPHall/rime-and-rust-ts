@@ -12,6 +12,12 @@ class ChunkMap implements IMap{
     private centerPoint: Vector2;
     private chunks: MapChunk[][];
 
+    /**
+     * 
+     * @param factory 
+     * @param dimensions rounds up to the nearest odd number for both x and y
+     * @param chunkDimensions rounds up to the nearest odd number for both x and y
+     */
     constructor(
         factory: IMapLocationFactory,
         dimensions: Vector2,
@@ -19,7 +25,21 @@ class ChunkMap implements IMap{
     ){
         this.factory = factory;
         this.dimensions = dimensions;
+        if(dimensions.x % 2 === 0){
+            dimensions.x++;
+        }
+        if(dimensions.y % 2 === 0){
+            dimensions.y++;
+        }
+
         this.chunkDimensions = chunkDimensions;
+        if(chunkDimensions.x % 2 === 0){
+            chunkDimensions.x++;
+        }
+        if(chunkDimensions.y % 2 === 0){
+            chunkDimensions.y++;
+        }
+
         this.centerPoint = new Vector2(Math.floor(dimensions.x / 2), Math.floor(dimensions.y / 2));
 
         this.chunks = [];
@@ -37,13 +57,17 @@ class ChunkMap implements IMap{
         const result: IMapLocationVisual[][] = [];
         
         for(let y = 0; y < this.dimensions.y; y++){
-            result[y] = [];
             for(let x = 0; x < this.dimensions.x; x++){
                 const chunk = this.chunks[y][x];
                 const chunkRepresentation = chunk.get2DRepresentation();
                 for(let cy = 0; cy < chunkRepresentation.length; cy++){
+                    const mapRelativeY = y * this.chunkDimensions.y + cy;
+                    if(result[mapRelativeY] == undefined){
+                        result[mapRelativeY] = [];
+                    }
                     for(let cx = 0; cx < chunkRepresentation[cy].length; cx++){
-                        result[y * this.chunkDimensions.y + cy][x * this.chunkDimensions.x + cx] = chunkRepresentation[cy][cx];
+                        const mapRelativeX = x * this.chunkDimensions.x + cx;
+                        result[mapRelativeY][mapRelativeX] = chunkRepresentation[cy][cx];
                     }
                 }
             }

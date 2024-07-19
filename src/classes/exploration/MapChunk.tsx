@@ -13,6 +13,13 @@ class MapChunk implements IMap{
     private position: Vector2;
     private locations: IMapLocation[][];
 
+    /**
+     * 
+     * @param factory 
+     * @param dimensions rounds up to the nearest odd number for both x and y 
+     * @param position 
+     * @param distanceFromCenter 
+     */
     constructor(
         factory: IMapLocationFactory,
         dimensions: Vector2,
@@ -20,17 +27,26 @@ class MapChunk implements IMap{
         distanceFromCenter: number
     ){
         this.dimensions = dimensions;
+        if(dimensions.x % 2 === 0){
+            dimensions.x++;
+        }
+        if(dimensions.y % 2 === 0){
+            dimensions.y++;
+        }
+
         this.distanceFromCenter = distanceFromCenter;
         this.factory = factory;
         this.position = position;
 
         this.locations = [];
-        for(let y = 0; y < dimensions.x; y++){
+        for(let y = 0; y < dimensions.y; y++){
             this.locations[y] = [];
-            for(let x = 0; x < dimensions.y; x++){
-                const location = factory.createLocationWithData(
+            for(let x = 0; x < dimensions.x; x++){
+                //Create the location. Be sure to use the location's position relative to the map as a whole.
+                //The new location's position will be changed back to be relative to the chunk after creation.
+                const location = factory.createBackgroundLocation(
                     new MapLocationData(
-                        new Vector2(position.x + x, position.y + y),
+                        new Vector2(position.x * dimensions.x + x, position.y * dimensions.y + y),
                         "",
                         "",
                         false,
@@ -38,6 +54,10 @@ class MapChunk implements IMap{
                         false
                     )
                 );
+
+                //Correct the location's position
+                location.setPosition(new Vector2(x, y));
+
                 this.locations[y][x] = location;
             }
         }

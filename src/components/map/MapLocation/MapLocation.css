@@ -1,4 +1,6 @@
 .map-location {
     margin-left: var(--map-location-spacing);
     margin-right: var(--map-location-spacing);
+
+    font-size: var(--font-size-larger);
 }

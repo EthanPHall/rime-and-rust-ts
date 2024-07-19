@@ -1,14 +1,40 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import './Map.css';
 import MapLocation from '../MapLocation/MapLocation';
+import IMap from '../../../classes/exploration/IMap';
+import ChunkMap from '../../../classes/exploration/ChunkMap';
+import IMapLocationFactory from '../../../classes/exploration/IMapLocationFactory';
+import MapLocationFactoryJSONPerlinNoise from '../../../classes/exploration/MapLocationFactoryJSONPerlinNoise';
+import Vector2 from '../../../classes/utility/Vector2';
 
 interface MapProps {}
 
 const Map: FC<MapProps> = () => {
+  const [mapLocationFactory] = useState<IMapLocationFactory>(
+    new MapLocationFactoryJSONPerlinNoise(0)
+  );
+
+  const [map, setMap] = useState<IMap>(
+    new ChunkMap(
+      mapLocationFactory,
+      new Vector2(7, 7),
+      new Vector2(5, 5)
+    )
+  );
+
   return (
     <div className="map" data-testid="map">
-      <div className='row'>
-      </div>
+      {
+        map.get2DRepresentation().map((row, y) => (
+          <div key={y} className='row'>
+            {
+              row.map((location, x) => (
+                <MapLocation key={x} locationVisual={location}></MapLocation>
+              ))
+            }
+          </div>
+        ))
+      }
     </div>
   );
 }
