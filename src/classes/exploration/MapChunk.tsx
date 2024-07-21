@@ -98,6 +98,10 @@ class MapChunk implements IMap{
     getPosition(): Vector2{
         return this.position;
     }
+
+    getCenterPoint(): Vector2 {
+        return new Vector2(Math.floor(this.dimensions.x/2), Math.floor(this.dimensions.y/2));
+    }
 }
 
 export default MapChunk;

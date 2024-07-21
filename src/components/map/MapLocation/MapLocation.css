@@ -4,3 +4,8 @@
 
     font-size: var(--font-size-larger);
 }
+
+.map-location + .player{
+    top: 3px;
+    position: relative;
+}

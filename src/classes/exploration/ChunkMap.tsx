@@ -40,14 +40,15 @@ class ChunkMap implements IMap{
             chunkDimensions.y++;
         }
 
-        this.centerPoint = new Vector2(Math.floor(dimensions.x / 2), Math.floor(dimensions.y / 2));
+        const centerPointRelativeToChunks = new Vector2(Math.floor(dimensions.x / 2), Math.floor(dimensions.y / 2));
+        this.centerPoint = new Vector2(Math.floor((dimensions.x * chunkDimensions.x) / 2), Math.floor((dimensions.y * chunkDimensions.y) / 2));
 
         this.chunks = [];
         for(let y = 0; y < dimensions.y; y++){
             this.chunks[y] = [];
             for(let x = 0; x < dimensions.x; x++){
                 const position = new Vector2(x, y);
-                const distanceFromCenter = Vector2.manhattanDistance(position, this.centerPoint);
+                const distanceFromCenter = Vector2.manhattanDistance(position, centerPointRelativeToChunks);
                 this.chunks[y][x] = new MapChunk(factory, chunkDimensions, new Vector2(x, y), distanceFromCenter);
             }
         }
@@ -127,8 +128,13 @@ class ChunkMap implements IMap{
         chunk.setFloating(chunkPosition);
     }
     getDimensions(): Vector2 {
-        return this.dimensions;
+        return new Vector2(this.dimensions.x * this.chunkDimensions.x, this.dimensions.y * this.chunkDimensions.y);
     }
+
+    getCenterPoint(): Vector2 {
+        return new Vector2(this.centerPoint.x, this.centerPoint.y);
+    }
+
 }
 
 export default ChunkMap;

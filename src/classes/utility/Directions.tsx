@@ -87,5 +87,13 @@ class DirectionsUtility {
     }
 }
 
+class DirectionObject {
+    direction:Directions;
+    constructor(direction:Directions){
+        this.direction = direction;
+    }
+}
+
+
 export default Directions;
-export { DirectionsUtility };
+export { DirectionsUtility, DirectionObject };

@@ -24,7 +24,7 @@ class MapLocationFactoryJSONSimplexNoise implements IMapLocationFactory {
         //Get the noise value for the location's position. Multiply is by 100 to fit with the ranges defined in the exploration-location-data.json file.
         //12 and 9 are arbitrary numbers that seem to work well for the noise function.
         const noiseValue = Math.abs(this.noise.simplex2(data.getPosition().x / 12, data.getPosition().y / 9) * 100);
-        console.log(`Noise value for location at ${data.getPosition().x}, ${data.getPosition().y}: ${noiseValue}`);
+        // console.log(`Noise value for location at ${data.getPosition().x}, ${data.getPosition().y}: ${noiseValue}`);
 
         //Get a list of the background locations
         const backgroundLocations = explorationLocationData.locations.filter(location => explorationLocationData.backgroundLocations.includes(location.key));

@@ -10,6 +10,7 @@ interface IMap{
     setRevealed(position:Vector2): void;
     setFloating(position:Vector2): void;
     getDimensions(): Vector2;
+    getCenterPoint():Vector2;
 }
 
 export default IMap;

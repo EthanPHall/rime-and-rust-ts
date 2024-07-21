@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import './Map.css';
 import MapLocation from '../MapLocation/MapLocation';
 import IMap from '../../../classes/exploration/IMap';
@@ -6,8 +6,33 @@ import ChunkMap from '../../../classes/exploration/ChunkMap';
 import IMapLocationFactory from '../../../classes/exploration/IMapLocationFactory';
 import MapLocationFactoryJSONSimplexNoise from '../../../classes/exploration/MapLocationFactoryJSONSimplexNoise';
 import Vector2 from '../../../classes/utility/Vector2';
+import MapLocationVisualJSON from '../../../classes/exploration/MapLocationVisualJSON';
+import IMapLocationVisual from '../../../classes/exploration/IMapLocationVisual';
+import useDirectionHandler from '../../../hooks/misc/useDirectionHandler';
+import Directions, { DirectionsUtility } from '../../../classes/utility/Directions';
 
 interface MapProps {}
+
+class ExplorationPlayer{
+  position:Vector2;
+  locationVisual:IMapLocationVisual = {
+    getStyles:function():string{
+      return "player";
+    },
+
+    getSymbol:function():string{
+      return "@";
+    }
+  }
+
+  constructor(position:Vector2){
+    this.position = position;
+  }
+
+  clone():ExplorationPlayer{
+    return new ExplorationPlayer(this.position)
+  }
+}
 
 const Map: FC<MapProps> = () => {
   const [mapLocationFactory] = useState<IMapLocationFactory>(
@@ -21,6 +46,32 @@ const Map: FC<MapProps> = () => {
       new Vector2(5, 5)
     )
   );
+
+  const [player, setPlayer] = useState(new ExplorationPlayer(map.getCenterPoint()))
+  const [direction] = useDirectionHandler(true);
+
+  useEffect(() => {
+    setPlayer((current) => {
+      const newPlayer = current.clone();
+      newPlayer.position = newPlayer.position.add(DirectionsUtility.getVectorFromDirection(direction.direction));
+      
+      if(newPlayer.position.x < 0){
+        newPlayer.position = new Vector2(0, newPlayer.position.y);
+      }
+      else if(newPlayer.position.x >= map.getDimensions().x){
+        newPlayer.position = new Vector2(map.getDimensions().x - 1, newPlayer.position.y);
+      }
+
+      if(newPlayer.position.y < 0){
+        newPlayer.position = new Vector2(newPlayer.position.x, 0);
+      }
+      else if(newPlayer.position.y >= map.getDimensions().y){
+        newPlayer.position = new Vector2(newPlayer.position.x, map.getDimensions().y - 1);
+      }
+
+      return newPlayer;
+    })
+  }, [direction])
 
   function regenerateMap(){
     // setMap(
@@ -38,9 +89,14 @@ const Map: FC<MapProps> = () => {
         map.get2DRepresentation().map((row, y) => (
           <div key={y} className='row'>
             {
-              row.map((location, x) => (
-                <MapLocation key={x} locationVisual={location}></MapLocation>
-              ))
+              row.map((location, x) => {
+                if(player.position.equals(new Vector2(x, y))){
+                  return <MapLocation key={x} locationVisual={player.locationVisual}></MapLocation>
+                }
+                else{
+                  return <MapLocation key={x} locationVisual={location}></MapLocation>
+                }
+              })
             }
           </div>
         ))
