@@ -77,7 +77,7 @@ function App() {
 
   const sledsListOverrideForInventoryEffect = useRef<Sled[]|null>(null);
 
-  const [mainGameScreen, setMainGameScreen] = useState<MainGameScreens>(MainGameScreens.CARAVAN);
+  const [mainGameScreen, setMainGameScreen] = useState<MainGameScreens>(MainGameScreens.MAP);
   
   useEffect(() => {
     const inventorySledQuantities:SledQuantity[] = Sled.pickOutSledQuantities(getInventory());

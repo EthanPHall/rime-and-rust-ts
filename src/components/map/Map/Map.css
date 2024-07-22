@@ -7,11 +7,13 @@
     font-size: var(--map-font-size);
     font-family: monospace;
 
+    color:var(--exploration-map-color);
+
     /* outline: 1px solid var(--outline-color); */
 
     /* line-height: var(--map-line-height); */
 }
 
 .map .row{
-    height: var(--map-row-height);
+    height: var(--exploration-map-row-height);
 }
