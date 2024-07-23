@@ -17,7 +17,7 @@ class ExplorationPlayer{
   position:Vector2;
   locationVisual:IMapLocationVisual = {
     getStyles:function():string{
-      return "player";
+      return "player lower";
     },
 
     getSymbol:function():string{

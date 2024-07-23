@@ -20,7 +20,9 @@ class SettingsManager implements ISettingsManager{
     allSpeedSettings:SpeedSetting[] = speedSettings;
     currentSpeedSetting:SpeedSetting;
 
-    constructor(startingSpeedSetting:string|undefined = undefined){
+    private seed:number;
+
+    constructor(startingSpeedSetting:string|undefined = undefined, seed:number = 0){
         //Dummy value to prevent undefined errors
         this.currentSpeedSetting = this.allSpeedSettings[0];
 
@@ -30,6 +32,8 @@ class SettingsManager implements ISettingsManager{
         else{
             this.setSpeedSetting("Normal");
         }
+
+        this.seed = seed;
     }
 
     getCorrectTiming(baseTiming:number):number{
@@ -49,6 +53,13 @@ class SettingsManager implements ISettingsManager{
         else{
             console.error("Speed setting not found: " + name);
         }
+    }
+
+    setSeed(newSeed:number){
+        this.seed = newSeed;
+    }
+    getSeed():number{
+        return this.seed;
     }
 
     clone(): ISettingsManager {

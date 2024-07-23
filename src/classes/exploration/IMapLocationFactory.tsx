@@ -1,3 +1,4 @@
+import Vector2 from "../utility/Vector2";
 import IMapLocation from "./IMapLocation";
 import MapLocationData from "./MapLocationData";
 
@@ -10,9 +11,9 @@ interface IMapLocationFactory {
 
     /**
      * 
-     * @param data This method creates a location with the exact data provided. This is useful for creating a location with a specific key.
+     * @param data This method creates a location with the exact data provided, or a default location with the same key. This is useful for creating a location with a specific key.
      */
-    createExactLocation(data:MapLocationData):IMapLocation;
+    createExactLocation(data:MapLocationData|string, position?:Vector2):IMapLocation;
 
     /**
      * 

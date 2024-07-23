@@ -3,16 +3,16 @@ import IMapLocation from "./IMapLocation";
 
 class MapLocationData{
     private position: Vector2;
-    private name: string;
     private key: string;
+    private name: string;
     private cleared: boolean;
     private revealed: boolean;
     private floating: boolean;
 
     constructor(
         position: Vector2,
-        name: string,
         key: string,
+        name: string,
         cleared: boolean,
         revealed: boolean,
         floating: boolean

@@ -4,6 +4,8 @@ import IMapLocationFactory from "./IMapLocationFactory";
 import MapChunk from "./MapChunk";
 import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
+import DifficultyBrackets from "./DifficultyBrackets";
+import explorationLocationData from "../../data/exploration/exploration-location-data.json";
 
 class ChunkMap implements IMap{
     private factory: IMapLocationFactory;
@@ -44,14 +46,25 @@ class ChunkMap implements IMap{
         this.centerPoint = new Vector2(Math.floor((dimensions.x * chunkDimensions.x) / 2), Math.floor((dimensions.y * chunkDimensions.y) / 2));
 
         this.chunks = [];
+        let maxDistanceFromCenter = -Infinity;
         for(let y = 0; y < dimensions.y; y++){
             this.chunks[y] = [];
             for(let x = 0; x < dimensions.x; x++){
                 const position = new Vector2(x, y);
                 const distanceFromCenter = Vector2.manhattanDistance(position, centerPointRelativeToChunks);
+
+                maxDistanceFromCenter = Math.max(maxDistanceFromCenter, distanceFromCenter);
+
                 this.chunks[y][x] = new MapChunk(factory, chunkDimensions, new Vector2(x, y), distanceFromCenter);
             }
         }
+
+        const difficultyBrackets:DifficultyBrackets = new DifficultyBrackets(maxDistanceFromCenter, explorationLocationData.difficultyBrackets);
+        this.chunks.forEach(chunkRow => {
+            chunkRow.forEach(chunk => {
+                chunk.generateLocations(difficultyBrackets.getDifficultyBracket(chunk.getDistanceFromCenter()));
+            });
+        });
     }
 
     get2DRepresentation(): IMapLocationVisual[][] {

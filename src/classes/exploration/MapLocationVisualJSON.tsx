@@ -10,7 +10,7 @@ class MapLocationVisualJSON implements IMapLocationVisual{
     constructor(locationData:MapLocationData){
         this.locationData = locationData;
 
-        const specificLocationData = explorationLocationData.locations.find(data => data.key === locationData.getKey());
+        const specificLocationData = explorationLocationData.allKeyVisuals.find(data => data.key === locationData.getKey());
         this.symbol = "";
         this.styles = "";
 

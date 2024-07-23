@@ -4,6 +4,7 @@ import IMapLocation from "./IMapLocation";
 import IMapLocationFactory from "./IMapLocationFactory";
 import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
+import locationData from "../../data/exploration/exploration-location-data.json";
 
 class MapChunk implements IMap{
 
@@ -101,6 +102,56 @@ class MapChunk implements IMap{
 
     getCenterPoint(): Vector2 {
         return new Vector2(Math.floor(this.dimensions.x/2), Math.floor(this.dimensions.y/2));
+    }
+
+    generateLocations(difficulty:number){
+        //Get a list of locations for the given difficulty level
+        const potentialLocations =  locationData.explorationLocations.filter((location) => {
+            return location.difficultyBrackets.includes(difficulty);
+        })
+
+        //scramble the potential locations
+        const potentialLocationsScrambled = [];
+        const validIndices:number[] = [];
+        for(let i = 0; i < potentialLocations.length; i++){
+            validIndices.push(i);
+        }
+        for(let i = 0; i < potentialLocations.length; i++){
+            const chosenIndex = Math.floor(Math.random() * validIndices.length);
+            potentialLocationsScrambled.push(potentialLocations[chosenIndex]);
+            validIndices.filter((index) => {
+                return index != chosenIndex;
+            })
+        }
+
+        //How many locations to spawn?
+        const whichPercentageToUse = Math.floor(Math.random() * locationData.percentagesOfSpaceToCover.length);
+        const percentToCover = locationData.percentagesOfSpaceToCover[whichPercentageToUse] / 100;
+        const totalLocations:number = Math.floor(this.dimensions.x * this.dimensions.y * percentToCover);
+
+        //Create the locations
+        let locationsCreated:number = 0;
+        potentialLocationsScrambled.forEach((potentialLocation, i) => {
+            const locationsToCreate = 
+                (i == potentialLocationsScrambled.length - 1) ? 
+                    totalLocations - locationsCreated : 
+                    Math.floor(Math.random() * (totalLocations - locationsCreated));
+
+            for(let i = 0; i < locationsToCreate; i++){
+                let chunkPosition = new Vector2(Math.floor(Math.random() * this.dimensions.x), Math.floor(Math.random() * this.dimensions.y));
+                // while(!locationData.backgroundLocations.includes(this.getLocationData(position).getKey())){
+                //     position = new Vector2(Math.floor(Math.random() * this.dimensions.x), Math.floor(Math.random() * this.dimensions.y));
+                // }
+
+                const overallPosition = new Vector2(this.position.x * this.dimensions.x + chunkPosition.x, this.position.y * this.dimensions.y + chunkPosition.y);
+
+                const newLocation:IMapLocation = this.factory.createExactLocation(potentialLocation.key, overallPosition);
+                console.log(newLocation.getVisual());
+                this.locations[chunkPosition.x][chunkPosition.y] = newLocation;
+
+                locationsCreated++;
+            }
+        })
     }
 }
 

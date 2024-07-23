@@ -9,31 +9,162 @@
             "key": "background-location-1",
             "name": "dunes",
             "description": "An ocean of snow",
-            "visualInfo":{
-                "symbol":",",
-                "styles":""
-            },
             "range":{ "min": 0, "max": 33 }
         },
         {
             "key": "background-location-2",
             "name": "plains",
             "description": "A desolate tundra",
-            "visualInfo":{
-                "symbol":".",
-                "styles":""
-            },
             "range":{ "min": 33, "max": 66 }
         },
         {
             "key": "background-location-3",
             "name": "forest",
             "description": "Skeletal trees, entomed in ice",
+            "range":{ "min": 66, "max": 100 }
+        }
+    ],
+    "explorationLocations":[
+        {
+            "key": "easy-1",
+            "name": "house",
+            "description": "Somehow still standing against the wind",
+            "difficultyBrackets": [0]
+        },
+        {
+            "key": "variable-1",
+            "name": "bunker",
+            "description": "Bunker",
+            "difficultyBrackets": [0,1,2,3]
+        },
+        {
+            "key": "medium-1",
+            "name": "city",
+            "description": "City",
+            "difficultyBrackets": [1,2]
+        },
+        {
+            "key": "medium-2",
+            "name": "caravan",
+            "description": "Caravan train",
+            "difficultyBrackets": [1]
+        },
+        {
+            "key": "hard-1",
+            "name": "Military Base",
+            "description": "Military Base",
+            "difficultyBrackets": [2]
+        },
+        {
+            "key": "hard-2",
+            "name": "Factory",
+            "description": "Factory",
+            "difficultyBrackets": [2,3]
+        }
+    ],
+    "difficultyBrackets": 4,
+    "percentagesOfSpaceToCover":[10,15,25],
+    "allKeyNames":[
+        {
+            "key":"background-location-1",
+            "name":"dunes"
+        },
+        {
+            "key":"background-location-2",
+            "name":"plains"
+        },
+        {
+            "key":"background-location-3",
+            "name":"forest"
+        },
+        {
+            "key":"easy-1",
+            "name":"house"
+        },
+        {
+            "key":"variable-1",
+            "name":"bunker"
+        },
+        {
+            "key":"medium-1",
+            "name":"city"
+        },
+        {
+            "key":"medium-2",
+            "name":"caravan"
+        },
+        {
+            "key":"hard-1",
+            "name":"Military Base"
+        },
+        {
+            "key":"hard-2",
+            "name":"Factory"
+        }
+    ],
+    "allKeyVisuals":[
+        {
+            "key":"background-location-1",
+            "visualInfo":{
+                "symbol":",",
+                "styles":""
+            }
+        },
+        {
+            "key":"background-location-2",
+            "visualInfo":{
+                "symbol":".",
+                "styles":""
+            }
+        },
+        {
+            "key":"background-location-3",
             "visualInfo":{
                 "symbol":";",
                 "styles":""
-            },
-            "range":{ "min": 66, "max": 100 }
+            }
+        },
+        {
+            "key":"easy-1",
+            "visualInfo":{
+                "symbol":"h",
+                "styles":"lower"
+            }
+        },
+        {
+            "key":"variable-1",
+            "visualInfo":{
+                "symbol":"b",
+                "styles":"lower"
+            }
+        },
+        {
+            "key":"medium-1",
+            "visualInfo":{
+                "symbol":"c",
+                "styles":"lower"
+            }
+        },
+        {
+            "key":"medium-2",
+            "visualInfo":{
+                "symbol":"t",
+                "styles":"lower"
+            }
+        },
+        {
+            "key":"hard-1",
+            "visualInfo":{
+                "symbol":"m",
+                "styles":"lower"
+            }
+        },
+        {
+            "key":"hard-2",
+            "visualInfo":{
+                "symbol":"f",
+                "styles":"lower"
+            }
         }
     ]
 }
