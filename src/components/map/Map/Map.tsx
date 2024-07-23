@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import './Map.css';
 import MapLocation from '../MapLocation/MapLocation';
 import IMap from '../../../classes/exploration/IMap';
@@ -39,6 +39,28 @@ class ExplorationPlayer{
   }
 }
 
+class CurrentAndBaseElement{
+  private base:JSX.Element;
+  private current:JSX.Element;
+
+  constructor(base:JSX.Element, current?:JSX.Element){
+    this.current = current || base;
+    this.base = base;
+  }
+
+  replace(newElement:JSX.Element){
+    this.current = newElement;
+  }
+
+  returnToBase(){
+    this.current = this.base;
+  }
+
+  getCurrent():JSX.Element{
+    return this.current;
+  }
+}
+
 const Map: FC<MapProps> = () => {
   const [mapLocationFactory] = useState<IMapLocationFactory>(
     new MapLocationFactoryJSONSimplexNoise(0)
@@ -51,9 +73,39 @@ const Map: FC<MapProps> = () => {
       new Vector2(5, 5)
     )
   );
-
+  const mapRepresentation = useRef<CurrentAndBaseElement[][]>([]);
+  
   const [player, setPlayer] = useState(new ExplorationPlayer(map.getCenterPoint()))
   const [direction] = useDirectionHandler(true);
+
+  const lastPlayerPosition = useRef<Vector2>(player.position);
+
+  const [preventMovementDelay, setPreventMovementDelay] = useState(true);
+  
+  useEffect(() => {
+    mapRepresentation.current = map.get2DRepresentation().map((row, y) => {
+      return row.map((location, x) => {
+        return new CurrentAndBaseElement(
+          <MapLocation key={`${x}${y}`} locationVisual={location}></MapLocation>,
+          player.position.equals(new Vector2(x,y)) ? <MapLocation key={`${x}${y}`} locationVisual={player.locationVisual}></MapLocation> : undefined
+        );
+      })
+    });
+  }, [map])
+
+  useEffect(() => {
+    console.log(player);
+
+    mapRepresentation.current[lastPlayerPosition.current.y][lastPlayerPosition.current.x].returnToBase();
+    mapRepresentation.current[player.position.y][player.position.x].replace(
+      <MapLocation key={`Player`} locationVisual={player.locationVisual}></MapLocation>
+    );
+
+    lastPlayerPosition.current = player.position;
+    
+    //?TODO: I should probaly just make mapRepresentation a state variable, but whatever, I can do that later.
+    setPreventMovementDelay((current) => {return !current});
+  }, [player])
 
   useEffect(() => {
     setPlayer((current) => {
@@ -91,20 +143,31 @@ const Map: FC<MapProps> = () => {
   return (
     <div className="map" data-testid="map" onClick={regenerateMap}>
       {
-        map.get2DRepresentation().map((row, y) => (
-          <div key={y} className='row'>
+        mapRepresentation.current.map((currentRow, y) => {
+          console.log("In thing");
+          return <div key={y} className='row'>
             {
-              row.map((location, x) => {
-                if(player.position.equals(new Vector2(x, y))){
-                  return <MapLocation key={x} locationVisual={player.locationVisual}></MapLocation>
-                }
-                else{
-                  return <MapLocation key={x} locationVisual={location}></MapLocation>
-                }
+              currentRow.map((currentRep) => {
+                return currentRep.getCurrent();
               })
-            }
+            }         
           </div>
-        ))
+        })
+
+        //   map.get2DRepresentation().map((row, y) => (
+        //   <div key={y} className='row'>
+        //     {
+        //       row.map((location, x) => {
+        //         if(player.position.equals(new Vector2(x, y))){
+        //           return <MapLocation key={x} locationVisual={player.locationVisual}></MapLocation>
+        //         }
+        //         else{
+        //           return <MapLocation key={x} locationVisual={location}></MapLocation>
+        //         }
+        //       })
+        //     }
+        //   </div>
+        // ))        
       }
     </div>
   );

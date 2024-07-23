@@ -14,6 +14,8 @@ class ChunkMap implements IMap{
     private centerPoint: Vector2;
     private chunks: MapChunk[][];
 
+    private representation:IMapLocationVisual[][]|undefined = undefined;
+
     /**
      * 
      * @param factory 
@@ -68,6 +70,10 @@ class ChunkMap implements IMap{
     }
 
     get2DRepresentation(): IMapLocationVisual[][] {
+        if(this.representation){
+            return this.representation;
+        }
+
         const result: IMapLocationVisual[][] = [];
         
         for(let y = 0; y < this.dimensions.y; y++){
@@ -87,7 +93,8 @@ class ChunkMap implements IMap{
             }
         }
 
-        return result;
+        this.representation = result;
+        return this.representation;
     }
 
     private getChunkAndPosition(position: Vector2): {chunk:MapChunk, position:Vector2} {
