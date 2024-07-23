@@ -32,9 +32,9 @@
     --map-location-spacing: 3.3px;
     --map-font-size: .9em;
 
-    --exploration-map-row-height: 14px;
-    --exploration-map-location-spacing: 3px;
-    --exploration-map-font-size: 1.5em;
+    --exploration-map-row-height: 12.5px;
+    --exploration-map-location-spacing: 2.5px;
+    --exploration-map-font-size: 1.2em;
     --exploration-map-color: #a8aaba;
 
     /* Animation */

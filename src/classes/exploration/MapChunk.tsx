@@ -130,28 +130,37 @@ class MapChunk implements IMap{
         const totalLocations:number = Math.floor(this.dimensions.x * this.dimensions.y * percentToCover);
 
         //Create the locations
-        let locationsCreated:number = 0;
+        const locationsCreated:IMapLocation[] = [];
         potentialLocationsScrambled.forEach((potentialLocation, i) => {
             const locationsToCreate = 
                 (i == potentialLocationsScrambled.length - 1) ? 
-                    totalLocations - locationsCreated : 
-                    Math.floor(Math.random() * (totalLocations - locationsCreated));
+                    totalLocations - locationsCreated.length : 
+                    Math.floor(Math.random() * (totalLocations - locationsCreated.length));
 
             for(let i = 0; i < locationsToCreate; i++){
                 let chunkPosition = new Vector2(Math.floor(Math.random() * this.dimensions.x), Math.floor(Math.random() * this.dimensions.y));
-                // while(!locationData.backgroundLocations.includes(this.getLocationData(position).getKey())){
-                //     position = new Vector2(Math.floor(Math.random() * this.dimensions.x), Math.floor(Math.random() * this.dimensions.y));
-                // }
+                
+                //TODO: Make a slightly more sophisticated way to ensure that the posiion is not already taken.
+                while(!locationData.backgroundLocations.includes(this.getLocationData(chunkPosition).getKey())){
+                    chunkPosition = new Vector2(Math.floor(Math.random() * this.dimensions.x), Math.floor(Math.random() * this.dimensions.y));
+                }
 
                 const overallPosition = new Vector2(this.position.x * this.dimensions.x + chunkPosition.x, this.position.y * this.dimensions.y + chunkPosition.y);
 
                 const newLocation:IMapLocation = this.factory.createExactLocation(potentialLocation.key, overallPosition);
-                console.log(newLocation.getVisual());
                 this.locations[chunkPosition.x][chunkPosition.y] = newLocation;
 
-                locationsCreated++;
+                locationsCreated.push(newLocation);
             }
         })
+
+        //Set the floating flag
+        const percentagesThatShouldFloat:number[] = locationData.percentagesOfFloatingLocations;
+        const percentToUse:number = percentagesThatShouldFloat?.[difficulty] / 100 || 0;
+        const totalFloatingLocations:number = Math.ceil(locationsCreated.length * percentToUse);
+        for(let i = 0; i < totalFloatingLocations; i++){
+            locationsCreated[Math.floor(Math.random() * locationsCreated.length)].setFloating();
+        } 
     }
 }
 

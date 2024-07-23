@@ -10,6 +10,7 @@ import MapLocationVisualJSON from '../../../classes/exploration/MapLocationVisua
 import IMapLocationVisual from '../../../classes/exploration/IMapLocationVisual';
 import useDirectionHandler from '../../../hooks/misc/useDirectionHandler';
 import Directions, { DirectionsUtility } from '../../../classes/utility/Directions';
+import { TargetAndTransition } from 'framer-motion';
 
 interface MapProps {}
 
@@ -22,6 +23,10 @@ class ExplorationPlayer{
 
     getSymbol:function():string{
       return "@";
+    },
+
+    getAnimation:function():TargetAndTransition|undefined{
+      return undefined;
     }
   }
 

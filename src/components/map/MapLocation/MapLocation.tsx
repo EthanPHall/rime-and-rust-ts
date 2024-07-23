@@ -3,6 +3,7 @@ import './MapLocation.css';
 import MapLocationData from '../../../classes/exploration/MapLocationData';
 import IMapLocationVisual from '../../../classes/exploration/IMapLocationVisual';
 import { color } from 'framer-motion';
+import {motion} from 'framer-motion';
 
 interface MapLocationProps {
   locationVisual: IMapLocationVisual;
@@ -13,9 +14,11 @@ const MapLocation: FC<MapLocationProps> = (
 ) => {
 
   return(
-    <span className={`map-location ${locationVisual.getStyles()}`} data-testid="map-location">
+    <motion.span className={`map-location ${locationVisual.getStyles()}`} data-testid="map-location"
+      animate={locationVisual.getAnimation()}
+    >
       {locationVisual.getSymbol()}
-    </span>
+    </motion.span>
   );
 }
 

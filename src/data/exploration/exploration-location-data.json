@@ -63,7 +63,8 @@
         }
     ],
     "difficultyBrackets": 4,
-    "percentagesOfSpaceToCover":[10,15,25],
+    "percentagesOfSpaceToCover":[15],
+    "percentagesOfFloatingLocations":[5, 5, 10, 10],
     "allKeyNames":[
         {
             "key":"background-location-1",

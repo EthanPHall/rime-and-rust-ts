@@ -3,6 +3,8 @@
     margin-right: var(--exploration-map-location-spacing);
 
     font-size: var(--exploration-map-font-size);
+
+    display:inline-block;
 }
 
 .map-location + .lower{
