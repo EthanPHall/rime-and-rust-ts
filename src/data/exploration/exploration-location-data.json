@@ -53,18 +53,20 @@
             "key": "hard-1",
             "name": "Military Base",
             "description": "Military Base",
-            "difficultyBrackets": [2]
+            "difficultyBrackets": [3, 4]
         },
         {
             "key": "hard-2",
             "name": "Factory",
             "description": "Factory",
-            "difficultyBrackets": [2,3]
+            "difficultyBrackets": [4]
         }
     ],
-    "difficultyBrackets": 4,
+    "difficultyBrackets": 5,
     "percentagesOfSpaceToCover":[15],
-    "percentagesOfFloatingLocations":[5, 5, 10, 10],
+    "percentagesOfFloatingLocations":[5, 5, 10, 10, 10],
+    "chancesToSkipFloatingLocations":[80, 70, 60, 60, 60],
+    "chanceToSkipLocationGeneration":40,
     "allKeyNames":[
         {
             "key":"background-location-1",

@@ -142,6 +142,10 @@ class MapChunk implements IMap{
                     Math.floor(Math.random() * (totalLocations - locationsCreated.length));
 
             for(let i = 0; i < locationsToCreate; i++){
+                if(Math.random() * 100 < locationData.chanceToSkipLocationGeneration){
+                    continue;
+                }
+
                 let chunkPosition = new Vector2(Math.floor(Math.random() * this.dimensions.x), Math.floor(Math.random() * this.dimensions.y));
                 
                 //TODO: Make a slightly more sophisticated way to ensure that the posiion is not already taken.
@@ -163,7 +167,9 @@ class MapChunk implements IMap{
         const percentToUse:number = percentagesThatShouldFloat?.[difficulty] / 100 || 0;
         const totalFloatingLocations:number = Math.ceil(locationsCreated.length * percentToUse);
         for(let i = 0; i < totalFloatingLocations; i++){
-            locationsCreated[Math.floor(Math.random() * locationsCreated.length)].setFloating();
+            if(Math.random() * 100 >= locationData.chancesToSkipFloatingLocations[difficulty]){
+                locationsCreated[Math.floor(Math.random() * locationsCreated.length)].setFloating();
+            }
         } 
     }
 }

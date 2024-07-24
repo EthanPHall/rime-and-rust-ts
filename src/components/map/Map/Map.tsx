@@ -74,8 +74,8 @@ const Map: FC<MapProps> = (
   const [map, setMap] = useState<IMap>(
     new ChunkMap(
       mapLocationFactory,
-      new Vector2(7, 7),
-      new Vector2(5, 5)
+      new Vector2(15, 15),
+      new Vector2(3, 3)
     )
   );
   const mapRepresentation = useRef<CurrentAndBaseElement[][]>([]);
@@ -111,7 +111,7 @@ const Map: FC<MapProps> = (
 
     const eventToStart:RimeEvent|null = map.getEventToStart(player.position);
     if(eventToStart){
-      setShowEventScreen(true);
+      // setShowEventScreen(true);
     }
   }, [player])
 
