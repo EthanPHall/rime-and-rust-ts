@@ -1,6 +1,7 @@
 import Vector2 from "../utility/Vector2";
 import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
+import RimeEvent from "../events/RimeEvent";
 
 interface IMap{
     get2DRepresentation(): IMapLocationVisual[][];
@@ -11,6 +12,7 @@ interface IMap{
     setFloating(position:Vector2): void;
     getDimensions(): Vector2;
     getCenterPoint():Vector2;
+    getEventToStart(position:Vector2):RimeEvent|null;
 }
 
 export default IMap;

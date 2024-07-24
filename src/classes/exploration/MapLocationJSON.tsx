@@ -3,6 +3,7 @@ import IMapLocation from "./IMapLocation";
 import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
 import MapLocationVisualJSON from "./MapLocationVisualJSON";
+import RimeEvent from "../events/RimeEvent";
 
 class MapLocationJSON implements IMapLocation{
     private position: Vector2;
@@ -26,6 +27,9 @@ class MapLocationJSON implements IMapLocation{
         this.cleared = cleared;
         this.revealed = revealed;
         this.floating = floating;
+    }
+    getEventToStart(): RimeEvent | null {
+        return Math.random() * 10 < 1 ? new RimeEvent() : null;
     }
 
     getVisual(): IMapLocationVisual {

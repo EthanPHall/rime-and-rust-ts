@@ -5,6 +5,7 @@ import IMapLocationFactory from "./IMapLocationFactory";
 import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
 import locationData from "../../data/exploration/exploration-location-data.json";
+import RimeEvent from "../events/RimeEvent";
 
 class MapChunk implements IMap{
 
@@ -62,6 +63,9 @@ class MapChunk implements IMap{
                 this.locations[y][x] = location;
             }
         }
+    }
+    getEventToStart(position: Vector2): RimeEvent | null {
+        return this.locations[position.y][position.x].getEventToStart();
     }
 
     private setLocations(locations: IMapLocation[][]): void{

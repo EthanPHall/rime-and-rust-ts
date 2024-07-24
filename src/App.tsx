@@ -77,6 +77,7 @@ function App() {
 
   const sledsListOverrideForInventoryEffect = useRef<Sled[]|null>(null);
 
+  const [showEventScreen, setShowEventScreen] = useState<boolean>(false);
   const [mainGameScreen, setMainGameScreen] = useState<MainGameScreens>(MainGameScreens.MAP);
   
   useEffect(() => {
@@ -366,14 +367,14 @@ function App() {
         <ItemFactoryContext.Provider value={itemFactoryContext}>
           <ProgressionContext.Provider value={{flags:progressionFlags, setFlags:setProgressionFlags}}>
             <div className="App">
-              {/* {<EventParent></EventParent>} */}
               {mainGameScreen == MainGameScreens.COMBAT && <CombatParent></CombatParent>}
               {mainGameScreen == MainGameScreens.CARAVAN && <CaravanParent inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers} 
                 explorationInventory={explorationInventory}
                 setExplorationInventory={setExplorationInventory}
                 setMainGameScreen={setMainGameScreen}
               ></CaravanParent>}
-              {mainGameScreen == MainGameScreens.MAP && <MapParent></MapParent>}
+              {mainGameScreen == MainGameScreens.MAP && <MapParent setShowEventScreen={setShowEventScreen}></MapParent>}
+              {showEventScreen && <EventParent></EventParent>}
             </div>
           </ProgressionContext.Provider>
         </ItemFactoryContext.Provider>

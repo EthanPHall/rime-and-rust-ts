@@ -6,6 +6,7 @@ import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
 import DifficultyBrackets from "./DifficultyBrackets";
 import explorationLocationData from "../../data/exploration/exploration-location-data.json";
+import RimeEvent from "../events/RimeEvent";
 
 class ChunkMap implements IMap{
     private factory: IMapLocationFactory;
@@ -69,6 +70,20 @@ class ChunkMap implements IMap{
         });
     }
 
+    getChunk(position:Vector2){
+        return this.chunks[Math.floor(position.y / this.chunkDimensions.y)][Math.floor(position.x / this.chunkDimensions.x)];
+    }
+    getPositionInChunk(position:Vector2){
+        return new Vector2(position.x % this.chunkDimensions.x, position.y % this.chunkDimensions.y);
+    }
+
+    getEventToStart(position: Vector2): RimeEvent | null {
+        //Get which chunk the position is in
+        const chunk = this.getChunk(position);
+
+        return chunk.getEventToStart(this.getPositionInChunk(position));
+    }
+
     get2DRepresentation(): IMapLocationVisual[][] {
         if(this.representation){
             return this.representation;
@@ -99,10 +114,10 @@ class ChunkMap implements IMap{
 
     private getChunkAndPosition(position: Vector2): {chunk:MapChunk, position:Vector2} {
         //Given the location position, we need to find the chunk that contains it
-        const chunk = this.chunks[Math.floor(position.y / this.chunkDimensions.y)][Math.floor(position.x / this.chunkDimensions.x)];
+        const chunk = this.getChunk(position);
 
         //Find the position of the location within the chunk
-        const chunkPosition = new Vector2(position.x % this.chunkDimensions.x, position.y % this.chunkDimensions.y);
+        const chunkPosition = this.getPositionInChunk(position);
 
         return {chunk:chunk, position: chunkPosition};
     }
