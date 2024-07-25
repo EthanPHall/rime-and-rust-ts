@@ -1,0 +1,28 @@
+{
+    "allEvents":[
+        {
+            "key":"easy-1-safe",
+            "name": "An empty house"
+        },
+        {
+            "key":"easy-1-combat-1",
+            "name": "In through the roof"
+        },
+        {
+            "key":"easy-1-combat-2",
+            "name": "A rusted squatter"
+        },
+        {
+            "key":"variable-1-safe",
+            "name": "Long since deserted"
+        },
+        {
+            "key":"variable-1-combat-1",
+            "name": "Dust, bones, and Rusted"
+        },
+        {
+            "key":"variable-1-combat-2",
+            "name": "A fierce guardian"
+        }
+    ]
+}

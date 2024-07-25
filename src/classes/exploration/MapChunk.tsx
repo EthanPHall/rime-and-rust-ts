@@ -5,7 +5,7 @@ import IMapLocationFactory from "./IMapLocationFactory";
 import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
 import locationData from "../../data/exploration/exploration-location-data.json";
-import RimeEvent from "../events/RimeEvent";
+import RimeEventJSON from "../events/RimeEvent";
 
 class MapChunk implements IMap{
 
@@ -64,7 +64,7 @@ class MapChunk implements IMap{
             }
         }
     }
-    getEventToStart(position: Vector2): RimeEvent | null {
+    getEventToStart(position: Vector2): RimeEventJSON | null {
         return this.locations[position.y][position.x].getEventToStart();
     }
 
@@ -148,10 +148,10 @@ class MapChunk implements IMap{
 
                 let chunkPosition = new Vector2(Math.floor(Math.random() * this.dimensions.x), Math.floor(Math.random() * this.dimensions.y));
                 
-                //TODO: Make a slightly more sophisticated way to ensure that the posiion is not already taken.
-                while(!locationData.backgroundLocations.includes(this.getLocationData(chunkPosition).getKey())){
-                    chunkPosition = new Vector2(Math.floor(Math.random() * this.dimensions.x), Math.floor(Math.random() * this.dimensions.y));
-                }
+                // //TODO: Make a slightly more sophisticated way to ensure that the posiion is not already taken. Actually, changing this is necessary because doing it this way led to an infinite loop.
+                // while(!locationData.backgroundLocations.includes(this.getLocationData(chunkPosition).getKey())){
+                //     chunkPosition = new Vector2(Math.floor(Math.random() * this.dimensions.x), Math.floor(Math.random() * this.dimensions.y));
+                // }
 
                 const overallPosition = new Vector2(this.position.x * this.dimensions.x + chunkPosition.x, this.position.y * this.dimensions.y + chunkPosition.y);
 

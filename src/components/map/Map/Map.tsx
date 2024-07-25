@@ -11,10 +11,10 @@ import IMapLocationVisual from '../../../classes/exploration/IMapLocationVisual'
 import useDirectionHandler from '../../../hooks/misc/useDirectionHandler';
 import Directions, { DirectionsUtility } from '../../../classes/utility/Directions';
 import { TargetAndTransition } from 'framer-motion';
-import RimeEvent from '../../../classes/events/RimeEvent';
+import RimeEventJSON from '../../../classes/events/RimeEvent';
 
 interface MapProps {
-  setShowEventScreen: (shouldShow:boolean) => void;
+  setCurrentEvent: React.Dispatch<React.SetStateAction<RimeEventJSON | null>>
 }
 
 class ExplorationPlayer{
@@ -65,7 +65,7 @@ class CurrentAndBaseElement{
 }
 
 const Map: FC<MapProps> = (
-  {setShowEventScreen}
+  {setCurrentEvent}
 ) => {
   const [mapLocationFactory] = useState<IMapLocationFactory>(
     new MapLocationFactoryJSONSimplexNoise(0)
@@ -109,10 +109,8 @@ const Map: FC<MapProps> = (
     //?TODO: I should probaly just make mapRepresentation a state variable, but whatever, I can do that later.
     setPreventMovementDelay((current) => {return !current});
 
-    const eventToStart:RimeEvent|null = map.getEventToStart(player.position);
-    if(eventToStart){
-      // setShowEventScreen(true);
-    }
+    const eventToStart:RimeEventJSON|null = map.getEventToStart(player.position);
+    setCurrentEvent(eventToStart);
   }, [player])
 
   useEffect(() => {

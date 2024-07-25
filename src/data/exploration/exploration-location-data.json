@@ -35,7 +35,25 @@
             "key": "variable-1",
             "name": "bunker",
             "description": "Bunker",
-            "difficultyBrackets": [0,1,2,3]
+            "difficultyBrackets": [0,1]
+        },
+        {
+            "key": "variable-2",
+            "name": "bunker",
+            "description": "Bunker",
+            "difficultyBrackets": [2]
+        },
+        {
+            "key": "variable-3",
+            "name": "bunker",
+            "description": "Bunker",
+            "difficultyBrackets": [2,3]
+        },
+        {
+            "key": "variable-4",
+            "name": "bunker",
+            "description": "Bunker",
+            "difficultyBrackets": [4]
         },
         {
             "key": "medium-1",
@@ -59,14 +77,14 @@
             "key": "hard-2",
             "name": "Factory",
             "description": "Factory",
-            "difficultyBrackets": [4]
+            "difficultyBrackets": [4, 5]
         }
     ],
-    "difficultyBrackets": 5,
-    "percentagesOfSpaceToCover":[15],
-    "percentagesOfFloatingLocations":[5, 5, 10, 10, 10],
-    "chancesToSkipFloatingLocations":[80, 70, 60, 60, 60],
-    "chanceToSkipLocationGeneration":40,
+    "difficultyBrackets": 6,
+    "percentagesOfSpaceToCover":[9],
+    "percentagesOfFloatingLocations":[5, 5, 10, 10, 10, 15],
+    "chancesToSkipFloatingLocations":[80, 70, 60, 60, 60, 40],
+    "chanceToSkipLocationGeneration":25,
     "allKeyNames":[
         {
             "key":"background-location-1",
@@ -86,6 +104,18 @@
         },
         {
             "key":"variable-1",
+            "name":"bunker"
+        },
+        {
+            "key":"variable-2",
+            "name":"bunker"
+        },
+        {
+            "key":"variable-3",
+            "name":"bunker"
+        },
+        {
+            "key":"variable-4",
             "name":"bunker"
         },
         {
@@ -142,6 +172,27 @@
             }
         },
         {
+            "key":"variable-2",
+            "visualInfo":{
+                "symbol":"b",
+                "styles":"lower"
+            }
+        },
+        {
+            "key":"variable-3",
+            "visualInfo":{
+                "symbol":"b",
+                "styles":"lower"
+            }
+        },
+        {
+            "key":"variable-4",
+            "visualInfo":{
+                "symbol":"b",
+                "styles":"lower"
+            }
+        },
+        {
             "key":"medium-1",
             "visualInfo":{
                 "symbol":"c",
@@ -168,6 +219,42 @@
                 "symbol":"f",
                 "styles":"lower"
             }
+        }
+    ],
+    "groundedEventsByKey":[
+        {
+            "key":"easy-1",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"easy-1-safe",
+                    "chance": 20
+                },
+                {
+                    "eventKey":"easy-1-combat-1",
+                    "chance": 40
+                },
+                {
+                    "eventKey":"easy-1-combat-2",
+                    "chance": 40
+                }
+            ]
+        },
+        {
+            "key":"variable-1",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"variable-1-safe",
+                    "chance": 20
+                },
+                {
+                    "eventKey":"variable-1-combat-1",
+                    "chance": 40
+                },
+                {
+                    "eventKey":"variable-1-combat-2",
+                    "chance": 40
+                }
+            ]
         }
     ]
 }

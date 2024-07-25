@@ -3,33 +3,52 @@ import IMapLocation from "./IMapLocation";
 import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
 import MapLocationVisualJSON from "./MapLocationVisualJSON";
-import RimeEvent from "../events/RimeEvent";
+import RimeEventJSON from "../events/RimeEvent";
+import locationData from "../../data/exploration/exploration-location-data.json"
 
 class MapLocationJSON implements IMapLocation{
     private position: Vector2;
-    private name: string;
     private key: string;
+    private name: string;
     private cleared: boolean;
     private revealed: boolean;
     private floating: boolean;
 
     constructor(
         position: Vector2,
-        name: string,
         key: string,
+        name: string,
         cleared: boolean,
         revealed: boolean,
         floating: boolean
     ){
         this.position = position;
-        this.name = name;
         this.key = key;
+        this.name = name;
         this.cleared = cleared;
         this.revealed = revealed;
         this.floating = floating;
     }
-    getEventToStart(): RimeEvent | null {
-        return Math.random() * 10 < 1 ? new RimeEvent() : null;
+    getEventToStart(): RimeEventJSON | null {
+        const event = locationData.groundedEventsByKey.find((keyEvent) => {
+            return keyEvent.key == this.key;
+        })
+        
+        if(!event){
+            return null;
+        }
+
+        const chance = Math.random() * 100;
+        let accumulator = 0;
+        for(let i = 0; i < event.eventKeyChancePairs.length; i++){
+            const currentPair = event.eventKeyChancePairs[i];
+            accumulator += currentPair.chance;
+            if(chance < accumulator){
+                return new RimeEventJSON(currentPair.eventKey);
+            }
+        }
+
+        return null;
     }
 
     getVisual(): IMapLocationVisual {
@@ -60,7 +79,7 @@ class MapLocationJSON implements IMapLocation{
         this.position = position;
     }
     getData(): MapLocationData {
-        return new MapLocationData(this.position, this.name, this.key, this.cleared, this.revealed, this.floating);
+        return new MapLocationData(this.position, this.key, this.name, this.cleared, this.revealed, this.floating);
     }
     getName(): string {
         return this.name;

@@ -13,6 +13,7 @@ import useRefState from './hooks/combat/useRefState';
 import unconsumedCosts from './data/caravan/unconsumed-costs.json';
 import { ISettingsManager, SettingsContext, SettingsContextType, SettingsManager } from './context/misc/SettingsContext';
 import useExplorationInventory from './hooks/caravan/useExplorationInventory';
+import RimeEventJSON from './classes/events/RimeEvent';
 
 type ProgressionFlagsSeed = {
   [key: string]: boolean;
@@ -77,7 +78,7 @@ function App() {
 
   const sledsListOverrideForInventoryEffect = useRef<Sled[]|null>(null);
 
-  const [showEventScreen, setShowEventScreen] = useState<boolean>(false);
+  const [currentEvent, setCurrentEvent] = useState<RimeEventJSON|null>(null);
   const [mainGameScreen, setMainGameScreen] = useState<MainGameScreens>(MainGameScreens.MAP);
   
   useEffect(() => {
@@ -373,8 +374,8 @@ function App() {
                 setExplorationInventory={setExplorationInventory}
                 setMainGameScreen={setMainGameScreen}
               ></CaravanParent>}
-              {mainGameScreen == MainGameScreens.MAP && <MapParent setShowEventScreen={setShowEventScreen}></MapParent>}
-              {showEventScreen && <EventParent></EventParent>}
+              {mainGameScreen == MainGameScreens.MAP && <MapParent setCurrentEvent={setCurrentEvent}></MapParent>}
+              {currentEvent != null && <EventParent event={currentEvent}></EventParent>}
             </div>
           </ProgressionContext.Provider>
         </ItemFactoryContext.Provider>

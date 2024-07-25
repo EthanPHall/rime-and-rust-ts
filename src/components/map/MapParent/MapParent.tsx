@@ -3,18 +3,19 @@ import './MapParent.css';
 import MessagesParent from '../../messages/MessagesParent/MessagesParent';
 import CaravanSectionValuables from '../../caravan/CaravanSectionValuables/CaravanSectionValuables';
 import Map from '../Map/Map';
+import RimeEventJSON from '../../../classes/events/RimeEvent';
 
 interface MapParentProps {
-  setShowEventScreen: (shouldShow:boolean) => void;
+  setCurrentEvent: React.Dispatch<React.SetStateAction<RimeEventJSON | null>>
 }
 
 const MapParent: FC<MapParentProps> = (
-  {setShowEventScreen}
+  {setCurrentEvent}
 ) => (
   <div className="map-parent" data-testid="map-parent">
       <div className='grid-parent'>
         <MessagesParent></MessagesParent>
-        <Map setShowEventScreen={setShowEventScreen}></Map>
+        <Map setCurrentEvent={setCurrentEvent}></Map>
         {/* <ExplorationSectionValuables></ExplorationSectionValuables> */}
       </div>
   </div>
