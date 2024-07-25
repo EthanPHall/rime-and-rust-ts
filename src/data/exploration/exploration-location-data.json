@@ -35,7 +35,7 @@
             "key": "variable-1",
             "name": "bunker",
             "description": "Bunker",
-            "difficultyBrackets": [0,1]
+            "difficultyBrackets": [1]
         },
         {
             "key": "variable-2",
@@ -47,13 +47,19 @@
             "key": "variable-3",
             "name": "bunker",
             "description": "Bunker",
-            "difficultyBrackets": [2,3]
+            "difficultyBrackets": [3]
         },
         {
             "key": "variable-4",
             "name": "bunker",
             "description": "Bunker",
             "difficultyBrackets": [4]
+        },
+        {
+            "key": "variable-5",
+            "name": "bunker",
+            "description": "Bunker",
+            "difficultyBrackets": []
         },
         {
             "key": "medium-1",
@@ -68,6 +74,18 @@
             "difficultyBrackets": [1, 2]
         },
         {
+            "key": "medium-3",
+            "name": "city",
+            "description": "City",
+            "difficultyBrackets": [4]
+        },
+        {
+            "key": "medium-4",
+            "name": "caravan",
+            "description": "Caravan train",
+            "difficultyBrackets": [3, 4]
+        },
+        {
             "key": "hard-1",
             "name": "Military Base",
             "description": "Military Base",
@@ -77,15 +95,13 @@
             "key": "hard-2",
             "name": "Factory",
             "description": "Factory",
-            "difficultyBrackets": [5]
+            "difficultyBrackets": [6]
         }
     ],
-    "difficultyBrackets": 6,
+    "difficultyBrackets": 7,
     "explorableLocationsTotalPercentage": 6,
-    "percentagesByDifficultyBracket":[5,10,25,30,20,10],
-    "chancesToBeFloating":[0, 10, 15, 20, 35, 50],
-    "chancesToSkipFloatingLocations":[80, 70, 60, 60, 60, 40],
-    "chanceToSkipLocationGeneration":25,
+    "percentagesByDifficultyBracket":[3,7,14,22,22,7,5],
+    "chancesToBeFloating":[0, 5, 10, 15, 20, 35, 55],
     "allKeyNames":[
         {
             "key":"background-location-1",
@@ -120,11 +136,23 @@
             "name":"bunker"
         },
         {
+            "key":"variable-5",
+            "name":"bunker"
+        },
+        {
             "key":"medium-1",
             "name":"city"
         },
         {
             "key":"medium-2",
+            "name":"caravan"
+        },
+        {
+            "key":"medium-3",
+            "name":"city"
+        },
+        {
+            "key":"medium-4",
             "name":"caravan"
         },
         {
@@ -194,6 +222,13 @@
             }
         },
         {
+            "key":"variable-5",
+            "visualInfo":{
+                "symbol":"b",
+                "styles":"lower"
+            }
+        },
+        {
             "key":"medium-1",
             "visualInfo":{
                 "symbol":"c",
@@ -202,6 +237,20 @@
         },
         {
             "key":"medium-2",
+            "visualInfo":{
+                "symbol":"t",
+                "styles":"lower"
+            }
+        },
+        {
+            "key":"medium-3",
+            "visualInfo":{
+                "symbol":"c",
+                "styles":"lower"
+            }
+        },
+        {
+            "key":"medium-4",
             "visualInfo":{
                 "symbol":"t",
                 "styles":"lower"
