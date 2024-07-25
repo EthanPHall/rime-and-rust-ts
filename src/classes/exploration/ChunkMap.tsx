@@ -7,6 +7,7 @@ import IMapLocationVisual from "./IMapLocationVisual";
 import DifficultyBrackets from "./DifficultyBrackets";
 import explorationLocationData from "../../data/exploration/exploration-location-data.json";
 import RimeEventJSON from "../events/RimeEvent";
+import ArrayScrambler from "../utility/ArrayScrambler";
 
 class ChunkMap implements IMap{
     private factory: IMapLocationFactory;
@@ -63,11 +64,69 @@ class ChunkMap implements IMap{
         }
 
         const difficultyBrackets:DifficultyBrackets = new DifficultyBrackets(maxDistanceFromCenter, explorationLocationData.difficultyBrackets);
-        this.chunks.forEach(chunkRow => {
-            chunkRow.forEach(chunk => {
-                chunk.generateLocations(difficultyBrackets.getDifficultyBracket(chunk.getDistanceFromCenter()));
+        this.generateLocations(difficultyBrackets);
+    }
+
+    private generateLocations(difficultyBrackets:DifficultyBrackets){
+        //Get how many total locations there are
+        const totalLocationsCount:number =  this.chunkDimensions.x * this.chunkDimensions.y * this.dimensions.x * this.dimensions.y;
+        
+        //Get how many total explorable locations there should be
+        const totalLocationsToSpawnCount:number = Math.floor(totalLocationsCount * explorationLocationData.explorableLocationsTotalPercentage / 100);
+        
+        //Make a new list with an entry for each difficulty bracket. Determine how many locations each bracket should spawn.
+        const locationsToSpawnByBracket:number[] = [];
+        for(let i = 0; i < explorationLocationData.difficultyBrackets; i++){
+            const percentages = explorationLocationData.percentagesByDifficultyBracket;
+            locationsToSpawnByBracket.push(Math.floor(totalLocationsToSpawnCount * percentages[Math.min(i, percentages.length - 1)] / 100));
+        }
+        
+        //Divide chunks into lists, filtered by difficulty brackets
+        const chunksByDifficultyBracket:MapChunk[][] = [];
+        for(let i = 0; i < explorationLocationData.difficultyBrackets; i++){ chunksByDifficultyBracket.push([]); }
+
+        this.chunks.forEach((row) => {
+            row.forEach((chunk) => {
+                const bracketForThisChunk = difficultyBrackets.getDifficultyBracket(chunk.getDistanceFromCenter());
+                
+                chunksByDifficultyBracket[bracketForThisChunk].push(chunk);
             });
+        })
+        
+        //Foreach chunk list:
+        chunksByDifficultyBracket.forEach((chunkList, bracket) => {
+            //Scramble the chunk list
+            const scrambledList:MapChunk[] = ArrayScrambler.scrambleArray(chunkList);
+
+            //Get the number of locations to spawn for this difficulty bracket
+            let locationsToGo:number = locationsToSpawnByBracket[bracket];
+
+            //Make a new list to keep track of how many locations each chunk should spawn. It should have a length equal to the number of chunks in the chunk list, and be initialized with 0's
+            let locationsPerChunk:number[] = Array(chunkList.length).fill(0);
+            
+            //Loop through that new list of numbers until the locations to spawn count reaches 0
+            while(locationsToGo > 0){
+                for(let i = 0; i < locationsPerChunk.length; i++){
+                    //Randomly choose between a max and a min number. Take that number, or the remaining number that was distrubuted earlier, whever is less, and add it to the list of numbers at the current index
+                    const toSpawn:number = Math.min( Math.floor(Math.random() * 2), locationsToGo );
+                    locationsPerChunk[i] += toSpawn;   
+                    
+                    //Keep track of how many have been added. 
+                    locationsToGo -= toSpawn;
+
+                    //If the number added matches the number of locations for this bracket, break.
+                    if(locationsToGo <= 0){
+                        break;
+                    }
+                }
+            }
+
+            //Foreach chunk in the scrambled list, have that chunk generate a number of locations equal to the current index in the "how many locations each chunk should spawn" list
+            scrambledList.forEach((chunk, i) => {
+                chunk.generateLocations(difficultyBrackets.getDifficultyBracket(chunk.getDistanceFromCenter()), locationsPerChunk[i]);
+            })
         });
+        
     }
 
     getChunk(position:Vector2){

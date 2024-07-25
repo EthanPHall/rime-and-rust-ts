@@ -59,30 +59,31 @@
             "key": "medium-1",
             "name": "city",
             "description": "City",
-            "difficultyBrackets": [1,2]
+            "difficultyBrackets": [2, 3]
         },
         {
             "key": "medium-2",
             "name": "caravan",
             "description": "Caravan train",
-            "difficultyBrackets": [1]
+            "difficultyBrackets": [1, 2]
         },
         {
             "key": "hard-1",
             "name": "Military Base",
             "description": "Military Base",
-            "difficultyBrackets": [3, 4]
+            "difficultyBrackets": [4, 5]
         },
         {
             "key": "hard-2",
             "name": "Factory",
             "description": "Factory",
-            "difficultyBrackets": [4, 5]
+            "difficultyBrackets": [5]
         }
     ],
     "difficultyBrackets": 6,
-    "percentagesOfSpaceToCover":[9],
-    "percentagesOfFloatingLocations":[5, 5, 10, 10, 10, 15],
+    "explorableLocationsTotalPercentage": 6,
+    "percentagesByDifficultyBracket":[5,10,25,30,20,10],
+    "chancesToBeFloating":[0, 10, 15, 20, 35, 50],
     "chancesToSkipFloatingLocations":[80, 70, 60, 60, 60, 40],
     "chanceToSkipLocationGeneration":25,
     "allKeyNames":[

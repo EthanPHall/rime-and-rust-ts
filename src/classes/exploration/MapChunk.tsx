@@ -6,6 +6,7 @@ import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
 import locationData from "../../data/exploration/exploration-location-data.json";
 import RimeEventJSON from "../events/RimeEvent";
+import ArrayScrambler from "../utility/ArrayScrambler";
 
 class MapChunk implements IMap{
 
@@ -108,33 +109,19 @@ class MapChunk implements IMap{
         return new Vector2(Math.floor(this.dimensions.x/2), Math.floor(this.dimensions.y/2));
     }
 
-    generateLocations(difficulty:number){
+    generateLocations(difficulty:number, totalLocations:number){
         //Get a list of locations for the given difficulty level
         const potentialLocations =  locationData.explorationLocations.filter((location) => {
             return location.difficultyBrackets.includes(difficulty);
         })
 
         //scramble the potential locations
-        const potentialLocationsScrambled = [];
-        const validIndices:number[] = [];
-        for(let i = 0; i < potentialLocations.length; i++){
-            validIndices.push(i);
-        }
-        for(let i = 0; i < potentialLocations.length; i++){
-            const chosenIndex = Math.floor(Math.random() * validIndices.length);
-            potentialLocationsScrambled.push(potentialLocations[chosenIndex]);
-            validIndices.filter((index) => {
-                return index != chosenIndex;
-            })
-        }
-
-        //How many locations to spawn?
-        const whichPercentageToUse = Math.floor(Math.random() * locationData.percentagesOfSpaceToCover.length);
-        const percentToCover = locationData.percentagesOfSpaceToCover[whichPercentageToUse] / 100;
-        const totalLocations:number = Math.floor(this.dimensions.x * this.dimensions.y * percentToCover);
+        const potentialLocationsScrambled = ArrayScrambler.scrambleArray(potentialLocations);
 
         //Create the locations
         const locationsCreated:IMapLocation[] = [];
+        const chanceToFloat:number = locationData.chancesToBeFloating?.[difficulty] || 0;
+        console.log(chanceToFloat);
         potentialLocationsScrambled.forEach((potentialLocation, i) => {
             const locationsToCreate = 
                 (i == potentialLocationsScrambled.length - 1) ? 
@@ -142,9 +129,9 @@ class MapChunk implements IMap{
                     Math.floor(Math.random() * (totalLocations - locationsCreated.length));
 
             for(let i = 0; i < locationsToCreate; i++){
-                if(Math.random() * 100 < locationData.chanceToSkipLocationGeneration){
-                    continue;
-                }
+                // if(Math.random() * 100 < locationData.chanceToSkipLocationGeneration){
+                //     continue;
+                // }
 
                 let chunkPosition = new Vector2(Math.floor(Math.random() * this.dimensions.x), Math.floor(Math.random() * this.dimensions.y));
                 
@@ -158,19 +145,13 @@ class MapChunk implements IMap{
                 const newLocation:IMapLocation = this.factory.createExactLocation(potentialLocation.key, overallPosition);
                 this.locations[chunkPosition.x][chunkPosition.y] = newLocation;
 
+                if(Math.random() * 100 < chanceToFloat){
+                    newLocation.setFloating();
+                }
+
                 locationsCreated.push(newLocation);
             }
         })
-
-        //Set the floating flag
-        const percentagesThatShouldFloat:number[] = locationData.percentagesOfFloatingLocations;
-        const percentToUse:number = percentagesThatShouldFloat?.[difficulty] / 100 || 0;
-        const totalFloatingLocations:number = Math.ceil(locationsCreated.length * percentToUse);
-        for(let i = 0; i < totalFloatingLocations; i++){
-            if(Math.random() * 100 >= locationData.chancesToSkipFloatingLocations[difficulty]){
-                locationsCreated[Math.floor(Math.random() * locationsCreated.length)].setFloating();
-            }
-        } 
     }
 }
 
