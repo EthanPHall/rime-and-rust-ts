@@ -11,7 +11,7 @@ import IMapLocationVisual from '../../../classes/exploration/IMapLocationVisual'
 import useDirectionHandler from '../../../hooks/misc/useDirectionHandler';
 import Directions, { DirectionsUtility } from '../../../classes/utility/Directions';
 import { TargetAndTransition } from 'framer-motion';
-import RimeEventJSON from '../../../classes/events/RimeEvent';
+import RimeEventJSON from '../../../classes/events/RimeEventJSON';
 
 interface MapProps {
   setCurrentEvent: React.Dispatch<React.SetStateAction<RimeEventJSON | null>>

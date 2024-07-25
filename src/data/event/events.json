@@ -2,19 +2,48 @@
     "allEvents":[
         {
             "key":"easy-1-safe",
-            "name": "An empty house"
+            "name": "An empty house",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "eventActionKey":"goto",
+                            "targetScene": 2
+                        }
+                    ]
+                },
+                {
+                    "sceneKey":2,
+                    "text": "",
+                    "type":"rewards",
+                    "options":[
+                        {
+                            "eventActionKey":"close"
+                        }
+                    ],
+                    "rewards":[
+                        {
+                            "itemKey":"Scrap",
+                            "range": {"min": 1, "max": 3}
+                        }
+                    ]
+                }
+            ]
         },
         {
             "key":"easy-1-combat-1",
-            "name": "In through the roof"
+            "name": "A buried house"
         },
         {
             "key":"easy-1-combat-2",
-            "name": "A rusted squatter"
+            "name": "A frozen hovel"
         },
         {
             "key":"variable-1-safe",
-            "name": "Long since deserted"
+            "name": "A deserted bunker"
         },
         {
             "key":"variable-1-combat-1",

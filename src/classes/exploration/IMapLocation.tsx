@@ -1,7 +1,7 @@
 import Vector2 from "../utility/Vector2";
 import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
-import RimeEventJSON from "../events/RimeEvent";
+import RimeEventJSON from "../events/RimeEventJSON";
 
 interface IMapLocation {
     getVisual():IMapLocationVisual;

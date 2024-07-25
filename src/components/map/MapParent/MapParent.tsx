@@ -3,7 +3,7 @@ import './MapParent.css';
 import MessagesParent from '../../messages/MessagesParent/MessagesParent';
 import CaravanSectionValuables from '../../caravan/CaravanSectionValuables/CaravanSectionValuables';
 import Map from '../Map/Map';
-import RimeEventJSON from '../../../classes/events/RimeEvent';
+import RimeEventJSON from '../../../classes/events/RimeEventJSON';
 
 interface MapParentProps {
   setCurrentEvent: React.Dispatch<React.SetStateAction<RimeEventJSON | null>>

@@ -6,7 +6,7 @@ import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
 import DifficultyBrackets from "./DifficultyBrackets";
 import explorationLocationData from "../../data/exploration/exploration-location-data.json";
-import RimeEventJSON from "../events/RimeEvent";
+import RimeEventJSON from "../events/RimeEventJSON";
 import ArrayScrambler from "../utility/ArrayScrambler";
 
 class ChunkMap implements IMap{

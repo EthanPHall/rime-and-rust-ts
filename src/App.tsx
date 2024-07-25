@@ -13,7 +13,7 @@ import useRefState from './hooks/combat/useRefState';
 import unconsumedCosts from './data/caravan/unconsumed-costs.json';
 import { ISettingsManager, SettingsContext, SettingsContextType, SettingsManager } from './context/misc/SettingsContext';
 import useExplorationInventory from './hooks/caravan/useExplorationInventory';
-import RimeEventJSON from './classes/events/RimeEvent';
+import RimeEventJSON from './classes/events/RimeEventJSON';
 
 type ProgressionFlagsSeed = {
   [key: string]: boolean;

@@ -5,7 +5,7 @@ import IMapLocationFactory from "./IMapLocationFactory";
 import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
 import locationData from "../../data/exploration/exploration-location-data.json";
-import RimeEventJSON from "../events/RimeEvent";
+import RimeEventJSON from "../events/RimeEventJSON";
 import ArrayScrambler from "../utility/ArrayScrambler";
 
 class MapChunk implements IMap{

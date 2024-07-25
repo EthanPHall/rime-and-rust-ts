@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import './EventSection.css';
 import LootPicker from '../LootPicker/LootPicker';
-import RimeEventJSON from '../../../classes/events/RimeEvent';
+import RimeEventJSON from '../../../classes/events/RimeEventJSON';
 
 interface EventSectionProps {
   event:RimeEventJSON

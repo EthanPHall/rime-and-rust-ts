@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import './EventParent.css';
 import EventSection from '../EventSection/EventSection';
 import InventoryPicker from '../InventoryPicker/InventoryPicker';
-import RimeEventJSON from '../../../classes/events/RimeEvent';
+import RimeEventJSON from '../../../classes/events/RimeEventJSON';
 
 interface EventParentProps {
   event:RimeEventJSON

@@ -3,7 +3,7 @@ import IMapLocation from "./IMapLocation";
 import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
 import MapLocationVisualJSON from "./MapLocationVisualJSON";
-import RimeEventJSON from "../events/RimeEvent";
+import RimeEventJSON from "../events/RimeEventJSON";
 import locationData from "../../data/exploration/exploration-location-data.json"
 
 class MapLocationJSON implements IMapLocation{
