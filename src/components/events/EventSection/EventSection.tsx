@@ -40,14 +40,15 @@ const EventSection: FC<EventSectionProps> = (
   <div className="event-section" data-testid="event-section">
     <div className='title'>{currentEvent.getName()}</div>
     <div className='content-section'>
-      {currentScene.getText()}
-      {/* TODO: Refactor the ExplorationResourcesPicker so the semantics are more general */}
-      {currentScene.getType() == eventRawData.sceneTypes.rewards && rewardsInventory && <InventoryTransferer
-        toInventory={explorationInventory}
-        setToInventory={setExplorationInventory}
-        fromInventory={rewardsInventory}
-        setFromInventory={setRewardsInventory as React.Dispatch<React.SetStateAction<UniqueItemQuantitiesList>>}
-      ></InventoryTransferer>}
+      <div className='content-text'>{currentScene.getText()}</div>
+      <div className='content-transfer'>
+        {currentScene.getType() == eventRawData.sceneTypes.rewards && rewardsInventory && <InventoryTransferer
+          toInventory={explorationInventory}
+          setToInventory={setExplorationInventory}
+          fromInventory={rewardsInventory}
+          setFromInventory={setRewardsInventory as React.Dispatch<React.SetStateAction<UniqueItemQuantitiesList>>}
+        ></InventoryTransferer>}
+      </div>
     </div>
     <div className='buttons'>
       <button>Option 1</button>

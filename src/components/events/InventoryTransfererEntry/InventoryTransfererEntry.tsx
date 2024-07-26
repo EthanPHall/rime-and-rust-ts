@@ -43,14 +43,14 @@ interface InventoryTransfererEntryProps {
         <div className='increment-decrement'>
           <button className='resource-increment' onClick={
             () => {
-              transferItems(fromInventory, toInventory, itemToDisplay.getKey(), 1);
+              transferItems(toInventory, fromInventory, itemToDisplay.getKey(), 1);
               setFromInventory(fromInventory.clone());
               setToInventory(toInventory.clone());
             }
           }>+</button>
           <button className='resource-decrement' onClick={
             () => {
-              transferItems(toInventory, fromInventory, itemToDisplay.getKey(), 1);
+              transferItems(fromInventory, toInventory, itemToDisplay.getKey(), 1);
               setFromInventory(fromInventory.clone());
               setToInventory(toInventory.clone());
             }
@@ -59,14 +59,14 @@ interface InventoryTransfererEntryProps {
         <div className='increment-decrement'>
           <button className='resource-increment-large' onClick={
             () => {
-              transferItems(fromInventory, toInventory, itemToDisplay.getKey(), 5);
+              transferItems(toInventory, fromInventory, itemToDisplay.getKey(), 5);
               setFromInventory(fromInventory.clone());
               setToInventory(toInventory.clone());
             }
           }>+</button>
           <button className='resource-decrement-large' onClick={
             () => {
-              transferItems(toInventory, fromInventory, itemToDisplay.getKey(), 5);
+              transferItems(fromInventory, toInventory, itemToDisplay.getKey(), 5);
               setFromInventory(fromInventory.clone());
               setToInventory(toInventory.clone());
             }

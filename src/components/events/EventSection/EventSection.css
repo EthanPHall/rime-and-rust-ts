@@ -29,4 +29,18 @@
 .event-section .content-section{
     height: 70%;
     width: 80%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.event-section .content-transfer{
+    height: 60%;
+    width: 100%;
+}
+.event-section .content-text{
+    height: 40%;
+    width: 100%;
 }
