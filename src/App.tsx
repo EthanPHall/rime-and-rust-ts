@@ -14,6 +14,7 @@ import unconsumedCosts from './data/caravan/unconsumed-costs.json';
 import { ISettingsManager, SettingsContext, SettingsContextType, SettingsManager } from './context/misc/SettingsContext';
 import useExplorationInventory from './hooks/caravan/useExplorationInventory';
 import RimeEventJSON from './classes/events/RimeEventJSON';
+import IMapLocation from './classes/exploration/IMapLocation';
 
 type ProgressionFlagsSeed = {
   [key: string]: boolean;
@@ -79,6 +80,7 @@ function App() {
   const sledsListOverrideForInventoryEffect = useRef<Sled[]|null>(null);
 
   const [currentEvent, setCurrentEvent] = useState<string|null>(null);
+  const [currentEventLocation, setCurrentEventLocation] = useState<IMapLocation|null>(null);
   const [mainGameScreen, setMainGameScreen] = useState<MainGameScreens>(MainGameScreens.MAP);
   
   useEffect(() => {
@@ -364,6 +366,11 @@ function App() {
     setCurrentEvent(null);
   }
 
+  const [locationToClear, setLocationToClear] = useState<IMapLocation|null>(null);
+  function clearEventLocation(){
+    setLocationToClear(currentEventLocation);
+  }
+
   return (
     <SettingsContext.Provider value={{settingsManager:settingsManagerContext, setSettingsManager:setSettingsManagerContext}}>
       <MessageHandlingContext.Provider value={{messageHandling:messageHandlingContext, setMessageHandling:setMessageHandlingContext}}>
@@ -376,8 +383,8 @@ function App() {
                 setExplorationInventory={setExplorationInventory}
                 setMainGameScreen={setMainGameScreen}
               ></CaravanParent>}
-              {mainGameScreen == MainGameScreens.MAP && <MapParent setCurrentEvent={setCurrentEvent}></MapParent>}
-              {currentEvent != null && <EventParent eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen}></EventParent>}
+              {mainGameScreen == MainGameScreens.MAP && <MapParent setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></MapParent>}
+              {currentEvent != null && <EventParent eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen} clearEventLocation={clearEventLocation}></EventParent>}
             </div>
           </ProgressionContext.Provider>
         </ItemFactoryContext.Provider>

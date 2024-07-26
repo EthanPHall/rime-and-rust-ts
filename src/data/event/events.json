@@ -6,7 +6,8 @@
     "actionTypes":{
         "goto":"goto",
         "close":"close",
-        "startCombat":"combat"
+        "startCombat":"combat",
+        "closeAndClearLocation":"closeAndClear"
     },
     "allEvents":[
         {
@@ -29,7 +30,7 @@
                     "type":"rewards",
                     "options":[
                         {
-                            "actionType":"close"
+                            "actionType":"closeAndClear"
                         }
                     ],
                     "rewards":[

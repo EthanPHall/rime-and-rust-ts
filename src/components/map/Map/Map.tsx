@@ -12,9 +12,13 @@ import useDirectionHandler from '../../../hooks/misc/useDirectionHandler';
 import Directions, { DirectionsUtility } from '../../../classes/utility/Directions';
 import { TargetAndTransition } from 'framer-motion';
 import RimeEventJSON from '../../../classes/events/RimeEventJSON';
+import IMapLocation from '../../../classes/exploration/IMapLocation';
 
 interface MapProps {
   setCurrentEvent: React.Dispatch<React.SetStateAction<string | null>>
+  setCurrentEventLocation: React.Dispatch<React.SetStateAction<IMapLocation | null>>
+  locationToClear:IMapLocation|null
+  setLocationToClear:React.Dispatch<React.SetStateAction<IMapLocation | null>>
 }
 
 class ExplorationPlayer{
@@ -65,7 +69,12 @@ class CurrentAndBaseElement{
 }
 
 const Map: FC<MapProps> = (
-  {setCurrentEvent}
+  {
+    setCurrentEvent,
+    setCurrentEventLocation,
+    locationToClear,
+    setLocationToClear
+  }
 ) => {
   const [mapLocationFactory] = useState<IMapLocationFactory>(
     new MapLocationFactoryJSONSimplexNoise(0)
@@ -110,6 +119,7 @@ const Map: FC<MapProps> = (
     //?TODO: I should probaly just make mapRepresentation a state variable, but whatever, I can do that later.
     setPreventMovementDelay((current) => {return !current});
     setCurrentEvent(map.getEventToStart(player.position));
+    setCurrentEventLocation(map.getLocation(player.position));
   }, [player])
 
   useEffect(() => {
@@ -134,6 +144,22 @@ const Map: FC<MapProps> = (
       return newPlayer;
     })
   }, [direction])
+
+  useEffect(() => {
+    if(locationToClear == null){
+      return;
+    }
+
+    setMap((previous) => {
+      const newMap = previous.clone();
+
+      newMap.setCleared(locationToClear.getPostition());
+
+      return newMap;
+    });
+
+    setLocationToClear(null);
+  }, [locationToClear]);
 
   function regenerateMap(){
     // setMap(

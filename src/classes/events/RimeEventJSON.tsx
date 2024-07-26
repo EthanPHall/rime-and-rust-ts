@@ -7,6 +7,7 @@ import IRimeEventAction from "./IRimeEventAction";
 import RimeEventActionGoto from "./RimeEventActionGoto";
 import RimeEventActionClose from "./RimeEventActionClose";
 import { IItemFactory, ItemQuantity, UniqueItemQuantitiesList } from "../caravan/Item";
+import RimeEventActionCloseAndClear from "./IRimeEventActionCloseAndClear";
 
 
 
@@ -17,13 +18,16 @@ class RimeEventJSON implements IRimeEvent{
     private itemFactory:IItemFactory;
     private setSceneId:(newId:number)=>void;
     private closeEventScreen:() =>void;
+    private clearEventLocation: () => void;
 
     constructor(
         key:string,
         itemFactory:IItemFactory,
         setSceneId:(newId:number)=>void,
-        closeEventScreen:() =>void
+        closeEventScreen:() =>void,
+        clearEventLocation: () => void
     ){
+        this.clearEventLocation = clearEventLocation;  
         this.closeEventScreen = closeEventScreen;
         this.setSceneId = setSceneId;
         this.itemFactory = itemFactory; 
@@ -48,6 +52,11 @@ class RimeEventJSON implements IRimeEvent{
                         case eventRawData.actionTypes.close:
                             options.push(new RimeEventActionClose(closeEventScreen));
                             break;
+                        case eventRawData.actionTypes.closeAndClearLocation:
+                            options.push(new RimeEventActionCloseAndClear(clearEventLocation, closeEventScreen));
+                            break;
+                        default:
+                            console.log("Unsupported scene action:", action.actionType);
                     }
                 });
                 
@@ -89,6 +98,8 @@ class RimeEventJSON implements IRimeEvent{
                             )
                         );
                         break;
+                    default:
+                        console.log("Unsupported scene type:", scene.type);
                 }
             });
         }

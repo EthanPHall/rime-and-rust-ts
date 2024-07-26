@@ -8,6 +8,7 @@ import DifficultyBrackets from "./DifficultyBrackets";
 import explorationLocationData from "../../data/exploration/exploration-location-data.json";
 import RimeEventJSON from "../events/RimeEventJSON";
 import ArrayScrambler from "../utility/ArrayScrambler";
+import IMapLocation from "./IMapLocation";
 
 class ChunkMap implements IMap{
     private factory: IMapLocationFactory;
@@ -186,6 +187,14 @@ class ChunkMap implements IMap{
         //Get the location data from the chunk
         return chunk.getLocationData(chunkPosition);
     }
+
+    getLocation(position: Vector2): IMapLocation {
+        const {chunk, position:chunkPosition} = this.getChunkAndPosition(position);
+
+        //Get the location from the chunk
+        return chunk.getLocation(chunkPosition);
+    }
+
     clone(): IMap {
         //Get a new empty ChunkMap
         const newMap = new ChunkMap(this.factory, new Vector2(0,0), new Vector2(0,0));

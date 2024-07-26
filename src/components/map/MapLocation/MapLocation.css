@@ -11,3 +11,8 @@
     top: 3px;
     position: relative;
 }
+
+.map-location + .cleared{
+    color:var(--exploration-map-cleared-color);
+    /* color:hotpink; */
+}

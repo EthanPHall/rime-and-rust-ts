@@ -79,6 +79,9 @@ class MapChunk implements IMap{
     getLocationData(position: Vector2): MapLocationData {
         return this.locations[position.y][position.x].getData();
     }
+    getLocation(position: Vector2): IMapLocation {
+        return this.locations[position.y][position.x];
+    }
     clone(): IMap {
         const newChunk = new MapChunk(this.factory, this.dimensions, this.position, this.distanceFromCenter);
         newChunk.setLocations(this.locations);
@@ -86,7 +89,9 @@ class MapChunk implements IMap{
         return newChunk;
     }
     setCleared(position: Vector2): void {
-        this.locations[position.y][position.x].setCleared();
+        console.log("In thing");
+
+        this.locations[position.x][position.y].setCleared();
     }
     setRevealed(position: Vector2): void {
         this.locations[position.y][position.x].setRevealed();

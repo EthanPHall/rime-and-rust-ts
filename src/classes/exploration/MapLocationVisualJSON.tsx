@@ -32,6 +32,10 @@ class MapLocationVisualJSON implements IMapLocationVisual{
                 }       
             };
         }
+
+        if(locationData.getCleared()){
+            this.styles += " cleared";
+        }
     }
 
     getSymbol(): string {

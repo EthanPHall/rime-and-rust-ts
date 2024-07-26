@@ -30,6 +30,10 @@ class MapLocationJSON implements IMapLocation{
         this.floating = floating;
     }
     getEventToStart(): string | null {
+        if(this.cleared){
+            return null;
+        }
+
         const event = locationData.groundedEventsByKey.find((keyEvent) => {
             return keyEvent.key == this.key;
         })
