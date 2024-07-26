@@ -51,8 +51,8 @@ const EventSection: FC<EventSectionProps> = (
       </div>
     </div>
     <div className='buttons'>
-      <button>Option 1</button>
-      <button>Option 2</button>
+      {currentScene.getOptions()?.[1] && <button onClick={() => {currentScene.getOptions()[1].execute()}}>Option 2</button>}
+      {currentScene.getOptions()?.[0] && <button onClick={() => {currentScene.getOptions()[0].execute()}}>Option 1</button>}
     </div>
   </div>
 )};

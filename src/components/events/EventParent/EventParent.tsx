@@ -45,15 +45,15 @@ const EventParent: FC<EventParentProps> = (
   )
 
   const itemFactory = useContext(ItemFactoryContext);
+  const [sceneKey, setSceneKey] = useState<number>(1);
 
   const [rimeEventFactory, setRimeEventFactory] = useState<IRimeEventFactory>(
-    new RimeEventFactoryJSON(itemFactory)
+    new RimeEventFactoryJSON(itemFactory, setSceneKey)
   )
 
   const [currentEvent, setCurrentEvent] = useState<IRimeEvent>(
     rimeEventFactory.createEventById(eventId)
   )
-  const [sceneKey, setSceneKey] = useState<number>(1);
 
   const [currentScene, setCurrentScene] = useState<IRimeEventScene>(defaultScene);
 

@@ -5,7 +5,8 @@
     },
     "actionTypes":{
         "goto":"goto",
-        "close":"close"
+        "close":"close",
+        "startCombat":"combat"
     },
     "allEvents":[
         {
@@ -13,18 +14,17 @@
             "name": "An empty house",
             "scenes":[
                 {
-                    "sceneKey":2,
+                    "sceneKey":1,
                     "text": "",
                     "type":"text only",
                     "options":[
                         {
-                            "actionType":"goto",
-                            "targetScene": 2
+                            "actionType":"goto 2"
                         }
                     ]
                 },
                 {
-                    "sceneKey":1,
+                    "sceneKey":2,
                     "text": "",
                     "type":"rewards",
                     "options":[

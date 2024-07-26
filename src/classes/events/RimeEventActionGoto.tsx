@@ -1,8 +1,16 @@
 import IRimeEventAction from "./IRimeEventAction";
 
 class RimeEventActionGoto implements IRimeEventAction {
+    private setSceneId:(newId:number)=>void;
+    private idToSetItTo:number;
+
+    constructor(setSceneId:(newId:number)=>void, idToSetItTo:number){
+        this.setSceneId = setSceneId;
+        this.idToSetItTo = idToSetItTo;
+    }
+
     execute(): void {
-        throw new Error("Method not implemented.");
+        this.setSceneId(this.idToSetItTo);
     }
 }
 
