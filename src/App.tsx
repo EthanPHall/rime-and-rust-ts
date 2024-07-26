@@ -360,7 +360,9 @@ function App() {
     return newInventory.allQuantitiesArePositive();
   }
 
-
+  function closeEventScreen(){
+    setCurrentEvent(null);
+  }
 
   return (
     <SettingsContext.Provider value={{settingsManager:settingsManagerContext, setSettingsManager:setSettingsManagerContext}}>
@@ -375,7 +377,7 @@ function App() {
                 setMainGameScreen={setMainGameScreen}
               ></CaravanParent>}
               {mainGameScreen == MainGameScreens.MAP && <MapParent setCurrentEvent={setCurrentEvent}></MapParent>}
-              {currentEvent != null && <EventParent eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory}></EventParent>}
+              {currentEvent != null && <EventParent eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen}></EventParent>}
             </div>
           </ProgressionContext.Provider>
         </ItemFactoryContext.Provider>

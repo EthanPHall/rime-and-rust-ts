@@ -16,12 +16,15 @@ class RimeEventJSON implements IRimeEvent{
     private scenes:IRimeEventScene[] = [];
     private itemFactory:IItemFactory;
     private setSceneId:(newId:number)=>void;
+    private closeEventScreen:() =>void;
 
     constructor(
         key:string,
         itemFactory:IItemFactory,
-        setSceneId:(newId:number)=>void
+        setSceneId:(newId:number)=>void,
+        closeEventScreen:() =>void
     ){
+        this.closeEventScreen = closeEventScreen;
         this.setSceneId = setSceneId;
         this.itemFactory = itemFactory; 
 
@@ -43,7 +46,7 @@ class RimeEventJSON implements IRimeEvent{
                             options.push(new RimeEventActionGoto(setSceneId, parseInt(action.actionType.split(" ")[1])));
                             break;
                         case eventRawData.actionTypes.close:
-                            options.push(new RimeEventActionClose());
+                            options.push(new RimeEventActionClose(closeEventScreen));
                             break;
                     }
                 });

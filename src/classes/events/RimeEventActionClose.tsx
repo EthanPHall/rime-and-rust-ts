@@ -1,8 +1,14 @@
 import IRimeEventAction from "./IRimeEventAction";
 
 class RimeEventActionClose implements IRimeEventAction {
+    private closeEventScreen:() =>void;
+
+    constructor(closeEventScreen:() =>void){
+        this.closeEventScreen = closeEventScreen;
+    }
+    
     execute(): void {
-        throw new Error("Method not implemented.");
+        this.closeEventScreen();
     }
 }
 

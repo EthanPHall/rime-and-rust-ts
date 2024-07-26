@@ -18,14 +18,16 @@ import eventRawData from "../../../data/event/events.json";
 interface EventParentProps {
   eventId:string
   explorationInventory:UniqueItemQuantitiesList
-  setExplorationInventory:React.Dispatch<React.SetStateAction<UniqueItemQuantitiesList>>
+  setExplorationInventory:React.Dispatch<React.SetStateAction<UniqueItemQuantitiesList>>,
+  closeEventScreen:() =>void
 }
 
 const EventParent: FC<EventParentProps> = (
   {
     eventId,
     explorationInventory,
-    setExplorationInventory
+    setExplorationInventory,
+    closeEventScreen
   }
 ) => {
   const [rewardsInventory, setRewardsInventory] = useState<UniqueItemQuantitiesList|null>(null);
@@ -36,7 +38,7 @@ const EventParent: FC<EventParentProps> = (
       getType():string{return "default";},
       getText():string{return "Default scene"},
       getOptions():IRimeEventAction[]{return [
-        new RimeEventActionClose()
+        new RimeEventActionClose(closeEventScreen)
       ]},
       executOption(option:IRimeEventAction):void{
         option.execute();
@@ -48,7 +50,7 @@ const EventParent: FC<EventParentProps> = (
   const [sceneKey, setSceneKey] = useState<number>(1);
 
   const [rimeEventFactory, setRimeEventFactory] = useState<IRimeEventFactory>(
-    new RimeEventFactoryJSON(itemFactory, setSceneKey)
+    new RimeEventFactoryJSON(itemFactory, setSceneKey, closeEventScreen)
   )
 
   const [currentEvent, setCurrentEvent] = useState<IRimeEvent>(
