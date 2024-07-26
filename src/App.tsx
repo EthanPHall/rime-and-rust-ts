@@ -78,7 +78,7 @@ function App() {
 
   const sledsListOverrideForInventoryEffect = useRef<Sled[]|null>(null);
 
-  const [currentEvent, setCurrentEvent] = useState<RimeEventJSON|null>(null);
+  const [currentEvent, setCurrentEvent] = useState<string|null>(null);
   const [mainGameScreen, setMainGameScreen] = useState<MainGameScreens>(MainGameScreens.MAP);
   
   useEffect(() => {
@@ -375,7 +375,7 @@ function App() {
                 setMainGameScreen={setMainGameScreen}
               ></CaravanParent>}
               {mainGameScreen == MainGameScreens.MAP && <MapParent setCurrentEvent={setCurrentEvent}></MapParent>}
-              {currentEvent != null && <EventParent event={currentEvent}></EventParent>}
+              {currentEvent != null && <EventParent eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory}></EventParent>}
             </div>
           </ProgressionContext.Provider>
         </ItemFactoryContext.Provider>

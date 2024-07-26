@@ -6,7 +6,7 @@ import Map from '../Map/Map';
 import RimeEventJSON from '../../../classes/events/RimeEventJSON';
 
 interface MapParentProps {
-  setCurrentEvent: React.Dispatch<React.SetStateAction<RimeEventJSON | null>>
+  setCurrentEvent: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 const MapParent: FC<MapParentProps> = (

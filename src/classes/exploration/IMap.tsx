@@ -12,7 +12,7 @@ interface IMap{
     setFloating(position:Vector2): void;
     getDimensions(): Vector2;
     getCenterPoint():Vector2;
-    getEventToStart(position:Vector2):RimeEventJSON|null;
+    getEventToStart(position:Vector2):string|null;
 }
 
 export default IMap;

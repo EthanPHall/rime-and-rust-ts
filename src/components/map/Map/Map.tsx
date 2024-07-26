@@ -14,7 +14,7 @@ import { TargetAndTransition } from 'framer-motion';
 import RimeEventJSON from '../../../classes/events/RimeEventJSON';
 
 interface MapProps {
-  setCurrentEvent: React.Dispatch<React.SetStateAction<RimeEventJSON | null>>
+  setCurrentEvent: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 class ExplorationPlayer{
@@ -85,6 +85,7 @@ const Map: FC<MapProps> = (
 
   const lastPlayerPosition = useRef<Vector2>(player.position);
 
+  //Inelegant way to force an update probably, but oh well, it works and there's more important stuff to do.
   const [preventMovementDelay, setPreventMovementDelay] = useState(true);
   
   useEffect(() => {
@@ -108,9 +109,7 @@ const Map: FC<MapProps> = (
     
     //?TODO: I should probaly just make mapRepresentation a state variable, but whatever, I can do that later.
     setPreventMovementDelay((current) => {return !current});
-
-    const eventToStart:RimeEventJSON|null = map.getEventToStart(player.position);
-    setCurrentEvent(eventToStart);
+    setCurrentEvent(map.getEventToStart(player.position));
   }, [player])
 
   useEffect(() => {

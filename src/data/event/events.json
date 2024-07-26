@@ -1,27 +1,35 @@
 {
+    "sceneTypes":{
+        "rewards":"rewards",
+        "textOnly":"text only"
+    },
+    "actionTypes":{
+        "goto":"goto",
+        "close":"close"
+    },
     "allEvents":[
         {
             "key":"easy-1-safe",
             "name": "An empty house",
             "scenes":[
                 {
-                    "sceneKey":1,
+                    "sceneKey":2,
                     "text": "",
                     "type":"text only",
                     "options":[
                         {
-                            "eventActionKey":"goto",
+                            "actionType":"goto",
                             "targetScene": 2
                         }
                     ]
                 },
                 {
-                    "sceneKey":2,
+                    "sceneKey":1,
                     "text": "",
                     "type":"rewards",
                     "options":[
                         {
-                            "eventActionKey":"close"
+                            "actionType":"close"
                         }
                     ],
                     "rewards":[

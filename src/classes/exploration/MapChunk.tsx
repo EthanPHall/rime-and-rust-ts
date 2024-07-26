@@ -65,7 +65,7 @@ class MapChunk implements IMap{
             }
         }
     }
-    getEventToStart(position: Vector2): RimeEventJSON | null {
+    getEventToStart(position: Vector2): string | null {
         return this.locations[position.y][position.x].getEventToStart();
     }
 
@@ -121,7 +121,6 @@ class MapChunk implements IMap{
         //Create the locations
         const locationsCreated:IMapLocation[] = [];
         const chanceToFloat:number = locationData.chancesToBeFloating?.[difficulty] || 0;
-        console.log(chanceToFloat);
         potentialLocationsScrambled.forEach((potentialLocation, i) => {
             const locationsToCreate = 
                 (i == potentialLocationsScrambled.length - 1) ? 

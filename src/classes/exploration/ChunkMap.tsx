@@ -136,7 +136,7 @@ class ChunkMap implements IMap{
         return new Vector2(position.x % this.chunkDimensions.x, position.y % this.chunkDimensions.y);
     }
 
-    getEventToStart(position: Vector2): RimeEventJSON | null {
+    getEventToStart(position: Vector2): string | null {
         //Get which chunk the position is in
         const chunk = this.getChunk(position);
 

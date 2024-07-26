@@ -20,7 +20,7 @@ interface IMapLocation {
     getName():string;
     getKey():string;
 
-    getEventToStart():RimeEventJSON|null;
+    getEventToStart():string|null;
 }
 
 export default IMapLocation;

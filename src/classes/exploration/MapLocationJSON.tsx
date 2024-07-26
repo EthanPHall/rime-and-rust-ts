@@ -29,7 +29,7 @@ class MapLocationJSON implements IMapLocation{
         this.revealed = revealed;
         this.floating = floating;
     }
-    getEventToStart(): RimeEventJSON | null {
+    getEventToStart(): string | null {
         const event = locationData.groundedEventsByKey.find((keyEvent) => {
             return keyEvent.key == this.key;
         })
@@ -44,7 +44,7 @@ class MapLocationJSON implements IMapLocation{
             const currentPair = event.eventKeyChancePairs[i];
             accumulator += currentPair.chance;
             if(chance < accumulator){
-                return new RimeEventJSON(currentPair.eventKey);
+                return currentPair.eventKey;
             }
         }
 

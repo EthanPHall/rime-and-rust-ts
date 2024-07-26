@@ -1,0 +1,7 @@
+.inventory-transferer {
+    width: 100%;
+    height: 90%;
+    outline: 1px solid var(--outline-color);
+
+    position: relative;
+}

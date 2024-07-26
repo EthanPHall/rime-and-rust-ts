@@ -1,0 +1,45 @@
+.inventory-transferer-entry {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: var(--standard-gap);
+    gap: var(--standard-gap);
+
+    font-size: var(--font-size-larger);
+}
+
+.inventory-transferer-entry .resource-name{
+    margin-left: var(--standard-gap);
+}
+.inventory-transferer-entry .resource-amount{
+
+}
+.inventory-transferer-entry .resource-increment{
+
+}
+.inventory-transferer-entry .resource-decrement{
+
+}
+.inventory-transferer-entry .resource-increment-large{
+
+}
+.inventory-transferer-entry .resource-decrement-large{
+
+}
+.inventory-transferer-entry .increment-decrement{
+    display: flex;
+    gap: 5px;
+}
+.inventory-transferer-entry .increment-decrement:last-child{
+    margin-right: var(--standard-gap);
+}
+.inventory-transferer-entry .amount-and-increments{
+    display: flex;
+    gap: var(--standard-gap);
+}
+
+.inventory-transferer-entry .increment-decrement button{
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 15px;
+}

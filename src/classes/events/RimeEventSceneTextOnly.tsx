@@ -2,22 +2,39 @@ import IRimeEventAction from "./IRimeEventAction";
 import IRimeEventScene from "./IRimeEventScene";
 
 class RimeEventSceneTextOnly implements IRimeEventScene{
+
+    private key:number;
+    private type:string;
+    private text:string;
+    private options:IRimeEventAction[];
+
+    constructor(
+        key:number,
+        type:string,
+        text:string,
+        options:IRimeEventAction[],
+    ){
+        this.key = key;
+        this.type = type;
+        this.text = text;
+        this.options = options;
+    }
+
     getKey(): number {
-        throw new Error("Method not implemented.");
+        return this.key;
     }
     getType(): string {
-        throw new Error("Method not implemented.");
+        return this.type;
     }
     getText(): string {
-        throw new Error("Method not implemented.");
+        return this.text;
     }
     getOptions(): IRimeEventAction[] {
-        throw new Error("Method not implemented.");
+        return this.options;
     }
     executOption(option: IRimeEventAction): void {
         throw new Error("Method not implemented.");
     }
-
 }
 
 export default RimeEventSceneTextOnly;
