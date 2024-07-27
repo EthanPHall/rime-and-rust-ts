@@ -14,13 +14,15 @@ import RimeEventFactoryJSON from '../../../classes/events/RimeEventFactoryJSON';
 import IRimeEvent from '../../../classes/events/IRimeEvent';
 import RimeEventSceneRewards from '../../../classes/events/RimeEventSceneRewards';
 import eventRawData from "../../../data/event/events.json";
+import ICombatEncounter from '../../../classes/combat/ICombatEncounter';
 
 interface EventParentProps {
   eventId:string
   explorationInventory:UniqueItemQuantitiesList
-  setExplorationInventory:React.Dispatch<React.SetStateAction<UniqueItemQuantitiesList>>,
-  closeEventScreen:() =>void,
-  clearEventLocation:() => void;
+  setExplorationInventory:React.Dispatch<React.SetStateAction<UniqueItemQuantitiesList>>
+  closeEventScreen:() =>void
+  clearEventLocation:() => void
+  setCombatEncounterKey: (newEncounter: string|null) => void
 }
 
 const EventParent: FC<EventParentProps> = (
@@ -29,7 +31,8 @@ const EventParent: FC<EventParentProps> = (
     explorationInventory,
     setExplorationInventory,
     closeEventScreen,
-    clearEventLocation
+    clearEventLocation,
+    setCombatEncounterKey
   }
 ) => {
   const [rewardsInventory, setRewardsInventory] = useState<UniqueItemQuantitiesList|null>(null);
@@ -52,7 +55,7 @@ const EventParent: FC<EventParentProps> = (
   const [sceneKey, setSceneKey] = useState<number>(1);
 
   const [rimeEventFactory, setRimeEventFactory] = useState<IRimeEventFactory>(
-    new RimeEventFactoryJSON(itemFactory, setSceneKey, closeEventScreen, clearEventLocation)
+    new RimeEventFactoryJSON(itemFactory, setSceneKey, closeEventScreen, clearEventLocation, setCombatEncounterKey)
   )
 
   const [currentEvent, setCurrentEvent] = useState<IRimeEvent>(

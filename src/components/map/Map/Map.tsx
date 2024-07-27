@@ -15,6 +15,7 @@ import RimeEventJSON from '../../../classes/events/RimeEventJSON';
 import IMapLocation from '../../../classes/exploration/IMapLocation';
 
 interface MapProps {
+  currentEvent:string|null
   setCurrentEvent: React.Dispatch<React.SetStateAction<string | null>>
   setCurrentEventLocation: React.Dispatch<React.SetStateAction<IMapLocation | null>>
   locationToClear:IMapLocation|null
@@ -70,6 +71,7 @@ class CurrentAndBaseElement{
 
 const Map: FC<MapProps> = (
   {
+    currentEvent,
     setCurrentEvent,
     setCurrentEventLocation,
     locationToClear,
@@ -90,13 +92,24 @@ const Map: FC<MapProps> = (
   const mapRepresentation = useRef<CurrentAndBaseElement[][]>([]);
   
   const [player, setPlayer] = useState(new ExplorationPlayer(map.getCenterPoint()))
-  const [direction] = useDirectionHandler(true);
+  
+  const [pauseDirectionHandling, setPauseDirectionHandling] = useState<boolean>(false);
+  const [direction] = useDirectionHandler(true, pauseDirectionHandling);
 
   const lastPlayerPosition = useRef<Vector2>(player.position);
 
   //Inelegant way to force an update probably, but oh well, it works and there's more important stuff to do.
   const [preventMovementDelay, setPreventMovementDelay] = useState(true);
   
+  useEffect(() => {
+    if(currentEvent){
+      setPauseDirectionHandling(true);
+    }
+    else{
+      setPauseDirectionHandling(false);
+    }
+  }, [currentEvent])
+
   useEffect(() => {
     mapRepresentation.current = map.get2DRepresentation().map((row, y) => {
       return row.map((location, x) => {

@@ -15,6 +15,7 @@ import { ISettingsManager, SettingsContext, SettingsContextType, SettingsManager
 import useExplorationInventory from './hooks/caravan/useExplorationInventory';
 import RimeEventJSON from './classes/events/RimeEventJSON';
 import IMapLocation from './classes/exploration/IMapLocation';
+import ICombatEncounter from './classes/combat/ICombatEncounter';
 
 type ProgressionFlagsSeed = {
   [key: string]: boolean;
@@ -82,6 +83,8 @@ function App() {
   const [currentEvent, setCurrentEvent] = useState<string|null>(null);
   const [currentEventLocation, setCurrentEventLocation] = useState<IMapLocation|null>(null);
   const [mainGameScreen, setMainGameScreen] = useState<MainGameScreens>(MainGameScreens.MAP);
+
+  const [combatEncounterKey, setCombatEncounterKey] = useState<string|null>(null);
   
   useEffect(() => {
     const inventorySledQuantities:SledQuantity[] = Sled.pickOutSledQuantities(getInventory());
@@ -163,7 +166,9 @@ function App() {
     }
   }, [])
 
-
+  useEffect(() => {
+    console.log(combatEncounterKey);
+  }, [combatEncounterKey])
 
   function groupSledsByKey(sleds:Sled[]):Sled[][]{
     const sledsByKey = new Map<string, Sled[]>();
@@ -377,14 +382,14 @@ function App() {
         <ItemFactoryContext.Provider value={itemFactoryContext}>
           <ProgressionContext.Provider value={{flags:progressionFlags, setFlags:setProgressionFlags}}>
             <div className="App">
-              {mainGameScreen == MainGameScreens.COMBAT && <CombatParent></CombatParent>}
               {mainGameScreen == MainGameScreens.CARAVAN && <CaravanParent inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers} 
                 explorationInventory={explorationInventory}
                 setExplorationInventory={setExplorationInventory}
                 setMainGameScreen={setMainGameScreen}
-              ></CaravanParent>}
-              {mainGameScreen == MainGameScreens.MAP && <MapParent setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></MapParent>}
-              {currentEvent != null && <EventParent eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen} clearEventLocation={clearEventLocation}></EventParent>}
+                ></CaravanParent>}
+              {mainGameScreen == MainGameScreens.MAP && <MapParent currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></MapParent>}
+              {currentEvent != null && <EventParent eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen} clearEventLocation={clearEventLocation} setCombatEncounterKey={setCombatEncounterKey}></EventParent>}
+              {combatEncounterKey != null && <CombatParent></CombatParent>}
             </div>
           </ProgressionContext.Provider>
         </ItemFactoryContext.Provider>

@@ -8,6 +8,9 @@ import RimeEventActionGoto from "./RimeEventActionGoto";
 import RimeEventActionClose from "./RimeEventActionClose";
 import { IItemFactory, ItemQuantity, UniqueItemQuantitiesList } from "../caravan/Item";
 import RimeEventActionCloseAndClear from "./IRimeEventActionCloseAndClear";
+import RimeEventActionStartCombat from "./RimeEventActionStartCombat";
+import ICombatEncounter from "../combat/ICombatEncounter";
+import CombatEncounterJSON from "../combat/CombatEncounter";
 
 
 
@@ -19,14 +22,17 @@ class RimeEventJSON implements IRimeEvent{
     private setSceneId:(newId:number)=>void;
     private closeEventScreen:() =>void;
     private clearEventLocation: () => void;
+    private setCombatEncounterKey: (newEncounter: string|null) => void;
 
     constructor(
         key:string,
         itemFactory:IItemFactory,
         setSceneId:(newId:number)=>void,
         closeEventScreen:() =>void,
-        clearEventLocation: () => void
+        clearEventLocation: () => void,
+        setCombatEncounterKey: (newEncounter: string|null) => void
     ){
+        this.setCombatEncounterKey = setCombatEncounterKey; 
         this.clearEventLocation = clearEventLocation;  
         this.closeEventScreen = closeEventScreen;
         this.setSceneId = setSceneId;
@@ -54,6 +60,9 @@ class RimeEventJSON implements IRimeEvent{
                             break;
                         case eventRawData.actionTypes.closeAndClearLocation:
                             options.push(new RimeEventActionCloseAndClear(clearEventLocation, closeEventScreen));
+                            break;
+                        case eventRawData.actionTypes.startCombat:
+                            options.push(new RimeEventActionStartCombat(setCombatEncounterKey, action.actionType.split(" ")[1]));
                             break;
                         default:
                             console.log("Unsupported scene action:", action.actionType);

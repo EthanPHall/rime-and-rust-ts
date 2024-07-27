@@ -89,15 +89,13 @@ class MapChunk implements IMap{
         return newChunk;
     }
     setCleared(position: Vector2): void {
-        console.log("In thing");
-
         this.locations[position.x][position.y].setCleared();
     }
     setRevealed(position: Vector2): void {
         this.locations[position.y][position.x].setRevealed();
     }
     setFloating(position: Vector2): void {
-        this.locations[position.y][position.x].setFloating();
+        this.locations[position.x][position.y].setFloating();
     }
     getDimensions(): Vector2 {
         return this.dimensions; 

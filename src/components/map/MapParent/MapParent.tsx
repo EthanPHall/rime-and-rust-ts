@@ -7,6 +7,7 @@ import RimeEventJSON from '../../../classes/events/RimeEventJSON';
 import IMapLocation from '../../../classes/exploration/IMapLocation';
 
 interface MapParentProps {
+  currentEvent:string|null
   setCurrentEvent: React.Dispatch<React.SetStateAction<string | null>>
   setCurrentEventLocation: React.Dispatch<React.SetStateAction<IMapLocation | null>>
   locationToClear:IMapLocation|null
@@ -15,6 +16,7 @@ interface MapParentProps {
 
 const MapParent: FC<MapParentProps> = (
   {
+    currentEvent,
     setCurrentEvent,
     setCurrentEventLocation,
     locationToClear,
@@ -24,7 +26,7 @@ const MapParent: FC<MapParentProps> = (
   <div className="map-parent" data-testid="map-parent">
       <div className='grid-parent'>
         <MessagesParent></MessagesParent>
-        <Map setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></Map>
+        <Map currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></Map>
         {/* <ExplorationSectionValuables></ExplorationSectionValuables> */}
       </div>
   </div>

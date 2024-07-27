@@ -1,11 +1,22 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Directions, { DirectionObject } from "../../classes/utility/Directions";
 
-function useDirectionHandler(defaultActivation:boolean = false){
+function useDirectionHandler(defaultActivation:boolean = false, pause:boolean = false){
     const [activateControls, setActivateControls] = useState<boolean>(defaultActivation);
     const [direction, setDirection] = useState<DirectionObject>({direction:Directions.NONE});
-   
+    const pauseRef = useRef(pause);
+
+    useEffect(() => {
+      pauseRef.current = pause;
+    }, [pause])
+
     const handleDirectionInputs = useCallback((event:any) => {
+      const DEBUG_ALLOW_PAUSED_MOVEMENT = false;
+
+      if(pauseRef.current && DEBUG_ALLOW_PAUSED_MOVEMENT){
+        return;
+      }
+
       if (activateControls && (event.key === "ArrowUp" || event.key === "w")) {
         setDirection(new DirectionObject(Directions.UP));
       }
