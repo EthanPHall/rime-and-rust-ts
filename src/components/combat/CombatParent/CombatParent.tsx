@@ -39,7 +39,9 @@ import CombatAnimationFactory, { CombatAnimationNames } from '../../../classes/a
 import useCombatHazardAnimations from '../../../hooks/combat/useCombatHazardAnimations';
 import CombatActionFactory, { CombatActionNames } from '../../../classes/combat/CombatActionFactory';
 
-interface CombatParentProps {}
+import combatEncounterRawJSON from "../../../data/combat/combat-encounters.json";
+import combatMapsRawJSON from "../../../data/combat/combat-maps.json";
+import enemyGroupsRawJSON from "../../../data/combat/enemy-groups.json";
 
 export enum EnemyType {
   RustedShambler = 'RustedShambler',
@@ -122,9 +124,46 @@ class CombatMapTemplate1 extends CombatMapTemplate{
   }
 }
 
+class CombatMapTemplateJSON extends CombatMapTemplate{
+  constructor(encounterKey:string, advanceTurn: () => void){
+    let encounterJson = combatEncounterRawJSON.find((data) => {
+      return data.encounterKey == encounterKey;
+    });
+    if(!encounterJson){
+      console.log("Encounter with key " + encounterKey + " not found, using the first encounter instead.")
+      encounterJson = combatEncounterRawJSON[0];
+    }
 
+    let mapJson = combatMapsRawJSON.find((data) => {
+      return data.mapKey == encounterJson?.mapKey;
+    });
+    if(!mapJson){
+      console.log("Combat Map with key of " + encounterJson.mapKey + " not found. Using first map instead.")
+      mapJson = combatMapsRawJSON[0];
+    }
 
-const CombatParent: FC<CombatParentProps> = () => {
+    const mapRepresentation:string[][] = mapJson.mapRepresentation.map((row) => {
+      return row.split(" ");
+    });
+
+    console.log(mapRepresentation);
+    console.log(mapRepresentation.sort((a, b) => {return a.length - b.length})[0]);
+
+    const size:Vector2 = new Vector2(mapJson.mapRepresentation.length, mapRepresentation.sort((a, b) => {return a.length - b.length})[0].length);
+
+    super(new Vector2(0,0), [], [], advanceTurn);
+  }
+}
+
+interface CombatParentProps {
+  combatEncounterKey:string|null;
+}
+
+const CombatParent: FC<CombatParentProps> = (
+  {
+    combatEncounterKey
+  }
+) => {
   
   const [turnManager, isTurnTakerPlayer] = useTurnManager();
   const [comboListForEffects, getComboList, setComboList] = useRefState<CombatActionWithRepeat[]>([]);
@@ -205,6 +244,10 @@ const CombatParent: FC<CombatParentProps> = () => {
 
     setupFinished.current = true;
   },[])
+
+  useEffect(() => {
+    
+  }, [combatEncounterKey])
 
   useEffect(() => {
     refreshMap();

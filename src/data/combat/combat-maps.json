@@ -1,0 +1,22 @@
+[
+    {
+        "mapKey":"easy-1-map-1",
+        "potentialEnemyGroups":[
+            {
+                "enemyGroupKey": "easy-1-group-1",
+                "chance":50
+            },
+            {
+                "enemyGroupKey": "easy-1-group-2",
+                "chance":50
+            }
+        ],
+        "mapRepresentation":[
+            ". . * . . . . .",
+            ". . . . . . . .",
+            ". . . . . # . .",
+            ". . @ . . # * .",
+            ". . . . . # # # . . ."
+        ]
+    }
+]

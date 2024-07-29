@@ -1,0 +1,25 @@
+[
+    {
+        "enemyGroupKey": "easy-1-group-1",
+        "enemies":[
+            {
+                "enemyKey": "rusted-shambler-easy",
+                "amount": 2
+            }
+        ]
+    },
+    {
+        "enemyGroupKey": "easy-1-group-2",
+        "enemies":[
+            {
+                "enemyKey": "rusted-shambler-easy",
+                "amount": 1
+            },
+            {
+                "enemyKey": "rusted-brute-easy",
+                "amount": 1
+            }
+        ]
+    }
+
+]

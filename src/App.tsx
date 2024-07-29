@@ -389,7 +389,7 @@ function App() {
                 ></CaravanParent>}
               {mainGameScreen == MainGameScreens.MAP && <MapParent currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></MapParent>}
               {currentEvent != null && <EventParent eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen} clearEventLocation={clearEventLocation} setCombatEncounterKey={setCombatEncounterKey}></EventParent>}
-              {combatEncounterKey != null && <CombatParent></CombatParent>}
+              {combatEncounterKey != null && <CombatParent combatEncounterKey={combatEncounterKey}></CombatParent>}
             </div>
           </ProgressionContext.Provider>
         </ItemFactoryContext.Provider>
