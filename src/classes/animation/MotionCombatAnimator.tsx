@@ -36,14 +36,14 @@ class MotionCombatAnimator implements IAnimator{
                 for(let animationIndex = 0; animationIndex < currentAnimationSet.length; animationIndex++){
                     const currentAnimation: MotionAnimation = currentAnimationSet[animationIndex];
                     const positionToAnimate: Vector2|undefined = currentAnimation.positionToAnimate ? currentAnimation.positionToAnimate : mapData.getEntityById(currentAnimation.entityIdToAnimate)?.position; 
-                    
+
                     if(!positionToAnimate){
                         continue;
                     }
 
                     if(keyFrameIndex < currentAnimation.keyframes.length){
                         playbackControls.push(
-                            this.mapAnimate(mapData.positionToCSSIdString(positionToAnimate), currentAnimation.keyframes[keyFrameIndex], currentAnimation.options?.[keyFrameIndex])
+                            this.mapAnimate(mapData.positionToCSSIdString(new Vector2(positionToAnimate.y, positionToAnimate.x)), currentAnimation.keyframes[keyFrameIndex], currentAnimation.options?.[keyFrameIndex])
                         );
                     }
                 }
@@ -69,11 +69,8 @@ class MotionCombatAnimator implements IAnimator{
         )
 
         return new Promise((resolve) => {
-            console.log(mapData)
-            
             mapData.locations.forEach((row, rowIndex) => {
                 row.forEach((location, columnIndex) => {
-                    console.log(mapData.positionToCSSIdString(new Vector2(rowIndex, columnIndex)))
                     mapAnimate(mapData.positionToCSSIdString(new Vector2(rowIndex, columnIndex)), resetAnimation.keyframes[0], resetAnimation.options?.[0]);
                 });
             });

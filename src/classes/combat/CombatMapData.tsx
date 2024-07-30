@@ -26,8 +26,13 @@ class CombatMapData{
       }
     }
 
+    /**
+     * 
+     * @param position x is the row number, y is the column number
+     * @returns 
+     */
     positionToCSSIdString(position: Vector2): string{
-      return `#combat-location-${position.y*100+position.x}`;
+      return `#combat-location-${position.x*100+position.y}`;
     }    
 
     setLocationWithEntity(entity: CombatEntity):void{
