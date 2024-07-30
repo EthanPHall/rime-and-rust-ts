@@ -82,6 +82,9 @@ class CombatMapData{
 
     getPlayer():CombatEntity|null{
       let player:CombatEntity|null = null;
+
+      console.log("Get player, locations: ", this.locations);
+
       this.locations.forEach((row) => {
         row.forEach((location) => {
           if(location.entity && location.entity instanceof CombatPlayer){

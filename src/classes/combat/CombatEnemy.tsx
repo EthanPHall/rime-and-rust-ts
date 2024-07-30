@@ -199,10 +199,15 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     }
 
     async executeTurn(): Promise<void> {
+      if(this.playerId == -1){
+        this.playerId = this.getMap().getPlayer()?.id || -1;
+      }
+      
       const playerPosition:Vector2|undefined = this.getMap().getEntityById(this.playerId)?.position;
-
+      
       await new Promise((resolve) => setTimeout(resolve, CombatEnemy.TURN_START_DELAY));
-
+      
+      console.log(playerPosition);
       if(playerPosition){
         const aiHandler = new RustedShamblerAI(this, playerPosition, this.playerId, this.getMap, this.actions as {move: CombatActionWithUses, attack: CombatActionWithUses});
         const actions = aiHandler.handleAI();
@@ -274,6 +279,10 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     }
 
     async executeTurn(): Promise<void> {
+      if(this.playerId == -1){
+        this.playerId = this.getMap().getPlayer()?.id || -1;
+      }
+      
       const playerPosition:Vector2|undefined = this.getMap().getEntityById(this.playerId)?.position;
 
       await new Promise((resolve) => setTimeout(resolve, CombatEnemy.TURN_START_DELAY));
