@@ -1,6 +1,12 @@
-[
-    {
+{
+    "defaultEncounter":{
         "encounterKey":"easy-1-combat-1",
         "mapKey":"easy-1-map-1"
-    }
-]
+    },
+    "encounters":[
+        {
+            "encounterKey":"easy-1-combat-1",
+            "mapKey":"easy-1-map-1"
+        }
+    ]
+}

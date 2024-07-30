@@ -40,8 +40,8 @@ function useCombatHazardAnimations(
     },[]);
     
     useEffect(() => {
-
-            hazards.forEach(hazard => {
+        
+        hazards.forEach(hazard => {
                 const currentAnimDetails:ImprovedMotionAnimation|null = hazard.getDefaultAnimation();
                 if(currentAnimDetails){
                     mapAnimate(map.positionToCSSIdString(hazard.position), currentAnimDetails.to, currentAnimDetails.options);

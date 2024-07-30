@@ -1,25 +1,36 @@
-[
-    {
-        "enemyGroupKey": "easy-1-group-1",
+{
+    "defaultGroup":{
+        "enemyGroupKey": "default-enemy-group",
         "enemies":[
             {
                 "enemyKey": "rusted-shambler-easy",
-                "amount": 2
+                "percent": 100
             }
         ]
     },
-    {
-        "enemyGroupKey": "easy-1-group-2",
-        "enemies":[
-            {
-                "enemyKey": "rusted-shambler-easy",
-                "amount": 1
-            },
-            {
-                "enemyKey": "rusted-brute-easy",
-                "amount": 1
-            }
-        ]
-    }
-
-]
+    "enemyGroups":[
+        {
+            "enemyGroupKey": "easy-1-group-1",
+            "enemies":[
+                {
+                    "enemyKey": "rusted-shambler-easy",
+                    "percent": 100
+                }
+            ]
+        },
+        {
+            "enemyGroupKey": "easy-1-group-2",
+            "enemies":[
+                {
+                    "enemyKey": "rusted-shambler-easy",
+                    "percent": 50
+                },
+                {
+                    "enemyKey": "rusted-brute-easy",
+                    "percent": 50
+                }
+            ]
+        }
+    
+    ]
+}

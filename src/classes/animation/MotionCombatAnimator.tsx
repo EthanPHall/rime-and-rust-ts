@@ -69,8 +69,11 @@ class MotionCombatAnimator implements IAnimator{
         )
 
         return new Promise((resolve) => {
+            console.log(mapData)
+            
             mapData.locations.forEach((row, rowIndex) => {
                 row.forEach((location, columnIndex) => {
+                    console.log(mapData.positionToCSSIdString(new Vector2(rowIndex, columnIndex)))
                     mapAnimate(mapData.positionToCSSIdString(new Vector2(rowIndex, columnIndex)), resetAnimation.keyframes[0], resetAnimation.options?.[0]);
                 });
             });

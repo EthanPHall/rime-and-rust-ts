@@ -1,5 +1,24 @@
-[
-    {
+{
+    "separator": " ",
+    "defaultEnemyGroup":{
+        "enemyGroupKey": "default-enemy-group",
+        "chance":100
+    },
+    "defaultHazardGroup":{
+        "hazardGroupKey": "default-hazard-group",
+        "chance":100
+    },
+    "hazardSymbols":[
+        "h",
+        "#"
+    ],
+    "enemySymbols":[
+        "e"
+    ],
+    "playerSpawnSymbols":[
+        "@"
+    ],
+    "defaultMap":{
         "mapKey":"easy-1-map-1",
         "potentialEnemyGroups":[
             {
@@ -11,12 +30,57 @@
                 "chance":50
             }
         ],
+        "potentialHazardGroups":[
+            {
+                "hazardGroupKey": "easy-1-group-1",
+                "chance":50
+            },
+            {
+                "hazardGroupKey": "easy-1-group-2",
+                "chance":50
+            }
+        ],
         "mapRepresentation":[
-            ". . * . . . . .",
-            ". . . . . . . .",
+            ". . e . . . . .",
+            ". . e . . . . .",
+            ". . e . . . . .",
+            ". . e . . . . .",
+            ". . h . . . . .",
             ". . . . . # . .",
-            ". . @ . . # * .",
-            ". . . . . # # # . . ."
+            ". . @ . . # e .",
+            ". . . . . # # #"
         ]
-    }
-]
+    },
+    "maps":[
+        {
+            "mapKey":"easy-1-map-1",
+            "potentialEnemyGroups":[
+                {
+                    "enemyGroupKey": "easy-1-group-1",
+                    "chance":50
+                },
+                {
+                    "enemyGroupKey": "easy-1-group-2",
+                    "chance":50
+                }
+            ],
+            "potentialHazardGroups":[
+                {
+                    "hazardGroupKey": "easy-1-group-1",
+                    "chance":50
+                },
+                {
+                    "hazardGroupKey": "easy-1-group-2",
+                    "chance":50
+                }
+            ],
+            "mapRepresentation":[
+                ". . e . . . . .",
+                ". . h . . . . .",
+                ". . . . . # . .",
+                ". . @ . . # e .",
+                ". . . . . # # #"
+            ]
+        }
+    ]
+}

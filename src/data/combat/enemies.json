@@ -1,0 +1,16 @@
+{
+    "keys":{
+        "basicRustedShambler":"rusted-shambler-easy",
+        "basicRustedBrute":"rusted-brute-easy"
+    },
+    "enemies":[
+        {
+            "enemyKey":"rusted-shambler-easy",
+            "mapGenerationSymbol":"s"
+        },
+        {
+            "enemyKey":"rusted-brute-easy",
+            "mapGenerationSymbol":"b"
+        }
+    ]
+}

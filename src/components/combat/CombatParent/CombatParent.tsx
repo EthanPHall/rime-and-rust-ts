@@ -42,6 +42,8 @@ import CombatActionFactory, { CombatActionNames } from '../../../classes/combat/
 import combatEncounterRawJSON from "../../../data/combat/combat-encounters.json";
 import combatMapsRawJSON from "../../../data/combat/combat-maps.json";
 import enemyGroupsRawJSON from "../../../data/combat/enemy-groups.json";
+import ICombatMapTemplateFactory from '../../../classes/combat/ICombatMapTemplateFactory';
+import CombatMapTemplateFactoryJSON from '../../../classes/combat/CombatMapFactoryJSON';
 
 export enum EnemyType {
   RustedShambler = 'RustedShambler',
@@ -60,11 +62,11 @@ class EnemyStarterInfo{
 
 abstract class CombatMapTemplate{
   size: Vector2;
-  enemies: EnemyStarterInfo[];
+  enemies: CombatEnemy[];
   hazards: CombatHazard[];
   advanceTurn: () => void;
 
-  constructor(size:Vector2, enemies: EnemyStarterInfo[], hazards: CombatHazard[], advanceTurn: () => void){
+  constructor(size:Vector2, enemies: CombatEnemy[], hazards: CombatHazard[], advanceTurn: () => void){
     this.size = size;
     this.enemies = enemies;
     this.hazards = hazards;
@@ -93,24 +95,7 @@ class CombatMapTemplate1 extends CombatMapTemplate{
     );
     // walls.push(Wall.createDefaultWall(new Vector2(7, 4)));
 
-    const enemies: EnemyStarterInfo[] = [
-      new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(8, 7)),
-      // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(9, 11)),
-      // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(10, 11)),
-      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(11, 11)),
-      // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(6, 7)),
-      // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 6)),
-      // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 5)),
-      // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 3)),
-      // new EnemyStarterInfo(EnemyType.RustedShambler, new Vector2(7, 2)),
-
-      new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 10)),
-      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 11)),
-      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(7, 12)),
-      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(3, 7)),
-      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(4, 7)),
-      // new EnemyStarterInfo(EnemyType.RustedBrute, new Vector2(5, 7)),
-    ];
+    const enemies: CombatEnemy[] = [];
     const hazards: CombatHazard[] = [
       new VolatileCanister(IdGenerator.generateUniqueId(), '+', 'Volatile Canister', new Vector2(7, 1), false, combatActionFactory, addToComboList),
       new VolatileCanister(IdGenerator.generateUniqueId(), '+', 'Volatile Canister', new Vector2(7, 4), false, combatActionFactory, addToComboList),
@@ -124,38 +109,14 @@ class CombatMapTemplate1 extends CombatMapTemplate{
   }
 }
 
-class CombatMapTemplateJSON extends CombatMapTemplate{
-  constructor(encounterKey:string, advanceTurn: () => void){
-    let encounterJson = combatEncounterRawJSON.find((data) => {
-      return data.encounterKey == encounterKey;
-    });
-    if(!encounterJson){
-      console.log("Encounter with key " + encounterKey + " not found, using the first encounter instead.")
-      encounterJson = combatEncounterRawJSON[0];
-    }
-
-    let mapJson = combatMapsRawJSON.find((data) => {
-      return data.mapKey == encounterJson?.mapKey;
-    });
-    if(!mapJson){
-      console.log("Combat Map with key of " + encounterJson.mapKey + " not found. Using first map instead.")
-      mapJson = combatMapsRawJSON[0];
-    }
-
-    const mapRepresentation:string[][] = mapJson.mapRepresentation.map((row) => {
-      return row.split(" ");
-    });
-
-    console.log(mapRepresentation);
-    console.log(mapRepresentation.sort((a, b) => {return a.length - b.length})[0]);
-
-    const size:Vector2 = new Vector2(mapJson.mapRepresentation.length, mapRepresentation.sort((a, b) => {return a.length - b.length})[0].length);
-
-    super(new Vector2(0,0), [], [], advanceTurn);
+class CombatMapTemplateBasic extends CombatMapTemplate{
+  constructor(size:Vector2, enemies: CombatEnemy[], hazards: CombatHazard[], advanceTurn: () => void){
+    super(size, enemies, hazards, advanceTurn);
   }
 }
 
 interface CombatParentProps {
+  //TODO: Make this not be nullable
   combatEncounterKey:string|null;
 }
 
@@ -173,14 +134,23 @@ const CombatParent: FC<CombatParentProps> = (
   //but then with the next action, the player would reset to its old position. So I made a hook where setPlayer also updates
   //a ref that everyone can use to make sure that they're using the most up-to-date player, and a function to get that ref's value,
   //so no more trying to get the player by value, it's all by reference now.
-  const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), 100, 100, '@', 'Player', new Vector2(7, 7), turnManager.advanceTurn, resetActionUses));
+  const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), 100, 100, '@', 'Player', new Vector2(0, 0), turnManager.advanceTurn, resetActionUses));
   const [enemiesForEffects, getEnemies, setEnemies] = useRefState<CombatEnemy[]>([]);
   const [hazardsForEffects, getHazards, setHazards] = useRefState<CombatHazard[]>([]);
 
   const combatActionFactory:CombatActionFactory = new CombatActionFactory(getCachedMap, updateEntity, refreshMap, getHazards, setHazards);
-  const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>(new CombatMapTemplate1(turnManager.advanceTurn, getCachedMap, updateEntity, refreshMap, combatActionFactory, addToComboList));
+  const [combatMapTemplateFactory] = useState<ICombatMapTemplateFactory>(new CombatMapTemplateFactoryJSON(
+    turnManager.advanceTurn,
+    addToComboList,
+    executeActionsList,
+    getCachedMap,
+    updateEntity,
+    refreshMap
+  ))
   
-  const [baseMap, setBaseMap] = useState<CombatMapData>(createMapFromTemplate(mapTemplate));
+  const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>();
+  const [baseMap, setBaseMap] = useState<CombatMapData>();
+  
   const [mapToSendOff, setMapToSendOff] = useState<CombatMapData>(getBaseMapClonePlusAddons());
   const mapToSendOffCached = useRef<CombatMapData>(mapToSendOff);
   const [aoeToDisplay, setAoeToDisplay] = useState<AreaOfEffect|null>(
@@ -229,25 +199,31 @@ const CombatParent: FC<CombatParentProps> = (
   useCombatHazardAnimations(mapToSendOff, animator, getPlayer, hazardsForEffects, actionExecutor.isExecuting, mapAnimate);
 
   useEffect(() => {
-    const enemyFactory = new CombatEnemyFactory(
-      turnManager.advanceTurn,
-      addToComboList,
-      executeActionsList,
-      getCachedMap,
-      updateEntity,
-      refreshMap
-    );
-    setEnemies(mapTemplate.enemies.map(enemyInfo => enemyFactory.createEnemy(enemyInfo.type, enemyInfo.position)));
-    setHazards(mapTemplate.hazards);
+    setupFinished.current = false;
 
-    turnManager.finishSetup(allTurnTakers);
-
-    setupFinished.current = true;
-  },[])
+    const encounter = combatEncounterKey ? combatEncounterRawJSON.encounters.find((data) => {
+      return data.encounterKey == combatEncounterKey;
+    }) || combatEncounterRawJSON.defaultEncounter : combatEncounterRawJSON.defaultEncounter;
+    
+    setMapTemplate(combatMapTemplateFactory.createMap(encounter.mapKey));
+  }, [combatEncounterKey])
 
   useEffect(() => {
-    
-  }, [combatEncounterKey])
+    if(mapTemplate && !setupFinished.current){
+      setEnemies(mapTemplate.enemies);
+      setHazards(mapTemplate.hazards);
+  
+      turnManager.finishSetup(allTurnTakers);
+
+      setBaseMap(createMapFromTemplate(mapTemplate));
+    }
+  }, [mapTemplate]);
+
+  useEffect(() => {
+    if(mapTemplate && !setupFinished.current){
+      setupFinished.current = true;
+    }
+  }, [baseMap]);
 
   useEffect(() => {
     refreshMap();
@@ -283,6 +259,10 @@ const CombatParent: FC<CombatParentProps> = (
     return newMap; 
   }
   function getBaseMapClonePlusAddons(): CombatMapData{
+    if(!baseMap){
+      return new CombatMapData(0,0);
+    }
+
     const newMap: CombatMapData = CombatMapData.clone(baseMap);
 
     getHazards().forEach(hazard => {
@@ -415,3 +395,4 @@ function executeActionsList() {
 }
 
 export default CombatParent;
+export {CombatMapTemplate, CombatMapTemplateBasic};

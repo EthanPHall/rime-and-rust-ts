@@ -1,0 +1,32 @@
+{
+    "defaultGroup":{
+        "enemyGroupKey": "default-hazard-group",
+        "hazards":[
+            {
+                "hazardKey": "volatile-can",
+                "percent": 100
+            }
+        ]
+},
+    "hazardGroups":[
+        {
+            "hazardGroupKey": "easy-1-group-1",
+            "hazards":[
+                {
+                    "hazardKey": "volatile-can",
+                    "percent": 50
+                }
+            ]
+        },
+        {
+            "hazardGroupKey": "easy-1-group-2",
+            "hazards":[
+                {
+                    "hazardKey": "wall",
+                    "percent": 100
+                }
+            ]
+        }
+    
+    ]
+}
