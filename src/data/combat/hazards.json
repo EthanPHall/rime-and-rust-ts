@@ -1,0 +1,21 @@
+{
+    "keys":{
+        "basicWall":"basic-wall",
+        "volatileCanister":"volatile-canister",
+        "burning":"burning-floor"
+    },
+    "hazards":[
+        {
+            "hazardKey":"basic-wall",
+            "mapGenerationSymbol":"#"
+        },
+        {
+            "hazardKey":"volatile-canister",
+            "mapGenerationSymbol":"+"
+        },
+        {
+            "hazardKey":"burning-floor",
+            "mapGenerationSymbol":"F"
+        }
+    ]
+}

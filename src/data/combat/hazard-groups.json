@@ -3,7 +3,7 @@
         "enemyGroupKey": "default-hazard-group",
         "hazards":[
             {
-                "hazardKey": "volatile-can",
+                "hazardKey": "volatile-canister",
                 "percent": 100
             }
         ]
@@ -13,8 +13,8 @@
             "hazardGroupKey": "easy-1-group-1",
             "hazards":[
                 {
-                    "hazardKey": "volatile-can",
-                    "percent": 50
+                    "hazardKey": "volatile-canister",
+                    "percent": 100
                 }
             ]
         },
@@ -22,7 +22,7 @@
             "hazardGroupKey": "easy-1-group-2",
             "hazards":[
                 {
-                    "hazardKey": "wall",
+                    "hazardKey": "volatile-canister",
                     "percent": 100
                 }
             ]

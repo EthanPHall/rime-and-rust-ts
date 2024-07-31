@@ -145,11 +145,13 @@ const CombatParent: FC<CombatParentProps> = (
     executeActionsList,
     getCachedMap,
     updateEntity,
-    refreshMap
+    refreshMap,
+    combatActionFactory
   ))
   
   const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>();
   const [baseMap, setBaseMap] = useState<CombatMapData>();
+  const baseMapRef = useRef(baseMap);
   
   const [mapToSendOff, setMapToSendOff] = useState<CombatMapData>(getBaseMapClonePlusAddons());
   const mapToSendOffCached = useRef<CombatMapData>(mapToSendOff);
@@ -174,11 +176,9 @@ const CombatParent: FC<CombatParentProps> = (
     setInfoCardData({title, description, hideCard});
   }
   
-  // const [motionAnimationsList, setMotionAnimationsList] = useState<MotionAnimation[]>([]);
   const [mapScope, mapAnimate] = useAnimate();
   const [animator, setAnimator] = useState<MotionCombatAnimator>(new MotionCombatAnimator(getCachedMap, mapAnimate));
   
-  // const actionExecutor:IActionExecutor = useActionExecutor(mapToSendOff, comboList, setComboList, animator, refreshMap);
   const actionExecutor:IActionExecutor = useActionExecutor(
     mapToSendOff, 
     comboListForEffects, 
@@ -220,7 +220,10 @@ const CombatParent: FC<CombatParentProps> = (
   }, [mapTemplate]);
 
   useEffect(() => {
+    baseMapRef.current = baseMap;
+
     if(mapTemplate && !setupFinished.current){
+      refreshMap();
       setupFinished.current = true;
     }
   }, [baseMap]);
@@ -259,11 +262,11 @@ const CombatParent: FC<CombatParentProps> = (
     return newMap; 
   }
   function getBaseMapClonePlusAddons(): CombatMapData{
-    if(!baseMap){
+    if(!baseMapRef.current){
       return new CombatMapData(0,0);
     }
 
-    const newMap: CombatMapData = CombatMapData.clone(baseMap);
+    const newMap: CombatMapData = CombatMapData.clone(baseMapRef.current);
 
     getHazards().forEach(hazard => {
       if (hazard.getHp() <= 0) {

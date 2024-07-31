@@ -109,6 +109,18 @@ abstract class CombatHazard extends CombatEntity{
       this.addToComboList = addToComboList;
     }
 
+    static createDefaultVolatileCanister(position:Vector2, actionFactory: CombatActionFactory, addToComboList: (action: CombatAction) => void):VolatileCanister{
+      return new VolatileCanister(
+        IdGenerator.generateUniqueId(),
+        '+',
+        'Volatile Canister',
+        position,
+        false,
+        actionFactory,
+        addToComboList
+      );
+    }
+
     isMovable(): boolean {
       return true;
     }

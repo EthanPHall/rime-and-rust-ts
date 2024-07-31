@@ -11,6 +11,9 @@ import CombatEnemySymbolFactory from "./CombatEnemySymbolFactory";
 import CombatAction from "./CombatAction";
 import CombatMapData from "./CombatMapData";
 import CombatEntity from "./CombatEntity";
+import ICombatHazardFactory from "./ICombatHazardFactory";
+import CombatHazardSymbolFactory from "./CombatHazardSymbolFactory";
+import CombatActionFactory from "./CombatActionFactory";
 
 class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
     private advanceTurn: () => void;
@@ -20,6 +23,8 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
     private updateEntity: (id:number, newEntity: CombatEntity) => void;
     private refreshMap: () => void;
 
+    private actionFactory: CombatActionFactory;
+
     constructor(
         advanceTurn: () => void,
         addActionToList: (action: CombatAction) => void,
@@ -27,6 +32,7 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
         getMap: () => CombatMapData,
         updateEntity: (id:number, newEntity: CombatEntity) => void,
         refreshMap: () => void,
+        actionFactory: CombatActionFactory
     ){
         this.advanceTurn = advanceTurn;
         this.addActionToList = addActionToList;
@@ -34,6 +40,7 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
         this.getMap = getMap;
         this.updateEntity = updateEntity;
         this.refreshMap = refreshMap;
+        this.actionFactory = actionFactory;
     }
 
     createMap(mapKey: string): CombatMapTemplate {
@@ -117,10 +124,21 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
         );
         const enemies:CombatEnemy[] = enemyFactory.createGivenPositions(enemyPositions);
 
+        const hazardFactory:ICombatHazardFactory = new CombatHazardSymbolFactory(
+            mapRepresentationModified,
+            hazardGroup.hazardGroupKey,
+            this.getMap,
+            this.updateEntity,
+            this.refreshMap,
+            this.actionFactory,
+            this.addActionToList
+        )
+        const hazards:CombatHazard[] = hazardFactory.createGivenPositions(hazardPositions);
+
         return new CombatMapTemplateBasic(
             size,
             enemies,
-            [],
+            hazards,
             this.advanceTurn
         )
     }

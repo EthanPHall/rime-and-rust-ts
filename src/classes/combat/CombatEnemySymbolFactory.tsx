@@ -102,7 +102,7 @@ class CombatEnemySymbolFactory implements ICombatEnemyFactory{
 
         //For the static positions, just instantiate the given enemy
         staticPositions.forEach((position) => {
-            const symbol:string = this.mapRepresentation[position.x][position.y];
+            const symbol:string = this.mapRepresentation[position.y][position.x];
             const enemyKey:string = enemiesJSONData.enemies.find((enemyData) => {return enemyData.mapGenerationSymbol == symbol})?.enemyKey || "";
             results.push(this.createEnemy(enemyKey, position));
         });

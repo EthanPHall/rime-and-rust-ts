@@ -49,7 +49,7 @@ const useActionExecutor = (
     const hazardsDidAffectEntities = useRef(false);
 
     useEffect(() => {
-    }, [comboList])
+    }, [map])
 
     function isExecuting():boolean {
         return executing;
@@ -66,8 +66,6 @@ const useActionExecutor = (
 
         standbyForAnimation.current = true;
         animator.animate(toAnimate).then((animationCleanup: IAnimationCleanup) => {
-            // console.log("Animation cleanup", animationCleanup);
-
             standbyForAnimation.current = false;
             standbyForAction.current = true;
             setTimeout(() => {

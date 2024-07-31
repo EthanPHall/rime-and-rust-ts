@@ -660,8 +660,12 @@ abstract class CombatAction{
             bumped = previousDidBump;
           }
         }else if(
-          map.locations[forwardPosition.y][forwardPosition.x].entity != null &&
-          !map.locations[forwardPosition.y][forwardPosition.x].entity?.isWalkable()
+          (map.locations?.[forwardPosition.y]?.[forwardPosition.x] == undefined) ||
+
+          (
+            map.locations[forwardPosition.y][forwardPosition.x].entity &&
+            !map.locations[forwardPosition.y][forwardPosition.x].entity?.isWalkable()
+          )
         ){
           bumped = true;
         }
@@ -715,8 +719,12 @@ abstract class CombatAction{
             bumped = previousDidBump;
           }
         }else if(
-          map.locations[forwardPosition.y][forwardPosition.x].entity != null &&
-          !map.locations[forwardPosition.y][forwardPosition.x].entity?.isWalkable()
+          (map.locations?.[forwardPosition.y]?.[forwardPosition.x] == undefined) ||
+
+          (
+            map.locations[forwardPosition.y][forwardPosition.x].entity &&
+            !map.locations[forwardPosition.y][forwardPosition.x].entity?.isWalkable()
+          )
         ){
           bumped = true;
         }

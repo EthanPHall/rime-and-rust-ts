@@ -99,8 +99,8 @@
         }
     ],
     "difficultyBrackets": 7,
-    "explorableLocationsTotalPercentage": 6,
-    "percentagesByDifficultyBracket":[3,7,14,22,22,7,5],
+    "explorableLocationsTotalPercentage": 8,
+    "percentagesByDifficultyBracket":[3,13,17,23,21,15,8],
     "chancesToBeFloating":[0, 5, 10, 15, 20, 35, 55],
     "allKeyNames":[
         {
