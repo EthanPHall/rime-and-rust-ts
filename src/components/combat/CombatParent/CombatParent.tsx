@@ -115,14 +115,24 @@ class CombatMapTemplateBasic extends CombatMapTemplate{
   }
 }
 
+enum CombatEndState{
+  UNDECIDED,
+  VICTORY,
+  DEFEAT
+}
+
 interface CombatParentProps {
   //TODO: Make this not be nullable
   combatEncounterKey:string|null;
+  setCurrentEvent:React.Dispatch<React.SetStateAction<string | null>>;
+  setCombatEncounterKey: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const CombatParent: FC<CombatParentProps> = (
   {
-    combatEncounterKey
+    combatEncounterKey,
+    setCurrentEvent,
+    setCombatEncounterKey
   }
 ) => {
   
@@ -134,7 +144,7 @@ const CombatParent: FC<CombatParentProps> = (
   //but then with the next action, the player would reset to its old position. So I made a hook where setPlayer also updates
   //a ref that everyone can use to make sure that they're using the most up-to-date player, and a function to get that ref's value,
   //so no more trying to get the player by value, it's all by reference now.
-  const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), 100, 100, '@', 'Player', new Vector2(0, 0), turnManager.advanceTurn, resetActionUses));
+  const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), 10, 10, '@', 'Player', new Vector2(0, 0), turnManager.advanceTurn, resetActionUses));
   const [enemiesForEffects, getEnemies, setEnemies] = useRefState<CombatEnemy[]>([]);
   const [hazardsForEffects, getHazards, setHazards] = useRefState<CombatHazard[]>([]);
 
@@ -196,14 +206,34 @@ const CombatParent: FC<CombatParentProps> = (
 
   const setupFinished = useRef(false);
 
+  function getEncounter(){
+    return combatEncounterKey ? combatEncounterRawJSON.encounters.find((data) => {
+      return data.encounterKey == combatEncounterKey;
+    }) || combatEncounterRawJSON.defaultEncounter : combatEncounterRawJSON.defaultEncounter;
+  }
+
+  const [combatEndState, setCombatEndState] = useState<CombatEndState>(CombatEndState.UNDECIDED);
+  useEffect(() => {
+    if(combatEndState == CombatEndState.DEFEAT){
+      setCombatEncounterKey(null);
+      setCurrentEvent(getEncounter().defeatEventKey);
+    }
+    else if(combatEndState == CombatEndState.VICTORY){
+      setCombatEncounterKey(null);
+      setCurrentEvent(getEncounter().victoryEventKey);
+    }
+  }, [combatEndState]);
+
   useCombatHazardAnimations(mapToSendOff, animator, getPlayer, hazardsForEffects, actionExecutor.isExecuting, mapAnimate);
 
   useEffect(() => {
+    setCurrentEvent(null);
+
     setupFinished.current = false;
 
-    const encounter = combatEncounterKey ? combatEncounterRawJSON.encounters.find((data) => {
-      return data.encounterKey == combatEncounterKey;
-    }) || combatEncounterRawJSON.defaultEncounter : combatEncounterRawJSON.defaultEncounter;
+    setCombatEndState(CombatEndState.UNDECIDED);
+
+    const encounter = getEncounter();
     
     setMapTemplate(combatMapTemplateFactory.createMap(encounter.mapKey));
   }, [combatEncounterKey])
@@ -233,6 +263,18 @@ const CombatParent: FC<CombatParentProps> = (
   }, [playerForEffects, enemiesForEffects, hazardsForEffects]);
 
   useEffect(() => {
+    //Handle determining if the encounter is done yet.
+    if(setupFinished.current){
+      if(getPlayer().getHp() <= 0){
+        setCombatEndState(CombatEndState.DEFEAT);
+      }
+      else if(!getEnemies().find((enemy) => {
+        return enemy.getHp() > 0;
+      })){
+        setCombatEndState(CombatEndState.VICTORY);
+      }
+    }
+
     allTurnTakers.current = [getPlayer(), ...getEnemies()];
   }, [playerForEffects, enemiesForEffects]);
 

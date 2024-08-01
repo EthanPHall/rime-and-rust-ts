@@ -7,10 +7,12 @@ import IRimeEventAction from "./IRimeEventAction";
 import RimeEventActionGoto from "./RimeEventActionGoto";
 import RimeEventActionClose from "./RimeEventActionClose";
 import { IItemFactory, ItemQuantity, UniqueItemQuantitiesList } from "../caravan/Item";
-import RimeEventActionCloseAndClear from "./IRimeEventActionCloseAndClear";
+import RimeEventActionCloseAndClear from "./RimeEventActionCloseAndClear";
 import RimeEventActionStartCombat from "./RimeEventActionStartCombat";
 import ICombatEncounter from "../combat/ICombatEncounter";
 import CombatEncounterJSON from "../combat/CombatEncounter";
+import RimeEventActionReturnAndLose from "./RimeEventActionReturnAndLose";
+import RimeEventActionReturn from "./RimeEventActionReturn";
 
 
 
@@ -21,8 +23,10 @@ class RimeEventJSON implements IRimeEvent{
     private itemFactory:IItemFactory;
     private setSceneId:(newId:number)=>void;
     private closeEventScreen:() =>void;
+    private returnToCaravan:() =>void;
     private clearEventLocation: () => void;
     private setCombatEncounterKey: (newEncounter: string|null) => void;
+    private clearExplorationInventory: () => void;
 
     constructor(
         key:string,
@@ -30,13 +34,17 @@ class RimeEventJSON implements IRimeEvent{
         setSceneId:(newId:number)=>void,
         closeEventScreen:() =>void,
         clearEventLocation: () => void,
-        setCombatEncounterKey: (newEncounter: string|null) => void
+        setCombatEncounterKey: (newEncounter: string|null) => void,
+        clearExplorationInventory: () => void,
+        returnToCaravan:() =>void
     ){
         this.setCombatEncounterKey = setCombatEncounterKey; 
         this.clearEventLocation = clearEventLocation;  
         this.closeEventScreen = closeEventScreen;
         this.setSceneId = setSceneId;
         this.itemFactory = itemFactory; 
+        this.clearExplorationInventory = clearExplorationInventory;
+        this.returnToCaravan = returnToCaravan;
 
         this.key = key;
         this.name = "Error, event " + key + " not found.";
@@ -60,6 +68,12 @@ class RimeEventJSON implements IRimeEvent{
                             break;
                         case eventRawData.actionTypes.closeAndClearLocation:
                             options.push(new RimeEventActionCloseAndClear(clearEventLocation, closeEventScreen));
+                            break;
+                        case eventRawData.actionTypes.returnToCaravan:
+                            options.push(new RimeEventActionReturn(returnToCaravan));
+                            break;
+                        case eventRawData.actionTypes.returnAndLoseInventory:
+                            options.push(new RimeEventActionReturnAndLose(clearExplorationInventory, returnToCaravan));
                             break;
                         case eventRawData.actionTypes.startCombat:
                             options.push(new RimeEventActionStartCombat(setCombatEncounterKey, action.actionType.split(" ")[1]));

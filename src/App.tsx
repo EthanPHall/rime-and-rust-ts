@@ -16,6 +16,7 @@ import useExplorationInventory from './hooks/caravan/useExplorationInventory';
 import RimeEventJSON from './classes/events/RimeEventJSON';
 import IMapLocation from './classes/exploration/IMapLocation';
 import ICombatEncounter from './classes/combat/ICombatEncounter';
+import explorationItemsToKeep from "./data/exploration/exploration-items-to-keep.json";
 
 type ProgressionFlagsSeed = {
   [key: string]: boolean;
@@ -376,6 +377,22 @@ function App() {
     setLocationToClear(currentEventLocation);
   }
 
+  function clearExplorationInventory(){
+    setExplorationInventory((prev) => {
+      return new UniqueItemQuantitiesList(
+        prev.getListCopy().filter((itemQuantity) => {
+          return explorationItemsToKeep.itemsToKeep.includes(itemQuantity.getBaseItem().getKey());
+        })
+      );
+    });
+  }
+
+  function returnToCaravan(){
+    setCurrentEvent(null);
+    setCombatEncounterKey(null);
+    setMainGameScreen(MainGameScreens.CARAVAN);
+  }
+
   return (
     <SettingsContext.Provider value={{settingsManager:settingsManagerContext, setSettingsManager:setSettingsManagerContext}}>
       <MessageHandlingContext.Provider value={{messageHandling:messageHandlingContext, setMessageHandling:setMessageHandlingContext}}>
@@ -388,8 +405,8 @@ function App() {
                 setMainGameScreen={setMainGameScreen}
                 ></CaravanParent>}
               {mainGameScreen == MainGameScreens.MAP && <MapParent currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></MapParent>}
-              {currentEvent != null && <EventParent eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen} clearEventLocation={clearEventLocation} setCombatEncounterKey={setCombatEncounterKey}></EventParent>}
-              {combatEncounterKey != null && <CombatParent combatEncounterKey={combatEncounterKey}></CombatParent>}
+              {currentEvent != null && <EventParent returnToCaravan={returnToCaravan} clearExplorationInventory={clearExplorationInventory} eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen} clearEventLocation={clearEventLocation} setCombatEncounterKey={setCombatEncounterKey}></EventParent>}
+              {combatEncounterKey != null && <CombatParent combatEncounterKey={combatEncounterKey} setCombatEncounterKey={setCombatEncounterKey} setCurrentEvent={setCurrentEvent}></CombatParent>}
             </div>
           </ProgressionContext.Provider>
         </ItemFactoryContext.Provider>

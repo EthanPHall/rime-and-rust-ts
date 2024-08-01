@@ -11,7 +11,7 @@ function useDirectionHandler(defaultActivation:boolean = false, pause:boolean = 
     }, [pause])
 
     const handleDirectionInputs = useCallback((event:any) => {
-      const DEBUG_ALLOW_PAUSED_MOVEMENT = false;
+      const DEBUG_ALLOW_PAUSED_MOVEMENT = true;
 
       if(pauseRef.current && DEBUG_ALLOW_PAUSED_MOVEMENT){
         return;

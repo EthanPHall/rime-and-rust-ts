@@ -7,7 +7,9 @@
         "goto":"goto",
         "close":"close",
         "startCombat":"combat",
-        "closeAndClearLocation":"closeAndClear"
+        "closeAndClearLocation":"closeAndClear",
+        "returnToCaravan":"return",
+        "returnAndLoseInventory":"returnAndLose"
     },
     "allEvents":[
         {
@@ -69,6 +71,44 @@
                     "options":[
                         {
                             "actionType":"combat easy-1-combat-1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"easy-1-combat-1-victory",
+            "name": "Scrap, rusted but useful",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "",
+                    "type":"rewards",
+                    "options":[
+                        {
+                            "actionType":"closeAndClear"
+                        }
+                    ],
+                    "rewards":[
+                        {
+                            "itemKey":"Scrap",
+                            "range": {"min": 2, "max": 6}
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"easy-1-combat-1-defeat",
+            "name": "Defeat...",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "Insane, but formidable. Forced to retreat.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"returnAndLose"
                         }
                     ]
                 }

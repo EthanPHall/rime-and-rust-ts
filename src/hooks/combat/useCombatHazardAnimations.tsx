@@ -43,18 +43,14 @@ function useCombatHazardAnimations(
     useEffect(() => {
         
         hazards.forEach(hazard => {
-                console.log(hazard.position);
                 const currentAnimDetails:ImprovedMotionAnimation|null = hazard.getDefaultAnimation();
                 if(currentAnimDetails){
-                    console.log(hazard.position);
                     mapAnimate(map.positionToCSSIdString(new Vector2(hazard.position.y, hazard.position.x)), currentAnimDetails.to, currentAnimDetails.options);
                 }
             });
       }, [map]);
 
       async function startHazardAnimations():Promise<void>{
-          console.log("Starting hazard animations");
-          
           while(true){
             if(animationsToPlay.current.length === 0 || isExecutingActions()){
                 await new Promise((resolve) => setTimeout(resolve, 1000));

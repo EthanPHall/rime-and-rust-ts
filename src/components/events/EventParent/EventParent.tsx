@@ -23,6 +23,8 @@ interface EventParentProps {
   closeEventScreen:() =>void
   clearEventLocation:() => void
   setCombatEncounterKey: (newEncounter: string|null) => void
+  clearExplorationInventory: () => void,
+  returnToCaravan:() => void
 }
 
 const EventParent: FC<EventParentProps> = (
@@ -32,7 +34,9 @@ const EventParent: FC<EventParentProps> = (
     setExplorationInventory,
     closeEventScreen,
     clearEventLocation,
-    setCombatEncounterKey
+    setCombatEncounterKey,
+    clearExplorationInventory,
+    returnToCaravan
   }
 ) => {
   const [rewardsInventory, setRewardsInventory] = useState<UniqueItemQuantitiesList|null>(null);
@@ -55,7 +59,7 @@ const EventParent: FC<EventParentProps> = (
   const [sceneKey, setSceneKey] = useState<number>(1);
 
   const [rimeEventFactory, setRimeEventFactory] = useState<IRimeEventFactory>(
-    new RimeEventFactoryJSON(itemFactory, setSceneKey, closeEventScreen, clearEventLocation, setCombatEncounterKey)
+    new RimeEventFactoryJSON(itemFactory, setSceneKey, closeEventScreen, clearEventLocation, setCombatEncounterKey, clearExplorationInventory, returnToCaravan)
   )
 
   const [currentEvent, setCurrentEvent] = useState<IRimeEvent>(
