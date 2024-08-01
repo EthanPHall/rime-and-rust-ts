@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { IItem, ItemQuantity, UniqueItemQuantitiesList } from "../../../classes/caravan/Item";
 import './InventoryTransfererEntry.css';
+import transferItems from "../../../classes/utility/transferItems";
 
 interface InventoryTransfererEntryProps {
     fromInventory:UniqueItemQuantitiesList;
@@ -13,27 +14,6 @@ interface InventoryTransfererEntryProps {
   const InventoryTransfererEntry: FC<InventoryTransfererEntryProps> = (
     {fromInventory, setFromInventory, toInventory, setToInventory, itemToDisplay}
   ) => {
-  
-    function transferItems(from:UniqueItemQuantitiesList, to:UniqueItemQuantitiesList, key:string, amount:number) {
-      //Does the key occur in the from list?
-      const fromListItem:ItemQuantity|undefined = from.find((itemQuantity) => itemQuantity.getBaseItem().getKey() == key);
-      if(!fromListItem) {
-        //No, so return
-        return;
-      }
-  
-      //Does the from list have enough items to transfer?
-      if(fromListItem.getQuantity() < amount) {
-        //No, so return
-        return;
-      }
-  
-      const quantityToTransfer:number = Math.min(amount, fromListItem.getQuantity());
-      
-      //Does the key exist in To? If so, add to the quantity. If not, add a new item quantity.
-      to.modify(new ItemQuantity(fromListItem.getBaseItem(), quantityToTransfer));
-      from.modify(new ItemQuantity(fromListItem.getBaseItem(), -quantityToTransfer));
-    }
   
     return (
     <div className="inventory-transferer-entry">

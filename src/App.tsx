@@ -17,6 +17,8 @@ import RimeEventJSON from './classes/events/RimeEventJSON';
 import IMapLocation from './classes/exploration/IMapLocation';
 import ICombatEncounter from './classes/combat/ICombatEncounter';
 import explorationItemsToKeep from "./data/exploration/exploration-items-to-keep.json";
+import explorationItems from "./data/caravan/exploration-items.json";
+import transferItems from './classes/utility/transferItems';
 
 type ProgressionFlagsSeed = {
   [key: string]: boolean;
@@ -84,9 +86,38 @@ function App() {
   const [currentEvent, setCurrentEvent] = useState<string|null>(null);
   const [currentEventLocation, setCurrentEventLocation] = useState<IMapLocation|null>(null);
   const [mainGameScreen, setMainGameScreen] = useState<MainGameScreens>(MainGameScreens.CARAVAN);
+  const [previousGameScreen, setPreviousGameScreen] = useState<MainGameScreens>(mainGameScreen);
 
   const [combatEncounterKey, setCombatEncounterKey] = useState<string|null>(null);
   
+  useEffect(() => {
+    if(mainGameScreen == MainGameScreens.CARAVAN && previousGameScreen == MainGameScreens.MAP){
+      //Transfer regular resources from the explorationInventory to the regular inventory.
+      const itemsToTransfer:string[] = explorationInventory.getListCopy().filter((quantity) => {
+        return !explorationItems.includes(quantity.getBaseItem().getKey());
+      }).map((quantity) => {
+        return quantity.getBaseItem().getKey();
+      });
+
+      itemsToTransfer.forEach((itemKey) => {
+        transferItems(explorationInventory, inventory, itemKey, Infinity)
+      });
+
+      //Add an entry to the regular inventory for each exploration item.
+      const itemsToMakeSureInventoryHasEntryFor:string[] = explorationInventory.getListCopy().filter((quantity) => {
+        return explorationItems.includes(quantity.getBaseItem().getKey());
+      }).map((quantity) => {
+        return quantity.getBaseItem().getKey();
+      });
+
+      itemsToMakeSureInventoryHasEntryFor.forEach((itemKey) => {
+        transferItems(explorationInventory, inventory, itemKey, 0)
+      });
+    }
+
+    setPreviousGameScreen(mainGameScreen);
+  }, [mainGameScreen])
+
   useEffect(() => {
     const inventorySledQuantities:SledQuantity[] = Sled.pickOutSledQuantities(getInventory());
     const sledsGroupedByKey:Sled[][] = groupSledsByKey(sledsList);
