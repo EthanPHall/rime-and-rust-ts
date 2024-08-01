@@ -83,7 +83,7 @@ function App() {
 
   const [currentEvent, setCurrentEvent] = useState<string|null>(null);
   const [currentEventLocation, setCurrentEventLocation] = useState<IMapLocation|null>(null);
-  const [mainGameScreen, setMainGameScreen] = useState<MainGameScreens>(MainGameScreens.MAP);
+  const [mainGameScreen, setMainGameScreen] = useState<MainGameScreens>(MainGameScreens.CARAVAN);
 
   const [combatEncounterKey, setCombatEncounterKey] = useState<string|null>(null);
   
@@ -170,6 +170,10 @@ function App() {
   useEffect(() => {
     console.log(combatEncounterKey);
   }, [combatEncounterKey])
+
+  useEffect(() => {
+    sledsListRef.current = sledsList;
+  }, [sledsList]);
 
   function groupSledsByKey(sleds:Sled[]):Sled[][]{
     const sledsByKey = new Map<string, Sled[]>();
@@ -318,12 +322,11 @@ function App() {
   }
 
   function createPassiveRecipeTimeout():NodeJS.Timeout{
-    return setTimeout(executePassiveRecipes, settingsManagerContextRef.current.getCorrectTiming(10000));
+    return setTimeout(executePassiveRecipes, settingsManagerContextRef.current.getCorrectTiming(1000));
   }
 
   function executePassiveRecipes(){
     const sleds:Sled[] = sledsListRef.current;
-
     sleds.forEach((sled) => {
         const recipe = sled.getPassiveRecipe().convertToRecipe(itemFactoryContext);
         

@@ -282,6 +282,8 @@ class Sled implements IItem{
     }
 
     getSellRecipe(itemFactory:IItemFactory):Recipe{
+        console.log(this.recipe);
+
         //Get the new costs list, which is just this Item with quantity 1
         const costs:ItemQuantity[] = [new ItemQuantity(this, 1)];
 
