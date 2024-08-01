@@ -5,7 +5,7 @@ import MapChunk from "./MapChunk";
 import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
 import DifficultyBrackets from "./DifficultyBrackets";
-import explorationLocationData from "../../data/exploration/exploration-location-data.json";
+import explorationLocationJSONData from "../../data/exploration/exploration-location-data.json";
 import RimeEventJSON from "../events/RimeEventJSON";
 import ArrayScrambler from "../utility/ArrayScrambler";
 import IMapLocation from "./IMapLocation";
@@ -64,8 +64,13 @@ class ChunkMap implements IMap{
             }
         }
 
-        const difficultyBrackets:DifficultyBrackets = new DifficultyBrackets(maxDistanceFromCenter, explorationLocationData.difficultyBrackets);
+        const difficultyBrackets:DifficultyBrackets = new DifficultyBrackets(maxDistanceFromCenter, explorationLocationJSONData.difficultyBrackets);
         this.generateLocations(difficultyBrackets);
+    }
+
+    private placeHome(){
+        const {chunk, position} = this.getChunkAndPosition(this.centerPoint);
+        chunk.placeHomeLocation();
     }
 
     private generateLocations(difficultyBrackets:DifficultyBrackets){
@@ -73,18 +78,18 @@ class ChunkMap implements IMap{
         const totalLocationsCount:number =  this.chunkDimensions.x * this.chunkDimensions.y * this.dimensions.x * this.dimensions.y;
         
         //Get how many total explorable locations there should be
-        const totalLocationsToSpawnCount:number = Math.floor(totalLocationsCount * explorationLocationData.explorableLocationsTotalPercentage / 100);
+        const totalLocationsToSpawnCount:number = Math.floor(totalLocationsCount * explorationLocationJSONData.explorableLocationsTotalPercentage / 100);
         
         //Make a new list with an entry for each difficulty bracket. Determine how many locations each bracket should spawn.
         const locationsToSpawnByBracket:number[] = [];
-        for(let i = 0; i < explorationLocationData.difficultyBrackets; i++){
-            const percentages = explorationLocationData.percentagesByDifficultyBracket;
+        for(let i = 0; i < explorationLocationJSONData.difficultyBrackets; i++){
+            const percentages = explorationLocationJSONData.percentagesByDifficultyBracket;
             locationsToSpawnByBracket.push(Math.floor(totalLocationsToSpawnCount * percentages[Math.min(i, percentages.length - 1)] / 100));
         }
         
         //Divide chunks into lists, filtered by difficulty brackets
         const chunksByDifficultyBracket:MapChunk[][] = [];
-        for(let i = 0; i < explorationLocationData.difficultyBrackets; i++){ chunksByDifficultyBracket.push([]); }
+        for(let i = 0; i < explorationLocationJSONData.difficultyBrackets; i++){ chunksByDifficultyBracket.push([]); }
 
         this.chunks.forEach((row) => {
             row.forEach((chunk) => {
@@ -128,6 +133,7 @@ class ChunkMap implements IMap{
             })
         });
         
+        this.placeHome();
     }
 
     getChunk(position:Vector2){

@@ -37,6 +37,7 @@
     --exploration-map-font-size: 1.2em;
     --exploration-map-color: #a8aaba;
     --exploration-map-cleared-color: #777879;
+    --exploration-map-home-color: #e0b087;
 
     /* Animation */
     --combat-animation-duration: .35s;

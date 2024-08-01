@@ -102,7 +102,16 @@
     "explorableLocationsTotalPercentage": 8,
     "percentagesByDifficultyBracket":[3,13,17,23,21,15,8],
     "chancesToBeFloating":[0, 5, 10, 15, 20, 35, 55],
+    "homeLocation":{
+        "key": "home",
+        "name": "Home",
+        "description": "Home"
+    },
     "allKeyNames":[
+        {
+            "key":"home",
+            "name":"home"
+        },
         {
             "key":"background-location-1",
             "name":"dunes"
@@ -165,6 +174,13 @@
         }
     ],
     "allKeyVisuals":[
+        {
+            "key":"home",
+            "visualInfo":{
+                "symbol":"$",
+                "styles":"home lower"
+            }
+        },
         {
             "key":"background-location-1",
             "visualInfo":{
@@ -272,6 +288,15 @@
         }
     ],
     "groundedEventsByKey":[
+        {
+            "key":"home",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"home-return",
+                    "chance": 100
+                }
+            ]
+        },
         {
             "key":"easy-1",
             "eventKeyChancePairs":[

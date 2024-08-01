@@ -1,7 +1,8 @@
 {
     "sceneTypes":{
         "rewards":"rewards",
-        "textOnly":"text only"
+        "textOnly":"text only",
+        "actionOnly":"action only"
     },
     "actionTypes":{
         "goto":"goto",
@@ -12,6 +13,22 @@
         "returnAndLoseInventory":"returnAndLose"
     },
     "allEvents":[
+        {
+            "key":"home-return",
+            "name": "",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "",
+                    "type":"action only",
+                    "options":[
+                        {
+                            "actionType":"return"
+                        }
+                    ]
+                }
+            ]
+        },
         {
             "key":"easy-1-safe",
             "name": "An empty house",

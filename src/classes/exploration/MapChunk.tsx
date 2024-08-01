@@ -4,7 +4,7 @@ import IMapLocation from "./IMapLocation";
 import IMapLocationFactory from "./IMapLocationFactory";
 import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
-import locationData from "../../data/exploration/exploration-location-data.json";
+import explorationLocationJSONData from "../../data/exploration/exploration-location-data.json";
 import RimeEventJSON from "../events/RimeEventJSON";
 import ArrayScrambler from "../utility/ArrayScrambler";
 
@@ -73,6 +73,15 @@ class MapChunk implements IMap{
         this.locations = locations;
     }
 
+    placeHomeLocation(){
+        const homeLocation:IMapLocation = this.factory.createExactLocation(
+            explorationLocationJSONData.homeLocation.key,
+            new Vector2(Math.floor(this.dimensions.x / 2), Math.floor(this.dimensions.y / 2))
+        )
+
+        this.locations[homeLocation.getPostition().y][homeLocation.getPostition().x] = homeLocation;
+    }
+
     get2DRepresentation(): IMapLocationVisual[][] {
         return this.locations.map(row => row.map(location => location.getVisual()));
     }
@@ -114,7 +123,7 @@ class MapChunk implements IMap{
 
     generateLocations(difficulty:number, totalLocations:number){
         //Get a list of locations for the given difficulty level
-        const potentialLocations =  locationData.explorationLocations.filter((location) => {
+        const potentialLocations =  explorationLocationJSONData.explorationLocations.filter((location) => {
             return location.difficultyBrackets.includes(difficulty);
         })
 
@@ -123,7 +132,7 @@ class MapChunk implements IMap{
 
         //Create the locations
         const locationsCreated:IMapLocation[] = [];
-        const chanceToFloat:number = locationData.chancesToBeFloating?.[difficulty] || 0;
+        const chanceToFloat:number = explorationLocationJSONData.chancesToBeFloating?.[difficulty] || 0;
         potentialLocationsScrambled.forEach((potentialLocation, i) => {
             const locationsToCreate = 
                 (i == potentialLocationsScrambled.length - 1) ? 
