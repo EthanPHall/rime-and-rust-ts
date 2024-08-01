@@ -3,6 +3,6 @@
     height: 100%;
     width: 100%;
 
-    background: var(--background-color);
-    background: linear-gradient(180deg, var(--background-color-trans) 0%, var(--background-color-trans) 10%, var(--background-color) 100%);
+    /* background: var(--background-color); */
+    background: linear-gradient(180deg, var(--background-color-clear) 0%, var(--background-color-trans) 25%, var(--background-color) 100%);
     }

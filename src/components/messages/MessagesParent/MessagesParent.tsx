@@ -9,22 +9,6 @@ interface MessagesParentProps {}
 
 const MessagesParent: FC<MessagesParentProps> = () => {
 
-  // const [messages, setMessages] = React.useState<Message[]>([
-  //   new Message('Message. Lorem Ipsum Whatever.', false),
-  //   new Message('Message. Lorem Ipsum Whatever.', false),
-  //   new Message('Message. Lorem Ipsum Whatever.', false),
-  //   new Message('Message. Lorem Ipsum Whatever.', false),
-  //   new Message('Message. Lorem Ipsum Whatever.', false),
-  //   new Message('Tanya Dialogue. Lorem Ipsum Whatever.', true),
-  //   new Message('Tanya Dialogue. Lorem Ipsum Whatever.', true),
-  //   new Message('Tanya Dialogue. Lorem Ipsum Whatever.', true),
-  //   new Message('Tanya Dialogue. Lorem Ipsum Whatever.', true),
-  //   new Message('Message. Lorem Ipsum Whatever.', false),
-  //   new Message('Message. Lorem Ipsum Whatever.', false),
-  //   new Message('Message. Lorem Ipsum Whatever.', false),
-  //   new Message('Message. Lorem Ipsum Whatever.', false),
-  // ]);
-
   const messageHandlingContext = React.useContext(MessageHandlingContext);
 
   return (<div className="messages-parent" data-testid="messages-parent">
