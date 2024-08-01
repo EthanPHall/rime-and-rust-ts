@@ -100,6 +100,8 @@ const Map: FC<MapProps> = (
 
   //Inelegant way to force an update probably, but oh well, it works and there's more important stuff to do.
   const [preventMovementDelay, setPreventMovementDelay] = useState(true);
+
+  const hasMoved = useRef(false);
   
   useEffect(() => {
     if(currentEvent){
@@ -129,6 +131,11 @@ const Map: FC<MapProps> = (
 
     lastPlayerPosition.current = player.position;
     
+    //DOne to prevent the home location from bringing the player back to teh caravan screen immediately.
+    if(!hasMoved.current){
+      return;
+    }
+    
     //?TODO: I should probaly just make mapRepresentation a state variable, but whatever, I can do that later.
     setPreventMovementDelay((current) => {return !current});
     setCurrentEvent(map.getEventToStart(player.position));
@@ -138,6 +145,10 @@ const Map: FC<MapProps> = (
   useEffect(() => {
     setPlayer((current) => {
       const newPlayer = current.clone();
+
+      if(!DirectionsUtility.getVectorFromDirection(direction.direction).equals(new Vector2(0,0))){
+        hasMoved.current = true;
+      }
       newPlayer.position = newPlayer.position.add(DirectionsUtility.getVectorFromDirection(direction.direction));
       
       if(newPlayer.position.x < 0){

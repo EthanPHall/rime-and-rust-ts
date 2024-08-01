@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useContext, useEffect, useRef, useState } from 'react';
 import './EventParent.css';
 import EventSection from '../EventSection/EventSection';
 import InventoryPicker from '../InventoryPicker/InventoryPicker';
@@ -13,8 +13,9 @@ import IRimeEventFactory from '../../../classes/events/IRimeEventFactory';
 import RimeEventFactoryJSON from '../../../classes/events/RimeEventFactoryJSON';
 import IRimeEvent from '../../../classes/events/IRimeEvent';
 import RimeEventSceneRewards from '../../../classes/events/RimeEventSceneRewards';
-import eventRawData from "../../../data/event/events.json";
+import eventJSONData from "../../../data/event/events.json";
 import ICombatEncounter from '../../../classes/combat/ICombatEncounter';
+import RimeEventSceneActionOnly from '../../../classes/events/RimeEventSceneActionOnly';
 
 interface EventParentProps {
   eventId:string
@@ -55,9 +56,10 @@ const EventParent: FC<EventParentProps> = (
     }
   )
 
+  
   const itemFactory = useContext(ItemFactoryContext);
   const [sceneKey, setSceneKey] = useState<number>(1);
-
+  
   const [rimeEventFactory, setRimeEventFactory] = useState<IRimeEventFactory>(
     new RimeEventFactoryJSON(itemFactory, setSceneKey, closeEventScreen, clearEventLocation, setCombatEncounterKey, clearExplorationInventory, returnToCaravan)
   )
@@ -65,9 +67,10 @@ const EventParent: FC<EventParentProps> = (
   const [currentEvent, setCurrentEvent] = useState<IRimeEvent>(
     rimeEventFactory.createEventById(eventId)
   )
-
+  
   const [currentScene, setCurrentScene] = useState<IRimeEventScene>(defaultScene);
-
+  
+  const [sceneIsInvisible, setSceneIsInvisible] = useState<boolean>(false)
   
   useEffect(() => {
     setCurrentEvent(rimeEventFactory.createEventById(eventId));
@@ -79,7 +82,11 @@ const EventParent: FC<EventParentProps> = (
       return scene.getKey() == sceneKey;
     });
 
-    if(newScene && newScene instanceof RimeEventSceneRewards){
+    if(newScene && newScene instanceof RimeEventSceneActionOnly){
+      newScene.executOption(newScene.getOptions()[0]);
+      setSceneIsInvisible(true);  
+    }
+    else if(newScene && newScene instanceof RimeEventSceneRewards){
       setRewardsInventory(newScene.getRewards());
     }
     else{
@@ -92,22 +99,26 @@ const EventParent: FC<EventParentProps> = (
   return (
   <div className="event-parent" data-testid="event-parent">
       <div className='event-parent-grid-parent'>
-        <EventSection 
-          eventId={eventId} 
-          explorationInventory={explorationInventory} 
-          setExplorationInventory={setExplorationInventory}
-          currentEvent={currentEvent}
-          currentScene={currentScene}
-          rewardsInventory={rewardsInventory}
-          setRewardsInventory={setRewardsInventory}
-        ></EventSection>
-        {currentScene.getType() == eventRawData.sceneTypes.rewards && rewardsInventory && <InventoryTransferer
-          toInventory={rewardsInventory}
-          setToInventory={setRewardsInventory as React.Dispatch<React.SetStateAction<UniqueItemQuantitiesList>>}
-          fromInventory={explorationInventory}
-          setFromInventory={setExplorationInventory }
-        ></InventoryTransferer>}
-      </div>
+      {!sceneIsInvisible &&
+        <>
+          <EventSection 
+            eventId={eventId} 
+            explorationInventory={explorationInventory} 
+            setExplorationInventory={setExplorationInventory}
+            currentEvent={currentEvent}
+            currentScene={currentScene}
+            rewardsInventory={rewardsInventory}
+            setRewardsInventory={setRewardsInventory}
+          ></EventSection>
+          {currentScene.getType() == eventJSONData.sceneTypes.rewards && rewardsInventory && <InventoryTransferer
+            toInventory={rewardsInventory}
+            setToInventory={setRewardsInventory as React.Dispatch<React.SetStateAction<UniqueItemQuantitiesList>>}
+            fromInventory={explorationInventory}
+            setFromInventory={setExplorationInventory }
+          ></InventoryTransferer>}
+        </>
+      }
+    </div>
   </div>
 );}
 

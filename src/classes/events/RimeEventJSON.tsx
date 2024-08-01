@@ -13,6 +13,7 @@ import ICombatEncounter from "../combat/ICombatEncounter";
 import CombatEncounterJSON from "../combat/CombatEncounter";
 import RimeEventActionReturnAndLose from "./RimeEventActionReturnAndLose";
 import RimeEventActionReturn from "./RimeEventActionReturn";
+import RimeEventSceneActionOnly from "./RimeEventSceneActionOnly";
 
 
 
@@ -117,6 +118,15 @@ class RimeEventJSON implements IRimeEvent{
                                 scene.sceneKey,
                                 scene.type,
                                 scene.text,
+                                options
+                            )
+                        );
+                        break;
+                    case eventRawData.sceneTypes.actionOnly:
+                        this.scenes.push(
+                            new RimeEventSceneActionOnly(
+                                scene.sceneKey,
+                                scene.type,
                                 options
                             )
                         );
