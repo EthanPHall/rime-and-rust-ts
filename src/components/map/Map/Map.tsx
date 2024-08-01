@@ -20,6 +20,8 @@ interface MapProps {
   setCurrentEventLocation: React.Dispatch<React.SetStateAction<IMapLocation | null>>
   locationToClear:IMapLocation|null
   setLocationToClear:React.Dispatch<React.SetStateAction<IMapLocation | null>>
+  savedMap:IMap|null
+  setSavedMap:React.Dispatch<React.SetStateAction<IMap | null>>
 }
 
 class ExplorationPlayer{
@@ -75,7 +77,9 @@ const Map: FC<MapProps> = (
     setCurrentEvent,
     setCurrentEventLocation,
     locationToClear,
-    setLocationToClear
+    setLocationToClear,
+    savedMap,
+    setSavedMap
   }
 ) => {
   const [mapLocationFactory] = useState<IMapLocationFactory>(
@@ -83,6 +87,7 @@ const Map: FC<MapProps> = (
   );
 
   const [map, setMap] = useState<IMap>(
+    savedMap ||
     new ChunkMap(
       mapLocationFactory,
       new Vector2(15, 15),
@@ -103,6 +108,16 @@ const Map: FC<MapProps> = (
 
   const hasMoved = useRef(false);
   
+  useEffect(() => {
+    if(savedMap){
+      setPlayer(new ExplorationPlayer(savedMap.getCenterPoint()))
+      setMap(savedMap);
+    }
+    else{
+      setSavedMap(map);
+    }
+  }, [])
+
   useEffect(() => {
     if(currentEvent){
       setPauseDirectionHandling(true);

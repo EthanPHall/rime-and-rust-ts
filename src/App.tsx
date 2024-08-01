@@ -16,9 +16,10 @@ import useExplorationInventory from './hooks/caravan/useExplorationInventory';
 import RimeEventJSON from './classes/events/RimeEventJSON';
 import IMapLocation from './classes/exploration/IMapLocation';
 import ICombatEncounter from './classes/combat/ICombatEncounter';
-import explorationItemsToKeep from "./data/exploration/exploration-items-to-keep.json";
+import explorationItemsToKeepOnDeath from "./data/exploration/exploration-items-to-keep.json";
 import explorationItems from "./data/caravan/exploration-items.json";
 import transferItems from './classes/utility/transferItems';
+import IMap from './classes/exploration/IMap';
 
 type ProgressionFlagsSeed = {
   [key: string]: boolean;
@@ -89,6 +90,8 @@ function App() {
   const [previousGameScreen, setPreviousGameScreen] = useState<MainGameScreens>(mainGameScreen);
 
   const [combatEncounterKey, setCombatEncounterKey] = useState<string|null>(null);
+
+  const [savedMap,setSavedMap] = useState<IMap|null>(null);
   
   useEffect(() => {
     if(mainGameScreen == MainGameScreens.CARAVAN && previousGameScreen == MainGameScreens.MAP){
@@ -415,7 +418,7 @@ function App() {
     setExplorationInventory((prev) => {
       return new UniqueItemQuantitiesList(
         prev.getListCopy().filter((itemQuantity) => {
-          return explorationItemsToKeep.itemsToKeep.includes(itemQuantity.getBaseItem().getKey());
+          return explorationItemsToKeepOnDeath.itemsToKeep.includes(itemQuantity.getBaseItem().getKey());
         })
       );
     });
@@ -438,7 +441,7 @@ function App() {
                 setExplorationInventory={setExplorationInventory}
                 setMainGameScreen={setMainGameScreen}
                 ></CaravanParent>}
-              {mainGameScreen == MainGameScreens.MAP && <MapParent currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></MapParent>}
+              {mainGameScreen == MainGameScreens.MAP && <MapParent savedMap={savedMap} setSavedMap={setSavedMap} currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></MapParent>}
               {currentEvent != null && <EventParent returnToCaravan={returnToCaravan} clearExplorationInventory={clearExplorationInventory} eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen} clearEventLocation={clearEventLocation} setCombatEncounterKey={setCombatEncounterKey}></EventParent>}
               {combatEncounterKey != null && <CombatParent combatEncounterKey={combatEncounterKey} setCombatEncounterKey={setCombatEncounterKey} setCurrentEvent={setCurrentEvent}></CombatParent>}
             </div>

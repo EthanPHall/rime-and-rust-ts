@@ -5,6 +5,7 @@ import CaravanSectionValuables from '../../caravan/CaravanSectionValuables/Carav
 import Map from '../Map/Map';
 import RimeEventJSON from '../../../classes/events/RimeEventJSON';
 import IMapLocation from '../../../classes/exploration/IMapLocation';
+import IMap from '../../../classes/exploration/IMap';
 
 interface MapParentProps {
   currentEvent:string|null
@@ -12,6 +13,8 @@ interface MapParentProps {
   setCurrentEventLocation: React.Dispatch<React.SetStateAction<IMapLocation | null>>
   locationToClear:IMapLocation|null
   setLocationToClear:React.Dispatch<React.SetStateAction<IMapLocation | null>>
+  savedMap:IMap|null
+  setSavedMap:React.Dispatch<React.SetStateAction<IMap | null>>
 }
 
 const MapParent: FC<MapParentProps> = (
@@ -20,13 +23,15 @@ const MapParent: FC<MapParentProps> = (
     setCurrentEvent,
     setCurrentEventLocation,
     locationToClear,
-    setLocationToClear
+    setLocationToClear,
+    savedMap,
+    setSavedMap
   }
 ) => (
   <div className="map-parent" data-testid="map-parent">
       <div className='grid-parent'>
         <MessagesParent></MessagesParent>
-        <Map currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></Map>
+        <Map savedMap={savedMap} setSavedMap={setSavedMap} currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></Map>
         {/* <ExplorationSectionValuables></ExplorationSectionValuables> */}
       </div>
   </div>
