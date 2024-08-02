@@ -4,4 +4,6 @@
     outline: 1px solid var(--outline-color);
 
     position: relative;
+
+    background-color: var(--background-color);
 }

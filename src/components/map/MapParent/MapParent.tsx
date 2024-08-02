@@ -6,8 +6,10 @@ import Map from '../Map/Map';
 import RimeEventJSON from '../../../classes/events/RimeEventJSON';
 import IMapLocation from '../../../classes/exploration/IMapLocation';
 import IMap from '../../../classes/exploration/IMap';
+import { Resource, ResourceQuantity, UniqueItemQuantitiesList } from '../../../classes/caravan/Item';
 
 interface MapParentProps {
+  explorationInventory:UniqueItemQuantitiesList
   currentCombat:string|null
   currentEvent:string|null
   setCurrentEvent: React.Dispatch<React.SetStateAction<string | null>>
@@ -20,6 +22,7 @@ interface MapParentProps {
 
 const MapParent: FC<MapParentProps> = (
   {
+    explorationInventory,
     currentCombat,
     currentEvent,
     setCurrentEvent,
@@ -34,7 +37,7 @@ const MapParent: FC<MapParentProps> = (
       <div className='grid-parent'>
         <MessagesParent></MessagesParent>
         <Map currentCombat={currentCombat} savedMap={savedMap} setSavedMap={setSavedMap} currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></Map>
-        {/* <ExplorationSectionValuables></ExplorationSectionValuables> */}
+        <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(explorationInventory)} dogs={[]} displayDogsInput={false}></CaravanSectionValuables>
       </div>
   </div>
 );
