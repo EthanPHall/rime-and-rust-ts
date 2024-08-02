@@ -21,7 +21,9 @@ const MapLocation: FC<MapLocationProps> = (
 ) => {
 
   useEffect(()=>{
-    console.log("In Thing");
+    if(position.x == 0){
+      console.log(locationVisual.getStyles());
+    }
   },[visibleLocations])
 
   return(

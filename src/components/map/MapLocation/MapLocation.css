@@ -7,20 +7,20 @@
     display:inline-block;
 }
 
-.map-location + .lower{
+.map-location.lower{
     top: 3px;
     position: relative;
 }
 
-.map-location + .cleared{
+.map-location.cleared{
     color:var(--exploration-map-cleared-color);
     /* color:hotpink; */
 }
 
-.map-location + .home{
+.map-location.home{
     color:var(--exploration-map-home-color);
 }
 
-.map-location + .invisible{
+.map-location.invisible{
     color:var(--background-color-clear);
 }
