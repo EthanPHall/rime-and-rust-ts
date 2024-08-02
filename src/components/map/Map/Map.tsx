@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, { cloneElement, FC, useCallback, useEffect, useRef, useState } from 'react';
 import './Map.css';
 import MapLocation from '../MapLocation/MapLocation';
 import IMap from '../../../classes/exploration/IMap';
@@ -13,6 +13,7 @@ import Directions, { DirectionsUtility } from '../../../classes/utility/Directio
 import { TargetAndTransition } from 'framer-motion';
 import RimeEventJSON from '../../../classes/events/RimeEventJSON';
 import IMapLocation from '../../../classes/exploration/IMapLocation';
+import getRadiusOfPoints from '../../../classes/utility/getRadiusOfPoints';
 
 interface MapProps {
   currentCombat:string|null
@@ -70,6 +71,10 @@ class CurrentAndBaseElement{
   getCurrent():JSX.Element{
     return this.current;
   }
+
+  forceUpdate(){
+    this.current = cloneElement(this.current, this.current.props);
+  }
 }
 
 const Map: FC<MapProps> = (
@@ -97,6 +102,11 @@ const Map: FC<MapProps> = (
     )
   );
   const mapRepresentation = useRef<CurrentAndBaseElement[][]>([]);
+  const [visibleLocations, setVisibleLocations] = useState<boolean[][]>(
+    new Array(map.getDimensions().y).fill(true).map(() => {
+      return new Array(map.getDimensions().x).fill(false);
+    })
+  );
   
   const [player, setPlayer] = useState(new ExplorationPlayer(map.getCenterPoint()))
   
@@ -118,6 +128,14 @@ const Map: FC<MapProps> = (
     else{
       setSavedMap(map);
     }
+
+    return () => {
+      setSavedMap((prev) => {
+        const newMap = prev?.clone();
+
+        return prev || null;
+      })
+    }
   }, [])
 
   useEffect(() => {
@@ -133,20 +151,39 @@ const Map: FC<MapProps> = (
     mapRepresentation.current = map.get2DRepresentation().map((row, y) => {
       return row.map((location, x) => {
         return new CurrentAndBaseElement(
-          <MapLocation key={`${x}${y}`} locationVisual={location}></MapLocation>,
-          player.position.equals(new Vector2(x,y)) ? <MapLocation key={`${x}${y}`} locationVisual={player.locationVisual}></MapLocation> : undefined
+          <MapLocation position={new Vector2(x, y)} key={`${x}${y}`} locationVisual={location} visibleLocations={visibleLocations}></MapLocation>,
+          player.position.equals(new Vector2(x,y)) ? <MapLocation position={new Vector2(x, y)} visibleLocations={visibleLocations} key={`${x}${y}`} locationVisual={player.locationVisual}></MapLocation> : undefined
         );
       })
     });
   }, [map])
 
   useEffect(() => {
-    mapRepresentation.current[lastPlayerPosition.current.y][lastPlayerPosition.current.x].returnToBase();
+    getRadiusOfPoints(player.position, 2).forEach((point) => {
+      if(point.y < 0 || point.y >= visibleLocations.length){
+        return;
+      }
+      if(point.x < 0 || point.x >= visibleLocations[0].length){
+        return;
+      }
+      
+      visibleLocations[point.y][point.x] = true;
+
+      //Wonky things happen with the player visual if the player position is forceUpdated,
+      //so let's make sure that the player position is never force updated.
+      mapRepresentation.current[point.y][point.x].returnToBase();
+      mapRepresentation.current[point.y][point.x].forceUpdate();
+    });
+    setVisibleLocations([...visibleLocations]);
+    
+    // mapRepresentation.current[lastPlayerPosition.current.y][lastPlayerPosition.current.x].returnToBase();
     mapRepresentation.current[player.position.y][player.position.x].replace(
-      <MapLocation key={`Player`} locationVisual={player.locationVisual}></MapLocation>
+      <MapLocation position={player.position} visibleLocations={visibleLocations} key={`Player`} locationVisual={player.locationVisual}></MapLocation>
     );
 
     lastPlayerPosition.current = player.position;
+
+
     
     //DOne to prevent the home location from bringing the player back to teh caravan screen immediately.
     if(!hasMoved.current){
