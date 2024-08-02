@@ -15,6 +15,7 @@ import RimeEventJSON from '../../../classes/events/RimeEventJSON';
 import IMapLocation from '../../../classes/exploration/IMapLocation';
 
 interface MapProps {
+  currentCombat:string|null
   currentEvent:string|null
   setCurrentEvent: React.Dispatch<React.SetStateAction<string | null>>
   setCurrentEventLocation: React.Dispatch<React.SetStateAction<IMapLocation | null>>
@@ -73,6 +74,7 @@ class CurrentAndBaseElement{
 
 const Map: FC<MapProps> = (
   {
+    currentCombat,
     currentEvent,
     setCurrentEvent,
     setCurrentEventLocation,
@@ -119,7 +121,7 @@ const Map: FC<MapProps> = (
   }, [])
 
   useEffect(() => {
-    if(currentEvent){
+    if(currentEvent || currentCombat){
       setPauseDirectionHandling(true);
     }
     else{
