@@ -171,9 +171,9 @@ const Map: FC<MapProps> = (
     })
 
     mapRepresentation.current = map.get2DRepresentation().map((row, y) => {
-      return row.map((location, x) => {
+      return row.map((locationVisual, x) => {
         return new CurrentAndBaseElement(
-          <MapLocation position={new Vector2(x, y)} key={`${x}${y}`} locationVisual={location} visibleLocations={visibleLocations}></MapLocation>,
+          <MapLocation position={new Vector2(x, y)} key={`${x}${y}`} locationVisual={locationVisual} visibleLocations={visibleLocations}></MapLocation>,
           player.position.equals(new Vector2(x,y)) ? <MapLocation position={new Vector2(x, y)} visibleLocations={visibleLocations} key={`${x}${y}`} locationVisual={player.locationVisual}></MapLocation> : undefined
         );
       })
