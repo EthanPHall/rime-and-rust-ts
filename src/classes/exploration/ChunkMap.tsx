@@ -151,10 +151,6 @@ class ChunkMap implements IMap{
     }
 
     get2DRepresentation(): IMapLocationVisual[][] {
-        // if(this.representation){
-        //     return this.representation;
-        // }
-
         const result: IMapLocationVisual[][] = [];
         
         for(let y = 0; y < this.dimensions.y; y++){
