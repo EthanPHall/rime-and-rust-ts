@@ -26,6 +26,8 @@ const ExplorationResourcesPicker: FC<ExplorationResourcesPickerProps> = (
   <div className="exploration-resources-picker" data-testid="exploration-resources-picker">
     <SectionLabel sectionName='Equipment'></SectionLabel>
     <div className='spacing'></div>
+    {explorationInventory.getMaxCapacity() != Infinity && `${explorationInventory.getCurrentCapacity()}/${explorationInventory.getMaxCapacity()}`}
+    <div className='spacing'></div>
     {getInventoryItemsThatAreExplorationItems().map((itemQuantity) => {
       return <ExplorationResourcesEntry
         key={itemQuantity.getBaseItem().getKey()}

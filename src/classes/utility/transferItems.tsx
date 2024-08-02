@@ -17,8 +17,14 @@ function transferItems(from:UniqueItemQuantitiesList, to:UniqueItemQuantitiesLis
 
     
     //Does the key exist in To? If so, add to the quantity. If not, add a new item quantity.
-    to.modify(new ItemQuantity(fromListItem.getBaseItem(), quantityToTransfer));
-    from.modify(new ItemQuantity(fromListItem.getBaseItem(), -quantityToTransfer));
+    for(let i = 0; i < quantityToTransfer; i++){
+      if(to.capacityReached()){
+        break;
+      }
+
+      to.modify(new ItemQuantity(fromListItem.getBaseItem(), 1));
+      from.modify(new ItemQuantity(fromListItem.getBaseItem(), -1));
+    }
   }
 
   export default transferItems;

@@ -528,18 +528,23 @@ class SledDogQuantity{
 
 class UniqueItemQuantitiesList{
     private list:ItemQuantity[];
+    private maxCapacity:number;
+    private currentCapacity:number = 0;
 
-    constructor(list:ItemQuantity[]){
+    constructor(list:ItemQuantity[], maxCapacity:number = Infinity){
         this.list = list;
+        this.maxCapacity = maxCapacity;
     }
 
     clone():UniqueItemQuantitiesList{
-        return new UniqueItemQuantitiesList(this.list);
+        return new UniqueItemQuantitiesList(this.list, this.maxCapacity);
     }
     deepClone():UniqueItemQuantitiesList{
         return new UniqueItemQuantitiesList(this.list.map((itemQuantity) => {
             return itemQuantity.clone();
-        }));
+        }),
+        this.maxCapacity
+    );
     }
     getListCopy():ItemQuantity[]{
         return [...this.list];
@@ -616,6 +621,24 @@ class UniqueItemQuantitiesList{
 
     find(predicate: (value: ItemQuantity, index: number, array: ItemQuantity[]) => unknown): ItemQuantity|undefined{
         return this.list.find(predicate);
+    }
+
+    getCurrentCapacity():number{
+        let currentCapacity:number = 0;
+
+        this.list.forEach((quantity) => {
+            currentCapacity += quantity.getQuantity();
+        })
+
+        return currentCapacity;
+    }
+    
+    getMaxCapacity():number{
+        return this.maxCapacity;
+    }
+
+    capacityReached():boolean{
+        return this.getCurrentCapacity() >= this.maxCapacity;
     }
 }
 

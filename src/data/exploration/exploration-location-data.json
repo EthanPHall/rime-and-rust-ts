@@ -302,7 +302,7 @@
             "eventKeyChancePairs":[
                 {
                     "eventKey":"easy-1-safe",
-                    "chance": 20
+                    "chance": 120
                 },
                 {
                     "eventKey":"easy-1-combat-1",

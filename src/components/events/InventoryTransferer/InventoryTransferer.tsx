@@ -2,6 +2,7 @@ import { FC } from "react";
 import { ItemQuantity, UniqueItemQuantitiesList } from "../../../classes/caravan/Item";
 import InventoryTransfererEntry from "../InventoryTransfererEntry/InventoryTransfererEntry";
 import './InventoryTransferer.css';
+import SectionLabel from "../../misc/SectionLabel/SectionLabel";
 
 interface InventoryTransfererProps {
     fromInventory:UniqueItemQuantitiesList;
@@ -16,6 +17,7 @@ interface InventoryTransfererProps {
   
     return (
     <div className="inventory-transferer">
+      {fromInventory.getMaxCapacity() != Infinity && `${fromInventory.getCurrentCapacity()}/${fromInventory.getMaxCapacity()}`}
       {fromInventory.getListCopy().map((itemQuantity) => {
         return <InventoryTransfererEntry
           fromInventory={fromInventory}

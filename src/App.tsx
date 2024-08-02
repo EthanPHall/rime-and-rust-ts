@@ -419,7 +419,8 @@ function App() {
       return new UniqueItemQuantitiesList(
         prev.getListCopy().filter((itemQuantity) => {
           return explorationItemsToKeepOnDeath.itemsToKeep.includes(itemQuantity.getBaseItem().getKey());
-        })
+        }),
+        prev.getMaxCapacity()
       );
     });
   }

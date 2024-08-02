@@ -140,7 +140,7 @@ const Map: FC<MapProps> = (
         visibleLocations.forEach((row, y) => {
           row.forEach((visibleFlag, x) => {
             if(visibleFlag){
-              newMap?.setRevealed(new Vector2(x,y));
+              newMap?.setRevealed(new Vector2(y,x));
             }
           })
         })
@@ -163,7 +163,7 @@ const Map: FC<MapProps> = (
     setVisibleLocations((prev) => {      
       prev.forEach((row, y) => {
         row.forEach((visibleFlag, x) => {
-          prev[x][y] = map.getLocationData(new Vector2(y,x)).getRevealed();
+          prev[y][x] = visibleFlag || map.getLocationData(new Vector2(y,x)).getRevealed();
         })
       })
 

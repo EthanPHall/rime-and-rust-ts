@@ -5,7 +5,8 @@ import explorationItems from "../../data/caravan/exploration-items.json";
 const useExplorationInventory = (
     regularInventory: UniqueItemQuantitiesList
 ) => {
-    const [explorationInventory, setExplorationInventory] = useState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([]));
+    const MAX_CAPACITY = 10;
+    const [explorationInventory, setExplorationInventory] = useState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([], MAX_CAPACITY));
 
     useEffect(() => {
         regularInventory.forEach((itemQuantity) => {
