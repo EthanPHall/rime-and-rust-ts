@@ -39,6 +39,10 @@ class ExplorationPlayer{
 
     getAnimation:function():TargetAndTransition|undefined{
       return undefined;
+    },
+
+    getRevealed:function():boolean{
+      return true;
     }
   }
 
@@ -133,6 +137,14 @@ const Map: FC<MapProps> = (
       setSavedMap((prev) => {
         const newMap = prev?.clone();
 
+        visibleLocations.forEach((row, y) => {
+          row.forEach((visibleFlag, x) => {
+            if(visibleFlag){
+              newMap?.setRevealed(new Vector2(x,y));
+            }
+          })
+        })
+
         return prev || null;
       })
     }
@@ -148,6 +160,16 @@ const Map: FC<MapProps> = (
   }, [currentEvent])
 
   useEffect(() => {
+    setVisibleLocations((prev) => {      
+      prev.forEach((row, y) => {
+        row.forEach((visibleFlag, x) => {
+          prev[x][y] = map.getLocationData(new Vector2(y,x)).getRevealed();
+        })
+      })
+
+      return [...prev];
+    })
+
     mapRepresentation.current = map.get2DRepresentation().map((row, y) => {
       return row.map((location, x) => {
         return new CurrentAndBaseElement(

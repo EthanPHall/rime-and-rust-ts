@@ -27,7 +27,7 @@ const MapLocation: FC<MapLocationProps> = (
   },[visibleLocations])
 
   return(
-    <motion.span className={`map-location ${locationVisual.getStyles()} ${visibleLocations[position.y][position.x] ? "" : "invisible"}`} data-testid="map-location"
+    <motion.span className={`map-location ${locationVisual.getStyles()} ${(visibleLocations[position.y][position.x]) ? "" : "invisible"}`} data-testid="map-location"
       animate={locationVisual.getAnimation()}
     >
       {locationVisual.getSymbol()}

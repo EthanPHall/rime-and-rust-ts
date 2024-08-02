@@ -47,6 +47,9 @@ class MapLocationVisualJSON implements IMapLocationVisual{
     getAnimation(): TargetAndTransition | undefined {
         return this.animation;
     }
+    getRevealed():boolean{
+        return this.locationData.getRevealed();
+    }
 }
 
 export default MapLocationVisualJSON;

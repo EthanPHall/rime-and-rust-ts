@@ -4,6 +4,7 @@ interface IMapLocationVisual{
     getSymbol():string;
     getStyles():string;
     getAnimation():TargetAndTransition|undefined;
+    getRevealed():boolean;
 }
 
 export default IMapLocationVisual;   

@@ -202,7 +202,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    console.log(combatEncounterKey);
+    // console.log(combatEncounterKey);
   }, [combatEncounterKey])
 
   useEffect(() => {
