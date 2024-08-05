@@ -19,6 +19,7 @@ const OptionSpeedToggle: FC<OptionSpeedToggleProps> = () => {
       {settingsContext.settingsManager.getSpeedSettings().map((currentSpeedSetting) => {
         return (
           <button
+            className={`${currentSpeedSetting.name == settingsContext.settingsManager.getCurrentSpeedSetting().name && "selected-speed-toggle"}`}
             key={"speed-setting-"+currentSpeedSetting.name}
             onClick={() => {settingsContext.setSettingsManager((prev) => {
               const newSettingsManager = prev.clone();

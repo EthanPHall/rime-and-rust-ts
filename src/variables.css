@@ -31,11 +31,11 @@
 
     --map-row-height: 13px;
     --map-location-spacing: 3.3px;
-    --map-font-size: .9em;
+    --map-font-size: .8em;
 
-    --exploration-map-row-height: 12.5px;
+    --exploration-map-row-height: 10px;
     --exploration-map-location-spacing: 2.5px;
-    --exploration-map-font-size: 1.2em;
+    --exploration-map-font-size: 1em;
     --exploration-map-color: #a8aaba;
     --exploration-map-cleared-color: #777879;
     --exploration-map-home-color: #e0b087;

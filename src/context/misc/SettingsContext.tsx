@@ -8,7 +8,7 @@ type SpeedSetting = {
 
 interface ISettingsManager{
     getCorrectTiming(baseTiming:number):number;
-
+    getCurrentSpeedSetting():SpeedSetting;
     getSpeedSettings():SpeedSetting[];
 
     setSpeedSetting(name:string):void;
@@ -38,6 +38,10 @@ class SettingsManager implements ISettingsManager{
 
     getCorrectTiming(baseTiming:number):number{
         return baseTiming * this.currentSpeedSetting.speedMult;
+    }
+
+    getCurrentSpeedSetting():SpeedSetting{
+        return this.currentSpeedSetting;
     }
 
     getSpeedSettings():SpeedSetting[]{

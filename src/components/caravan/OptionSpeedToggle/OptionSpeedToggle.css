@@ -1,1 +1,5 @@
 .option-speed-toggle {}
+
+.selected-speed-toggle{
+    text-decoration: underline 2px solid var(--outline-color);
+}
