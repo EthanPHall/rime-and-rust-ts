@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { MapLocationData } from "../../data/map-location-data/MapLocationDataHandler";
 import IAnimator from "../../classes/animation/IAnimator";
 import CombatAnimationFactory, { CombatAnimationNames } from "../../classes/animation/CombatAnimationFactory";
@@ -11,6 +11,7 @@ import { start } from "repl";
 import { AnimationPlaybackControls, AnimationSequence, SequenceOptions, ValueAnimationTransition } from "framer-motion";
 import CombatEntity from "../../classes/combat/CombatEntity";
 import Vector2 from "../../classes/utility/Vector2";
+import { SettingsContext } from "../../context/misc/SettingsContext";
 
 class ImprovedMotionAnimation{
     entityToAnimate: CombatEntity;
@@ -36,6 +37,8 @@ function useCombatHazardAnimations(
     // useState<Promise<void>>(startHazardAnimations());
     const animationPlaybackControls = useRef<AnimationPlaybackControls[]>([]);
 
+    const settingsContext = useContext(SettingsContext);
+
     useEffect(() => {
         // startHazardAnimations();
     },[]);
@@ -53,7 +56,7 @@ function useCombatHazardAnimations(
       async function startHazardAnimations():Promise<void>{
           while(true){
             if(animationsToPlay.current.length === 0 || isExecutingActions()){
-                await new Promise((resolve) => setTimeout(resolve, 1000));
+                await new Promise((resolve) => setTimeout(resolve, settingsContext.settingsManager.getCorrectTiming(1000)));
             }
             else{
                 await animator.animate(animationsToPlay.current);

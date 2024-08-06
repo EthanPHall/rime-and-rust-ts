@@ -9,6 +9,10 @@
     },
     {
         "name": "Fast",
+        "speedMult": 0.5
+    },
+    {
+        "name": "Debug Fast",
         "speedMult": 0.1
     }
 ]

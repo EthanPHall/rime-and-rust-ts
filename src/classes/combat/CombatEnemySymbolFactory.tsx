@@ -8,6 +8,7 @@ import CombatAction from "./CombatAction";
 import CombatMapData from "./CombatMapData";
 import CombatEntity from "./CombatEntity";
 import ArrayScrambler from "../utility/ArrayScrambler";
+import { ISettingsManager, SettingsContextType, SettingsManager } from "../../context/misc/SettingsContext";
 
 class CombatEnemySymbolFactory implements ICombatEnemyFactory{
     private mapRepresentation:string[][];
@@ -19,7 +20,7 @@ class CombatEnemySymbolFactory implements ICombatEnemyFactory{
     private getMap: () => CombatMapData;
     private updateEntity: (id:number, newEntity: CombatEntity) => void;
     private refreshMap: () => void;
-
+    private settingsManager:ISettingsManager;
 
     constructor(
         mapRepresentation:string[][], 
@@ -30,6 +31,7 @@ class CombatEnemySymbolFactory implements ICombatEnemyFactory{
         getMap: () => CombatMapData,
         updateEntity: (id:number, newEntity: CombatEntity) => void,
         refreshMap: () => void,
+        settingsManager:ISettingsManager
     ){
         this.mapRepresentation = mapRepresentation;
         this.enemyGroupKey = enemyGroupKey;
@@ -39,6 +41,7 @@ class CombatEnemySymbolFactory implements ICombatEnemyFactory{
         this.getMap = getMap;
         this.updateEntity = updateEntity;
         this.refreshMap = refreshMap;
+        this.settingsManager = settingsManager;
     }
 
     createEnemy(enemyKey:string, position:Vector2):CombatEnemy{
@@ -53,7 +56,8 @@ class CombatEnemySymbolFactory implements ICombatEnemyFactory{
                     this.executeActionsList,
                     this.getMap,
                     this.updateEntity,
-                    this.refreshMap
+                    this.refreshMap,
+                    this.settingsManager
                 );
             case enemiesJSONData.keys.basicRustedBrute:    
                 return new RustedBrute(
@@ -64,7 +68,8 @@ class CombatEnemySymbolFactory implements ICombatEnemyFactory{
                     this.executeActionsList,
                     this.getMap,
                     this.updateEntity,
-                    this.refreshMap
+                    this.refreshMap,
+                    this.settingsManager
                 );
             default:
                 console.log("No enemy with key " + enemyKey + " found, using default instead.");
@@ -76,7 +81,8 @@ class CombatEnemySymbolFactory implements ICombatEnemyFactory{
                     this.executeActionsList,
                     this.getMap,
                     this.updateEntity,
-                    this.refreshMap
+                    this.refreshMap,
+                    this.settingsManager
                 );
         }
     }

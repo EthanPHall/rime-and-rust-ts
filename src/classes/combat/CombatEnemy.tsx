@@ -1,3 +1,4 @@
+import { ISettingsManager, SettingsManager } from "../../context/misc/SettingsContext";
 import PathfindingUtil from "../ai/PathfindingUtil";
 import Directions, { DirectionsUtility } from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
@@ -106,6 +107,8 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     actions: { [ k: string ]: CombatActionWithUses };
     playerId: number;
 
+    settingsManager:ISettingsManager;
+
     constructor(
       id:number, 
       hp: number, 
@@ -118,7 +121,8 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       executeActionsList: () => void,
       getMap: () => CombatMapData,
       updateEntity: (id:number, newEntity: CombatEntity) => void,
-      refreshMap: () => void
+      refreshMap: () => void,
+      settingsManager:ISettingsManager
     ){
       super(id, hp, maxHp, symbol, name, position);
       this.advanceTurn = advanceTurn;
@@ -129,6 +133,7 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       this.refreshMap = refreshMap;
       this.actions = {};
       this.playerId = getMap().getPlayer()?.id || -1;
+      this.settingsManager = settingsManager;
     }
 
     clone(): CombatEnemy {
@@ -140,7 +145,8 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
         this.executeActionsList,
         this.getMap,
         this.updateEntity,
-        this.refreshMap
+        this.refreshMap,
+        this.settingsManager
       );
 
       clone.setHp(this.hp);
@@ -158,7 +164,8 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       executeActionsList: () => void,
       getMap: () => CombatMapData,
       updateEntity: (id:number, newEntity: CombatEntity) => void,
-      refreshMap: () => void
+      refreshMap: () => void,
+      settingsManager:ISettingsManager
     ){
       super(
         id, 
@@ -172,7 +179,8 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
         executeActionsList,
         getMap,
         updateEntity,
-        refreshMap
+        refreshMap,
+        settingsManager
       );
 
       this.actions = {
@@ -190,7 +198,8 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
         this.executeActionsList,
         this.getMap,
         this.updateEntity,
-        this.refreshMap
+        this.refreshMap,
+        this.settingsManager
       );
 
       clone.setHp(this.hp);
@@ -205,7 +214,7 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       
       const playerPosition:Vector2|undefined = this.getMap().getEntityById(this.playerId)?.position;
       
-      await new Promise((resolve) => setTimeout(resolve, CombatEnemy.TURN_START_DELAY));
+      await new Promise((resolve) => setTimeout(resolve, this.settingsManager.getCorrectTiming(CombatEnemy.TURN_START_DELAY)));
       
       if(playerPosition){
         const aiHandler = new RustedShamblerAI(this, playerPosition, this.playerId, this.getMap, this.actions as {move: CombatActionWithUses, attack: CombatActionWithUses});
@@ -219,7 +228,7 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
 
       setTimeout(() => {
         this.executeActionsList();
-      }, CombatEnemy.ACTION_DELAY);
+      }, this.settingsManager.getCorrectTiming(CombatEnemy.ACTION_DELAY));
     }
 
     getReaction(): Reaction | null {
@@ -237,7 +246,8 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
       executeActionsList: () => void,
       getMap: () => CombatMapData,
       updateEntity: (id:number, newEntity: CombatEntity) => void,
-      refreshMap: () => void
+      refreshMap: () => void,
+      settingsManager:ISettingsManager
     ){
       super(
         id, 
@@ -251,7 +261,8 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
         executeActionsList,
         getMap,
         updateEntity,
-        refreshMap
+        refreshMap,
+        settingsManager
       );
 
       this.actions = {
@@ -269,7 +280,8 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
         this.executeActionsList,
         this.getMap,
         this.updateEntity,
-        this.refreshMap
+        this.refreshMap,
+        this.settingsManager
       );
   
       clone.setHp(this.hp);
@@ -284,7 +296,7 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
 
       const playerPosition:Vector2|undefined = this.getMap().getEntityById(this.playerId)?.position;
 
-      await new Promise((resolve) => setTimeout(resolve, CombatEnemy.TURN_START_DELAY));
+      await new Promise((resolve) => setTimeout(resolve, this.settingsManager.getCorrectTiming(CombatEnemy.TURN_START_DELAY)));
 
       if(playerPosition){
         const aiHandler = new RustedShamblerAI(this, playerPosition, this.playerId, this.getMap, this.actions as {move: CombatActionWithUses, attack: CombatActionWithUses});
@@ -292,13 +304,13 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
 
         for(const action of aiActions){
           this.addActionToList(action);
-          await new Promise((resolve) => setTimeout(resolve, CombatEnemy.ACTION_DELAY));
+          await new Promise((resolve) => setTimeout(resolve, this.settingsManager.getCorrectTiming(CombatEnemy.ACTION_DELAY)));
         }
       }
 
       setTimeout(() => {
         this.executeActionsList();
-      }, CombatEnemy.ACTION_DELAY);
+      }, this.settingsManager.getCorrectTiming(CombatEnemy.ACTION_DELAY));
     }
 
     getReaction(): Reaction | null {

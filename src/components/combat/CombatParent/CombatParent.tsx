@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import './CombatParent.css';
 import CombatMap from '../CombatMap/CombatMap';
 import ActionsDisplay from '../ActionsDisplay/ActionsDisplay';
@@ -44,6 +44,7 @@ import combatMapsRawJSON from "../../../data/combat/combat-maps.json";
 import enemyGroupsRawJSON from "../../../data/combat/enemy-groups.json";
 import ICombatMapTemplateFactory from '../../../classes/combat/ICombatMapTemplateFactory';
 import CombatMapTemplateFactoryJSON from '../../../classes/combat/CombatMapFactoryJSON';
+import { SettingsContext } from '../../../context/misc/SettingsContext';
 
 export enum EnemyType {
   RustedShambler = 'RustedShambler',
@@ -139,6 +140,8 @@ const CombatParent: FC<CombatParentProps> = (
   const [turnManager, isTurnTakerPlayer] = useTurnManager();
   const [comboListForEffects, getComboList, setComboList] = useRefState<CombatActionWithRepeat[]>([]);
   
+  const settingsContext = useContext(SettingsContext);
+
   //I was running into issues with closures I think. I was passing refreshMap() to the animator, but when it was called there,
   //the player wasn't up to date. That led to weird behavior where the player would move and be animated correctly the first time,
   //but then with the next action, the player would reset to its old position. So I made a hook where setPlayer also updates
@@ -156,7 +159,8 @@ const CombatParent: FC<CombatParentProps> = (
     getCachedMap,
     updateEntity,
     refreshMap,
-    combatActionFactory
+    combatActionFactory,
+    settingsContext.settingsManager
   ))
   
   const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>();

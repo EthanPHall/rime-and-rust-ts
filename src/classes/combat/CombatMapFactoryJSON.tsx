@@ -14,6 +14,7 @@ import CombatEntity from "./CombatEntity";
 import ICombatHazardFactory from "./ICombatHazardFactory";
 import CombatHazardSymbolFactory from "./CombatHazardSymbolFactory";
 import CombatActionFactory from "./CombatActionFactory";
+import { ISettingsManager, SettingsManager } from "../../context/misc/SettingsContext";
 
 class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
     private advanceTurn: () => void;
@@ -24,6 +25,7 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
     private refreshMap: () => void;
 
     private actionFactory: CombatActionFactory;
+    private settingsManager:ISettingsManager;
 
     constructor(
         advanceTurn: () => void,
@@ -32,7 +34,8 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
         getMap: () => CombatMapData,
         updateEntity: (id:number, newEntity: CombatEntity) => void,
         refreshMap: () => void,
-        actionFactory: CombatActionFactory
+        actionFactory: CombatActionFactory,
+        settingsManager:ISettingsManager
     ){
         this.advanceTurn = advanceTurn;
         this.addActionToList = addActionToList;
@@ -41,6 +44,7 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
         this.updateEntity = updateEntity;
         this.refreshMap = refreshMap;
         this.actionFactory = actionFactory;
+        this.settingsManager = settingsManager;
     }
 
     createMap(mapKey: string): CombatMapTemplate {
@@ -121,6 +125,7 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
             this.getMap,
             this.updateEntity,
             this.refreshMap,
+            this.settingsManager
         );
         const enemies:CombatEnemy[] = enemyFactory.createGivenPositions(enemyPositions);
 

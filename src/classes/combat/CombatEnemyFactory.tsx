@@ -6,6 +6,7 @@ import CombatMapData from "./CombatMapData";
 import CombatEntity from "./CombatEntity";
 import IdGenerator from "../utility/IdGenerator";
 import { EnemyType } from "../../components/combat/CombatParent/CombatParent";
+import { SettingsManager } from "../../context/misc/SettingsContext";
 
 
 class CombatEnemyFactory{
@@ -15,14 +16,16 @@ class CombatEnemyFactory{
     private getMap: () => CombatMapData;
     private updateEntity: (id:number, newEntity: CombatEntity) => void;
     private refreshMap: () => void;
-
+    private settingsManager:SettingsManager;
+    
     constructor(
         advanceTurn: () => void,
         addActionToList: (action: CombatAction) => void,
         executeActionsList: () => void,
         getMap: () => CombatMapData,
         updateEntity: (id:number, newEntity: CombatEntity) => void,
-        refreshMap: () => void
+        refreshMap: () => void,
+        settingsManager:SettingsManager
     ){
         this.advanceTurn = advanceTurn;
         this.addActionToList = addActionToList;
@@ -30,6 +33,7 @@ class CombatEnemyFactory{
         this.getMap = getMap;
         this.updateEntity = updateEntity;
         this.refreshMap = refreshMap;
+        this.settingsManager = settingsManager;
     }
 
     createEnemy(
@@ -46,7 +50,8 @@ class CombatEnemyFactory{
                     this.executeActionsList,
                     this.getMap,
                     this.updateEntity,
-                    this.refreshMap
+                    this.refreshMap,
+                    this.settingsManager
                 );
             case EnemyType.RustedBrute:
                 return new RustedBrute(
@@ -57,7 +62,8 @@ class CombatEnemyFactory{
                     this.executeActionsList,
                     this.getMap,
                     this.updateEntity,
-                    this.refreshMap
+                    this.refreshMap,
+                    this.settingsManager
                 );
             default:
                 throw new Error('Enemy type not recognized');

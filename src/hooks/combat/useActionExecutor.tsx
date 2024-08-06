@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import CombatMapData from '../../classes/combat/CombatMapData';
 import CombatAction, { CombatActionWithRepeat } from '../../classes/combat/CombatAction';
 import { exec } from 'child_process';
@@ -11,6 +11,7 @@ import CombatEntity from '../../classes/combat/CombatEntity';
 import CombatPlayer from '../../classes/combat/CombatPlayer';
 import CombatEnemy, { Reaction } from '../../classes/combat/CombatEnemy';
 import { start } from 'repl';
+import { SettingsContext } from '../../context/misc/SettingsContext';
 
 enum ActionSteps{
     ANIMATION,
@@ -48,6 +49,8 @@ const useActionExecutor = (
 
     const hazardsDidAffectEntities = useRef(false);
 
+    const settingsContext = useContext(SettingsContext);
+
     useEffect(() => {
     }, [map])
 
@@ -73,7 +76,7 @@ const useActionExecutor = (
                 standbyForAnimationCleanup.current = true;
                 animationCleanupObject.current = animationCleanup;
                 executeAction(action);
-            }, ACTION_DELAY);
+            }, settingsContext.settingsManager.getCorrectTiming(ACTION_DELAY));
         });
     }
 

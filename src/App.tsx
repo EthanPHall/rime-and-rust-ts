@@ -356,7 +356,7 @@ function App() {
   }
 
   function createPassiveRecipeTimeout():NodeJS.Timeout{
-    return setTimeout(executePassiveRecipes, settingsManagerContextRef.current.getCorrectTiming(1000));
+    return setTimeout(executePassiveRecipes, settingsManagerContextRef.current.getCorrectTiming(10000));
   }
 
   function executePassiveRecipes(){

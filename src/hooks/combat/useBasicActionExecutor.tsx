@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import CombatMapData from '../../classes/combat/CombatMapData';
 import { CombatActionWithRepeat } from '../../classes/combat/CombatAction';
 import IActionExecutor from '../../classes/combat/IActionExecutor';
+import { SettingsContext } from '../../context/misc/SettingsContext';
 
 const useBasicActionExecutor = (map: CombatMapData, comboList:CombatActionWithRepeat[], setComboList:(newList:CombatActionWithRepeat[]) => void):IActionExecutor => {
     const ACTION_DELAY = 400;
@@ -11,6 +12,8 @@ const useBasicActionExecutor = (map: CombatMapData, comboList:CombatActionWithRe
     const actionIndex = useRef(0);
 
     const standbyForAction = useRef(false);
+
+    const settingsContext = useContext(SettingsContext);
 
     function isExecuting():boolean {
         return executing;
@@ -60,7 +63,7 @@ const useBasicActionExecutor = (map: CombatMapData, comboList:CombatActionWithRe
             }
     
             executeAction(comboList[actionIndex.current]);            
-        }, ACTION_DELAY);
+        }, settingsContext.settingsManager.getCorrectTiming(ACTION_DELAY));
 
     }, [map])
 
