@@ -34,11 +34,12 @@ interface CaravanParentProps {
   explorationInventory:UniqueItemQuantitiesList;
   setExplorationInventory:React.Dispatch<React.SetStateAction<UniqueItemQuantitiesList>>;
 
-  setMainGameScreen:React.Dispatch<React.SetStateAction<MainGameScreens>>
+  setMainGameScreen:React.Dispatch<React.SetStateAction<MainGameScreens>>;
+  save():void;
 }
 
 const CaravanParent: FC<CaravanParentProps> = (
-  {sleds, setSleds, getInventory, executeRecipe, workers, setWorkers, sellSled, inventory, setInventory, explorationInventory, setExplorationInventory, setMainGameScreen}
+  {save, sleds, setSleds, getInventory, executeRecipe, workers, setWorkers, sellSled, inventory, setInventory, explorationInventory, setExplorationInventory, setMainGameScreen}
 ) => {
   const messageHandlingContext = useContext(MessageHandlingContext);
 
@@ -111,7 +112,7 @@ const CaravanParent: FC<CaravanParentProps> = (
           ></CaravanSectionExploration>}
         </div>
         <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)}></CaravanSectionValuables>
-        <CaravanSectionOptions></CaravanSectionOptions>
+        <CaravanSectionOptions save={save}></CaravanSectionOptions>
       </div>
     </div>
   );

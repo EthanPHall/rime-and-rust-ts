@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ItemQuantity, UniqueItemQuantitiesList } from "../../classes/caravan/Item";
 import explorationItems from "../../data/caravan/exploration-items.json";
+import { ItemFactoryContext } from "../../App";
 
 const useExplorationInventory = (
     regularInventory: UniqueItemQuantitiesList
 ) => {
+    const itemFactoryContext = useContext(ItemFactoryContext);
     const MAX_CAPACITY = 10;
-    const [explorationInventory, setExplorationInventory] = useState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([], MAX_CAPACITY));
+    const [explorationInventory, setExplorationInventory] = useState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([], itemFactoryContext, MAX_CAPACITY));
 
     useEffect(() => {
         regularInventory.forEach((itemQuantity) => {

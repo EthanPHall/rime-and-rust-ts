@@ -1,13 +1,23 @@
 import { ProgressionFlags } from "../../App";
+import ISaveable from "../utility/ISaveable";
 import { IItem, IRecipeFail, Recipe } from "./Item";
 
-class Message{
+class Message implements ISaveable{
     private _message: string;
     private _classes: MessageClass[];
 
     constructor(message: string, messageClasses: MessageClass[]){
         this._message = message;
         this._classes = messageClasses;
+    }
+    createSaveObject() {
+        return {
+            messageData: this._message,
+            classesData: this._classes
+        }
+    }
+    loadSaveObject() {
+        throw new Error("Method not implemented.");
     }
 
     get message(){
@@ -23,7 +33,7 @@ enum MessageClass{
     TANYA = 'tanya-dialogue',
 }
 
-interface IMessageManager{
+interface IMessageManager extends ISaveable{
     addMessage(message: Message): void;
     getMessages(): Message[];
 }
@@ -82,6 +92,15 @@ class MessageManager implements IMessageManager{
 
     constructor(messageLimit: number){
         this._messageLimit = messageLimit;
+    }
+    createSaveObject() {
+        return{
+            messagesData: this._messages.map((message) => {return message.createSaveObject()}),
+            messageLimitData:this._messageLimit
+        }
+    }
+    loadSaveObject() {
+        throw new Error("Method not implemented.");
     }
 
     addMessage(message: Message){

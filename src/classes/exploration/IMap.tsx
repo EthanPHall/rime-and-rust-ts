@@ -3,8 +3,10 @@ import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
 import RimeEventJSON from "../events/RimeEventJSON";
 import IMapLocation from "./IMapLocation";
+import { SaveObject } from "../../context/misc/SettingsContext";
+import ISaveable from "../utility/ISaveable";
 
-interface IMap{
+interface IMap extends ISaveable{
     get2DRepresentation(): IMapLocationVisual[][];
     getLocationData(position:Vector2): MapLocationData;
     getLocation(position:Vector2):IMapLocation;
@@ -15,6 +17,7 @@ interface IMap{
     getDimensions(): Vector2;
     getCenterPoint():Vector2;
     getEventToStart(position:Vector2):string|null;
+    setWithSaveData(saveObject:SaveObject):void;
 }
 
 export default IMap;

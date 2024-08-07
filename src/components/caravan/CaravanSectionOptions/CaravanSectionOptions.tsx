@@ -6,15 +6,19 @@ import OptionShare from '../OptionShare/OptionShare';
 import OptionRestart from '../OptionRestart/OptionRestart';
 import OptionSave from '../OptionSave/OptionSave';
 
-interface CaravanSectionOptionsProps {}
+interface CaravanSectionOptionsProps {
+  save():void;
+}
 
-const CaravanSectionOptions: FC<CaravanSectionOptionsProps> = () => (
+const CaravanSectionOptions: FC<CaravanSectionOptionsProps> = (
+  {save}
+) => (
   <div className="caravan-section-options" data-testid="caravan-section-options">
     <OptionCredits></OptionCredits>
     <OptionSpeedToggle></OptionSpeedToggle>
     <OptionShare></OptionShare>
     <OptionRestart></OptionRestart>
-    <OptionSave></OptionSave>
+    <OptionSave save={save}></OptionSave>
   </div>
 );
 

@@ -4,6 +4,7 @@ import resourceData from "../../data/caravan/resources.json";
 import sledData from  "../../data/caravan/sleds.json";
 import sledDogData from "../../data/caravan/sled-dogs.json";
 import IdGenerator from "../utility/IdGenerator";
+import ISaveable from "../utility/ISaveable";
 
 type ItemJson = {
     key: string;
@@ -526,23 +527,41 @@ class SledDogQuantity{
 }
 
 
-class UniqueItemQuantitiesList{
+class UniqueItemQuantitiesList implements ISaveable{
     private list:ItemQuantity[];
     private maxCapacity:number;
     private currentCapacity:number = 0;
+    private itemFactory:IItemFactory;
 
-    constructor(list:ItemQuantity[], maxCapacity:number = Infinity){
+    constructor(list:ItemQuantity[], itemFactory:IItemFactory, maxCapacity:number = Infinity){
         this.list = list;
         this.maxCapacity = maxCapacity;
+        this.itemFactory = itemFactory;
+    }
+    createSaveObject() {
+        return{
+            listData:this.list.map((itemQuantity) => {
+                return {
+                    itemKey:itemQuantity.getBaseItem().getKey(),
+                    quantity:itemQuantity.getQuantity()
+                }
+            }),
+            maxCapacityData:this.maxCapacity,
+            currentCapacityData:this.currentCapacity,
+        }
+    }
+    loadSaveObject() {
+        throw new Error("Method not implemented.");
     }
 
     clone():UniqueItemQuantitiesList{
-        return new UniqueItemQuantitiesList(this.list, this.maxCapacity);
+        return new UniqueItemQuantitiesList(this.list, this.itemFactory, this.maxCapacity);
     }
     deepClone():UniqueItemQuantitiesList{
         return new UniqueItemQuantitiesList(this.list.map((itemQuantity) => {
             return itemQuantity.clone();
-        }),
+        }), 
+        this.itemFactory,
         this.maxCapacity
     );
     }

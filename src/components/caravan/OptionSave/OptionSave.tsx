@@ -1,12 +1,20 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import './OptionSave.css';
+import { SettingsContext } from '../../../context/misc/SettingsContext';
 
-interface OptionSaveProps {}
+interface OptionSaveProps {
+  save():void;
+}
 
-const OptionSave: FC<OptionSaveProps> = () => (
+const OptionSave: FC<OptionSaveProps> = ({save}) => {
+  const settingsContext = useContext(SettingsContext);
+  
+  return (
   <div className="option-save" data-testid="option-save">
-    <button>Save</button>
+    <button onClick={() => {
+      save()
+    }}>Save</button>
   </div>
-);
+)};
 
 export default OptionSave;

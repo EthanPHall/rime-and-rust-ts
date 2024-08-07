@@ -5,8 +5,9 @@ import IMapLocationVisual from "./IMapLocationVisual";
 import MapLocationVisualJSON from "./MapLocationVisualJSON";
 import RimeEventJSON from "../events/RimeEventJSON";
 import locationData from "../../data/exploration/exploration-location-data.json"
+import ISaveable from "../utility/ISaveable";
 
-class MapLocationJSON implements IMapLocation{
+class MapLocationJSON implements IMapLocation,ISaveable{
     private position: Vector2;
     private key: string;
     private name: string;
@@ -90,6 +91,31 @@ class MapLocationJSON implements IMapLocation{
     }
     getKey(): string {
         return this.key;
+    }
+
+    /*
+        private position: Vector2;
+        private key: string;
+        private name: string;
+        private cleared: boolean;
+        private revealed: boolean;
+        private floating: boolean;
+    */
+    createSaveObject():any{
+        return{
+            positionData: {
+                x:this.position.x,
+                y:this.position.y
+            },
+            keyData: this.key,
+            nameData: this.name,
+            clearedData: this.cleared,
+            revealedData: this.revealed,
+            floatingData: this.floating,
+        }
+    }
+    loadSaveObject():void{
+
     }
 }
 

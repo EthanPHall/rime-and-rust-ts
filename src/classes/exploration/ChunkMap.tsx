@@ -9,6 +9,8 @@ import explorationLocationJSONData from "../../data/exploration/exploration-loca
 import RimeEventJSON from "../events/RimeEventJSON";
 import ArrayScrambler from "../utility/ArrayScrambler";
 import IMapLocation from "./IMapLocation";
+import { SaveObject } from "../../context/misc/SettingsContext";
+import ISaveable from "../utility/ISaveable";
 
 class ChunkMap implements IMap{
     private factory: IMapLocationFactory;
@@ -66,6 +68,10 @@ class ChunkMap implements IMap{
 
         const difficultyBrackets:DifficultyBrackets = new DifficultyBrackets(maxDistanceFromCenter, explorationLocationJSONData.difficultyBrackets);
         this.generateLocations(difficultyBrackets);
+    }
+
+    setWithSaveData(saveObject: SaveObject) {
+        throw new Error("Method not implemented.");
     }
 
     private placeHome(){
@@ -240,6 +246,31 @@ class ChunkMap implements IMap{
         return new Vector2(this.centerPoint.x, this.centerPoint.y);
     }
 
+
+    createSaveObject() {
+        return{
+            dimensionsData:{ 
+                x: this.dimensions.x,
+                y: this.dimensions.y
+            },
+            chunkDimensionsData:{ 
+                x: this.chunkDimensions.x,
+                y: this.chunkDimensions.y
+            },
+            centerPointData:{ 
+                x: this.centerPoint.x,
+                y: this.centerPoint.y
+            },
+            chunksData:this.chunks.map<any[]>((row) => { 
+                return row.map((currentChunk) => {
+                    return currentChunk.createSaveObject();
+                })
+            }),
+        }
+    }
+    loadSaveObject() {
+        throw new Error("Method not implemented.");
+    }
 }
 
 export default ChunkMap;

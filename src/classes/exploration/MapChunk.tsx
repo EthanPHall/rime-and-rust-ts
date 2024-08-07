@@ -7,6 +7,8 @@ import IMapLocationVisual from "./IMapLocationVisual";
 import explorationLocationJSONData from "../../data/exploration/exploration-location-data.json";
 import RimeEventJSON from "../events/RimeEventJSON";
 import ArrayScrambler from "../utility/ArrayScrambler";
+import { SaveObject } from "../../context/misc/SettingsContext";
+import ISaveable from "../utility/ISaveable";
 
 class MapChunk implements IMap{
 
@@ -64,6 +66,9 @@ class MapChunk implements IMap{
                 this.locations[y][x] = location;
             }
         }
+    }
+    setWithSaveData(saveObject: SaveObject) {
+        throw new Error("Method not implemented.");
     }
     getEventToStart(position: Vector2): string | null {
         return this.locations[position.y][position.x].getEventToStart();
@@ -163,6 +168,29 @@ class MapChunk implements IMap{
                 locationsCreated.push(newLocation);
             }
         })
+    }
+
+
+    createSaveObject() {
+        return {
+            dimensionsData:{
+                x:this.dimensions.x,
+                y:this.dimensions.y
+            },
+            distanceFromCenterData:this.distanceFromCenter,
+            positionData:{
+                x:this.position.x,
+                y:this.position.y
+            },
+            locationsData:this.locations.map((row) => {
+                return row.map((location) => {
+                    return location.createSaveObject();
+                })
+            })
+        }
+    }
+    loadSaveObject() {
+        throw new Error("Method not implemented.");
     }
 }
 

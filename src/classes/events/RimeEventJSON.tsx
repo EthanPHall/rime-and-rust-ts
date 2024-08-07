@@ -100,7 +100,7 @@ class RimeEventJSON implements IRimeEvent{
 
                             itemQuantities.push(newQuantity);
                         })
-                        const rewardsInventory:UniqueItemQuantitiesList = new UniqueItemQuantitiesList(itemQuantities);
+                        const rewardsInventory:UniqueItemQuantitiesList = new UniqueItemQuantitiesList(itemQuantities, itemFactory);
 
                         this.scenes.push(
                             new RimeEventSceneRewards(

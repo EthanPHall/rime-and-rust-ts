@@ -9,13 +9,14 @@ import OptionSave from '../OptionSave/OptionSave';
 interface OptionsProps {}
 
 const Options: FC<OptionsProps> = () => (
-  <div className="options" data-testid="options">
-    <OptionCredits></OptionCredits>
-    <OptionSpeedToggle></OptionSpeedToggle>
-    <OptionShare></OptionShare>
-    <OptionRestart></OptionRestart>
-    <OptionSave></OptionSave>
-  </div>
+  <></>
+  // <div className="options" data-testid="options">
+  //   <OptionCredits></OptionCredits>
+  //   <OptionSpeedToggle></OptionSpeedToggle>
+  //   <OptionShare></OptionShare>
+  //   <OptionRestart></OptionRestart>
+  //   <OptionSave ></OptionSave>
+  // </div>
 );
 
 export default Options;

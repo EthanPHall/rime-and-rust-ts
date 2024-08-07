@@ -20,16 +20,23 @@ import explorationItemsToKeepOnDeath from "./data/exploration/exploration-items-
 import explorationItems from "./data/caravan/exploration-items.json";
 import transferItems from './classes/utility/transferItems';
 import IMap from './classes/exploration/IMap';
+import ISaveable from './classes/utility/ISaveable';
 
 type ProgressionFlagsSeed = {
   [key: string]: boolean;
 }
 
-class ProgressionFlags{
+class ProgressionFlags implements ISaveable{
   private flags:ProgressionFlagsSeed;
 
   constructor(flags:ProgressionFlagsSeed){
     this.flags = flags;
+  }
+  createSaveObject() {
+    return this.flags;
+  }
+  loadSaveObject() {
+    throw new Error('Method not implemented.');
   }
 
   clone():ProgressionFlags{
@@ -76,7 +83,9 @@ function App() {
   const [inventory, getInventory, setInventory] = useRefState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([
     new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 11),
     new ItemQuantity(itemFactoryContext.createItem("Forge Sled"), 1),
-  ]));
+  ],
+  itemFactoryContext
+));
   const {explorationInventory, setExplorationInventory} = useExplorationInventory(inventory);
 
   const [sledsList, setSledsList] = useState<Sled[]>([]);
@@ -420,6 +429,7 @@ function App() {
         prev.getListCopy().filter((itemQuantity) => {
           return explorationItemsToKeepOnDeath.itemsToKeep.includes(itemQuantity.getBaseItem().getKey());
         }),
+        itemFactoryContext,
         prev.getMaxCapacity()
       );
     });
@@ -431,13 +441,26 @@ function App() {
     setMainGameScreen(MainGameScreens.CARAVAN);
   }
 
+  function save(){
+    const saveObject = settingsManagerContextRef.current.getSaveObject(
+      savedMap,
+      inventory,
+      explorationInventory,
+      workers,
+      progressionFlags,
+      messageManager
+    );
+
+    console.log(saveObject);
+  }
+
   return (
     <SettingsContext.Provider value={{settingsManager:settingsManagerContext, setSettingsManager:setSettingsManagerContext}}>
       <MessageHandlingContext.Provider value={{messageHandling:messageHandlingContext, setMessageHandling:setMessageHandlingContext}}>
         <ItemFactoryContext.Provider value={itemFactoryContext}>
           <ProgressionContext.Provider value={{flags:progressionFlags, setFlags:setProgressionFlags}}>
             <div className="App">
-              {mainGameScreen == MainGameScreens.CARAVAN && <CaravanParent inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers} 
+              {mainGameScreen == MainGameScreens.CARAVAN && <CaravanParent save={save} inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers} 
                 explorationInventory={explorationInventory}
                 setExplorationInventory={setExplorationInventory}
                 setMainGameScreen={setMainGameScreen}

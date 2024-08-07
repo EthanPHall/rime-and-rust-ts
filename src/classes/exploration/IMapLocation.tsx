@@ -21,6 +21,9 @@ interface IMapLocation {
     getKey():string;
 
     getEventToStart():string|null;
+
+    createSaveObject():any;
+    loadSaveObject():void;
 }
 
 export default IMapLocation;
