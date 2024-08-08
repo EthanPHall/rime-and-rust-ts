@@ -13,6 +13,7 @@ import { IItem, IItemFactory, ItemFactoryJSON, ItemQuantity, Recipe, Resource, U
 import CaravanSectionValuables from '../CaravanSectionValuables/CaravanSectionValuables';
 import tradableItems from '../../../data/caravan/tradable-items.json';
 import SledDogComponent from '../SledDog/SledDog';
+import { SaveObject } from '../../../context/misc/SettingsContext';
 
 enum CaravanSectionNames{
   CRAFTING="CRAFTING",
@@ -35,11 +36,11 @@ interface CaravanParentProps {
   setExplorationInventory:React.Dispatch<React.SetStateAction<UniqueItemQuantitiesList>>;
 
   setMainGameScreen:React.Dispatch<React.SetStateAction<MainGameScreens>>;
-  save():void;
+  getSaveObject():SaveObject
 }
 
 const CaravanParent: FC<CaravanParentProps> = (
-  {save, sleds, setSleds, getInventory, executeRecipe, workers, setWorkers, sellSled, inventory, setInventory, explorationInventory, setExplorationInventory, setMainGameScreen}
+  {getSaveObject, sleds, setSleds, getInventory, executeRecipe, workers, setWorkers, sellSled, inventory, setInventory, explorationInventory, setExplorationInventory, setMainGameScreen}
 ) => {
   const messageHandlingContext = useContext(MessageHandlingContext);
 
@@ -112,7 +113,7 @@ const CaravanParent: FC<CaravanParentProps> = (
           ></CaravanSectionExploration>}
         </div>
         <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)}></CaravanSectionValuables>
-        <CaravanSectionOptions save={save}></CaravanSectionOptions>
+        <CaravanSectionOptions getSaveObject={getSaveObject}></CaravanSectionOptions>
       </div>
     </div>
   );

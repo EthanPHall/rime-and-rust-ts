@@ -5,20 +5,21 @@ import OptionSpeedToggle from '../OptionSpeedToggle/OptionSpeedToggle';
 import OptionShare from '../OptionShare/OptionShare';
 import OptionRestart from '../OptionRestart/OptionRestart';
 import OptionSave from '../OptionSave/OptionSave';
+import { SaveObject } from '../../../context/misc/SettingsContext';
 
 interface CaravanSectionOptionsProps {
-  save():void;
+  getSaveObject():SaveObject
 }
 
 const CaravanSectionOptions: FC<CaravanSectionOptionsProps> = (
-  {save}
+  {getSaveObject}
 ) => (
   <div className="caravan-section-options" data-testid="caravan-section-options">
     <OptionCredits></OptionCredits>
     <OptionSpeedToggle></OptionSpeedToggle>
     <OptionShare></OptionShare>
     <OptionRestart></OptionRestart>
-    <OptionSave save={save}></OptionSave>
+    <OptionSave getSaveObject={getSaveObject}></OptionSave>
   </div>
 );
 

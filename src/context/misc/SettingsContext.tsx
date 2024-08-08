@@ -80,13 +80,6 @@ class SettingsManager implements ISettingsManager{
         return this.seed;
     }
 
-    /*
-    IMap
-    UniqueItemQuantitiesList
-    UniqueItemQuantitiesList
-    ProgressionFlags
-    Message
-    */
     getSaveObject(
         map:ISaveable|null,
         inventory:ISaveable|null,

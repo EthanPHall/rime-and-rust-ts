@@ -11,7 +11,7 @@ import { IItem, IItemFactory, ItemFactoryJSON, ItemQuantity, Recipe, RecipeFail,
 import { IMessageFactory, IMessageManager, MessageContext, MessageFactoryJson, MessageManager } from './classes/caravan/Message';
 import useRefState from './hooks/combat/useRefState';
 import unconsumedCosts from './data/caravan/unconsumed-costs.json';
-import { ISettingsManager, SettingsContext, SettingsContextType, SettingsManager } from './context/misc/SettingsContext';
+import { ISettingsManager, SaveObject, SettingsContext, SettingsContextType, SettingsManager } from './context/misc/SettingsContext';
 import useExplorationInventory from './hooks/caravan/useExplorationInventory';
 import RimeEventJSON from './classes/events/RimeEventJSON';
 import IMapLocation from './classes/exploration/IMapLocation';
@@ -441,7 +441,7 @@ function App() {
     setMainGameScreen(MainGameScreens.CARAVAN);
   }
 
-  function save(){
+  function getSaveObject():SaveObject{
     const saveObject = settingsManagerContextRef.current.getSaveObject(
       savedMap,
       inventory,
@@ -452,6 +452,8 @@ function App() {
     );
 
     console.log(saveObject);
+
+    return saveObject;
   }
 
   return (
@@ -460,7 +462,7 @@ function App() {
         <ItemFactoryContext.Provider value={itemFactoryContext}>
           <ProgressionContext.Provider value={{flags:progressionFlags, setFlags:setProgressionFlags}}>
             <div className="App">
-              {mainGameScreen == MainGameScreens.CARAVAN && <CaravanParent save={save} inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers} 
+              {mainGameScreen == MainGameScreens.CARAVAN && <CaravanParent getSaveObject={getSaveObject} inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers} 
                 explorationInventory={explorationInventory}
                 setExplorationInventory={setExplorationInventory}
                 setMainGameScreen={setMainGameScreen}
