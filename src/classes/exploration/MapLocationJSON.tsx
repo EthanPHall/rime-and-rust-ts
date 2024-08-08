@@ -7,7 +7,7 @@ import RimeEventJSON from "../events/RimeEventJSON";
 import locationData from "../../data/exploration/exploration-location-data.json"
 import ISaveable from "../utility/ISaveable";
 
-class MapLocationJSON implements IMapLocation,ISaveable{
+class MapLocationJSON implements IMapLocation{
     private position: Vector2;
     private key: string;
     private name: string;
@@ -34,7 +34,7 @@ class MapLocationJSON implements IMapLocation,ISaveable{
         if(this.cleared){
             return null;
         }
-
+        
         const event = locationData.groundedEventsByKey.find((keyEvent) => {
             return keyEvent.key == this.key;
         })
@@ -42,7 +42,7 @@ class MapLocationJSON implements IMapLocation,ISaveable{
         if(!event){
             return null;
         }
-
+        
         const chance = Math.random() * 100;
         let accumulator = 0;
         for(let i = 0; i < event.eventKeyChancePairs.length; i++){
@@ -52,7 +52,7 @@ class MapLocationJSON implements IMapLocation,ISaveable{
                 return currentPair.eventKey;
             }
         }
-
+        
         return null;
     }
 
@@ -92,20 +92,20 @@ class MapLocationJSON implements IMapLocation,ISaveable{
     getKey(): string {
         return this.key;
     }
-
+    
     /*
-        private position: Vector2;
-        private key: string;
-        private name: string;
-        private cleared: boolean;
-        private revealed: boolean;
-        private floating: boolean;
+    private position: Vector2;
+    private key: string;
+    private name: string;
+    private cleared: boolean;
+    private revealed: boolean;
+    private floating: boolean;
     */
-    createSaveObject():any{
-        return{
-            positionData: {
-                x:this.position.x,
-                y:this.position.y
+   createSaveObject():any{
+       return{
+           positionData: {
+               x:this.position.x,
+               y:this.position.y
             },
             keyData: this.key,
             nameData: this.name,
@@ -114,8 +114,20 @@ class MapLocationJSON implements IMapLocation,ISaveable{
             floatingData: this.floating,
         }
     }
-    loadSaveObject():void{
+    loadSaveObject(locationData:any):void{
+        const positionData = locationData.positionData;
+        const keyData = locationData.keyData;
+        const nameData = locationData.nameData;
+        const clearedData = locationData.clearedData;
+        const revealedData = locationData.revealedData;
+        const floatingData = locationData.floatingData;
 
+        this.position = new Vector2(positionData.x,positionData.y);
+        this.key = keyData;
+        this.name = nameData;
+        this.cleared = clearedData;
+        this.revealed = revealedData;
+        this.floating = floatingData;
     }
 }
 

@@ -15,6 +15,17 @@ class MapLocationFactoryJSONSimplexNoise implements IMapLocationFactory {
         this.noise = new Noise(seed);
     }
 
+    createDummyLocation(): IMapLocation {
+        return new MapLocationJSON(
+            new Vector2(0,0),
+            "",
+            "",
+            false,
+            false,
+            false
+        )
+    }
+
     createLocationWithData(data: MapLocationData): IMapLocation {
         throw new Error("Method not implemented.");
     }

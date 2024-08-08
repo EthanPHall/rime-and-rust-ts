@@ -17,7 +17,6 @@ interface IMap extends ISaveable{
     getDimensions(): Vector2;
     getCenterPoint():Vector2;
     getEventToStart(position:Vector2):string|null;
-    setWithSaveData(saveObject:SaveObject):void;
 }
 
 export default IMap;

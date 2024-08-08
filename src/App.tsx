@@ -21,6 +21,10 @@ import explorationItems from "./data/caravan/exploration-items.json";
 import transferItems from './classes/utility/transferItems';
 import IMap from './classes/exploration/IMap';
 import ISaveable from './classes/utility/ISaveable';
+import ChunkMap from './classes/exploration/ChunkMap';
+import IMapLocationFactory from './classes/exploration/IMapLocationFactory';
+import MapLocationFactoryJSONSimplexNoise from './classes/exploration/MapLocationFactoryJSONSimplexNoise';
+import Vector2 from './classes/utility/Vector2';
 
 type ProgressionFlagsSeed = {
   [key: string]: boolean;
@@ -459,8 +463,36 @@ function App() {
   }
 
   useEffect(() => {
-    console.log(loadObject);
+    if(!loadObject){
+      return;
+    }
+
+    let map = savedMap;
+    if(!map){
+      const locationFactory:IMapLocationFactory = new MapLocationFactoryJSONSimplexNoise(loadObject.seed);
+      map = new ChunkMap(
+        locationFactory,
+        new Vector2(1,1),
+        new Vector2(1,1)
+      )
+    }
+
+    settingsManagerContext.loadFromSaveObject(
+      loadObject,
+      map,
+      inventory,
+      explorationInventory,
+      workers,
+      progressionFlags,
+      messageManager
+    );
+
+    setSavedMap(map?.clone() || null);
   }, [loadObject]);
+
+  useEffect(() => {
+    console.log("SavedMap: ", savedMap);
+  }, [savedMap])
 
   return (
     <SettingsContext.Provider value={{settingsManager:settingsManagerContext, setSettingsManager:setSettingsManagerContext}}>

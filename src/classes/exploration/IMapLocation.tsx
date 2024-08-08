@@ -2,8 +2,9 @@ import Vector2 from "../utility/Vector2";
 import MapLocationData from "./MapLocationData";
 import IMapLocationVisual from "./IMapLocationVisual";
 import RimeEventJSON from "../events/RimeEventJSON";
+import ISaveable from "../utility/ISaveable";
 
-interface IMapLocation {
+interface IMapLocation extends ISaveable {
     getVisual():IMapLocationVisual;
     
     getIsCleared():boolean;
@@ -21,9 +22,6 @@ interface IMapLocation {
     getKey():string;
 
     getEventToStart():string|null;
-
-    createSaveObject():any;
-    loadSaveObject():void;
 }
 
 export default IMapLocation;

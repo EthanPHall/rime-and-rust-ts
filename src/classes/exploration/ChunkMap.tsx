@@ -70,10 +70,6 @@ class ChunkMap implements IMap{
         this.generateLocations(difficultyBrackets);
     }
 
-    setWithSaveData(saveObject: SaveObject) {
-        throw new Error("Method not implemented.");
-    }
-
     private placeHome(){
         const {chunk, position} = this.getChunkAndPosition(this.centerPoint);
         chunk.placeHomeLocation();
@@ -268,8 +264,44 @@ class ChunkMap implements IMap{
             }),
         }
     }
-    loadSaveObject() {
-        throw new Error("Method not implemented.");
+    loadSaveObject(saveObject:SaveObject) {
+        const mapData = saveObject.mapData;
+        const dimensionsData = mapData.dimensionsData;
+        const chunkDimensionsData = mapData.chunkDimensionsData;
+        const centerPointData = mapData.centerPointData;
+        const chunksData = mapData.chunksData;
+
+        if(
+            !dimensionsData || 
+            !chunkDimensionsData ||
+            !centerPointData ||
+            !chunksData
+        ){
+            console.log("Could not load ChunkMap. dimensionsData, chunkDimensionsData, centerPointData, and chunksData, respectively: ",
+                dimensionsData,
+                chunkDimensionsData,
+                centerPointData,
+                chunksData
+            )
+            return;
+        }
+
+        this.dimensions = new Vector2(dimensionsData.x, dimensionsData.y);
+        this.chunkDimensions = new Vector2(chunkDimensionsData.x, chunkDimensionsData.y);
+        this.centerPoint = new Vector2(centerPointData.x, centerPointData.y);
+        this.chunks = chunksData.map((rowData:any) => {
+            return rowData.map((chunkData:any) => {
+                const newChunk = new MapChunk(
+                    this.factory,
+                    new Vector2(1,1),
+                    new Vector2(1,1),
+                    0
+                );
+
+                newChunk.loadSaveObject(chunkData)
+                return newChunk;
+            });
+        });
     }
 }
 

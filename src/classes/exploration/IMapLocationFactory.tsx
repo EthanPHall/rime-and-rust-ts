@@ -20,6 +20,12 @@ interface IMapLocationFactory {
      * @param data This method chooses which background location to generate, so key and name may be ingored. Otherwise, uses the rest of the data to fill the new Location's data. Make sure that position is the location's position within the entire map, not within a chunk or other smaller area.
      */
     createBackgroundLocation(data:MapLocationData):IMapLocation;
+
+    /**
+     * Creates a blank location that can be filled in later.
+     * 
+     */
+    createDummyLocation():IMapLocation;
 }
 
 export default IMapLocationFactory;

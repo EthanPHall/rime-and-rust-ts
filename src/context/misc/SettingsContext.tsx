@@ -28,6 +28,16 @@ interface ISettingsManager{
         flags:ISaveable|null,
         messages:ISaveable|null
     ):SaveObject
+
+    loadFromSaveObject(
+        saveObject:SaveObject,
+        map:ISaveable,
+        inventory:ISaveable|null,
+        explorationInventory:ISaveable|null,
+        freeWorkers:number,
+        flags:ISaveable|null,
+        messages:ISaveable|null
+    ):void
 }
 
 class SettingsManager implements ISettingsManager{
@@ -103,6 +113,18 @@ class SettingsManager implements ISettingsManager{
             messagesData:messagesData,
             flagsData: flagsData
         }
+    }
+
+    loadFromSaveObject(
+        saveObject:SaveObject,
+        map:ISaveable,
+        inventory:ISaveable|null,
+        explorationInventory:ISaveable|null,
+        freeWorkers:number,
+        flags:ISaveable|null,
+        messages:ISaveable|null
+    ){
+        map.loadSaveObject(saveObject);
     }
 
     clone(): ISettingsManager {

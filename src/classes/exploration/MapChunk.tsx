@@ -67,9 +67,6 @@ class MapChunk implements IMap{
             }
         }
     }
-    setWithSaveData(saveObject: SaveObject) {
-        throw new Error("Method not implemented.");
-    }
     getEventToStart(position: Vector2): string | null {
         return this.locations[position.y][position.x].getEventToStart();
     }
@@ -189,8 +186,37 @@ class MapChunk implements IMap{
             })
         }
     }
-    loadSaveObject() {
-        throw new Error("Method not implemented.");
+    loadSaveObject(chunkData:any) {
+        const dimensionsData:any = chunkData.dimensionsData;
+        const distanceFromCenterData:any = chunkData.distanceFromCenterData;
+        const positionData:any = chunkData.positionData;
+        const locationsData:any = chunkData.locationsData;
+
+        // if(
+        //     !dimensionsData || 
+        //     !distanceFromCenterData ||
+        //     !positionData ||
+        //     !locationsData
+        // ){
+        //     console.log("Could not load MapChunk. dimensionsData, distanceFromCenterData, positionData, and locationsData, respectively: ",
+        //         dimensionsData,
+        //         distanceFromCenterData,
+        //         positionData,
+        //         locationsData
+        //     )
+        //     return;
+        // }
+
+        this.dimensions = new Vector2(dimensionsData.x, dimensionsData.y);
+        this.distanceFromCenter = distanceFromCenterData;
+        this.position = new Vector2(positionData.x, positionData.y);
+        this.locations = locationsData.map((locationsRow:any) => {
+            return locationsRow.map((locationData:any) => {
+                const newLocation = this.factory.createDummyLocation();
+                newLocation.loadSaveObject(locationData);
+                return newLocation;
+            });
+        });
     }
 }
 
