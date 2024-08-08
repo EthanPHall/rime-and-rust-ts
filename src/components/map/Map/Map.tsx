@@ -101,7 +101,7 @@ const Map: FC<MapProps> = (
     savedMap ||
     new ChunkMap(
       mapLocationFactory,
-      new Vector2(17, 17),
+      new Vector2(19, 19),
       new Vector2(3, 3)
     )
   );

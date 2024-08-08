@@ -9,6 +9,8 @@
 
     color:var(--exploration-map-color);
 
+    user-select: none;
+
     /* outline: 1px solid var(--outline-color); */
 
     /* line-height: var(--map-line-height); */

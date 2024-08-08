@@ -6,13 +6,18 @@ import OptionShare from '../OptionShare/OptionShare';
 import OptionRestart from '../OptionRestart/OptionRestart';
 import OptionSave from '../OptionSave/OptionSave';
 import { SaveObject } from '../../../context/misc/SettingsContext';
+import OptionLoad from '../OptionLoad/OptionLoad';
 
 interface CaravanSectionOptionsProps {
-  getSaveObject():SaveObject
+  getSaveObject():SaveObject;
+  setLoadObject:React.Dispatch<React.SetStateAction<SaveObject | null>>;
 }
 
 const CaravanSectionOptions: FC<CaravanSectionOptionsProps> = (
-  {getSaveObject}
+  {
+    getSaveObject,
+    setLoadObject
+  }
 ) => (
   <div className="caravan-section-options" data-testid="caravan-section-options">
     <OptionCredits></OptionCredits>
@@ -20,6 +25,7 @@ const CaravanSectionOptions: FC<CaravanSectionOptionsProps> = (
     <OptionShare></OptionShare>
     <OptionRestart></OptionRestart>
     <OptionSave getSaveObject={getSaveObject}></OptionSave>
+    <OptionLoad setLoadObject={setLoadObject}></OptionLoad>
   </div>
 );
 

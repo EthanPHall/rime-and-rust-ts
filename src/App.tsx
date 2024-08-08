@@ -102,6 +102,8 @@ function App() {
 
   const [savedMap,setSavedMap] = useState<IMap|null>(null);
   
+  const [loadObject, setLoadObject] = useState<SaveObject|null>(null);
+
   useEffect(() => {
     if(mainGameScreen == MainGameScreens.CARAVAN && previousGameScreen == MainGameScreens.MAP){
       //Transfer regular resources from the explorationInventory to the regular inventory.
@@ -456,13 +458,17 @@ function App() {
     return saveObject;
   }
 
+  useEffect(() => {
+    console.log(loadObject);
+  }, [loadObject]);
+
   return (
     <SettingsContext.Provider value={{settingsManager:settingsManagerContext, setSettingsManager:setSettingsManagerContext}}>
       <MessageHandlingContext.Provider value={{messageHandling:messageHandlingContext, setMessageHandling:setMessageHandlingContext}}>
         <ItemFactoryContext.Provider value={itemFactoryContext}>
           <ProgressionContext.Provider value={{flags:progressionFlags, setFlags:setProgressionFlags}}>
             <div className="App">
-              {mainGameScreen == MainGameScreens.CARAVAN && <CaravanParent getSaveObject={getSaveObject} inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers} 
+              {mainGameScreen == MainGameScreens.CARAVAN && <CaravanParent setLoadObject={setLoadObject} getSaveObject={getSaveObject} inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers} 
                 explorationInventory={explorationInventory}
                 setExplorationInventory={setExplorationInventory}
                 setMainGameScreen={setMainGameScreen}
