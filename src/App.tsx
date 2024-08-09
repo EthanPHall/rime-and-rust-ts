@@ -77,6 +77,9 @@ enum MainGameScreens{
 
 function App() {
   const [progressionFlags, setProgressionFlags] = React.useState<ProgressionFlags>(new ProgressionFlags(progressionFlagsData));
+  const progressionFlagsRef = useRef(progressionFlags);
+  useEffect(() => {progressionFlagsRef.current = progressionFlags}, [progressionFlags])
+
   const [messageHandlingContext, setMessageHandlingContext] = React.useState<MessageContext>(new MessageContext(messageFactory, messageManager));
   const [settingsManagerContext, setSettingsManagerContext] = React.useState<ISettingsManager>(new SettingsManager());
   const settingsManagerContextRef = useRef<ISettingsManager>(settingsManagerContext);
@@ -91,7 +94,10 @@ function App() {
   ],
   itemFactoryContext
 ));
+
   const {explorationInventory, setExplorationInventory} = useExplorationInventory(inventory);
+  const explorationInventoryRef = useRef(explorationInventory);
+  useEffect(() => {explorationInventoryRef.current = explorationInventory}, [explorationInventory]);
 
   const [sledsList, setSledsList] = useState<Sled[]>([]);
   const sledsListRef = useRef<Sled[]>(sledsList);
@@ -106,6 +112,8 @@ function App() {
   const [combatEncounterKey, setCombatEncounterKey] = useState<string|null>(null);
 
   const [savedMap,setSavedMap] = useState<IMap|null>(null);
+  const savedMapRef = useRef(savedMap);
+  useEffect(() => {savedMapRef.current = savedMap}, [savedMap]);
   
   const [loadObject, setLoadObject] = useState<SaveObject|null>(null);
 
@@ -211,9 +219,20 @@ function App() {
 
   useEffect(() => {
     const passiveRecipeTimeout = createPassiveRecipeTimeout();
+    const autoSaveInterval = setInterval(() => {
+      localStorage.setItem("saveFile", JSON.stringify(getSaveObject()));
+      console.log("Autosave");
+    }, 10000);
+
+    const saveFile = localStorage.getItem("saveFile");
+    if(saveFile != null){
+      setLoadObject(JSON.parse(saveFile));
+    }
 
     return () => {
       clearTimeout(passiveRecipeTimeout);
+      clearInterval(autoSaveInterval);
+      // localStorage.removeItem("saveFile");
     }
   }, [])
 
@@ -450,15 +469,15 @@ function App() {
 
   function getSaveObject():SaveObject{
     const saveObject = settingsManagerContextRef.current.getSaveObject(
-      savedMap,
-      inventory,
-      explorationInventory,
+      savedMapRef.current,
+      getInventory(),
+      explorationInventoryRef.current,
       workersMax.current,
-      progressionFlags,
+      progressionFlagsRef.current,
       messageManager
     );
 
-    console.log(saveObject);
+    // console.log(saveObject);
 
     return saveObject;
   }
