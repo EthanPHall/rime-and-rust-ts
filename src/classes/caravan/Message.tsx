@@ -16,8 +16,9 @@ class Message implements ISaveable{
             classesData: this._classes
         }
     }
-    loadSaveObject() {
-        throw new Error("Method not implemented.");
+    loadSaveObject(messageData:any) {
+        this._message = messageData.messageData;
+        this._classes = messageData.classesData;
     }
 
     get message(){
@@ -99,8 +100,14 @@ class MessageManager implements IMessageManager{
             messageLimitData:this._messageLimit
         }
     }
-    loadSaveObject() {
-        throw new Error("Method not implemented.");
+    loadSaveObject(messagesLoadObject:any) {
+        this._messages = messagesLoadObject.messagesData.map((data:any) => {
+            const newMessage = new Message("", []);
+            newMessage.loadSaveObject(data);
+            return newMessage;
+        });
+
+        this._messageLimit = messagesLoadObject.messageLimitData;
     }
 
     addMessage(message: Message){

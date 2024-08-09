@@ -32,11 +32,11 @@ interface ISettingsManager{
     loadFromSaveObject(
         saveObject:SaveObject,
         map:ISaveable,
-        inventory:ISaveable|null,
-        explorationInventory:ISaveable|null,
-        freeWorkers:number,
-        flags:ISaveable|null,
-        messages:ISaveable|null
+        inventory:ISaveable,
+        explorationInventory:ISaveable,
+        freeWorkers:React.MutableRefObject<number>,
+        flags:ISaveable,
+        messages:ISaveable
     ):void
 }
 
@@ -118,13 +118,18 @@ class SettingsManager implements ISettingsManager{
     loadFromSaveObject(
         saveObject:SaveObject,
         map:ISaveable,
-        inventory:ISaveable|null,
-        explorationInventory:ISaveable|null,
-        freeWorkers:number,
-        flags:ISaveable|null,
-        messages:ISaveable|null
+        inventory:ISaveable,
+        explorationInventory:ISaveable,
+        freeWorkers:React.MutableRefObject<number>,
+        flags:ISaveable,
+        messages:ISaveable
     ){
         map.loadSaveObject(saveObject);
+        inventory.loadSaveObject(saveObject.inventoryData);
+        explorationInventory.loadSaveObject(saveObject.explorationInventoryData);
+        freeWorkers.current = saveObject.freeWorkers;
+        flags.loadSaveObject(saveObject.flagsData);
+        messages.loadSaveObject(saveObject.messagesData);
     }
 
     clone(): ISettingsManager {

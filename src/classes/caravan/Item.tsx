@@ -550,8 +550,13 @@ class UniqueItemQuantitiesList implements ISaveable{
             currentCapacityData:this.currentCapacity,
         }
     }
-    loadSaveObject() {
-        throw new Error("Method not implemented.");
+    loadSaveObject(inventoryData:any) {
+        this.maxCapacity = inventoryData.maxCapacityData;
+        this.currentCapacity = inventoryData.currentCapacityData;
+        this.list = inventoryData.listData.map((itemQuantityData:any) => {
+            const newItemQuantity = new ItemQuantity(this.itemFactory.createItem(itemQuantityData.itemKey), itemQuantityData.quantity);
+            return newItemQuantity;
+        })
     }
 
     clone():UniqueItemQuantitiesList{

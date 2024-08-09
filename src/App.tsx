@@ -39,8 +39,8 @@ class ProgressionFlags implements ISaveable{
   createSaveObject() {
     return this.flags;
   }
-  loadSaveObject() {
-    throw new Error('Method not implemented.');
+  loadSaveObject(flagsData:any) {
+    this.flags = flagsData;
   }
 
   clone():ProgressionFlags{
@@ -64,7 +64,7 @@ const ProgressionContext = createContext<ProgressionContextType>({flags: new Pro
 const ItemFactoryContext = createContext<IItemFactory>(new ItemFactoryJSON(() => {return 0;}));
 
 const messageFactory:IMessageFactory = new MessageFactoryJson();
-const messageManager:IMessageManager = new MessageManager(25);
+const messageManager = new MessageManager(25);
 const MessageHandlingContext = createContext<{messageHandling:MessageContext, setMessageHandling:(newHandling:MessageContext) => void}>({messageHandling: new MessageContext(messageFactory, messageManager), setMessageHandling: () => {}});
 
 enum MainGameScreens{
@@ -82,11 +82,12 @@ function App() {
   const settingsManagerContextRef = useRef<ISettingsManager>(settingsManagerContext);
 
   const [workers, setWorkers] = useState<number>(20);
+  const workersMax = useRef(workers);
 
   const itemFactoryContext = new ItemFactoryJSON(getExistingSledCount);
   const [inventory, getInventory, setInventory] = useRefState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([
-    new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 11),
-    new ItemQuantity(itemFactoryContext.createItem("Forge Sled"), 1),
+    // new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 11),
+    // new ItemQuantity(itemFactoryContext.createItem("Forge Sled"), 1),
   ],
   itemFactoryContext
 ));
@@ -452,7 +453,7 @@ function App() {
       savedMap,
       inventory,
       explorationInventory,
-      workers,
+      workersMax.current,
       progressionFlags,
       messageManager
     );
@@ -482,12 +483,16 @@ function App() {
       map,
       inventory,
       explorationInventory,
-      workers,
+      workersMax,
       progressionFlags,
       messageManager
     );
 
     setSavedMap(map?.clone() || null);
+    setInventory(inventory);
+    setExplorationInventory(explorationInventory);
+    setWorkers(workersMax.current);
+    setProgressionFlags(progressionFlags);
   }, [loadObject]);
 
   useEffect(() => {
