@@ -11,19 +11,21 @@ import OptionLoad from '../OptionLoad/OptionLoad';
 interface CaravanSectionOptionsProps {
   getSaveObject():SaveObject;
   setLoadObject:React.Dispatch<React.SetStateAction<SaveObject | null>>;
+  autoSaveInterval:NodeJS.Timer;
 }
 
 const CaravanSectionOptions: FC<CaravanSectionOptionsProps> = (
   {
     getSaveObject,
-    setLoadObject
+    setLoadObject,
+    autoSaveInterval
   }
 ) => (
   <div className="caravan-section-options" data-testid="caravan-section-options">
     <OptionCredits></OptionCredits>
     <OptionSpeedToggle></OptionSpeedToggle>
     <OptionShare></OptionShare>
-    <OptionRestart></OptionRestart>
+    <OptionRestart autoSaveInterval={autoSaveInterval}></OptionRestart>
     <OptionSave getSaveObject={getSaveObject}></OptionSave>
     <OptionLoad setLoadObject={setLoadObject}></OptionLoad>
   </div>

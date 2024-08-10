@@ -38,10 +38,11 @@ interface CaravanParentProps {
   setMainGameScreen:React.Dispatch<React.SetStateAction<MainGameScreens>>;
   getSaveObject():SaveObject;
   setLoadObject:React.Dispatch<React.SetStateAction<SaveObject | null>>;
+  autoSaveInterval:NodeJS.Timer;
 }
 
 const CaravanParent: FC<CaravanParentProps> = (
-  {setLoadObject, getSaveObject, sleds, setSleds, getInventory, executeRecipe, workers, setWorkers, sellSled, inventory, setInventory, explorationInventory, setExplorationInventory, setMainGameScreen}
+  {autoSaveInterval, setLoadObject, getSaveObject, sleds, setSleds, getInventory, executeRecipe, workers, setWorkers, sellSled, inventory, setInventory, explorationInventory, setExplorationInventory, setMainGameScreen}
 ) => {
   const messageHandlingContext = useContext(MessageHandlingContext);
 
@@ -114,7 +115,7 @@ const CaravanParent: FC<CaravanParentProps> = (
           ></CaravanSectionExploration>}
         </div>
         <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)}></CaravanSectionValuables>
-        <CaravanSectionOptions setLoadObject={setLoadObject} getSaveObject={getSaveObject}></CaravanSectionOptions>
+        <CaravanSectionOptions autoSaveInterval={autoSaveInterval} setLoadObject={setLoadObject} getSaveObject={getSaveObject}></CaravanSectionOptions>
       </div>
     </div>
   );

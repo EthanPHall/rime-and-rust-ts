@@ -89,8 +89,8 @@ function App() {
 
   const itemFactoryContext = new ItemFactoryJSON(getExistingSledCount);
   const [inventory, getInventory, setInventory] = useRefState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([
-    // new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 11),
-    // new ItemQuantity(itemFactoryContext.createItem("Forge Sled"), 1),
+    new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 11),
+    new ItemQuantity(itemFactoryContext.createItem("Forge Sled"), 1),
   ],
   itemFactoryContext
 ));
@@ -116,6 +116,8 @@ function App() {
   useEffect(() => {savedMapRef.current = savedMap}, [savedMap]);
   
   const [loadObject, setLoadObject] = useState<SaveObject|null>(null);
+
+  let autoSaveInterval:NodeJS.Timer = setInterval(() => {}, 9999);
 
   useEffect(() => {
     if(mainGameScreen == MainGameScreens.CARAVAN && previousGameScreen == MainGameScreens.MAP){
@@ -219,7 +221,7 @@ function App() {
 
   useEffect(() => {
     const passiveRecipeTimeout = createPassiveRecipeTimeout();
-    const autoSaveInterval = setInterval(() => {
+    autoSaveInterval = setInterval(() => {
       localStorage.setItem("saveFile", JSON.stringify(getSaveObject()));
       console.log("Autosave");
     }, 10000);
@@ -232,7 +234,7 @@ function App() {
     return () => {
       clearTimeout(passiveRecipeTimeout);
       clearInterval(autoSaveInterval);
-      // localStorage.removeItem("saveFile");
+      localStorage.removeItem("saveFile");
     }
   }, [])
 
@@ -524,7 +526,7 @@ function App() {
         <ItemFactoryContext.Provider value={itemFactoryContext}>
           <ProgressionContext.Provider value={{flags:progressionFlags, setFlags:setProgressionFlags}}>
             <div className="App">
-              {mainGameScreen == MainGameScreens.CARAVAN && <CaravanParent setLoadObject={setLoadObject} getSaveObject={getSaveObject} inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers} 
+              {mainGameScreen == MainGameScreens.CARAVAN && <CaravanParent autoSaveInterval={autoSaveInterval} setLoadObject={setLoadObject} getSaveObject={getSaveObject} inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers} 
                 explorationInventory={explorationInventory}
                 setExplorationInventory={setExplorationInventory}
                 setMainGameScreen={setMainGameScreen}

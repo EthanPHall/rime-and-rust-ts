@@ -71,7 +71,12 @@
                     "quantity": 50
                 }
             ],
-            "results": []
+            "results": [
+                {
+                    "key": "Psychium Scrap",
+                    "quantity": 1
+                }
+            ]
         },
         "unlockFlags": ["Obtained Psychium Scrap"]
     },
