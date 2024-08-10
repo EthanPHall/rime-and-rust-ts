@@ -94,8 +94,8 @@ function App() {
 
   const itemFactoryContext = new ItemFactoryJSON(getExistingSledCount);
   const [inventory, getInventory, setInventory] = useRefState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([
-    new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 11),
-    new ItemQuantity(itemFactoryContext.createItem("Forge Sled"), 1),
+    // new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 11),
+    // new ItemQuantity(itemFactoryContext.createItem("Forge Sled"), 1),
   ],
   itemFactoryContext
 ));
@@ -131,7 +131,6 @@ function App() {
   let autoSaveInterval:NodeJS.Timer = setInterval(() => {}, 9999);
 
   function saveGame(){
-    console.log("Buh");
     localStorage.setItem("saveFile", JSON.stringify(getSaveObject()));
   }
 
@@ -239,8 +238,8 @@ function App() {
   useEffect(() => {
     const passiveRecipeTimeout = createPassiveRecipeTimeout();
     autoSaveInterval = setInterval(() => {
-      // saveGame();
-      // console.log("Autosave");
+      saveGame();
+      console.log("Autosave");
     }, 10000);
 
     const saveFile = localStorage.getItem("saveFile");
@@ -260,6 +259,7 @@ function App() {
   }, [combatEncounterKey])
 
   useEffect(() => {
+    console.log("Sleds List:", sledsList);
     sledsListRef.current = sledsList;
   }, [sledsList]);
 
@@ -528,11 +528,13 @@ function App() {
       messageManager
     );
 
+    console.log("In Load");
+
     setSavedMap(mapWasLoaded ? map.clone() : null);
-    setInventory(inventory);
-    setExplorationInventory(explorationInventory);
+    setInventory(inventory.clone());
+    setExplorationInventory(explorationInventory.clone());
     setWorkers(workersMax.current);
-    setProgressionFlags(progressionFlags);
+    setProgressionFlags(progressionFlags.clone());
   }, [loadObject]);
 
   return (

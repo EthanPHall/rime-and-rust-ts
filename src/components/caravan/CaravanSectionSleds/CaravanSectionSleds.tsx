@@ -21,6 +21,10 @@ const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sleds, setSleds, dog
   
   const itemFactory:IItemFactory = useContext(ItemFactoryContext);
 
+  useEffect(() => {
+    console.log("Sleds:",sleds);
+  }, [])
+
   function removeWorkersFromSled(sled:Sled, amount:number){
     if(sled.getWorkers() >= amount){
       sled.setWorkers(sled.getWorkers() - amount);
