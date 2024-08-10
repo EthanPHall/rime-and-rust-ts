@@ -559,6 +559,14 @@ class UniqueItemQuantitiesList implements ISaveable{
         })
     }
 
+    isDataValid(inventoryData:any): boolean {
+        return (
+            inventoryData.maxCapacityData != undefined && inventoryData.maxCapacityData != null &&
+            inventoryData.currentCapacityData != undefined && inventoryData.currentCapacityData != null &&
+            inventoryData.listData != undefined && inventoryData.listData != null && Array.isArray(inventoryData.listData)
+        );
+    }
+
     clone():UniqueItemQuantitiesList{
         return new UniqueItemQuantitiesList(this.list, this.itemFactory, this.maxCapacity);
     }

@@ -20,6 +20,12 @@ class Message implements ISaveable{
         this._message = messageData.messageData;
         this._classes = messageData.classesData;
     }
+    isDataValid(messageData: any): boolean {
+        return (
+            messageData.messageData != null && messageData.messageData != undefined && 
+            messageData.classesData != null && messageData.classesData != undefined
+        )
+    }
 
     get message(){
         return this._message;
@@ -108,6 +114,12 @@ class MessageManager implements IMessageManager{
         });
 
         this._messageLimit = messagesLoadObject.messageLimitData;
+    }
+    isDataValid(messagesLoadObject: any): boolean {
+        return (
+            messagesLoadObject.messagesData != null && messagesLoadObject.messagesData != undefined && Array.isArray(messagesLoadObject.messagesData) &&
+            messagesLoadObject.messageLimitData != null && messagesLoadObject.messageLimitData != undefined
+        );
     }
 
     addMessage(message: Message){

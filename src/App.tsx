@@ -42,6 +42,11 @@ class ProgressionFlags implements ISaveable{
   loadSaveObject(flagsData:any) {
     this.flags = flagsData;
   }
+  isDataValid(saveData: any): boolean {
+    return (
+      saveData != null && saveData != undefined
+    );
+  }
 
   clone():ProgressionFlags{
     return new ProgressionFlags({...this.flags});
@@ -234,7 +239,7 @@ function App() {
     return () => {
       clearTimeout(passiveRecipeTimeout);
       clearInterval(autoSaveInterval);
-      localStorage.removeItem("saveFile");
+      // localStorage.removeItem("saveFile");
     }
   }, [])
 
@@ -499,7 +504,7 @@ function App() {
       )
     }
 
-    settingsManagerContext.loadFromSaveObject(
+    const mapWasLoaded = settingsManagerContext.loadFromSaveObject(
       loadObject,
       map,
       inventory,
@@ -509,7 +514,7 @@ function App() {
       messageManager
     );
 
-    setSavedMap(map?.clone() || null);
+    setSavedMap(mapWasLoaded ? map.clone() : null);
     setInventory(inventory);
     setExplorationInventory(explorationInventory);
     setWorkers(workersMax.current);

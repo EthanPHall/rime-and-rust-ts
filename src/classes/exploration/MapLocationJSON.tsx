@@ -129,6 +129,26 @@ class MapLocationJSON implements IMapLocation{
         this.revealed = revealedData;
         this.floating = floatingData;
     }
+
+    isDataValid(locationData:any): boolean {
+        const positionData = locationData.positionData;
+        const keyData = locationData.keyData;
+        const nameData = locationData.nameData;
+        const clearedData = locationData.clearedData;
+        const revealedData = locationData.revealedData;
+        const floatingData = locationData.floatingData;
+
+        return (
+            positionData != null && positionData != undefined &&
+            positionData.x != null && positionData.x != undefined &&
+            positionData.y != null && positionData.y != undefined &&
+            keyData != null && keyData != undefined &&
+            nameData != null && nameData != undefined &&
+            clearedData != null && clearedData != undefined &&
+            revealedData != null && revealedData != undefined &&
+            floatingData != null && floatingData != undefined
+        )
+    }
 }
 
 export default MapLocationJSON;

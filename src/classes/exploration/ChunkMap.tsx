@@ -303,6 +303,32 @@ class ChunkMap implements IMap{
             });
         });
     }
+
+    isDataValid(saveObject:SaveObject): boolean {
+        const mapData = saveObject.mapData;
+
+        if(mapData == null && mapData == undefined){
+            return false;
+        }
+
+        const dimensionsData = mapData.dimensionsData;
+        const chunkDimensionsData = mapData.chunkDimensionsData;
+        const centerPointData = mapData.centerPointData;
+        const chunksData = mapData.chunksData;
+
+        return (
+            dimensionsData != null && dimensionsData != undefined &&
+            dimensionsData.x != null && dimensionsData.x != undefined &&
+            dimensionsData.y != null && dimensionsData.y != undefined &&
+            chunkDimensionsData != null && chunkDimensionsData != undefined &&
+            chunkDimensionsData.x != null && chunkDimensionsData.x != undefined &&
+            chunkDimensionsData.y != null && chunkDimensionsData.y != undefined &&
+            centerPointData != null && centerPointData != undefined &&
+            centerPointData.x != null && centerPointData.x != undefined &&
+            centerPointData.y != null && centerPointData.y != undefined &&
+            chunksData != null && chunksData != undefined && Array.isArray(chunksData)
+        )
+    }
 }
 
 export default ChunkMap;

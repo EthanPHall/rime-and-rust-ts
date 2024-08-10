@@ -29,6 +29,10 @@ interface ISettingsManager{
         messages:ISaveable|null
     ):SaveObject
 
+    /**
+     * 
+     * @returns A boolean indicating whether or not the map was loaded.
+     */
     loadFromSaveObject(
         saveObject:SaveObject,
         map:ISaveable,
@@ -37,7 +41,7 @@ interface ISettingsManager{
         freeWorkers:React.MutableRefObject<number>,
         flags:ISaveable,
         messages:ISaveable
-    ):void
+    ):boolean
 }
 
 class SettingsManager implements ISettingsManager{
@@ -124,13 +128,31 @@ class SettingsManager implements ISettingsManager{
         flags:ISaveable,
         messages:ISaveable
     ){
-        map.loadSaveObject(saveObject);
+        // if(
+        //     !map.isDataValid(saveObject) ||
+        //     !inventory.isDataValid(saveObject.inventoryData) ||
+        //     !explorationInventory.isDataValid(saveObject.explorationInventoryData) ||
+        //     !flags.isDataValid(saveObject.flagsData) ||
+        //     !messages.isDataValid(saveObject.messagesData)
+        // ){
+        //     return;
+        // }
+
+        let mapWasLoaded:boolean = false;
+        if(saveObject.mapData){
+            map.loadSaveObject(saveObject);
+            mapWasLoaded = true;
+        }
         inventory.loadSaveObject(saveObject.inventoryData);
         explorationInventory.loadSaveObject(saveObject.explorationInventoryData);
         freeWorkers.current = saveObject.freeWorkers;
         flags.loadSaveObject(saveObject.flagsData);
         messages.loadSaveObject(saveObject.messagesData);
+    
+        return mapWasLoaded;
     }
+
+
 
     clone(): ISettingsManager {
         return new SettingsManager(this.currentSpeedSetting.name);

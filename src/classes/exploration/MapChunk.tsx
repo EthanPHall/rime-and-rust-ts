@@ -218,6 +218,23 @@ class MapChunk implements IMap{
             });
         });
     }
+    isDataValid(chunkData:any): boolean {
+        const dimensionsData:any = chunkData.dimensionsData;
+        const distanceFromCenterData:any = chunkData.distanceFromCenterData;
+        const positionData:any = chunkData.positionData;
+        const locationsData:any = chunkData.locationsData;
+
+        return (
+            dimensionsData != null && dimensionsData != undefined &&
+            dimensionsData.x != null && dimensionsData.x != undefined &&
+            dimensionsData.y != null && dimensionsData.y != undefined &&
+            distanceFromCenterData != null && distanceFromCenterData != undefined &&
+            positionData != null && positionData != undefined &&
+            positionData.x != null && positionData.x != undefined &&
+            positionData.y != null && positionData.y != undefined &&
+            locationsData != null && locationsData != undefined && Array.isArray(locationsData)
+        )
+    }
 }
 
 export default MapChunk;
