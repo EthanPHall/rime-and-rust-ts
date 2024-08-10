@@ -118,11 +118,22 @@ function App() {
 
   const [savedMap,setSavedMap] = useState<IMap|null>(null);
   const savedMapRef = useRef(savedMap);
-  useEffect(() => {savedMapRef.current = savedMap}, [savedMap]);
+  useEffect(() => {
+    savedMapRef.current = savedMap; 
+
+    if(savedMap){
+      saveGame()
+    }
+  }, [savedMap]);
   
   const [loadObject, setLoadObject] = useState<SaveObject|null>(null);
 
   let autoSaveInterval:NodeJS.Timer = setInterval(() => {}, 9999);
+
+  function saveGame(){
+    console.log("Buh");
+    localStorage.setItem("saveFile", JSON.stringify(getSaveObject()));
+  }
 
   useEffect(() => {
     if(mainGameScreen == MainGameScreens.CARAVAN && previousGameScreen == MainGameScreens.MAP){
@@ -148,6 +159,7 @@ function App() {
         transferItems(explorationInventory, inventory, itemKey, 0)
       });
     }
+
 
     setPreviousGameScreen(mainGameScreen);
   }, [mainGameScreen])
@@ -227,8 +239,8 @@ function App() {
   useEffect(() => {
     const passiveRecipeTimeout = createPassiveRecipeTimeout();
     autoSaveInterval = setInterval(() => {
-      localStorage.setItem("saveFile", JSON.stringify(getSaveObject()));
-      console.log("Autosave");
+      // saveGame();
+      // console.log("Autosave");
     }, 10000);
 
     const saveFile = localStorage.getItem("saveFile");
@@ -475,6 +487,8 @@ function App() {
   }
 
   function getSaveObject():SaveObject{
+    // console.log(savedMapRef);
+
     const saveObject = settingsManagerContextRef.current.getSaveObject(
       savedMapRef.current,
       getInventory(),
@@ -521,10 +535,6 @@ function App() {
     setProgressionFlags(progressionFlags);
   }, [loadObject]);
 
-  useEffect(() => {
-    console.log("SavedMap: ", savedMap);
-  }, [savedMap])
-
   return (
     <SettingsContext.Provider value={{settingsManager:settingsManagerContext, setSettingsManager:setSettingsManagerContext}}>
       <MessageHandlingContext.Provider value={{messageHandling:messageHandlingContext, setMessageHandling:setMessageHandlingContext}}>
@@ -536,7 +546,7 @@ function App() {
                 setExplorationInventory={setExplorationInventory}
                 setMainGameScreen={setMainGameScreen}
                 ></CaravanParent>}
-              {mainGameScreen == MainGameScreens.MAP && <MapParent explorationInventory={explorationInventory} currentCombat={combatEncounterKey} savedMap={savedMap} setSavedMap={setSavedMap} currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></MapParent>}
+              {mainGameScreen == MainGameScreens.MAP && <MapParent saveGame={saveGame} explorationInventory={explorationInventory} currentCombat={combatEncounterKey} savedMap={savedMap} setSavedMap={setSavedMap} currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></MapParent>}
               {currentEvent != null && <EventParent returnToCaravan={returnToCaravan} clearExplorationInventory={clearExplorationInventory} eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen} clearEventLocation={clearEventLocation} setCombatEncounterKey={setCombatEncounterKey}></EventParent>}
               {combatEncounterKey != null && <CombatParent combatEncounterKey={combatEncounterKey} setCombatEncounterKey={setCombatEncounterKey} setCurrentEvent={setCurrentEvent}></CombatParent>}
             </div>

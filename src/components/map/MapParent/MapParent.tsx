@@ -18,6 +18,7 @@ interface MapParentProps {
   setLocationToClear:React.Dispatch<React.SetStateAction<IMapLocation | null>>
   savedMap:IMap|null
   setSavedMap:React.Dispatch<React.SetStateAction<IMap | null>>
+  saveGame:() => void;
 }
 
 const MapParent: FC<MapParentProps> = (
@@ -30,13 +31,14 @@ const MapParent: FC<MapParentProps> = (
     locationToClear,
     setLocationToClear,
     savedMap,
-    setSavedMap
+    setSavedMap,
+    saveGame
   }
 ) => (
   <div className="map-parent" data-testid="map-parent">
       <div className='grid-parent'>
         <MessagesParent></MessagesParent>
-        <Map currentCombat={currentCombat} savedMap={savedMap} setSavedMap={setSavedMap} currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></Map>
+        <Map saveGame={saveGame} currentCombat={currentCombat} savedMap={savedMap} setSavedMap={setSavedMap} currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></Map>
         <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(explorationInventory)} dogs={[]} displayDogsInput={false}></CaravanSectionValuables>
       </div>
   </div>

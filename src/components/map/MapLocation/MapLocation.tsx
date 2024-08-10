@@ -22,7 +22,7 @@ const MapLocation: FC<MapLocationProps> = (
 
   useEffect(()=>{
     if(position.x == 0){
-      console.log(locationVisual.getStyles());
+      // console.log(locationVisual.getStyles());
     }
   },[visibleLocations])
 

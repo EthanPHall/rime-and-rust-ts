@@ -24,6 +24,7 @@ interface MapProps {
   setLocationToClear:React.Dispatch<React.SetStateAction<IMapLocation | null>>
   savedMap:IMap|null
   setSavedMap:React.Dispatch<React.SetStateAction<IMap | null>>
+  saveGame:()=>void
 }
 
 class ExplorationPlayer{
@@ -90,7 +91,8 @@ const Map: FC<MapProps> = (
     locationToClear,
     setLocationToClear,
     savedMap,
-    setSavedMap
+    setSavedMap,
+    saveGame
   }
 ) => {
   const [mapLocationFactory] = useState<IMapLocationFactory>(
@@ -145,7 +147,7 @@ const Map: FC<MapProps> = (
           })
         })
 
-        return prev || null;
+        return newMap || null;
       })
     }
   }, [])

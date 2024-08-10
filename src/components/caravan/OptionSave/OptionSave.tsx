@@ -15,7 +15,7 @@ const OptionSave: FC<OptionSaveProps> = ({getSaveObject}) => {
   const [stringifiedObject, setStringifiedObject] = useState("");
 
   useEffect(() => {
-    console.log(displayBackground);
+    // console.log(displayBackground);
   }, [displayBackground]);
 
   return (
