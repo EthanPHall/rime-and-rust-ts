@@ -7,7 +7,7 @@ import IMapLocationVisual from "./IMapLocationVisual";
 import explorationLocationJSONData from "../../data/exploration/exploration-location-data.json";
 import RimeEventJSON from "../events/RimeEventJSON";
 import ArrayScrambler from "../utility/ArrayScrambler";
-import { SaveObject } from "../../context/misc/SettingsContext";
+import { RNGFunction, SaveObject } from "../../context/misc/SettingsContext";
 import ISaveable from "../utility/ISaveable";
 
 class MapChunk implements IMap{
@@ -17,6 +17,7 @@ class MapChunk implements IMap{
     private distanceFromCenter: number;
     private position: Vector2;
     private locations: IMapLocation[][];
+    private rngFunction:RNGFunction;
 
     /**
      * 
@@ -29,8 +30,11 @@ class MapChunk implements IMap{
         factory: IMapLocationFactory,
         dimensions: Vector2,
         position: Vector2,
-        distanceFromCenter: number
+        distanceFromCenter: number,
+        rngFunction:RNGFunction
     ){
+        this.rngFunction = rngFunction;
+
         this.dimensions = dimensions;
         if(dimensions.x % 2 === 0){
             dimensions.x++;
@@ -94,7 +98,7 @@ class MapChunk implements IMap{
         return this.locations[position.y][position.x];
     }
     clone(): IMap {
-        const newChunk = new MapChunk(this.factory, this.dimensions, this.position, this.distanceFromCenter);
+        const newChunk = new MapChunk(this.factory, this.dimensions, this.position, this.distanceFromCenter, this.rngFunction);
         newChunk.setLocations(this.locations);
 
         return newChunk;
@@ -130,7 +134,7 @@ class MapChunk implements IMap{
         })
 
         //scramble the potential locations
-        const potentialLocationsScrambled = ArrayScrambler.scrambleArray(potentialLocations);
+        const potentialLocationsScrambled = ArrayScrambler.scrambleArray(potentialLocations, this.rngFunction);
 
         //Create the locations
         const locationsCreated:IMapLocation[] = [];
@@ -139,14 +143,14 @@ class MapChunk implements IMap{
             const locationsToCreate = 
                 (i == potentialLocationsScrambled.length - 1) ? 
                     totalLocations - locationsCreated.length : 
-                    Math.floor(Math.random() * (totalLocations - locationsCreated.length));
+                    this.rngFunction(0, totalLocations - locationsCreated.length - 1)
 
             for(let i = 0; i < locationsToCreate; i++){
                 // if(Math.random() * 100 < locationData.chanceToSkipLocationGeneration){
                 //     continue;
                 // }
 
-                let chunkPosition = new Vector2(Math.floor(Math.random() * this.dimensions.x), Math.floor(Math.random() * this.dimensions.y));
+                let chunkPosition = new Vector2(this.rngFunction(0,this.dimensions.x-1), this.rngFunction(0,this.dimensions.y-1));
                 
                 // //TODO: Make a slightly more sophisticated way to ensure that the posiion is not already taken. Actually, changing this is necessary because doing it this way led to an infinite loop.
                 // while(!locationData.backgroundLocations.includes(this.getLocationData(chunkPosition).getKey())){
@@ -158,7 +162,7 @@ class MapChunk implements IMap{
                 const newLocation:IMapLocation = this.factory.createExactLocation(potentialLocation.key, overallPosition);
                 this.locations[chunkPosition.x][chunkPosition.y] = newLocation;
 
-                if(Math.random() * 100 < chanceToFloat){
+                if(this.rngFunction(0,99) < chanceToFloat){
                     newLocation.setFloating();
                 }
 

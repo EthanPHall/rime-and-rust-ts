@@ -6,6 +6,7 @@ import MapLocationVisualJSON from "./MapLocationVisualJSON";
 import RimeEventJSON from "../events/RimeEventJSON";
 import locationData from "../../data/exploration/exploration-location-data.json"
 import ISaveable from "../utility/ISaveable";
+import { RNGFunction } from "../../context/misc/SettingsContext";
 
 class MapLocationJSON implements IMapLocation{
     private position: Vector2;
@@ -14,6 +15,7 @@ class MapLocationJSON implements IMapLocation{
     private cleared: boolean;
     private revealed: boolean;
     private floating: boolean;
+    private rngFunction:RNGFunction;
 
     constructor(
         position: Vector2,
@@ -21,7 +23,8 @@ class MapLocationJSON implements IMapLocation{
         name: string,
         cleared: boolean,
         revealed: boolean,
-        floating: boolean
+        floating: boolean,
+        rngFunction:RNGFunction
     ){
         this.position = position;
         this.key = key;
@@ -29,6 +32,7 @@ class MapLocationJSON implements IMapLocation{
         this.cleared = cleared;
         this.revealed = revealed;
         this.floating = floating;
+        this.rngFunction = rngFunction;
     }
     getEventToStart(): string | null {
         if(this.cleared){
@@ -43,7 +47,7 @@ class MapLocationJSON implements IMapLocation{
             return null;
         }
         
-        const chance = Math.random() * 100;
+        const chance = this.rngFunction(0,99);
         let accumulator = 0;
         for(let i = 0; i < event.eventKeyChancePairs.length; i++){
             const currentPair = event.eventKeyChancePairs[i];

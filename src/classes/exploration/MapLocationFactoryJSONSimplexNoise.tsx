@@ -5,14 +5,17 @@ import MapLocationData from "./MapLocationData";
 import explorationLocationData from "../../data/exploration/exploration-location-data.json";
 import MapLocationJSON from "./MapLocationJSON";
 import Vector2 from "../utility/Vector2";
+import { RNGFunction } from "../../context/misc/SettingsContext";
 
 class MapLocationFactoryJSONSimplexNoise implements IMapLocationFactory {
     private seed: number;
     private noise: Noise;
+    private rngFunction:RNGFunction;
 
-    constructor(seed: number){
+    constructor(seed: number, rngFunction:RNGFunction){
         this.seed = seed;
         this.noise = new Noise(seed);
+        this.rngFunction = rngFunction;
     }
 
     createDummyLocation(): IMapLocation {
@@ -22,7 +25,8 @@ class MapLocationFactoryJSONSimplexNoise implements IMapLocationFactory {
             "",
             false,
             false,
-            false
+            false,
+            this.rngFunction
         )
     }
 
@@ -57,7 +61,7 @@ class MapLocationFactoryJSONSimplexNoise implements IMapLocationFactory {
             actualPosition = position;
         }
         
-        const newLocation = new MapLocationJSON(actualPosition, key, name, cleared, revealed, floating);
+        const newLocation = new MapLocationJSON(actualPosition, key, name, cleared, revealed, floating, this.rngFunction);
         return newLocation;
     }
     createBackgroundLocation(data: MapLocationData): IMapLocation {
@@ -75,14 +79,14 @@ class MapLocationFactoryJSONSimplexNoise implements IMapLocationFactory {
         //Is location data defined?
         if(locationData){
             //Yes: Create the location
-            return new MapLocationJSON(data.getPosition(), locationData.key, locationData.name, data.getCleared(), data.getRevealed(), data.getFloating());
+            return new MapLocationJSON(data.getPosition(), locationData.key, locationData.name, data.getCleared(), data.getRevealed(), data.getFloating(), this.rngFunction);
         }
         else{
             //No: Is there a default location?
             if(backgroundLocations[0]){
                 //Yes: Create the location
                 console.log(`No background location data found for noise value ${noiseValue}. Using default location.`);
-                return new MapLocationJSON(data.getPosition(), backgroundLocations[0].key, backgroundLocations[0].name, data.getCleared(), data.getRevealed(), data.getFloating());
+                return new MapLocationJSON(data.getPosition(), backgroundLocations[0].key, backgroundLocations[0].name, data.getCleared(), data.getRevealed(), data.getFloating(), this.rngFunction);
             }
             else{
                 //No: Throw an error

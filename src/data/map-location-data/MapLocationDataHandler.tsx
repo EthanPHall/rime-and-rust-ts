@@ -1,3 +1,4 @@
+import { RNGFunction } from '../../context/misc/SettingsContext';
 import mapLocationData from './map-location-data.json';
 
 interface MapLocationData{
@@ -6,7 +7,7 @@ interface MapLocationData{
     'bgLocation': boolean;
 }
 
-function GetRandomBackgroundLocation(): MapLocationData{
+function GetRandomBackgroundLocation(rngFunction:RNGFunction): MapLocationData{
     let allBGLocations: MapLocationData[] = [];
 
     Object.entries(mapLocationData).forEach(([key, value])=> {
@@ -16,7 +17,7 @@ function GetRandomBackgroundLocation(): MapLocationData{
         }
     });
 
-    const randomIndex:number = Math.floor(Math.random() * allBGLocations.length);
+    const randomIndex:number = rngFunction(0, allBGLocations.length-1);
 
     return allBGLocations[randomIndex];
 }

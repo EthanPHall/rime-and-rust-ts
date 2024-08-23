@@ -160,7 +160,8 @@ const CombatParent: FC<CombatParentProps> = (
     updateEntity,
     refreshMap,
     combatActionFactory,
-    settingsContext.settingsManager
+    settingsContext.settingsManager,
+    settingsContext.settingsManager.getNextRandomNumber
   ))
   
   const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>();
@@ -239,7 +240,7 @@ const CombatParent: FC<CombatParentProps> = (
 
     const encounter = getEncounter();
     
-    setMapTemplate(combatMapTemplateFactory.createMap(encounter.mapKey));
+    setMapTemplate(combatMapTemplateFactory.createMap(encounter.mapKey, settingsContext.settingsManager.getNextRandomNumber));
   }, [combatEncounterKey])
 
   useEffect(() => {

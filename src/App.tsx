@@ -510,11 +510,12 @@ function App() {
 
     let map = savedMap;
     if(!map){
-      const locationFactory:IMapLocationFactory = new MapLocationFactoryJSONSimplexNoise(loadObject.seed);
+      const locationFactory:IMapLocationFactory = new MapLocationFactoryJSONSimplexNoise(loadObject.seed, settingsManagerContext.getNextRandomNumber);
       map = new ChunkMap(
         locationFactory,
         new Vector2(1,1),
-        new Vector2(1,1)
+        new Vector2(1,1),
+        settingsManagerContext.getNextRandomNumber
       )
     }
 

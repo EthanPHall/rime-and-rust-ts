@@ -1,4 +1,4 @@
-import React, { cloneElement, FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, { cloneElement, FC, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import './Map.css';
 import MapLocation from '../MapLocation/MapLocation';
 import IMap from '../../../classes/exploration/IMap';
@@ -14,6 +14,7 @@ import { TargetAndTransition } from 'framer-motion';
 import RimeEventJSON from '../../../classes/events/RimeEventJSON';
 import IMapLocation from '../../../classes/exploration/IMapLocation';
 import getRadiusOfPoints from '../../../classes/utility/getRadiusOfPoints';
+import { SettingsContext } from '../../../context/misc/SettingsContext';
 
 interface MapProps {
   currentCombat:string|null
@@ -95,16 +96,24 @@ const Map: FC<MapProps> = (
     saveGame
   }
 ) => {
+
+  const settingsContext = useContext(SettingsContext);
+  
   const [mapLocationFactory] = useState<IMapLocationFactory>(
-    new MapLocationFactoryJSONSimplexNoise(0)
+    new MapLocationFactoryJSONSimplexNoise(
+      0,
+      settingsContext.settingsManager.getNextRandomNumber
+    )
   );
+
 
   const [map, setMap] = useState<IMap>(
     savedMap ||
     new ChunkMap(
       mapLocationFactory,
       new Vector2(19, 19),
-      new Vector2(3, 3)
+      new Vector2(3, 3),
+      settingsContext.settingsManager.getNextRandomNumber
     )
   );
   const mapRepresentation = useRef<CurrentAndBaseElement[][]>([]);

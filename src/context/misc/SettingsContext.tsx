@@ -5,6 +5,7 @@ import { UniqueItemQuantitiesList } from '../../classes/caravan/Item';
 import { ProgressionFlags } from '../../App';
 import { Message } from '../../classes/caravan/Message';
 import ISaveable from '../../classes/utility/ISaveable';
+import { RandomGenerator, uniformIntDistribution, xoroshiro128plus } from 'pure-rand';
 
 type SpeedSetting = {
     name:string;
@@ -42,6 +43,8 @@ interface ISettingsManager{
         flags:ISaveable,
         messages:ISaveable
     ):boolean
+
+    getNextRandomNumber():number;
 }
 
 class SettingsManager implements ISettingsManager{
@@ -50,7 +53,9 @@ class SettingsManager implements ISettingsManager{
 
     private seed:number;
 
-    constructor(startingSpeedSetting:string|undefined = undefined, seed:number = 0){
+    private rng:RandomGenerator = xoroshiro128plus(0);
+
+    constructor(startingSpeedSetting:string|undefined = undefined, seed:number = Date.now() ^ (Math.random() * 0x100000000)){
         //Dummy value to prevent undefined errors
         this.currentSpeedSetting = this.allSpeedSettings[0];
 
@@ -62,6 +67,7 @@ class SettingsManager implements ISettingsManager{
         }
 
         this.seed = seed;
+        this.rng = xoroshiro128plus(seed);
     }
 
     getCorrectTiming(baseTiming:number):number{
@@ -152,7 +158,12 @@ class SettingsManager implements ISettingsManager{
         return mapWasLoaded;
     }
 
+    getNextRandomNumber = (min:number = 0, max:number = 9999):number => {
+        const [result, nextRNG] = uniformIntDistribution(min, max, this.rng);
+        this.rng = nextRNG;
 
+        return result;
+    }
 
     clone(): ISettingsManager {
         return new SettingsManager(this.currentSpeedSetting.name);
@@ -174,6 +185,8 @@ type SaveObject = {
     flagsData:any;
 }
 
+type RNGFunction = (min?:number, max?:number) => number; 
+
 const SettingsContext = React.createContext<SettingsContextType>({settingsManager: new SettingsManager(), setSettingsManager: () => {}});
 export {SettingsContext, SettingsManager};
-export type {SpeedSetting, ISettingsManager, SettingsContextType, SaveObject};
+export type {SpeedSetting, ISettingsManager, SettingsContextType, SaveObject,RNGFunction};

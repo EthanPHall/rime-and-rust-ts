@@ -9,6 +9,7 @@ import CombatEntity from "./CombatEntity";
 import CombatActionFactory from "./CombatActionFactory";
 import CombatAction from "./CombatAction";
 import ArrayScrambler from "../utility/ArrayScrambler";
+import { RNGFunction } from "../../context/misc/SettingsContext";
 
 class CombatHazardSymbolFactory implements ICombatHazardFactory{
     private mapRepresentation:string[][];
@@ -19,6 +20,7 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
     private refreshMap: () => void;
     private addToComboList: (action: CombatAction) => void;
     private actionFactory: CombatActionFactory;
+    private rngFunction:RNGFunction;
 
     constructor(
         mapRepresentation:string[][],
@@ -27,7 +29,8 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
         updateEntity: (id:number, newEntity: CombatEntity) => void,
         refreshMap: () => void,
         actionFactory: CombatActionFactory,
-        addToComboList: (action: CombatAction) => void
+        addToComboList: (action: CombatAction) => void,
+        rngFunction:RNGFunction
     ){
         this.mapRepresentation = mapRepresentation;
         this.hazardGroupKey = hazardGroupKey;
@@ -37,6 +40,8 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
         this.refreshMap = refreshMap;
         this.actionFactory = actionFactory;
         this.addToComboList = addToComboList;
+    
+        this.rngFunction = rngFunction;
     }
 
     createHazard(hazardKey:string, position:Vector2):CombatHazard{
@@ -95,7 +100,7 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
         });
 
         //For the wildcard positions, choose which enemies to instantiate based on the chances defined in the hazardGroup
-        const wildCardsScrambled = ArrayScrambler.scrambleArray(wildcardPositions);
+        const wildCardsScrambled = ArrayScrambler.scrambleArray(wildcardPositions, this.rngFunction);
         const hazardsToInstantiate:string[] = [];
         hazardGroup.hazards.forEach((hazardPlusChance) => {
             const amount:number = Math.ceil(hazardPlusChance.percent / 100 * wildCardsScrambled.length);

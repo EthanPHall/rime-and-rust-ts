@@ -16,6 +16,7 @@ import RimeEventSceneRewards from '../../../classes/events/RimeEventSceneRewards
 import eventJSONData from "../../../data/event/events.json";
 import ICombatEncounter from '../../../classes/combat/ICombatEncounter';
 import RimeEventSceneActionOnly from '../../../classes/events/RimeEventSceneActionOnly';
+import { SettingsContext } from '../../../context/misc/SettingsContext';
 
 interface EventParentProps {
   eventId:string
@@ -40,8 +41,11 @@ const EventParent: FC<EventParentProps> = (
     returnToCaravan
   }
 ) => {
+  const settingsContext = useContext(SettingsContext);
+  
   const [rewardsInventory, setRewardsInventory] = useState<UniqueItemQuantitiesList|null>(null);
   
+
   const [defaultScene] = useState<IRimeEventScene>(
     {
       getKey():number{return 0;},
@@ -61,7 +65,7 @@ const EventParent: FC<EventParentProps> = (
   const [sceneKey, setSceneKey] = useState<number>(1);
   
   const [rimeEventFactory, setRimeEventFactory] = useState<IRimeEventFactory>(
-    new RimeEventFactoryJSON(itemFactory, setSceneKey, closeEventScreen, clearEventLocation, setCombatEncounterKey, clearExplorationInventory, returnToCaravan)
+    new RimeEventFactoryJSON(itemFactory, setSceneKey, closeEventScreen, clearEventLocation, setCombatEncounterKey, clearExplorationInventory, returnToCaravan, settingsContext.settingsManager.getNextRandomNumber)
   )
 
   const [currentEvent, setCurrentEvent] = useState<IRimeEvent>(

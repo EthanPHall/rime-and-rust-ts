@@ -14,7 +14,7 @@ import CombatEntity from "./CombatEntity";
 import ICombatHazardFactory from "./ICombatHazardFactory";
 import CombatHazardSymbolFactory from "./CombatHazardSymbolFactory";
 import CombatActionFactory from "./CombatActionFactory";
-import { ISettingsManager, SettingsManager } from "../../context/misc/SettingsContext";
+import { ISettingsManager, RNGFunction, SettingsManager } from "../../context/misc/SettingsContext";
 
 class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
     private advanceTurn: () => void;
@@ -26,6 +26,7 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
 
     private actionFactory: CombatActionFactory;
     private settingsManager:ISettingsManager;
+    private rngFunction:RNGFunction;
 
     constructor(
         advanceTurn: () => void,
@@ -35,7 +36,8 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
         updateEntity: (id:number, newEntity: CombatEntity) => void,
         refreshMap: () => void,
         actionFactory: CombatActionFactory,
-        settingsManager:ISettingsManager
+        settingsManager:ISettingsManager,
+        rngFunction:RNGFunction
     ){
         this.advanceTurn = advanceTurn;
         this.addActionToList = addActionToList;
@@ -45,9 +47,10 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
         this.refreshMap = refreshMap;
         this.actionFactory = actionFactory;
         this.settingsManager = settingsManager;
+        this.rngFunction = rngFunction;
     }
 
-    createMap(mapKey: string): CombatMapTemplate {
+    createMap(mapKey: string, rngFunction:RNGFunction): CombatMapTemplate {
         let mapRepresentation = mapJSONData.maps.find((data) => {return mapKey == data.mapKey});
         if(!mapRepresentation){
             console.log("No Map with key " + mapKey + " found, using first map instead.");
@@ -82,7 +85,7 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
         const size:Vector2 = new Vector2(mapRepresentationModified.length, longestRowLength);
 
         //Determine what enemies and hazards may spawn on this map, and the chancees for each player spawn point
-        const rng:number = Math.floor(Math.random() * 100);
+        const rng:number = rngFunction(0,99);
         let cumulativeChance:number = 0;
         const enemyGroup = mapRepresentation.potentialEnemyGroups.find((group) => {
             cumulativeChance += group.chance;
@@ -125,7 +128,8 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
             this.getMap,
             this.updateEntity,
             this.refreshMap,
-            this.settingsManager
+            this.settingsManager,
+            rngFunction
         );
         const enemies:CombatEnemy[] = enemyFactory.createGivenPositions(enemyPositions);
 
@@ -136,7 +140,8 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
             this.updateEntity,
             this.refreshMap,
             this.actionFactory,
-            this.addActionToList
+            this.addActionToList,
+            rngFunction
         )
         const hazards:CombatHazard[] = hazardFactory.createGivenPositions(hazardPositions);
 

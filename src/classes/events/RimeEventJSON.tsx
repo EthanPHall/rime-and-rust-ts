@@ -14,6 +14,7 @@ import CombatEncounterJSON from "../combat/CombatEncounter";
 import RimeEventActionReturnAndLose from "./RimeEventActionReturnAndLose";
 import RimeEventActionReturn from "./RimeEventActionReturn";
 import RimeEventSceneActionOnly from "./RimeEventSceneActionOnly";
+import { RNGFunction } from "../../context/misc/SettingsContext";
 
 
 
@@ -37,7 +38,8 @@ class RimeEventJSON implements IRimeEvent{
         clearEventLocation: () => void,
         setCombatEncounterKey: (newEncounter: string|null) => void,
         clearExplorationInventory: () => void,
-        returnToCaravan:() =>void
+        returnToCaravan:() =>void,
+        rngFunction:RNGFunction
     ){
         this.setCombatEncounterKey = setCombatEncounterKey; 
         this.clearEventLocation = clearEventLocation;  
@@ -95,7 +97,7 @@ class RimeEventJSON implements IRimeEvent{
                         scene.rewards.forEach((reward) => {
                             const newQuantity = new ItemQuantity(
                                 this.itemFactory.createItem(reward.itemKey),
-                                Math.floor(Math.random() * (Math.max(reward.range.max - reward.range.min, 0) + 1)) + reward.range.min
+                                rngFunction(reward.range.min,reward.range.max)
                             );
 
                             itemQuantities.push(newQuantity);

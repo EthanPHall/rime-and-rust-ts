@@ -12,6 +12,7 @@
     "@types/react-dom": "^18.2.22",
     "framer-motion": "^11.2.9",
     "noise-ts": "^1.0.1",
+    "pure-rand": "^6.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",

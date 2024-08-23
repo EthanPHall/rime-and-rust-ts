@@ -8,7 +8,7 @@ import CombatAction from "./CombatAction";
 import CombatMapData from "./CombatMapData";
 import CombatEntity from "./CombatEntity";
 import ArrayScrambler from "../utility/ArrayScrambler";
-import { ISettingsManager, SettingsContextType, SettingsManager } from "../../context/misc/SettingsContext";
+import { ISettingsManager, RNGFunction, SettingsContextType, SettingsManager } from "../../context/misc/SettingsContext";
 
 class CombatEnemySymbolFactory implements ICombatEnemyFactory{
     private mapRepresentation:string[][];
@@ -21,6 +21,7 @@ class CombatEnemySymbolFactory implements ICombatEnemyFactory{
     private updateEntity: (id:number, newEntity: CombatEntity) => void;
     private refreshMap: () => void;
     private settingsManager:ISettingsManager;
+    private rngFunction:RNGFunction;
 
     constructor(
         mapRepresentation:string[][], 
@@ -31,7 +32,8 @@ class CombatEnemySymbolFactory implements ICombatEnemyFactory{
         getMap: () => CombatMapData,
         updateEntity: (id:number, newEntity: CombatEntity) => void,
         refreshMap: () => void,
-        settingsManager:ISettingsManager
+        settingsManager:ISettingsManager,
+        rngFunction:RNGFunction
     ){
         this.mapRepresentation = mapRepresentation;
         this.enemyGroupKey = enemyGroupKey;
@@ -42,6 +44,7 @@ class CombatEnemySymbolFactory implements ICombatEnemyFactory{
         this.updateEntity = updateEntity;
         this.refreshMap = refreshMap;
         this.settingsManager = settingsManager;
+        this.rngFunction = rngFunction;
     }
 
     createEnemy(enemyKey:string, position:Vector2):CombatEnemy{
@@ -114,7 +117,7 @@ class CombatEnemySymbolFactory implements ICombatEnemyFactory{
         });
 
         //For the wildcard positions, choose which enemies to instantiate based on the chances defined in the enemyGroup
-        const wildCardsScrambled = ArrayScrambler.scrambleArray(wildcardPositions);
+        const wildCardsScrambled = ArrayScrambler.scrambleArray(wildcardPositions, this.rngFunction);
         const enemiesToInstantiate:string[] = [];
         enemyGroup.enemies.forEach((enemyPlusChance) => {
             const amount:number = Math.ceil(enemyPlusChance.percent / 100 * wildCardsScrambled.length);

@@ -9,7 +9,7 @@ import explorationLocationJSONData from "../../data/exploration/exploration-loca
 import RimeEventJSON from "../events/RimeEventJSON";
 import ArrayScrambler from "../utility/ArrayScrambler";
 import IMapLocation from "./IMapLocation";
-import { SaveObject } from "../../context/misc/SettingsContext";
+import { RNGFunction, SaveObject } from "../../context/misc/SettingsContext";
 import ISaveable from "../utility/ISaveable";
 
 class ChunkMap implements IMap{
@@ -21,6 +21,8 @@ class ChunkMap implements IMap{
 
     private representation:IMapLocationVisual[][]|undefined = undefined;
 
+    private rngFunction:RNGFunction;
+
     /**
      * 
      * @param factory 
@@ -30,8 +32,11 @@ class ChunkMap implements IMap{
     constructor(
         factory: IMapLocationFactory,
         dimensions: Vector2,
-        chunkDimensions: Vector2
+        chunkDimensions: Vector2,
+        rngFunction:RNGFunction
     ){
+        this.rngFunction = rngFunction;
+
         this.factory = factory;
         this.dimensions = dimensions;
         if(dimensions.x % 2 === 0){
@@ -62,12 +67,12 @@ class ChunkMap implements IMap{
 
                 maxDistanceFromCenter = Math.max(maxDistanceFromCenter, distanceFromCenter);
 
-                this.chunks[y][x] = new MapChunk(factory, chunkDimensions, new Vector2(x, y), distanceFromCenter);
+                this.chunks[y][x] = new MapChunk(factory, chunkDimensions, new Vector2(x, y), distanceFromCenter, rngFunction);
             }
         }
 
         const difficultyBrackets:DifficultyBrackets = new DifficultyBrackets(maxDistanceFromCenter, explorationLocationJSONData.difficultyBrackets);
-        this.generateLocations(difficultyBrackets);
+        this.generateLocations(difficultyBrackets, rngFunction);
     }
 
     private placeHome(){
@@ -75,7 +80,7 @@ class ChunkMap implements IMap{
         chunk.placeHomeLocation();
     }
 
-    private generateLocations(difficultyBrackets:DifficultyBrackets){
+    private generateLocations(difficultyBrackets:DifficultyBrackets, rngFunction:RNGFunction){
         //Get how many total locations there are
         const totalLocationsCount:number =  this.chunkDimensions.x * this.chunkDimensions.y * this.dimensions.x * this.dimensions.y;
         
@@ -104,7 +109,7 @@ class ChunkMap implements IMap{
         //Foreach chunk list:
         chunksByDifficultyBracket.forEach((chunkList, bracket) => {
             //Scramble the chunk list
-            const scrambledList:MapChunk[] = ArrayScrambler.scrambleArray(chunkList);
+            const scrambledList:MapChunk[] = ArrayScrambler.scrambleArray(chunkList, rngFunction);
 
             //Get the number of locations to spawn for this difficulty bracket
             let locationsToGo:number = locationsToSpawnByBracket[bracket];
@@ -116,7 +121,7 @@ class ChunkMap implements IMap{
             while(locationsToGo > 0){
                 for(let i = 0; i < locationsPerChunk.length; i++){
                     //Randomly choose between a max and a min number. Take that number, or the remaining number that was distrubuted earlier, whever is less, and add it to the list of numbers at the current index
-                    const toSpawn:number = Math.min( Math.floor(Math.random() * 2), locationsToGo );
+                    const toSpawn:number = Math.min( rngFunction(0,1), locationsToGo );
                     locationsPerChunk[i] += toSpawn;   
                     
                     //Keep track of how many have been added. 
@@ -201,7 +206,7 @@ class ChunkMap implements IMap{
 
     clone(): IMap {
         //Get a new empty ChunkMap
-        const newMap = new ChunkMap(this.factory, new Vector2(0,0), new Vector2(0,0));
+        const newMap = new ChunkMap(this.factory, new Vector2(0,0), new Vector2(0,0), this.rngFunction);
         
         //Set the data of the new map to match this one
         newMap.setData(this.factory, this.dimensions, this.chunkDimensions, this.centerPoint, this.chunks);
@@ -295,7 +300,8 @@ class ChunkMap implements IMap{
                     this.factory,
                     new Vector2(1,1),
                     new Vector2(1,1),
-                    0
+                    0,
+                    this.rngFunction
                 );
 
                 newChunk.loadSaveObject(chunkData)
