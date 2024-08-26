@@ -55,7 +55,7 @@ class SettingsManager implements ISettingsManager{
 
     private rng:RandomGenerator = xoroshiro128plus(0);
 
-    constructor(startingSpeedSetting:string|undefined = undefined, seed:number = Date.now() ^ (Math.random() * 0x100000000)){
+    constructor(startingSpeedSetting:string|undefined = undefined, defaultSeed:number = Date.now() ^ (Math.random() * 0x100000000)){
         //Dummy value to prevent undefined errors
         this.currentSpeedSetting = this.allSpeedSettings[0];
 
@@ -66,8 +66,18 @@ class SettingsManager implements ISettingsManager{
             this.setSpeedSetting("Normal");
         }
 
-        this.seed = seed;
-        this.rng = xoroshiro128plus(seed);
+        const savedSeed = localStorage.getItem("seed");
+        let savedSeedInt:number|null = null;
+        if(savedSeed){
+            const savedSeedParsed = parseInt(savedSeed);
+            if(!isNaN(savedSeedParsed)){
+                savedSeedInt = savedSeedParsed;
+            }
+        }
+
+        this.seed = savedSeedInt || defaultSeed;
+        localStorage.setItem("seed", ""+this.seed)
+        this.rng = xoroshiro128plus(this.seed);
     }
 
     getCorrectTiming(baseTiming:number):number{
@@ -187,6 +197,34 @@ type SaveObject = {
 
 type RNGFunction = (min?:number, max?:number) => number; 
 
-const SettingsContext = React.createContext<SettingsContextType>({settingsManager: new SettingsManager(), setSettingsManager: () => {}});
+class SettingManagerDummy implements ISettingsManager{
+    getCorrectTiming(baseTiming: number): number {
+        throw new Error('Method not implemented.');
+    }
+    getCurrentSpeedSetting(): SpeedSetting {
+        throw new Error('Method not implemented.');
+    }
+    getSpeedSettings(): SpeedSetting[] {
+        throw new Error('Method not implemented.');
+    }
+    setSpeedSetting(name: string): void {
+        throw new Error('Method not implemented.');
+    }
+    clone(): ISettingsManager {
+        throw new Error('Method not implemented.');
+    }
+    getSaveObject(map: ISaveable | null, inventory: ISaveable | null, explorationInventory: ISaveable | null, freeWorkers: number, flags: ISaveable | null, messages: ISaveable | null): SaveObject {
+        throw new Error('Method not implemented.');
+    }
+    loadFromSaveObject(saveObject: SaveObject, map: ISaveable, inventory: ISaveable, explorationInventory: ISaveable, freeWorkers: React.MutableRefObject<number>, flags: ISaveable, messages: ISaveable): boolean {
+        throw new Error('Method not implemented.');
+    }
+    getNextRandomNumber(): number {
+        throw new Error('Method not implemented.');
+    }
+    
+}
+
+const SettingsContext = React.createContext<SettingsContextType>({settingsManager: new SettingManagerDummy(), setSettingsManager: () => {}});
 export {SettingsContext, SettingsManager};
 export type {SpeedSetting, ISettingsManager, SettingsContextType, SaveObject,RNGFunction};
