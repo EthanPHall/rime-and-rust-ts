@@ -3,6 +3,7 @@ import { ItemFactoryContext, ProgressionContext, ProgressionContextType, Progres
 import resourceData from "../../data/caravan/resources.json";
 import sledData from  "../../data/caravan/sleds.json";
 import sledDogData from "../../data/caravan/sled-dogs.json";
+import equipmentData from "../../data/caravan/equipment.json";
 import IdGenerator from "../utility/IdGenerator";
 import ISaveable from "../utility/ISaveable";
 
@@ -129,7 +130,141 @@ class Resource implements IItem{
             });
         }
     }
-} 
+}
+
+type EquipmentJson = {
+    key: string;
+    name: string;
+    recipe: RecipeJson;
+    unlockFlags: string[];
+    actionKey: string;
+    actionUses: number;
+};
+class EquipmentSeed{
+    key: string;
+    name: string;
+    recipe: RecipeSeed;
+    unlockFlags: string[];
+    actionKey: string;
+    actionUses: number;
+
+    constructor(
+        json: EquipmentJson
+    ){
+        this.key = json.key;
+        this.name = json.name;
+        this.recipe = new RecipeSeed(json.recipe);
+        this.unlockFlags = json.unlockFlags;
+        this.actionKey = json.actionKey;
+        this.actionUses = json.actionUses;
+    }
+
+    convertToEquipment(factory:IItemFactory):Equipment{
+        return factory.createItem(this.key) as Equipment;
+    }
+};
+class Equipment implements IItem{
+    private id:number;
+    private key:string;
+    private name:string;
+    private recipe:RecipeSeed;
+    private unlockFlags:string[];
+    actionKey: string;
+    actionUses: number;
+
+    constructor(key:string, name:string, recipe:RecipeSeed, unlockFlags:string[], actionKey: string, actionUses: number){
+        this.key = key;
+        this.name= name;
+        this.recipe = recipe;
+        this.unlockFlags = unlockFlags;
+        this.actionKey = actionKey;
+        this.actionUses = actionUses;
+
+        this.id = IdGenerator.generateUniqueId();
+    }
+
+    getId():number{
+        return this.id;
+    }
+    getKey():string{
+        return this.key;
+    }
+    getName():string{
+        return this.name;
+    }
+    getRecipe():RecipeSeed{
+        return this.recipe;
+    }
+    isUnlocked(flags: ProgressionFlags):boolean{
+        return this.unlockFlags.some((flag) => {
+            return !flags.getFlag(flag);
+        })
+    }
+
+    clone():IItem{
+        return new Equipment(this.key, this.name, this.recipe, this.unlockFlags, this.actionKey, this.actionUses);
+    }
+
+    inheritExistingData(existing:IItem){
+        if(existing instanceof Equipment){
+            this.name = existing.getName();
+            this.recipe = existing.getRecipe();
+            this.unlockFlags = existing.unlockFlags;
+        }
+    }
+
+    static pickOutEquipment(list:IItem[]): Equipment[]{
+        return list.filter((item) => {
+            return item instanceof Equipment;
+        }) as Equipment[];
+    }
+
+    static pickOutEquipmentQuantities(list:UniqueItemQuantitiesList|ItemQuantity[]): EquipmentQuantity[]{
+        if(list instanceof UniqueItemQuantitiesList){
+            const filteredList = list.filter((itemQuantity) => {
+                return itemQuantity.getBaseItem() instanceof Equipment;
+            });
+    
+            return filteredList.map((quantity) => {
+                return new EquipmentQuantity(quantity.getBaseItem() as Equipment, quantity.getQuantity());
+            });
+        }
+        else{
+            const filteredList = list.filter((itemQuantity) => {
+                return itemQuantity.getBaseItem() instanceof Equipment;
+            });
+    
+            return filteredList.map((quantity) => {
+                return new EquipmentQuantity(quantity.getBaseItem() as Equipment, quantity.getQuantity());
+            });
+        }
+    }
+}
+class EquipmentQuantity{
+    private baseEquipment:Equipment;
+    private quantity:number;
+
+    constructor(
+        equipment:Equipment,
+        quantity:number,
+    ){
+        this.baseEquipment = equipment;
+        this.quantity = quantity;
+    }
+
+    getBaseEquipment():Equipment{
+        return this.baseEquipment;
+    }
+    getQuantity():number{
+        return this.quantity;
+    }
+    modifyQuantity(mod:number){
+        this.quantity += mod;
+    }
+    setQuantity(newQuantity:number){
+        this.quantity = newQuantity;
+    }
+}
 
 type SledJson = {
     key: string;
@@ -526,7 +661,6 @@ class SledDogQuantity{
     }
 }
 
-
 class UniqueItemQuantitiesList implements ISaveable{
     private list:ItemQuantity[];
     private maxCapacity:number;
@@ -872,6 +1006,7 @@ class ItemFactoryJSON implements IItemFactory{
     private resourceJsons:{[key:string]: ResourceJson} = resourceData;
     private sledJsons:{[key:string]: SledJson} = sledData;
     private sledDogJsons:{[key:string]: SledDogJson} = sledDogData["Dog Data"];
+    private equipmentJsons:{[key:string]: EquipmentJson} = equipmentData;
 
     private allItems:IItem[];
 
@@ -888,6 +1023,10 @@ class ItemFactoryJSON implements IItemFactory{
             }
         )).concat(
             Object.keys(this.sledJsons).map((key) => {
+                return this.createItem(key);
+            }
+        )).concat(
+            Object.keys(this.equipmentJsons).map((key) => {
                 return this.createItem(key);
             }
         ));
@@ -931,6 +1070,18 @@ class ItemFactoryJSON implements IItemFactory{
                 this.sledDogJsons[key].name,
                 new RecipeSeed(this.sledDogJsons[key].recipe),
                 this.sledDogJsons[key].unlockFlags
+            );
+        }
+        else if(Object.keys(this.equipmentJsons).some((equipmentKey) => {
+            return key == equipmentKey;
+        })){
+            return new Equipment(
+                this.equipmentJsons[key].key,
+                this.equipmentJsons[key].name,
+                new RecipeSeed(this.equipmentJsons[key].recipe),
+                this.equipmentJsons[key].unlockFlags,
+                this.equipmentJsons[key].actionKey,
+                this.equipmentJsons[key].actionUses
             );
         }
         //if it's not, return a dummy Resource

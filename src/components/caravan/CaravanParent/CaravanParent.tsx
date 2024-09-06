@@ -66,7 +66,7 @@ const CaravanParent: FC<CaravanParentProps> = (
   //Load the tradable list with all resources that are tradeable
   const [tradableList] = useState<IItem[]>(
     itemFactoryContext.getAllItems().filter((item) => {
-      if(item.getKey() == 'Basic Dog') console.log("Basic Dog");
+      if(item.getKey() == 'Forge Sled Cheap') console.log("Forge Sled Cheap");
       return tradableItems.includes(item.getKey());
     })
   );

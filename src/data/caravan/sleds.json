@@ -174,6 +174,54 @@
             },
             {
                 "key": "Scrap"
+            },
+            {
+                "key": "Scrap Sword"
+            }
+        ]
+    },
+    "Forge Sled Cheap": {
+        "key": "Forge Sled Cheap",
+        "name": "Forge Sled Cheap",
+        "recipe": {
+            "costs": [
+            ],
+            "results": [
+                {
+                    "key": "Forge Sled Cheap",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [],
+        "passiveRecipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 5
+                },
+                {
+                    "key": "Junk",
+                    "quantity": 10
+                }
+            ],
+            "results": [
+                {
+                    "key": "Psychium Scrap",
+                    "quantity": 1
+                }
+            ]
+        },
+        "workers": 0,
+        "canCraftList": [
+            {
+                "key": "Psychium Scrap"
+            },
+            {
+                "key": "Scrap"
+            },
+            {
+                "key": "Scrap Sword"
             }
         ]
     },

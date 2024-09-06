@@ -1,0 +1,44 @@
+{
+    "Example Equipment": {
+        "key": "Example Equipment",
+        "name": "Example Equipment",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Junk",
+                    "quantity": 1
+                }
+            ],
+            "results": [
+                {
+                    "key": "Example Equipment",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [],
+        "actionKey": "Attack",
+        "actionUses": 1
+    },
+    "Scrap Sword": {
+        "key": "Scrap Sword",
+        "name": "Scrap Sword",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 1
+                }
+            ],
+            "results": [
+                {
+                    "key": "Scrap Sword",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [],
+        "actionKey": "Attack",
+        "actionUses": 1
+    }
+}
