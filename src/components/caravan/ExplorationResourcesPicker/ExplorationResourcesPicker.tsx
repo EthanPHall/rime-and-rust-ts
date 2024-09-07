@@ -25,19 +25,21 @@ const ExplorationResourcesPicker: FC<ExplorationResourcesPickerProps> = (
   return (
   <div className="exploration-resources-picker" data-testid="exploration-resources-picker">
     <SectionLabel sectionName='Equipment'></SectionLabel>
-    <div className='spacing'></div>
-    {explorationInventory.getMaxCapacity() != Infinity && `${explorationInventory.getCurrentCapacity()}/${explorationInventory.getMaxCapacity()}`}
-    <div className='spacing'></div>
-    {getInventoryItemsThatAreExplorationItems().map((itemQuantity) => {
-      return <ExplorationResourcesEntry
-        key={itemQuantity.getBaseItem().getKey()}
-        inventory={inventory}
-        setInventory={setInventory}
-        explorationInventory={explorationInventory}
-        setExplorationInventory={setExplorationInventory}
-        itemToDisplay={itemQuantity.getBaseItem()}
-      ></ExplorationResourcesEntry>
-    })}
+    <div className='capacity'>
+      {explorationInventory.getMaxCapacity() != Infinity && `Capacity: ${explorationInventory.getCurrentCapacity()}/${explorationInventory.getMaxCapacity()}`}
+    </div>
+    <div className='exploration-inventory'>
+      {getInventoryItemsThatAreExplorationItems().map((itemQuantity) => {
+        return <ExplorationResourcesEntry
+          key={itemQuantity.getBaseItem().getKey()}
+          inventory={inventory}
+          setInventory={setInventory}
+          explorationInventory={explorationInventory}
+          setExplorationInventory={setExplorationInventory}
+          itemToDisplay={itemQuantity.getBaseItem()}
+        ></ExplorationResourcesEntry>
+      })}
+    </div>
   </div>
 );}
 

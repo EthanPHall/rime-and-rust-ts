@@ -1,0 +1,16 @@
+.prep-window-action-entry {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: var(--standard-gap);
+
+    font-size: var(--font-size-large);
+}
+
+.prep-window-action-entry .action-name{
+    margin-left: var(--very-large-gap);
+}
+.prep-window-action-entry .action-toggle{
+    margin-right: var(--very-large-gap);
+}

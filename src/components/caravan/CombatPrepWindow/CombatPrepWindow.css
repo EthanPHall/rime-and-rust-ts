@@ -6,3 +6,40 @@
 
     position: relative;
 }
+
+.combat-prep-window .remaining-action-selections{
+    position: absolute;
+    /* height: 16px; */
+    top: -2.5%;
+    right: 10px;
+
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: center;
+    font-size: var(--font-size-large);
+    
+    background-color: var(--background-color);
+}
+
+.combat-prep-window .spacing{
+    width: 100%;
+    height: var(--very-large-gap);
+}
+
+.combat-prep-window .stats{
+    font-size: var(--font-size-large);
+
+    margin-top: var(--very-large-gap);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.combat-prep-window .hpStat{
+    margin-left: var(--very-large-gap);
+}
+
+.combat-prep-window .speedStat{
+    margin-right: var(--very-large-gap);
+}

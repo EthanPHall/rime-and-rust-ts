@@ -11,3 +11,21 @@
     width: 100%;
     height: var(--standard-gap);
 }
+
+.exploration-resources-picker .capacity{
+    position: absolute;
+    /* height: 16px; */
+    top: -2.5%;
+    right: 10px;
+
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: center;
+    font-size: var(--font-size-large);
+    
+    background-color: var(--background-color);
+
+}
+.exploration-resources-picker .exploration-inventory{
+    margin-top: var(--very-large-gap);
+}

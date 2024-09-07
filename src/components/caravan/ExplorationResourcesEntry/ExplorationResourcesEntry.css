@@ -5,7 +5,7 @@
     margin-top: var(--standard-gap);
     gap: var(--standard-gap);
 
-    font-size: var(--font-size-larger);
+    font-size: var(--font-size-large);
 }
 
 .exploration-resources-entry .resource-name{
