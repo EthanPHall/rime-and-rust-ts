@@ -3,6 +3,7 @@ import './CaravanSectionExploration.css';
 import ExplorationResourcesPicker from '../ExplorationResourcesPicker/ExplorationResourcesPicker';
 import { UniqueItemQuantitiesList } from '../../../classes/caravan/Item';
 import { MainGameScreens } from '../../../App';
+import CombatPrepWindow from '../CombatPrepWindow/CombatPrepWindow';
 
 interface CaravanSectionExplorationProps {
   inventory:UniqueItemQuantitiesList;
@@ -29,31 +30,9 @@ const CaravanSectionExploration: FC<CaravanSectionExplorationProps> = (
         }}
       >Venture Out</button>
     </div>
-    <div className='character-display'>
-{`
-            @@@@@@                    
-           @@@@@@@@                   
-           @@@@@@@@                   
-            @@@@@@                    
-           @@@@@@@@                   
-       @@@@@@@@@@@@@@@                
-      @@@@@@@@@@@@@@@@@               
-     @@@@@@@@@@@@@@@@@@@              
-    @@@@@@@@@@@@@@@@@@@@@             
-   @@@@@@ @@@@@@@@@ @@@@@@            
-   @@@@@   @@@@@@@@   @@@@@           
-   @@@@    @@@@@@@@   @@@@@           
-   @@@@    @@@@@@@    @@@@@           
-   @@@@   @@@@@@@@@   @@@@@           
-    @    @@@@@@@@@@@    @@            
-         @@@@@ @@@@@                  
-        @@@@@   @@@@@                 
-       @@@@@     @@@@@                
-       @@@@@     @@@@@                
-       @@@@@     @@@@@                
-       @@@@       @@@@                
-      @@@@         @@@@               
-`}
+    <div className='combat-prep-parent'>
+        <CombatPrepWindow></CombatPrepWindow>
+        <div className='venture-button-spacing-matcher'></div>
     </div>
   </div>
 );

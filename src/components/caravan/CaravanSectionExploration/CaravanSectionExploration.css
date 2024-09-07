@@ -4,13 +4,13 @@
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
 
     /* outline: 1px solid white; */
 }
 
 .caravan-section-exploration .resource-picker-parent{
-    width: 50%;
+    width: 45%;
     height: 100%;
     
     display: flex;
@@ -18,13 +18,13 @@
     justify-content: flex-end;
 }
 
-.caravan-section-exploration .character-display{
-    width: 50%;
+.caravan-section-exploration .combat-prep-parent{
+    width: 45%;
+    height: 100%;
     
-    font-family: monospace;
-    white-space: pre;
-    
-    /* outline: 1px solid cyan; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .caravan-section-exploration .venture-out-button{
@@ -39,4 +39,15 @@
 }
 .caravan-section-exploration .venture-out-button:hover{
     text-decoration: underline 2px solid var(--outline-color);
+}
+
+.venture-button-spacing-matcher{
+    width: 100%;
+    height: 7%;
+    margin-left: 5%;
+
+    font-size: var(--nav-button-font-size);
+    background: none;
+    border: none;
+    color: var(--outline-color);
 }

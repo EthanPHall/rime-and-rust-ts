@@ -1,0 +1,8 @@
+.combat-prep-window{
+    width: 100%;
+    height: 90%;
+    margin-right: 5%;
+    outline: 1px solid var(--outline-color);
+
+    position: relative;
+}
