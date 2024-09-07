@@ -6,7 +6,7 @@ import Map from '../Map/Map';
 import RimeEventJSON from '../../../classes/events/RimeEventJSON';
 import IMapLocation from '../../../classes/exploration/IMapLocation';
 import IMap from '../../../classes/exploration/IMap';
-import { Resource, ResourceQuantity, UniqueItemQuantitiesList } from '../../../classes/caravan/Item';
+import { Equipment, Resource, ResourceQuantity, UniqueItemQuantitiesList } from '../../../classes/caravan/Item';
 
 interface MapParentProps {
   explorationInventory:UniqueItemQuantitiesList
@@ -39,7 +39,7 @@ const MapParent: FC<MapParentProps> = (
       <div className='grid-parent'>
         <MessagesParent></MessagesParent>
         <Map saveGame={saveGame} currentCombat={currentCombat} savedMap={savedMap} setSavedMap={setSavedMap} currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></Map>
-        <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(explorationInventory)} dogs={[]} displayDogsInput={false}></CaravanSectionValuables>
+        <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(explorationInventory)} equipment={Equipment.pickOutEquipmentQuantities(explorationInventory)} dogs={[]} displayDogsInput={false}></CaravanSectionValuables>
       </div>
   </div>
 );

@@ -9,7 +9,7 @@ import MessagesParent from '../../messages/MessagesParent/MessagesParent';
 import useRefState from '../../../hooks/combat/useRefState';
 import { ItemFactoryContext, MainGameScreens, MessageHandlingContext, ProgressionContext, ProgressionContextType, ProgressionFlags } from '../../../App';
 import resourceData from '../../../data/caravan/resources.json';
-import { IItem, IItemFactory, ItemFactoryJSON, ItemQuantity, Recipe, Resource, UniqueItemQuantitiesList,Sled, IRecipeFail, RecipeFail, SledDog, SledQuantity } from '../../../classes/caravan/Item';
+import { IItem, IItemFactory, ItemFactoryJSON, ItemQuantity, Recipe, Resource, UniqueItemQuantitiesList,Sled, IRecipeFail, RecipeFail, SledDog, SledQuantity, Equipment } from '../../../classes/caravan/Item';
 import CaravanSectionValuables from '../CaravanSectionValuables/CaravanSectionValuables';
 import tradableItems from '../../../data/caravan/tradable-items.json';
 import SledDogComponent from '../SledDog/SledDog';
@@ -66,7 +66,7 @@ const CaravanParent: FC<CaravanParentProps> = (
   //Load the tradable list with all resources that are tradeable
   const [tradableList] = useState<IItem[]>(
     itemFactoryContext.getAllItems().filter((item) => {
-      if(item.getKey() == 'Forge Sled Cheap') console.log("Forge Sled Cheap");
+      // if(item.getKey() == 'Forge Sled Cheap') console.log("Forge Sled Cheap");
       return tradableItems.includes(item.getKey());
     })
   );
@@ -114,7 +114,7 @@ const CaravanParent: FC<CaravanParentProps> = (
             setMainGameScreen={setMainGameScreen}
           ></CaravanSectionExploration>}
         </div>
-        <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)}></CaravanSectionValuables>
+        <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(inventory)} equipment={Equipment.pickOutEquipmentQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)}></CaravanSectionValuables>
         <CaravanSectionOptions autoSaveInterval={autoSaveInterval} setLoadObject={setLoadObject} getSaveObject={getSaveObject}></CaravanSectionOptions>
       </div>
     </div>

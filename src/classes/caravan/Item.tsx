@@ -1117,5 +1117,5 @@ function useTradeManagerProgressionBased():ITradeManager{
     return {getTradeRecipe};
 }
 
-export {SledDogQuantity, SledDog, SledDogSeed, RecipeFail, Resource, Sled, UniqueItemQuantitiesList, ItemQuantity, ResourceQuantity, SledQuantity, Recipe, ItemFactoryJSON, useTradeManagerProgressionBased, ItemSeed, ResourceSeed, SledSeed, RecipeSeed, ItemQuantitySeed}
-export type {IRecipeFail, ItemJson, ResourceJson, SledJson, RecipeJson, ItemQuantityJson, IItem, IItemFactory, ITradeManager}
+export {EquipmentSeed, EquipmentQuantity, Equipment, SledDogQuantity, SledDog, SledDogSeed, RecipeFail, Resource, Sled, UniqueItemQuantitiesList, ItemQuantity, ResourceQuantity, SledQuantity, Recipe, ItemFactoryJSON, useTradeManagerProgressionBased, ItemSeed, ResourceSeed, SledSeed, RecipeSeed, ItemQuantitySeed}
+export type {EquipmentJson, IRecipeFail, ItemJson, ResourceJson, SledJson, RecipeJson, ItemQuantityJson, IItem, IItemFactory, ITradeManager}

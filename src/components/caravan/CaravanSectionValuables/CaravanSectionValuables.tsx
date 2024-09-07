@@ -1,15 +1,16 @@
 import React, { FC, useEffect, useState } from 'react';
 import './CaravanSectionValuables.css';
 import SectionLabel from '../../misc/SectionLabel/SectionLabel';
-import { ResourceQuantity, SledDogQuantity } from '../../../classes/caravan/Item';
+import { EquipmentQuantity, ResourceQuantity, SledDogQuantity } from '../../../classes/caravan/Item';
 
 interface CaravanSectionValuablesProps {
   resources:ResourceQuantity[];
+  equipment:EquipmentQuantity[];
   dogs:SledDogQuantity[];
   displayDogsInput?:boolean;
 }
 
-const CaravanSectionValuables: FC<CaravanSectionValuablesProps> = ({resources, dogs, displayDogsInput}) => {
+const CaravanSectionValuables: FC<CaravanSectionValuablesProps> = ({resources, equipment, dogs, displayDogsInput}) => {
   const [displayDogs] = useState(displayDogsInput === undefined ? true : displayDogsInput);
 
   const dogAmount:number = dogs.map((dog) => dog.getQuantity()).reduce((a, b) => a + b, 0);
@@ -30,6 +31,16 @@ const CaravanSectionValuables: FC<CaravanSectionValuablesProps> = ({resources, d
               <div key={`resource-entry-${currentResourceQuantity.getBaseResource().getName()}`} className='resource-entry'>
                 <div className='resource-name'>{currentResourceQuantity.getBaseResource().getName()}</div>
                 <div className='resource-amount'>{currentResourceQuantity.getQuantity()}</div>
+              </div>    
+            );
+          })
+        }
+        {
+          equipment.map((currentEquipmentQuantity) => {
+            return (
+              <div key={`resource-entry-${currentEquipmentQuantity.getBaseEquipment().getName()}`} className='resource-entry'>
+                <div className='resource-name'>{currentEquipmentQuantity.getBaseEquipment().getName()}</div>
+                <div className='resource-amount'>{currentEquipmentQuantity.getQuantity()}</div>
               </div>    
             );
           })
