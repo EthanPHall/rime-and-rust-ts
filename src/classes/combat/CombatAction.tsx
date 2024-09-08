@@ -743,6 +743,13 @@ abstract class CombatAction{
       return result;
     }
   }
+
+  type CombatActionSeed = {
+    name: string;
+    uses: number;
+    id: number;
+  }
   
 export default CombatAction;
 export { Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
+export type { CombatActionSeed };

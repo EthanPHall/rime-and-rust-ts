@@ -14,6 +14,7 @@ import CaravanSectionValuables from '../CaravanSectionValuables/CaravanSectionVa
 import tradableItems from '../../../data/caravan/tradable-items.json';
 import SledDogComponent from '../SledDog/SledDog';
 import { SaveObject } from '../../../context/misc/SettingsContext';
+import { CombatActionSeed } from '../../../classes/combat/CombatAction';
 
 enum CaravanSectionNames{
   CRAFTING="CRAFTING",
@@ -39,10 +40,34 @@ interface CaravanParentProps {
   getSaveObject():SaveObject;
   setLoadObject:React.Dispatch<React.SetStateAction<SaveObject | null>>;
   autoSaveInterval:NodeJS.Timer;
+  combatActionList:CombatActionSeed[];
+  setCombatActionList:React.Dispatch<React.SetStateAction<CombatActionSeed[]>>;
+  defaultActions:CombatActionSeed[];
+  alwaysPreparedActions:CombatActionSeed[];
 }
 
 const CaravanParent: FC<CaravanParentProps> = (
-  {autoSaveInterval, setLoadObject, getSaveObject, sleds, setSleds, getInventory, executeRecipe, workers, setWorkers, sellSled, inventory, setInventory, explorationInventory, setExplorationInventory, setMainGameScreen}
+  {
+    sleds,
+    setSleds,
+    getInventory,
+    executeRecipe,
+    workers,
+    setWorkers,
+    sellSled,
+    inventory,
+    setInventory,
+    explorationInventory,
+    setExplorationInventory,
+    setMainGameScreen,
+    getSaveObject,
+    setLoadObject,
+    autoSaveInterval,
+    combatActionList,
+    setCombatActionList,
+    defaultActions,
+    alwaysPreparedActions
+  }
 ) => {
   const messageHandlingContext = useContext(MessageHandlingContext);
 
@@ -112,6 +137,10 @@ const CaravanParent: FC<CaravanParentProps> = (
             explorationInventory={explorationInventory}
             setExplorationInventory={setExplorationInventory}
             setMainGameScreen={setMainGameScreen}
+            combatActionList={combatActionList}
+            setCombatActionList={setCombatActionList}
+            defaultActions={defaultActions}
+            alwaysPreparedActions={alwaysPreparedActions}
           ></CaravanSectionExploration>}
         </div>
         <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(inventory)} equipment={Equipment.pickOutEquipmentQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)}></CaravanSectionValuables>

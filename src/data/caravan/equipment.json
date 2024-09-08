@@ -38,7 +38,7 @@
             ]
         },
         "unlockFlags": [],
-        "actionKey": "Attack",
-        "actionUses": 1
+        "actionKey": "Slash",
+        "actionUses": 2
     }
 }

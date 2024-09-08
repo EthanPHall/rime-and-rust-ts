@@ -25,6 +25,8 @@ import ChunkMap from './classes/exploration/ChunkMap';
 import IMapLocationFactory from './classes/exploration/IMapLocationFactory';
 import MapLocationFactoryJSONSimplexNoise from './classes/exploration/MapLocationFactoryJSONSimplexNoise';
 import Vector2 from './classes/utility/Vector2';
+import { CombatActionSeed } from './classes/combat/CombatAction';
+import IdGenerator from './classes/utility/IdGenerator';
 
 type ProgressionFlagsSeed = {
   [key: string]: boolean;
@@ -115,6 +117,19 @@ function App() {
   const [previousGameScreen, setPreviousGameScreen] = useState<MainGameScreens>(mainGameScreen);
 
   const [combatEncounterKey, setCombatEncounterKey] = useState<string|null>(null);
+
+  const [INITIAL_COMBAT_ACTIONS] = useState<CombatActionSeed[]>(
+    [
+      {name:"Attack", uses:3, id:IdGenerator.generateUniqueId()},
+    ]
+  );
+  const [INITIAL_COMBAT_ACTIONS_ALWAYS_PREPPED] = useState<CombatActionSeed[]>(
+    [
+      {name:"Move", uses:5, id:IdGenerator.generateUniqueId()},
+    ]
+  );
+
+  const [combatActionsList, setCombatActionsList] = useState<CombatActionSeed[]>([...INITIAL_COMBAT_ACTIONS_ALWAYS_PREPPED, ...INITIAL_COMBAT_ACTIONS]);
 
   const [savedMap,setSavedMap] = useState<IMap|null>(null);
   const savedMapRef = useRef(savedMap);
@@ -548,7 +563,11 @@ function App() {
                 explorationInventory={explorationInventory}
                 setExplorationInventory={setExplorationInventory}
                 setMainGameScreen={setMainGameScreen}
-                ></CaravanParent>}
+                combatActionList={combatActionsList}
+                setCombatActionList={setCombatActionsList}
+                defaultActions={INITIAL_COMBAT_ACTIONS}
+                alwaysPreparedActions={INITIAL_COMBAT_ACTIONS_ALWAYS_PREPPED}
+              ></CaravanParent>}
               {mainGameScreen == MainGameScreens.MAP && <MapParent saveGame={saveGame} explorationInventory={explorationInventory} currentCombat={combatEncounterKey} savedMap={savedMap} setSavedMap={setSavedMap} currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></MapParent>}
               {currentEvent != null && <EventParent returnToCaravan={returnToCaravan} clearExplorationInventory={clearExplorationInventory} eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen} clearEventLocation={clearEventLocation} setCombatEncounterKey={setCombatEncounterKey}></EventParent>}
               {combatEncounterKey != null && <CombatParent combatEncounterKey={combatEncounterKey} setCombatEncounterKey={setCombatEncounterKey} setCurrentEvent={setCurrentEvent}></CombatParent>}

@@ -6,6 +6,7 @@ import sledDogData from "../../data/caravan/sled-dogs.json";
 import equipmentData from "../../data/caravan/equipment.json";
 import IdGenerator from "../utility/IdGenerator";
 import ISaveable from "../utility/ISaveable";
+import { CombatActionSeed } from "../combat/CombatAction";
 
 type ItemJson = {
     key: string;
@@ -211,6 +212,10 @@ class Equipment implements IItem{
             this.recipe = existing.getRecipe();
             this.unlockFlags = existing.unlockFlags;
         }
+    }
+
+    getActionSeed():CombatActionSeed{
+        return {name:this.actionKey, uses:this.actionUses, id:IdGenerator.generateUniqueId()};
     }
 
     static pickOutEquipment(list:IItem[]): Equipment[]{

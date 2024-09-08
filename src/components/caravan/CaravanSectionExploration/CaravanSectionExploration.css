@@ -10,7 +10,7 @@
 }
 
 .caravan-section-exploration .resource-picker-parent{
-    width: 45%;
+    width: 40%;
     height: 100%;
     
     display: flex;
@@ -19,7 +19,7 @@
 }
 
 .caravan-section-exploration .combat-prep-parent{
-    width: 45%;
+    width: 40%;
     height: 100%;
     
     display: flex;

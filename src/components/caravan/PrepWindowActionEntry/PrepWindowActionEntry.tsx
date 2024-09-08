@@ -1,17 +1,46 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import './PrepWindowActionEntry.css';
+import { CombatActionSeed } from '../../../classes/combat/CombatAction';
 
-interface PrepWindowActionEntryProps {}
+interface PrepWindowActionEntryProps {
+  actionSeed: CombatActionSeed;
+  prepped:boolean;
+  alwaysPrepped:boolean;
+  tryToPrep:(actionSeed:CombatActionSeed)=>void;
+  tryToUnprep:(actionSeed:CombatActionSeed)=>void;
+}
 
-const PrepWindowActionEntry: FC<PrepWindowActionEntryProps> = () => (
-  <div className="prep-window-action-entry">
-    <div className='action-name'>
-      Attack x2
+const PrepWindowActionEntry: FC<PrepWindowActionEntryProps> = (
+  {
+    actionSeed,
+    prepped,
+    alwaysPrepped,
+    tryToPrep,
+    tryToUnprep
+  }
+) => {
+
+  useEffect(() => {console.log(prepped)}, []);
+
+  return (
+    <div className="prep-window-action-entry">
+      <div className='action-name'>
+        {`${actionSeed.name} x${actionSeed.uses}`}
+      </div>
+      <button className='action-toggle' onClick={
+        () => {
+          if(prepped){
+            tryToUnprep(actionSeed);
+          }
+          else{
+            tryToPrep(actionSeed);
+          }
+        }
+      }>
+        [{` ${prepped ? 'x' : ' '} `}]
+      </button>
     </div>
-    <button className='action-toggle'>
-      [ ]
-    </button>
-  </div>
-);
+  );
+}
 
 export default PrepWindowActionEntry;
