@@ -27,6 +27,7 @@ import MapLocationFactoryJSONSimplexNoise from './classes/exploration/MapLocatio
 import Vector2 from './classes/utility/Vector2';
 import { CombatActionSeed } from './classes/combat/CombatAction';
 import IdGenerator from './classes/utility/IdGenerator';
+import EquipmentActionsManager from './classes/caravan/EquipmentActionsManager';
 
 type ProgressionFlagsSeed = {
   [key: string]: boolean;
@@ -96,15 +97,17 @@ function App() {
 
   const itemFactoryContext = new ItemFactoryJSON(getExistingSledCount);
   const [inventory, getInventory, setInventory] = useRefState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([
-    // new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 11),
-    // new ItemQuantity(itemFactoryContext.createItem("Forge Sled"), 1),
-  ],
-  itemFactoryContext
-));
+      // new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 11),
+      // new ItemQuantity(itemFactoryContext.createItem("Forge Sled"), 1),
+    ],
+    itemFactoryContext
+  ));
 
   const {explorationInventory, setExplorationInventory} = useExplorationInventory(inventory);
   const explorationInventoryRef = useRef(explorationInventory);
   useEffect(() => {explorationInventoryRef.current = explorationInventory}, [explorationInventory]);
+
+  const [equipmentActionsManager, setEquipmentActionsManager] = useState<EquipmentActionsManager>(new EquipmentActionsManager());
 
   const [sledsList, setSledsList] = useState<Sled[]>([]);
   const sledsListRef = useRef<Sled[]>(sledsList);
@@ -567,6 +570,8 @@ function App() {
                 setCombatActionList={setCombatActionsList}
                 defaultActions={INITIAL_COMBAT_ACTIONS}
                 alwaysPreparedActions={INITIAL_COMBAT_ACTIONS_ALWAYS_PREPPED}
+                equipmentActionsManager={equipmentActionsManager}
+                setEquipmentActionsManager={setEquipmentActionsManager}
               ></CaravanParent>}
               {mainGameScreen == MainGameScreens.MAP && <MapParent saveGame={saveGame} explorationInventory={explorationInventory} currentCombat={combatEncounterKey} savedMap={savedMap} setSavedMap={setSavedMap} currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></MapParent>}
               {currentEvent != null && <EventParent returnToCaravan={returnToCaravan} clearExplorationInventory={clearExplorationInventory} eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen} clearEventLocation={clearEventLocation} setCombatEncounterKey={setCombatEncounterKey}></EventParent>}

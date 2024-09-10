@@ -2,17 +2,20 @@ import React, { FC, useContext, useEffect, useState } from 'react';
 import './CombatPrepWindow.css';
 import SectionLabel from '../../misc/SectionLabel/SectionLabel';
 import PrepWindowActionEntry from '../PrepWindowActionEntry/PrepWindowActionEntry';
-import { Equipment, UniqueItemQuantitiesList } from '../../../classes/caravan/Item';
+import { Equipment, EquipmentQuantity, UniqueItemQuantitiesList } from '../../../classes/caravan/Item';
 import { CombatActionSeed } from '../../../classes/combat/CombatAction';
 import { Message, MessageContext } from '../../../classes/caravan/Message';
 import { MessageHandlingContext } from '../../../App';
+import EquipmentActionsManager from '../../../classes/caravan/EquipmentActionsManager';
 
 interface CombatPrepWindowProps {
   explorationInventory:UniqueItemQuantitiesList
   combatActionList:CombatActionSeed[],
   setCombatActionList:React.Dispatch<React.SetStateAction<CombatActionSeed[]>>,
   defaultActions:CombatActionSeed[],
-  alwaysPreparedActions:CombatActionSeed[]
+  alwaysPreparedActions:CombatActionSeed[],
+  equipmentActionsManager:EquipmentActionsManager,
+  setEquipmentActionsManager:React.Dispatch<React.SetStateAction<EquipmentActionsManager>>
 }
 
 const CombatPrepWindow: FC<CombatPrepWindowProps> = (
@@ -21,18 +24,16 @@ const CombatPrepWindow: FC<CombatPrepWindowProps> = (
     combatActionList,
     setCombatActionList,
     defaultActions,
-    alwaysPreparedActions
+    alwaysPreparedActions,
+    equipmentActionsManager,
+    setEquipmentActionsManager
   }
 ) => {
 
   const messageContext = useContext(MessageHandlingContext);
 
-  const [equipmentItems, setEquipmentItems] = useState<Equipment[]>(
-    Equipment.pickOutEquipmentQuantities(explorationInventory).map(
-      (itemQuantity) => {
-        return itemQuantity.getBaseEquipment();
-      }
-    )
+  const [equipmentItems, setEquipmentItems] = useState<EquipmentQuantity[]>(
+    Equipment.pickOutEquipmentQuantities(explorationInventory)
   );
 
   const [equipmentActions, setEquipmentActions] = useState<CombatActionSeed[]>([]);
@@ -47,22 +48,50 @@ const CombatPrepWindow: FC<CombatPrepWindowProps> = (
   }, []);
 
   useEffect(() => {
-    setEquipmentItems(Equipment.pickOutEquipmentQuantities(explorationInventory)
-      .filter((itemQuantity) => {
-        return itemQuantity.getQuantity() > 0;
-      })
-      .map((itemQuantity) => {
-        return itemQuantity.getBaseEquipment();
-      }
-    ));
+    //Get the item quanitites for the equipment.
+    const newEquipmentItems:EquipmentQuantity[] = Equipment.pickOutEquipmentQuantities(explorationInventory);
+
+    setEquipmentItems(
+      newEquipmentItems
+        .filter((itemQuantity) => {
+          return itemQuantity.getQuantity() > 0;
+        })
+      );
   }, [explorationInventory]);
 
   useEffect(() => {
-    setEquipmentActions(
-      equipmentItems.reduce((acc:CombatActionSeed[], equipment) => {
-        return acc.concat(equipment.getActionSeed());
-      }, [])
+    
+    let newEquipmentActions:CombatActionSeed[] = [];
+    let newManager = equipmentActionsManager.clone();
+
+    let toClean:CombatActionSeed[] = [];
+    const foundEquipment:string[] = [];
+    
+    equipmentItems.forEach((equipment) => {
+      foundEquipment.push(equipment.getBaseEquipment().getName());
+      const [seeds, managerResult] = equipmentActionsManager.requestActions(equipment.getBaseEquipment(), equipment.getQuantity());
+      newManager = managerResult;
+
+      //We just go ahead and clean every action that isn't being used, regardless of whether or not we strictly need to. Keep it simple.
+      toClean = [...toClean, ...equipmentActionsManager.getLatterActions(equipment.getBaseEquipment(), equipment.getQuantity())];
+
+      newEquipmentActions = [...newEquipmentActions, ...seeds];
+    });
+
+    //We also need to clean out any actions for equipment that is no longer being used.
+    toClean = [...toClean, ...equipmentActionsManager.getAllActionsExcludingKeys(foundEquipment)];
+
+    setCombatActionList(
+      (prev) => {
+        return prev.filter((prepared) => {
+          return !toClean.some((seedToClean) => {
+            return seedToClean.id == prepared.id;
+          });
+        });
+      }
     );
+    setEquipmentActionsManager(newManager);
+    setEquipmentActions(newEquipmentActions);
 
   }, [equipmentItems]);
 
@@ -103,9 +132,9 @@ const CombatPrepWindow: FC<CombatPrepWindowProps> = (
       </div>
       <div className='resources-separator'></div>
       <div className='actions'>
-        {[...alwaysPreparedActions, ...defaultActions, ...equipmentActions].map((actionSeed) => {
+        {[...alwaysPreparedActions, ...defaultActions, ...equipmentActions].map((actionSeed, i) => {
           return <PrepWindowActionEntry 
-            key={actionSeed.name} 
+            key={`actionSeed.name-${i}`} 
             actionSeed={actionSeed}
             prepped={combatActionList.some((prepared) => {
               // console.log(prepared, actionSeed);

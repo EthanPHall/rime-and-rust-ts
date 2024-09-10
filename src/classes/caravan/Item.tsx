@@ -214,7 +214,9 @@ class Equipment implements IItem{
         }
     }
 
-    getActionSeed():CombatActionSeed{
+    getActionSeed():CombatActionSeed|null{
+        if(this.actionKey == "") return null;
+
         return {name:this.actionKey, uses:this.actionUses, id:IdGenerator.generateUniqueId()};
     }
 
@@ -245,6 +247,8 @@ class Equipment implements IItem{
         }
     }
 }
+
+
 class EquipmentQuantity{
     private baseEquipment:Equipment;
     private quantity:number;
@@ -674,10 +678,23 @@ class UniqueItemQuantitiesList implements ISaveable{
 
     constructor(list:ItemQuantity[], itemFactory:IItemFactory, maxCapacity:number = Infinity){
         this.list = list;
-        this.maxCapacity = maxCapacity;
+        this.maxCapacity = maxCapacity ? maxCapacity : Infinity;
         this.itemFactory = itemFactory;
     }
     createSaveObject() {
+        console.log(
+            {
+                listData:this.list.map((itemQuantity) => {
+                    return {
+                        itemKey:itemQuantity.getBaseItem().getKey(),
+                        quantity:itemQuantity.getQuantity()
+                    }
+                }),
+                maxCapacityData:this.maxCapacity,
+                currentCapacityData:this.currentCapacity,
+            }
+        )
+
         return{
             listData:this.list.map((itemQuantity) => {
                 return {

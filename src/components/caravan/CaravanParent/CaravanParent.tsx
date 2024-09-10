@@ -15,6 +15,7 @@ import tradableItems from '../../../data/caravan/tradable-items.json';
 import SledDogComponent from '../SledDog/SledDog';
 import { SaveObject } from '../../../context/misc/SettingsContext';
 import { CombatActionSeed } from '../../../classes/combat/CombatAction';
+import EquipmentActionsManager from '../../../classes/caravan/EquipmentActionsManager';
 
 enum CaravanSectionNames{
   CRAFTING="CRAFTING",
@@ -44,6 +45,8 @@ interface CaravanParentProps {
   setCombatActionList:React.Dispatch<React.SetStateAction<CombatActionSeed[]>>;
   defaultActions:CombatActionSeed[];
   alwaysPreparedActions:CombatActionSeed[];
+  equipmentActionsManager:EquipmentActionsManager,
+  setEquipmentActionsManager:React.Dispatch<React.SetStateAction<EquipmentActionsManager>>
 }
 
 const CaravanParent: FC<CaravanParentProps> = (
@@ -66,7 +69,9 @@ const CaravanParent: FC<CaravanParentProps> = (
     combatActionList,
     setCombatActionList,
     defaultActions,
-    alwaysPreparedActions
+    alwaysPreparedActions,
+    equipmentActionsManager,
+    setEquipmentActionsManager
   }
 ) => {
   const messageHandlingContext = useContext(MessageHandlingContext);
@@ -141,6 +146,8 @@ const CaravanParent: FC<CaravanParentProps> = (
             setCombatActionList={setCombatActionList}
             defaultActions={defaultActions}
             alwaysPreparedActions={alwaysPreparedActions}
+            equipmentActionsManager={equipmentActionsManager}
+            setEquipmentActionsManager={setEquipmentActionsManager}
           ></CaravanSectionExploration>}
         </div>
         <CaravanSectionValuables resources={Resource.pickOutResourceQuantities(inventory)} equipment={Equipment.pickOutEquipmentQuantities(inventory)} dogs={SledDog.pickOutSledDogQuantities(inventory)}></CaravanSectionValuables>

@@ -15,6 +15,7 @@ const ExplorationResourcesEntry: FC<ExplorationResourcesEntryProps> = (
   {inventory, setInventory, explorationInventory, setExplorationInventory, itemToDisplay}
 ) => {
 
+  
 
   return (
   <div className="exploration-resources-entry" data-testid="exploration-resources-entry">
