@@ -1,6 +1,6 @@
 import Directions from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
-import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion } from "./CombatAction";
+import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion, Chop } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
 import CombatHazard from "./CombatHazard";
 import CombatMapData from "./CombatMapData";
@@ -13,6 +13,30 @@ enum CombatActionNames{
     AttackForHazards = "AttackForHazards",
     PullRange5 = "PullRange5",
     PushRange5 = "PushRange5",
+    Chop = "Chop",
+}
+
+function stringToCombatActionNames(actionName: string): CombatActionNames{
+    switch(actionName){
+        case "Move":
+            return CombatActionNames.Move;
+        case "Attack":
+            return CombatActionNames.Attack;
+        case "Block":
+            return CombatActionNames.Block;
+        case "VolatileCanExplosion":
+            return CombatActionNames.VolatileCanExplosion;
+        case "AttackForHazards":
+            return CombatActionNames.AttackForHazards;
+        case "PullRange5":
+            return CombatActionNames.PullRange5;
+        case "PushRange5":
+            return CombatActionNames.PushRange5;
+        case "Chop":
+            return CombatActionNames.Chop;
+        default:
+            throw new Error("Invalid action name: " + actionName);
+    }
 }
 
 class CombatActionFactory{
@@ -55,6 +79,8 @@ class CombatActionFactory{
                 return new PullRange5(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
             case CombatActionNames.PushRange5:
                 return new PushRange5(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
+            case CombatActionNames.Chop:
+                return new Chop(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
             default:
                 throw new Error("Invalid action name: " + actionName);
         }
@@ -73,4 +99,4 @@ class CombatActionFactory{
 }
 
 export default CombatActionFactory;
-export {CombatActionNames};
+export {CombatActionNames, stringToCombatActionNames};

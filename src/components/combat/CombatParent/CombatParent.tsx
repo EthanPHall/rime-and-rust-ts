@@ -9,7 +9,7 @@ import ComboSection from '../ComboSection/ComboSection';
 import ComponentSwitcher from '../ComponentSwitcher/ComponentSwitcher';
 import CombatMapManager from '../../../classes/combat/CombatMapManager';
 import CombatManager from '../../../classes/combat/CombatManager';
-import CombatAction, { Attack, Block, CombatActionWithRepeat, CombatActionWithUses, Move, PullRange5, PushRange5, VolatileCanExplosion } from '../../../classes/combat/CombatAction';
+import CombatAction, { Attack, Block, CombatActionSeed, CombatActionWithRepeat, CombatActionWithUses, Move, PullRange5, PushRange5, VolatileCanExplosion } from '../../../classes/combat/CombatAction';
 import CombatMapData from '../../../classes/combat/CombatMapData';
 import AreaOfEffect from '../../../classes/combat/AreaOfEffect';
 import Directions from '../../../classes/utility/Directions';
@@ -37,7 +37,7 @@ import CombatEnemyFactory from '../../../classes/combat/CombatEnemyFactory';
 import TurnTaker from '../../../classes/combat/TurnTaker';
 import CombatAnimationFactory, { CombatAnimationNames } from '../../../classes/animation/CombatAnimationFactory';
 import useCombatHazardAnimations from '../../../hooks/combat/useCombatHazardAnimations';
-import CombatActionFactory, { CombatActionNames } from '../../../classes/combat/CombatActionFactory';
+import CombatActionFactory, { CombatActionNames, stringToCombatActionNames } from '../../../classes/combat/CombatActionFactory';
 
 import combatEncounterRawJSON from "../../../data/combat/combat-encounters.json";
 import combatMapsRawJSON from "../../../data/combat/combat-maps.json";
@@ -127,13 +127,15 @@ interface CombatParentProps {
   combatEncounterKey:string|null;
   setCurrentEvent:React.Dispatch<React.SetStateAction<string | null>>;
   setCombatEncounterKey: React.Dispatch<React.SetStateAction<string | null>>;
+  combatActionSeedList: CombatActionSeed[];
 }
 
 const CombatParent: FC<CombatParentProps> = (
   {
     combatEncounterKey,
     setCurrentEvent,
-    setCombatEncounterKey
+    setCombatEncounterKey,
+    combatActionSeedList
   }
 ) => {
   
@@ -174,14 +176,19 @@ const CombatParent: FC<CombatParentProps> = (
     new AreaOfEffect(3, Directions.RIGHT, 1, true)
   );
  
-  const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>([
-    new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.Attack, getPlayer().id), 30),
-    new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.Block, getPlayer().id), 10),
-    new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.Move, getPlayer().id), 15),
-    new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.PullRange5, getPlayer().id), 10),
-    new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.PushRange5, getPlayer().id), 10),
-    new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.VolatileCanExplosion, getPlayer().id), 1),
-  ]);
+  const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>(
+    combatActionSeedList.map((seed) => {
+      return new CombatActionWithUses(combatActionFactory.createAction(stringToCombatActionNames(seed.name), getPlayer().id), seed.uses);
+    })
+  );
+  // const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>([
+  //   // new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.Attack, getPlayer().id), 30),
+  //   // new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.Block, getPlayer().id), 10),
+  //   // new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.Move, getPlayer().id), 15),
+  //   // new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.PullRange5, getPlayer().id), 10),
+  //   // new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.PushRange5, getPlayer().id), 10),
+  //   // new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.VolatileCanExplosion, getPlayer().id), 1),
+  // ]);
   
   const [infoCardData, setInfoCardData] = useState<CombatInfoDisplayProps | null>(null);
   function hideCard(){

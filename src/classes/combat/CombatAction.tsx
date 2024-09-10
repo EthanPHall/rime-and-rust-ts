@@ -167,7 +167,76 @@ abstract class CombatAction{
   }
 
 
+  class Chop extends CombatAction {
+    getMap: () => CombatMapData;
+    damage: number;
 
+    constructor(
+      ownerId: number,
+      direction: Directions = Directions.NONE,
+      getMap: () => CombatMapData,
+      updateEntity: (id:number, newEntity: CombatEntity) => void,
+      refreshMap: () => void
+    ){
+      super('Chop', true, ownerId, direction, updateEntity, refreshMap);
+      this.getMap = getMap;
+      this.damage = 3;
+    }
+
+    clone(newDirection:Directions = Directions.NONE) : Chop{
+      const direction: Directions = newDirection != Directions.NONE ? newDirection : this.direction;
+      
+      return new Chop(this.ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
+    }
+
+    getTargetId(): number|undefined{
+      const map: CombatMapData = this.getMap();
+      const owner: CombatEntity|null = map.getEntityById(this.ownerId);
+
+      if(!owner){return undefined;}
+
+      const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
+      const targetPosition: Vector2 = Vector2.add(owner.position, directionVector);
+      const targetId:number|undefined = map.locations?.[targetPosition.y]?.[targetPosition.x]?.entity?.id
+      
+      if(targetId === undefined || targetId === owner.id) {return undefined;}
+      else {return targetId;}
+    }
+
+    execute() {
+      const targetId:number|undefined = this.getTargetId();
+      const map: CombatMapData = this.getMap();
+      
+      if(targetId){
+        const targetEntity = map.getEntityById(targetId)?.clone();
+
+        if(!targetEntity){
+          this.refreshMap();
+          return;
+        }
+
+        targetEntity.takeDamage(this.damage, this);
+
+        if(targetEntity instanceof CombatEnemy){
+          targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this);
+        }
+
+        this.updateEntity(targetEntity.id, targetEntity);
+        return;
+      }
+
+      this.refreshMap();
+    }
+
+    getAnimations(): AnimationDetails[][] {
+      const targetId:number|undefined = this.getTargetId();
+
+      const result:AnimationDetails[][] = [[CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId)]];
+      if(targetId) result[1] = [CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, targetId)];
+
+      return result;
+    }
+  }
 
 
   class BurningFloorAttack extends CombatAction {
@@ -751,5 +820,5 @@ abstract class CombatAction{
   }
   
 export default CombatAction;
-export { Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
+export { Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
 export type { CombatActionSeed };
