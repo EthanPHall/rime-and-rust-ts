@@ -7,7 +7,7 @@ import MapParent from './components/map/MapParent/MapParent';
 import CombatParent from './components/combat/CombatParent/CombatParent';
 import EventParent from './components/events/EventParent/EventParent';
 import progressionFlagsData from './data/global/progression-flags.json';
-import { IItem, IItemFactory, ItemFactoryJSON, ItemQuantity, Recipe, RecipeFail, Sled, SledQuantity, UniqueItemQuantitiesList } from './classes/caravan/Item';
+import { Equipment, EquipmentQuantity, IItem, IItemFactory, ItemFactoryJSON, ItemQuantity, Recipe, RecipeFail, Sled, SledQuantity, UniqueItemQuantitiesList } from './classes/caravan/Item';
 import { IMessageFactory, IMessageManager, MessageContext, MessageFactoryJson, MessageManager } from './classes/caravan/Message';
 import useRefState from './hooks/combat/useRefState';
 import unconsumedCosts from './data/caravan/unconsumed-costs.json';
@@ -28,6 +28,7 @@ import Vector2 from './classes/utility/Vector2';
 import { CombatActionSeed } from './classes/combat/CombatAction';
 import IdGenerator from './classes/utility/IdGenerator';
 import EquipmentActionsManager from './classes/caravan/EquipmentActionsManager';
+import PlayerCombatStats, { PlayerCombatStatMod } from './classes/combat/PlayerCombatStats';
 
 type ProgressionFlagsSeed = {
   [key: string]: boolean;
@@ -105,7 +106,27 @@ function App() {
 
   const {explorationInventory, setExplorationInventory} = useExplorationInventory(inventory);
   const explorationInventoryRef = useRef(explorationInventory);
-  useEffect(() => {explorationInventoryRef.current = explorationInventory}, [explorationInventory]);
+  useEffect(() => {
+    explorationInventoryRef.current = explorationInventory;
+    let statMods:PlayerCombatStatMod[] = [];
+    const equipmentQuantities:EquipmentQuantity[] = Equipment.pickOutEquipmentQuantities(explorationInventory);
+    equipmentQuantities.forEach((equipmentQuantity) => {
+      const equipment = equipmentQuantity.getBaseEquipment();
+      const equipmentStats = equipment.getStatMods();
+      const equipmentStatsMultiplied = equipmentStats.map((statMod) => {
+        const newStatMod:PlayerCombatStatMod = {
+          statName: statMod.statName,
+          mod: statMod.mod * equipmentQuantity.getQuantity()
+        };
+        return newStatMod;
+      });
+
+      statMods = [...statMods, ...equipmentStatsMultiplied];
+    });
+
+    const newPlayerCombatStats = new PlayerCombatStats(undefined, undefined, statMods);
+    setPlayerCombatStats(newPlayerCombatStats);
+  }, [explorationInventory]);
 
   const [equipmentActionsManager, setEquipmentActionsManager] = useState<EquipmentActionsManager>(new EquipmentActionsManager());
 
@@ -146,11 +167,13 @@ function App() {
   
   const [loadObject, setLoadObject] = useState<SaveObject|null>(null);
 
-  let autoSaveInterval:NodeJS.Timer = setInterval(() => {}, 9999);
+  let autoSaveInterval:NodeJS.Timer = setInterval(() => {}, 1999);
 
   function saveGame(){
     localStorage.setItem("saveFile", JSON.stringify(getSaveObject()));
   }
+
+  const [playerCombatStats, setPlayerCombatStats] = useState<PlayerCombatStats>(new PlayerCombatStats());
 
   useEffect(() => {
     if(mainGameScreen == MainGameScreens.CARAVAN && previousGameScreen == MainGameScreens.MAP){
@@ -572,10 +595,11 @@ function App() {
                 alwaysPreparedActions={INITIAL_COMBAT_ACTIONS_ALWAYS_PREPPED}
                 equipmentActionsManager={equipmentActionsManager}
                 setEquipmentActionsManager={setEquipmentActionsManager}
+                playerCombatStats={playerCombatStats}
               ></CaravanParent>}
               {mainGameScreen == MainGameScreens.MAP && <MapParent saveGame={saveGame} explorationInventory={explorationInventory} currentCombat={combatEncounterKey} savedMap={savedMap} setSavedMap={setSavedMap} currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></MapParent>}
               {currentEvent != null && <EventParent returnToCaravan={returnToCaravan} clearExplorationInventory={clearExplorationInventory} eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen} clearEventLocation={clearEventLocation} setCombatEncounterKey={setCombatEncounterKey}></EventParent>}
-              {combatEncounterKey != null && <CombatParent combatActionSeedList={combatActionsList} combatEncounterKey={combatEncounterKey} setCombatEncounterKey={setCombatEncounterKey} setCurrentEvent={setCurrentEvent}></CombatParent>}
+              {combatEncounterKey != null && <CombatParent combatPlayerStats={playerCombatStats} combatActionSeedList={combatActionsList} combatEncounterKey={combatEncounterKey} setCombatEncounterKey={setCombatEncounterKey} setCurrentEvent={setCurrentEvent}></CombatParent>}
             </div>
           </ProgressionContext.Provider>
         </ItemFactoryContext.Provider>

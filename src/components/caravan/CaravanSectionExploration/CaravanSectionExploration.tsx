@@ -6,6 +6,7 @@ import { MainGameScreens } from '../../../App';
 import CombatPrepWindow from '../CombatPrepWindow/CombatPrepWindow';
 import { CombatActionSeed } from '../../../classes/combat/CombatAction';
 import EquipmentActionsManager from '../../../classes/caravan/EquipmentActionsManager';
+import PlayerCombatStats from '../../../classes/combat/PlayerCombatStats';
 
 interface CaravanSectionExplorationProps {
   inventory:UniqueItemQuantitiesList;
@@ -18,7 +19,8 @@ interface CaravanSectionExplorationProps {
   defaultActions:CombatActionSeed[],
   alwaysPreparedActions:CombatActionSeed[],
   equipmentActionsManager:EquipmentActionsManager,
-  setEquipmentActionsManager:React.Dispatch<React.SetStateAction<EquipmentActionsManager>>
+  setEquipmentActionsManager:React.Dispatch<React.SetStateAction<EquipmentActionsManager>>,
+  playerCombatStats:PlayerCombatStats
 }
 
 const CaravanSectionExploration: FC<CaravanSectionExplorationProps> = (
@@ -33,7 +35,8 @@ const CaravanSectionExploration: FC<CaravanSectionExplorationProps> = (
     defaultActions,
     alwaysPreparedActions,
     equipmentActionsManager,
-    setEquipmentActionsManager
+    setEquipmentActionsManager,
+    playerCombatStats
   }
 ) => (
   <div className="caravan-section-exploration" data-testid="caravan-section-exploration">
@@ -59,6 +62,7 @@ const CaravanSectionExploration: FC<CaravanSectionExplorationProps> = (
           alwaysPreparedActions={alwaysPreparedActions}
           equipmentActionsManager={equipmentActionsManager}
           setEquipmentActionsManager={setEquipmentActionsManager}
+          playerCombatStats={playerCombatStats}
         ></CombatPrepWindow>
         <div className='venture-button-spacing-matcher'></div>
     </div>

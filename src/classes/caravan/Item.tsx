@@ -7,6 +7,8 @@ import equipmentData from "../../data/caravan/equipment.json";
 import IdGenerator from "../utility/IdGenerator";
 import ISaveable from "../utility/ISaveable";
 import { CombatActionSeed } from "../combat/CombatAction";
+import { PlayerCombatStatMod } from "../combat/PlayerCombatStats";
+import { stat } from "fs";
 
 type ItemJson = {
     key: string;
@@ -140,6 +142,7 @@ type EquipmentJson = {
     unlockFlags: string[];
     actionKey: string;
     actionUses: number;
+    statsMods: PlayerCombatStatMod[];
 };
 class EquipmentSeed{
     key: string;
@@ -172,14 +175,16 @@ class Equipment implements IItem{
     private unlockFlags:string[];
     actionKey: string;
     actionUses: number;
+    statsMods: PlayerCombatStatMod[];
 
-    constructor(key:string, name:string, recipe:RecipeSeed, unlockFlags:string[], actionKey: string, actionUses: number){
+    constructor(key:string, name:string, recipe:RecipeSeed, unlockFlags:string[], actionKey: string, actionUses: number, statMods: PlayerCombatStatMod[]){
         this.key = key;
         this.name= name;
         this.recipe = recipe;
         this.unlockFlags = unlockFlags;
         this.actionKey = actionKey;
         this.actionUses = actionUses;
+        this.statsMods = statMods;
 
         this.id = IdGenerator.generateUniqueId();
     }
@@ -203,7 +208,7 @@ class Equipment implements IItem{
     }
 
     clone():IItem{
-        return new Equipment(this.key, this.name, this.recipe, this.unlockFlags, this.actionKey, this.actionUses);
+        return new Equipment(this.key, this.name, this.recipe, this.unlockFlags, this.actionKey, this.actionUses, this.statsMods);
     }
 
     inheritExistingData(existing:IItem){
@@ -218,6 +223,10 @@ class Equipment implements IItem{
         if(this.actionKey == "") return null;
 
         return {name:this.actionKey, uses:this.actionUses, id:IdGenerator.generateUniqueId()};
+    }
+
+    getStatMods():PlayerCombatStatMod[]{
+        return this.statsMods;
     }
 
     static pickOutEquipment(list:IItem[]): Equipment[]{
@@ -1103,7 +1112,8 @@ class ItemFactoryJSON implements IItemFactory{
                 new RecipeSeed(this.equipmentJsons[key].recipe),
                 this.equipmentJsons[key].unlockFlags,
                 this.equipmentJsons[key].actionKey,
-                this.equipmentJsons[key].actionUses
+                this.equipmentJsons[key].actionUses,
+                this.equipmentJsons[key].statsMods
             );
         }
         //if it's not, return a dummy Resource

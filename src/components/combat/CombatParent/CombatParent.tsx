@@ -45,6 +45,7 @@ import enemyGroupsRawJSON from "../../../data/combat/enemy-groups.json";
 import ICombatMapTemplateFactory from '../../../classes/combat/ICombatMapTemplateFactory';
 import CombatMapTemplateFactoryJSON from '../../../classes/combat/CombatMapFactoryJSON';
 import { SettingsContext } from '../../../context/misc/SettingsContext';
+import PlayerCombatStats from '../../../classes/combat/PlayerCombatStats';
 
 export enum EnemyType {
   RustedShambler = 'RustedShambler',
@@ -128,6 +129,7 @@ interface CombatParentProps {
   setCurrentEvent:React.Dispatch<React.SetStateAction<string | null>>;
   setCombatEncounterKey: React.Dispatch<React.SetStateAction<string | null>>;
   combatActionSeedList: CombatActionSeed[];
+  combatPlayerStats: PlayerCombatStats;
 }
 
 const CombatParent: FC<CombatParentProps> = (
@@ -135,7 +137,8 @@ const CombatParent: FC<CombatParentProps> = (
     combatEncounterKey,
     setCurrentEvent,
     setCombatEncounterKey,
-    combatActionSeedList
+    combatActionSeedList,
+    combatPlayerStats
   }
 ) => {
   
@@ -149,7 +152,7 @@ const CombatParent: FC<CombatParentProps> = (
   //but then with the next action, the player would reset to its old position. So I made a hook where setPlayer also updates
   //a ref that everyone can use to make sure that they're using the most up-to-date player, and a function to get that ref's value,
   //so no more trying to get the player by value, it's all by reference now.
-  const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), 10, 10, '@', 'Player', new Vector2(0, 0), turnManager.advanceTurn, resetActionUses));
+  const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), combatPlayerStats, '@', 'Player', new Vector2(0, 0), turnManager.advanceTurn, resetActionUses));
   const [enemiesForEffects, getEnemies, setEnemies] = useRefState<CombatEnemy[]>([]);
   const [hazardsForEffects, getHazards, setHazards] = useRefState<CombatHazard[]>([]);
 
@@ -399,14 +402,14 @@ function executeActionsList() {
 }
 
 
-  function debug_movePlayer() {
-    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().getHp(), getPlayer().maxHp, getPlayer().symbol, getPlayer().name, new Vector2(getPlayer().position.x + 1, getPlayer().position.y), getPlayer().advanceTurn, getPlayer().resetActionUses);
-    setPlayer(newPlayer);
-  }
-  function debug_harmPlayer() {
-    const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().getHp() - 10, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, getPlayer().position, getPlayer().advanceTurn, getPlayer().resetActionUses);
-    setPlayer(newPlayer);
-  }
+  // function debug_movePlayer() {
+  //   const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().getHp(), getPlayer().maxHp, getPlayer().symbol, getPlayer().name, new Vector2(getPlayer().position.x + 1, getPlayer().position.y), getPlayer().advanceTurn, getPlayer().resetActionUses);
+  //   setPlayer(newPlayer);
+  // }
+  // function debug_harmPlayer() {
+  //   const newPlayer = new CombatPlayer(getPlayer().id, getPlayer().getHp() - 10, getPlayer().maxHp, getPlayer().symbol, getPlayer().name, getPlayer().position, getPlayer().advanceTurn, getPlayer().resetActionUses);
+  //   setPlayer(newPlayer);
+  // }
   function debug_endTurn() {
     turnManager.currentTurnTaker?.endTurn();
   }

@@ -18,7 +18,13 @@
         },
         "unlockFlags": [],
         "actionKey": "Attack",
-        "actionUses": 1
+        "actionUses": 1,
+        "statsMods":[
+            {
+                "statName": "health",
+                "mod": 1
+            }
+        ]
     },
     "Scrap Sword": {
         "key": "Scrap Sword",
@@ -39,6 +45,12 @@
         },
         "unlockFlags": [],
         "actionKey": "Chop",
-        "actionUses": 2
+        "actionUses": 2,
+        "statsMods":[
+            {
+                "statName": "health",
+                "mod": 1
+            }
+        ]
     }
 }

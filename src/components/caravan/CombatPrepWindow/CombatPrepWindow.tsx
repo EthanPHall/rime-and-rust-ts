@@ -7,6 +7,7 @@ import { CombatActionSeed } from '../../../classes/combat/CombatAction';
 import { Message, MessageContext } from '../../../classes/caravan/Message';
 import { MessageHandlingContext } from '../../../App';
 import EquipmentActionsManager from '../../../classes/caravan/EquipmentActionsManager';
+import PlayerCombatStats from '../../../classes/combat/PlayerCombatStats';
 
 interface CombatPrepWindowProps {
   explorationInventory:UniqueItemQuantitiesList
@@ -15,7 +16,8 @@ interface CombatPrepWindowProps {
   defaultActions:CombatActionSeed[],
   alwaysPreparedActions:CombatActionSeed[],
   equipmentActionsManager:EquipmentActionsManager,
-  setEquipmentActionsManager:React.Dispatch<React.SetStateAction<EquipmentActionsManager>>
+  setEquipmentActionsManager:React.Dispatch<React.SetStateAction<EquipmentActionsManager>>,
+  playerCombatStats:PlayerCombatStats
 }
 
 const CombatPrepWindow: FC<CombatPrepWindowProps> = (
@@ -26,7 +28,8 @@ const CombatPrepWindow: FC<CombatPrepWindowProps> = (
     defaultActions,
     alwaysPreparedActions,
     equipmentActionsManager,
-    setEquipmentActionsManager
+    setEquipmentActionsManager,
+    playerCombatStats
   }
 ) => {
 
@@ -127,8 +130,8 @@ const CombatPrepWindow: FC<CombatPrepWindowProps> = (
       <SectionLabel sectionName='Stats & Actions'></SectionLabel>
       <div className='remaining-action-selections'>{`Selections: ${combatActionList.length}/8`}</div>
       <div className='stats'>
-        <div className='hpStat'>Max HP: 10</div>
-        <div className='speedStat'>Speed: 5</div>
+        <div className='hpStat'>Max HP: {`${playerCombatStats.getHealth()}`}</div>
+        <div className='speedStat'>Speed: {`${playerCombatStats.getSpeed()}`}</div>
       </div>
       <div className='resources-separator'></div>
       <div className='actions'>
