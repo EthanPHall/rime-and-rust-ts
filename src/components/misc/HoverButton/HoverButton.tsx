@@ -14,6 +14,7 @@ const HoverButton: FC<HoverButtonProps> = ({buttonText, popupText, onClick}) => 
             trigger={<button onClick={onClick}>{buttonText}</button>}
             on={['hover', 'focus']}
             disabled={popupText === ""}
+            position="top center"
         >
             <div className="tooltip">{popupText}</div>
         </Popup>

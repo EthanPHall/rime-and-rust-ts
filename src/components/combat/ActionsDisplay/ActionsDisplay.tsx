@@ -10,11 +10,12 @@ interface ActionsDisplayProps {
   reduceActionUses: (index:number) => void;
   actionsAreExecuting:()=>boolean;
   isTurnTakerPlayer:()=>boolean;
+  pauseProcessingSingleClickMove: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const MAX_ACTIONS = 8;
 
-const ActionsDisplay: FC<ActionsDisplayProps> = ({addToComboList, actions, reduceActionUses, actionsAreExecuting, isTurnTakerPlayer}: ActionsDisplayProps) => {
+const ActionsDisplay: FC<ActionsDisplayProps> = ({pauseProcessingSingleClickMove, addToComboList, actions, reduceActionUses, actionsAreExecuting, isTurnTakerPlayer}: ActionsDisplayProps) => {
   function buttonsShouldBeDisabled(): boolean {
     return actionsAreExecuting() || !isTurnTakerPlayer();
   }
@@ -26,7 +27,7 @@ const ActionsDisplay: FC<ActionsDisplayProps> = ({addToComboList, actions, reduc
         return;
       }
 
-      return <ActionButton addToComboList={addToComboList} action={action} actionIndex={index} reduceActionUses={reduceActionUses} buttonsShouldBeDisabled={buttonsShouldBeDisabled}></ActionButton>
+      return <ActionButton pauseProcessingSingleClickMove={pauseProcessingSingleClickMove} addToComboList={addToComboList} action={action} actionIndex={index} reduceActionUses={reduceActionUses} buttonsShouldBeDisabled={buttonsShouldBeDisabled}></ActionButton>
     })}
   </div>
 );}

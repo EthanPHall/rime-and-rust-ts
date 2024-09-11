@@ -8,6 +8,7 @@ import { send } from 'process';
 import CombatAction from '../../../classes/combat/CombatAction';
 import Directions from '../../../classes/utility/Directions';
 import { CombatActionWithUses } from '../../../classes/combat/CombatAction';
+import analyzeDirectionInput from '../../../classes/utility/analyzeDirectionInput';
 
 interface ActionButtonProps {
   addToComboList: (newAction: CombatAction) => void;
@@ -15,25 +16,33 @@ interface ActionButtonProps {
   actionIndex: number;
   reduceActionUses: (index:number) => void;
   buttonsShouldBeDisabled: () => boolean;
+  pauseProcessingSingleClickMove: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const ActionButton: FC<ActionButtonProps> = ({addToComboList, action, actionIndex, reduceActionUses, buttonsShouldBeDisabled}: ActionButtonProps) => {
+const ActionButton: FC<ActionButtonProps> = ({addToComboList, action, actionIndex, reduceActionUses, buttonsShouldBeDisabled, pauseProcessingSingleClickMove}: ActionButtonProps) => {
   const [activateControls, setActivateControls] = useState<boolean>(false);
   const [direction, setDirection] = useState<Directions>(Directions.NONE);
  
   const handleDirectionInputs = useCallback((event:any) => {
-    if (activateControls && (event.key === "ArrowUp" || event.key === "w")) {
-      setDirection(Directions.UP);
+    // if (activateControls && (event.key === "ArrowUp" || event.key === "w")) {
+    //   setDirection(Directions.UP);
+    // }
+    // else if (activateControls && (event.key === "ArrowDown" || event.key === "s")) {
+    //   setDirection(Directions.DOWN);
+    // }
+    // else if (activateControls && (event.key === "ArrowLeft" || event.key === "a")) {
+    //   setDirection(Directions.LEFT);
+    // }
+    // else if (activateControls && (event.key === "ArrowRight" || event.key === "d")) {
+    //   setDirection(Directions.RIGHT);
+    // }
+
+    if(!activateControls){
+      return;
     }
-    else if (activateControls && (event.key === "ArrowDown" || event.key === "s")) {
-      setDirection(Directions.DOWN);
-    }
-    else if (activateControls && (event.key === "ArrowLeft" || event.key === "a")) {
-      setDirection(Directions.LEFT);
-    }
-    else if (activateControls && (event.key === "ArrowRight" || event.key === "d")) {
-      setDirection(Directions.RIGHT);
-    }
+
+    const direction = analyzeDirectionInput(event);
+    setDirection(direction);
   }, [activateControls, setDirection]);
 
   useEffect(() => {
@@ -71,6 +80,8 @@ const ActionButton: FC<ActionButtonProps> = ({addToComboList, action, actionInde
   }, [direction]);
 
   function sendOffAction(actionToSendOff:CombatActionWithUses|null) : boolean{
+    pauseProcessingSingleClickMove(false);
+
     if (actionToSendOff === null) {
       console.log("No action to send off.");
       return false;
@@ -91,6 +102,7 @@ const ActionButton: FC<ActionButtonProps> = ({addToComboList, action, actionInde
       sendOffAction(action);
     }
     else{
+      pauseProcessingSingleClickMove(true);
       setDirection(Directions.NONE);
       setActivateControls(true);
     }

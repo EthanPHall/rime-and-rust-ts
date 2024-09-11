@@ -46,6 +46,8 @@ import ICombatMapTemplateFactory from '../../../classes/combat/ICombatMapTemplat
 import CombatMapTemplateFactoryJSON from '../../../classes/combat/CombatMapFactoryJSON';
 import { SettingsContext } from '../../../context/misc/SettingsContext';
 import PlayerCombatStats from '../../../classes/combat/PlayerCombatStats';
+import analyzeDirectionInput from '../../../classes/utility/analyzeDirectionInput';
+import HoverButton from '../../misc/HoverButton/HoverButton';
 
 export enum EnemyType {
   RustedShambler = 'RustedShambler',
@@ -184,14 +186,6 @@ const CombatParent: FC<CombatParentProps> = (
       return new CombatActionWithUses(combatActionFactory.createAction(stringToCombatActionNames(seed.name), getPlayer().id), seed.uses);
     })
   );
-  // const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>([
-  //   // new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.Attack, getPlayer().id), 30),
-  //   // new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.Block, getPlayer().id), 10),
-  //   // new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.Move, getPlayer().id), 15),
-  //   // new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.PullRange5, getPlayer().id), 10),
-  //   // new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.PushRange5, getPlayer().id), 10),
-  //   // new CombatActionWithUses(combatActionFactory.createAction(CombatActionNames.VolatileCanExplosion, getPlayer().id), 1),
-  // ]);
   
   const [infoCardData, setInfoCardData] = useState<CombatInfoDisplayProps | null>(null);
   function hideCard(){
@@ -240,6 +234,56 @@ const CombatParent: FC<CombatParentProps> = (
   }, [combatEndState]);
 
   useCombatHazardAnimations(mapToSendOff, animator, getPlayer, hazardsForEffects, actionExecutor.isExecuting, mapAnimate);
+
+
+  const oneClickMoveRef = useRef(settingsContext.settingsManager.getOneClickCombatMove());
+  useEffect(() => { oneClickMoveRef.current = settingsContext.settingsManager.getOneClickCombatMove() }, [settingsContext]);
+  const [pauseProcessingSingleClickMove, setPauseProcessingSingleClickMove] = useState(false);
+  const pauseProcessingSingleClickMoveRef = useRef(pauseProcessingSingleClickMove);
+  useEffect(() => {
+    pauseProcessingSingleClickMoveRef.current = pauseProcessingSingleClickMove;
+  }, [pauseProcessingSingleClickMove]);
+
+  function handleOneClickMovementInput(event:any){
+    if(pauseProcessingSingleClickMoveRef.current){
+      return;
+    }
+
+    if(!oneClickMoveRef.current){
+      return;
+    }
+
+    if(!isTurnTakerPlayer()){
+      return;
+    }
+
+    if(actionExecutor.isExecuting()){
+      return;
+    }
+
+    let direction:Directions = analyzeDirectionInput(event);
+    if(direction == Directions.NONE){
+      return;
+    }
+
+    let playerMoveActionWithUses = playerActions.find(action => action.action.name == CombatActionNames.Move);
+    if(!playerMoveActionWithUses || playerMoveActionWithUses.uses <= 0){
+      return;
+    }
+    const playerMoveActionClone = playerMoveActionWithUses.action.clone();
+    playerMoveActionClone.direction = direction;
+
+    reduceActionUses(playerActions.indexOf(playerMoveActionWithUses));
+    addToComboList(playerMoveActionClone);
+  }
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleOneClickMovementInput, false);
+
+    return () => {
+      document.removeEventListener("keydown", handleOneClickMovementInput, false);
+    };
+  }, []);
 
   useEffect(() => {
     setCurrentEvent(null);
@@ -441,7 +485,7 @@ function executeActionsList() {
         <div className='combat-parent-grid-parent'>
           <div className='combat-parent-map-actions-composite'>
             <CombatMapFramerMotion map={mapToSendOff} setMap={setBaseMap} aoeToDisplay={aoeToDisplay} scope={mapScope}></CombatMapFramerMotion>
-            <ActionsDisplay addToComboList={addToComboList} actions={playerActions} setActions={setPlayerActions} reduceActionUses={reduceActionUses} isTurnTakerPlayer={isTurnTakerPlayer} actionsAreExecuting={actionExecutor.isExecuting}></ActionsDisplay>
+            <ActionsDisplay pauseProcessingSingleClickMove={setPauseProcessingSingleClickMove} addToComboList={addToComboList} actions={playerActions} setActions={setPlayerActions} reduceActionUses={reduceActionUses} isTurnTakerPlayer={isTurnTakerPlayer} actionsAreExecuting={actionExecutor.isExecuting}></ActionsDisplay>
           </div>
             {/* <LootDisplay></LootDisplay> */}
             <HpDisplay hp={getPlayer().getHp()} maxHp={getPlayer().maxHp}></HpDisplay>
@@ -449,6 +493,23 @@ function executeActionsList() {
             <ComboSection comboList={comboListForEffects} setComboList={setComboList} resetActionUses={resetActionUses} actionExecutor={actionExecutor} isTurnTakerPlayer={isTurnTakerPlayer}></ComboSection>
             <ComponentSwitcher enemies={enemiesForEffects} hazards={hazardsForEffects} showCard={showCard}></ComponentSwitcher>
             {infoCardData != null && <CombatInfoDisplay {...infoCardData}></CombatInfoDisplay>}
+          <div className='combat-settings-buttons'>
+            <HoverButton 
+              buttonText='One Click Move'
+              popupText={`When enabled, you can move the player with the arrow keys and WASD without having to click the move button first. Currently ${settingsContext.settingsManager.getOneClickCombatMove() ? 'enabled' : 'disabled'}.`}
+              onClick={
+                () => {
+                  settingsContext.setSettingsManager((prev) => {
+                    const newSettingsManager = prev.clone();
+                    newSettingsManager.setOneClickCombatMove(!newSettingsManager.getOneClickCombatMove());
+                    console.log(newSettingsManager.getOneClickCombatMove());
+
+                    return newSettingsManager;
+                  })
+                }
+              }
+            />
+          </div>
         </div>
     </div>
   );

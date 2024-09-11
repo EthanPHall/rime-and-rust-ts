@@ -45,11 +45,16 @@ interface ISettingsManager{
     ):boolean
 
     getNextRandomNumber():number;
+
+    getOneClickCombatMove():boolean;
+    setOneClickCombatMove(value:boolean):void;
 }
 
 class SettingsManager implements ISettingsManager{
     allSpeedSettings:SpeedSetting[] = speedSettings;
     currentSpeedSetting:SpeedSetting;
+
+    private oneClickCombatMove:boolean = false;
 
     private seed:number;
 
@@ -175,8 +180,22 @@ class SettingsManager implements ISettingsManager{
         return result;
     }
 
+    getOneClickCombatMove(): boolean {
+        return this.oneClickCombatMove;
+    }
+
+    setOneClickCombatMove(value: boolean): void {
+        this.oneClickCombatMove = value;
+    }
+
     clone(): ISettingsManager {
-        return new SettingsManager(this.currentSpeedSetting.name);
+        const newSettingsManager = new SettingsManager();
+        newSettingsManager.currentSpeedSetting = this.currentSpeedSetting;
+        newSettingsManager.seed = this.seed;
+        newSettingsManager.rng = this.rng;
+        newSettingsManager.oneClickCombatMove = this.oneClickCombatMove;
+
+        return newSettingsManager;
     }
 }
 
@@ -222,7 +241,12 @@ class SettingManagerDummy implements ISettingsManager{
     getNextRandomNumber(): number {
         throw new Error('Method not implemented.');
     }
-    
+    getOneClickCombatMove(): boolean {
+        throw new Error('Method not implemented.');
+    }
+    setOneClickCombatMove(value: boolean): void {
+        throw new Error('Method not implemented.');
+    }
 }
 
 const SettingsContext = React.createContext<SettingsContextType>({settingsManager: new SettingManagerDummy(), setSettingsManager: () => {}});
