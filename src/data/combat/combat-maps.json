@@ -81,6 +81,72 @@
                 ". . @ . . # e .",
                 ". . . . . # # #"
             ]
+        },
+        {
+            "mapKey":"easy-1-map-2",
+            "potentialEnemyGroups":[
+                {
+                    "enemyGroupKey": "easy-1-group-1",
+                    "chance":50
+                },
+                {
+                    "enemyGroupKey": "easy-1-group-2",
+                    "chance":50
+                }
+            ],
+            "potentialHazardGroups":[
+                {
+                    "hazardGroupKey": "easy-1-group-1",
+                    "chance":50
+                },
+                {
+                    "hazardGroupKey": "easy-1-group-2",
+                    "chance":50
+                }
+            ],
+            "mapRepresentation":[
+                ". . e . . . . .",
+                ". . e . . . . .",
+                ". . e . . . . .",
+                ". . e . . . . .",
+                ". . h . . . . .",
+                ". . . . . # . .",
+                ". . @ . . # e .",
+                ". . . . . # # #"
+            ]
+        },
+        {
+            "mapKey":"variable-1-map-1",
+            "potentialEnemyGroups":[
+                {
+                    "enemyGroupKey": "variable-1-group-1",
+                    "chance":50
+                },
+                {
+                    "enemyGroupKey": "variable-1-group-2",
+                    "chance":50
+                }
+            ],
+            "potentialHazardGroups":[
+                {
+                    "hazardGroupKey": "easy-1-group-1",
+                    "chance":50
+                },
+                {
+                    "hazardGroupKey": "easy-1-group-2",
+                    "chance":50
+                }
+            ],
+            "mapRepresentation":[
+                "# # # . . . # # #",
+                "# # # e . . # # #",
+                "# # # # e # # # #",
+                "# . . . . . . . #",
+                "# . @ . . . . . #",
+                "# e . . h . e . #",
+                "# . . . . . . . #",
+                "# # # # # # # # #"
+            ]
         }
     ]
 }

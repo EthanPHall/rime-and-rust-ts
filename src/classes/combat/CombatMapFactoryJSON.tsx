@@ -27,6 +27,8 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
     private actionFactory: CombatActionFactory;
     private settingsManager:ISettingsManager;
     private rngFunction:RNGFunction;
+    private player: CombatPlayer;
+    private setPlayer: (newValue: CombatPlayer) => void;
 
     constructor(
         advanceTurn: () => void,
@@ -37,7 +39,9 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
         refreshMap: () => void,
         actionFactory: CombatActionFactory,
         settingsManager:ISettingsManager,
-        rngFunction:RNGFunction
+        rngFunction:RNGFunction,
+        player: CombatPlayer,
+        setPlayer: (newValue: CombatPlayer) => void
     ){
         this.advanceTurn = advanceTurn;
         this.addActionToList = addActionToList;
@@ -48,6 +52,8 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
         this.actionFactory = actionFactory;
         this.settingsManager = settingsManager;
         this.rngFunction = rngFunction;
+        this.player = player;
+        this.setPlayer = setPlayer;
     }
 
     createMap(mapKey: string, rngFunction:RNGFunction): CombatMapTemplate {
@@ -144,6 +150,11 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
             rngFunction
         )
         const hazards:CombatHazard[] = hazardFactory.createGivenPositions(hazardPositions);
+
+        //Spawn the player at a random spawn point
+        const playerSpawnPoint = potentialPlayerSpawns[rngFunction(0, potentialPlayerSpawns.length-1)];
+        this.player.position = playerSpawnPoint;
+        this.setPlayer(this.player);
 
         return new CombatMapTemplateBasic(
             size,

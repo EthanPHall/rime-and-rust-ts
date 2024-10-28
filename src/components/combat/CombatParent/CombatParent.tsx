@@ -168,7 +168,9 @@ const CombatParent: FC<CombatParentProps> = (
     refreshMap,
     combatActionFactory,
     settingsContext.settingsManager,
-    settingsContext.settingsManager.getNextRandomNumber
+    settingsContext.settingsManager.getNextRandomNumber,
+    getPlayer(),
+    setPlayer
   ))
   
   const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>();

@@ -87,7 +87,7 @@
                     "type":"text only",
                     "options":[
                         {
-                            "actionType":"combat easy-1-combat-1"
+                            "actionType":"combat easy-1-combat-2"
                         }
                     ]
                 }
@@ -137,11 +137,35 @@
         },
         {
             "key":"variable-1-combat-1",
-            "name": "Dust, bones, and Rusted"
+            "name": "Dust, bones, and Rusted",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "Howling and scraping can be heard inside.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat variable-1-combat-1"
+                        }
+                    ]
+                }
+            ]
         },
         {
             "key":"variable-1-combat-2",
-            "name": "A fierce guardian"
+            "name": "A fierce guardian",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "Howling and scraping can be heard inside.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat variable-1-combat-2"
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

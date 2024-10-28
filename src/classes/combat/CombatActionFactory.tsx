@@ -1,6 +1,6 @@
 import Directions from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
-import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion, Chop, Punch } from "./CombatAction";
+import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion, Chop, Punch, Kick } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
 import CombatHazard from "./CombatHazard";
 import CombatMapData from "./CombatMapData";
@@ -15,6 +15,7 @@ enum CombatActionNames{
     PushRange5 = "PushRange5",
     Chop = "Chop",
     Punch = "Punch",
+    Kick = "Kick",
 }
 
 function stringToCombatActionNames(actionName: string): CombatActionNames{
@@ -37,6 +38,8 @@ function stringToCombatActionNames(actionName: string): CombatActionNames{
             return CombatActionNames.Chop;
         case "Punch":
             return CombatActionNames.Punch;
+        case "Kick":
+            return CombatActionNames.Kick;
         default:
             throw new Error("Invalid action name: " + actionName);
     }
@@ -86,6 +89,8 @@ class CombatActionFactory{
                 return new Chop(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
             case CombatActionNames.Punch:
                 return new Punch(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
+            case CombatActionNames.Kick:
+                return new Kick(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
             default:
                 throw new Error("Invalid action name: " + actionName);
         }

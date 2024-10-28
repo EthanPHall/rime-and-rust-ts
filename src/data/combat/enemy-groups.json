@@ -30,6 +30,24 @@
                     "percent": 50
                 }
             ]
+        },
+        {
+            "enemyGroupKey": "variable-1-group-1",
+            "enemies":[
+                {
+                    "enemyKey": "rusted-shambler-easy",
+                    "percent": 100
+                }
+            ]
+        },
+        {
+            "enemyGroupKey": "variable-1-group-2",
+            "enemies":[
+                {
+                    "enemyKey": "rusted-brute-easy",
+                    "percent": 50
+                }
+            ]
         }
     
     ]
