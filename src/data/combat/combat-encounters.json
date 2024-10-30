@@ -26,7 +26,25 @@
         },
         {
             "encounterKey":"variable-1-combat-2",
-            "mapKey":"variable-1-map-1",
+            "mapKey":"variable-1-map-2",
+            "victoryEventKey":"easy-1-combat-1-victory",
+            "defeatEventKey":"easy-1-combat-1-defeat"
+        },
+        {
+            "encounterKey":"variable-2-combat-1",
+            "mapKey":"variable-2-map-1",
+            "victoryEventKey":"easy-1-combat-1-victory",
+            "defeatEventKey":"easy-1-combat-1-defeat"
+        },
+        {
+            "encounterKey":"variable-2-combat-2",
+            "mapKey":"variable-2-map-2",
+            "victoryEventKey":"easy-1-combat-1-victory",
+            "defeatEventKey":"easy-1-combat-1-defeat"
+        },
+        {
+            "encounterKey":"medium-1-combat-1",
+            "mapKey":"medium-1-map-1",
             "victoryEventKey":"easy-1-combat-1-victory",
             "defeatEventKey":"easy-1-combat-1-defeat"
         }

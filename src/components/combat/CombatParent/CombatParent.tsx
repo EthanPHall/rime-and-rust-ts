@@ -477,6 +477,10 @@ function executeActionsList() {
     animationPlaybackControls.current = mapAnimate(mapScope.current, {x: [0, 100, -100, 300], y:[0, -100, 100, 300], color:[null, "#ff0000", "#ffbb4d", "#ffbb4d"]}, {times:[0, .4, .6, 1], duration: 2, repeat: Infinity, repeatType: "reverse"});
   }
 
+  function debug_EndEncounter(){
+    setCombatEndState(CombatEndState.VICTORY);
+  }
+
   return (
     <div className="combat-parent" data-testid="combat-parent">
         {/* <button onClick={debug_Animate}>Debug Animate Map</button>
@@ -511,6 +515,7 @@ function executeActionsList() {
                 }
               }
             />
+            <button onClick={debug_EndEncounter}>DEBUG: End Ecnounter</button>
           </div>
         </div>
     </div>

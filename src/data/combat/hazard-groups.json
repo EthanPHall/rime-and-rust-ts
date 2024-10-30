@@ -26,7 +26,34 @@
                     "percent": 100
                 }
             ]
+        },
+        {
+            "hazardGroupKey": "variable-1-group-1",
+            "hazards":[
+                {
+                    "hazardKey": "volatile-canister",
+                    "percent": 50
+                }
+            ]
+        },
+        {
+            "hazardGroupKey": "variable-2-group-1",
+            "hazards":[
+                {
+                    "hazardKey": "volatile-canister",
+                    "percent": 100
+                }
+            ]
+        },
+        {
+            "hazardGroupKey": "variable-2-group-2",
+            "hazards":[
+                {
+                    "hazardKey": "volatile-canister",
+                    "percent": 0
+                }
+            ]
         }
-    
+        
     ]
 }

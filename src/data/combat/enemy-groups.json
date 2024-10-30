@@ -48,6 +48,46 @@
                     "percent": 50
                 }
             ]
+        },
+        {
+            "enemyGroupKey": "variable-1-group-3",
+            "enemies":[
+                {
+                    "enemyKey": "rusted-brute-easy",
+                    "percent": 100
+                }
+            ]
+        },
+        {
+            "enemyGroupKey": "variable-2-group-1",
+            "enemies":[
+                {
+                    "enemyKey": "rusted-shambler-easy",
+                    "percent": 100
+                }
+            ]
+        },
+        {
+            "enemyGroupKey": "variable-2-group-2",
+            "enemies":[
+                {
+                    "enemyKey": "rusted-shambler-easy",
+                    "percent": 50
+                },
+                {
+                    "enemyKey": "rusted-brute-easy",
+                    "percent": 50
+                }
+            ]
+        },
+        {
+            "enemyGroupKey": "medium-1-group-1",
+            "enemies":[
+                {
+                    "enemyKey": "rusted-brute-easy",
+                    "percent": 50
+                }
+            ]
         }
     
     ]

@@ -138,14 +138,150 @@
                 }
             ],
             "mapRepresentation":[
-                "# # # . . . # # #",
+                "# # # . @ . # # #",
                 "# # # e . . # # #",
                 "# # # # e # # # #",
                 "# . . . . . . . #",
-                "# . @ . . . . . #",
+                "# . . . . . . . #",
                 "# e . . h . e . #",
                 "# . . . . . . . #",
                 "# # # # # # # # #"
+            ]
+        },
+        {
+            "mapKey":"variable-1-map-2",
+            "potentialEnemyGroups":[
+                {
+                    "enemyGroupKey": "variable-1-group-2",
+                    "chance":50
+                },
+                {
+                    "enemyGroupKey": "variable-1-group-3",
+                    "chance":50
+                }
+            ],
+            "potentialHazardGroups":[
+                {
+                    "hazardGroupKey": "variable-1-group-1",
+                    "chance":100
+                }
+            ],
+            "mapRepresentation":[
+                "# # # # # # # # # # #",
+                "# # # . . . . h # # #",
+                "# e . . @ @ @ . . e #",
+                "# # # h . . . . # # #",
+                "# # # # # # # # # # #"
+            ]
+        },
+        {
+            "mapKey":"variable-2-map-1",
+            "potentialEnemyGroups":[
+                {
+                    "enemyGroupKey": "variable-2-group-1",
+                    "chance":100
+                }
+            ],
+            "potentialHazardGroups":[
+                {
+                    "hazardGroupKey": "variable-2-group-1",
+                    "chance":100
+                }
+            ],
+            "mapRepresentation":[
+                "# # # # # # # # #",
+                "# . e . . . . . #",
+                "# . . . e . . . #",
+                "# e . . . . e . #",
+                "# . . . . . . . #",
+                "# # # # # . # # #",
+                "# # # # . . # . #",
+                "@ . . . . . . . @",
+                "# # . . # # # # #",
+                "# # # . # # # # #",
+                "# . . . . h . . #",
+                "# . . . . . . . #",
+                "# e . . h . e . #",
+                "# h . . . h . . #",
+                "# # # # # # # # #"
+            ]
+        },
+        {
+            "mapKey":"variable-2-map-2",
+            "potentialEnemyGroups":[
+                {
+                    "enemyGroupKey": "variable-2-group-2",
+                    "chance":100
+                }
+            ],
+            "potentialHazardGroups":[
+                {
+                    "hazardGroupKey": "variable-2-group-1",
+                    "chance":100
+                }
+            ],
+            "mapRepresentation":[
+                "# # # # # # # # # # # #",
+                "# # . . . . e # e . . #",
+                "# # . # # # # # # # . #",
+                "# . . . . . . . . . . #",
+                "# . . . # . # . # . . #",
+                "# . @ . # . # . # . e #",
+                "# # . e # . # . # # # #",
+                "# # . . # e # . . . e #",
+                "# # # # # # # # # # # #"
+            ]
+        },
+        {
+            "mapKey":"variable-3-map-1",
+            "potentialEnemyGroups":[
+                {
+                    "enemyGroupKey": "variable-2-group-2",
+                    "chance":100
+                }
+            ],
+            "potentialHazardGroups":[
+                {
+                    "hazardGroupKey": "variable-2-group-1",
+                    "chance":100
+                }
+            ],
+            "mapRepresentation":[
+                "# # # # # # # # # # # #",
+                "# # . . . . e # e . . #",
+                "# # . # # # # # # # . #",
+                "# . . . . . . . . . . #",
+                "# . . . # . # . # . . #",
+                "# . @ . # . # . # . e #",
+                "# # . e # . # . # # # #",
+                "# # . . # e # . . . e #",
+                "# # # # # # # # # # # #"
+            ]
+        },
+        {
+            "mapKey":"medium-1-map-1",
+            "potentialEnemyGroups":[
+                {
+                    "enemyGroupKey": "medium-1-group-1",
+                    "chance":100
+                }
+            ],
+            "potentialHazardGroups":[
+                {
+                    "hazardGroupKey": "variable-2-group-1",
+                    "chance":100
+                }
+            ],
+            "mapRepresentation":[
+                ". . . . # # # # # # # . . # # # # . # # #",
+                ". . . . # e # . e . # . . # e . . . # e #",
+                ". . . . # . # # # # # . . # # # # . # . #",
+                ". . . . . . . . . . . . . . . . . . . . .",
+                "@ . . . . . . . . . . . . . . . . . . . @",
+                ". . . . # # # # . . . . . . . . . . . . .",
+                "# . # . # e . . # # # # . . # # # # # # .",
+                "# e # . # # # # # e . . . . # e # # e . .",
+                "# # # . . . . . # # # # . . # . # # # # ."
             ]
         }
     ]

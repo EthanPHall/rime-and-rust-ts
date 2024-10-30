@@ -330,6 +330,32 @@
                     "chance": 40
                 }
             ]
+        },
+        {
+            "key":"variable-2",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"variable-2-combat-1",
+                    "chance": 50
+                },
+                {
+                    "eventKey":"variable-2-combat-2",
+                    "chance": 50
+                }
+            ]
+        },
+        {
+            "key":"medium-1",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"medium-1-combat-1",
+                    "chance": 100
+                },
+                {
+                    "eventKey":"medium-1-combat-2",
+                    "chance": 0
+                }
+            ]
         }
     ]
 }
