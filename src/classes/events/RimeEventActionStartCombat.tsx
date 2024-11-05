@@ -13,6 +13,14 @@ class RimeEventActionStartCombat implements IRimeEventAction {
     execute(): void {
         this.setCombatEncounterKey(this.combatEncounterKey);
     }
+
+    getName(): string {
+        return "Engage";
+    }
+
+    getRequisiteItems(): string[] {
+        return [];
+    }
 }
 
 export default RimeEventActionStartCombat;

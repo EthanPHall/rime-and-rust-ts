@@ -157,12 +157,18 @@ class MapChunk implements IMap{
                 //     chunkPosition = new Vector2(Math.floor(Math.random() * this.dimensions.x), Math.floor(Math.random() * this.dimensions.y));
                 // }
 
+                const shouldFloat = this.rngFunction(0, 100) < chanceToFloat;
+
                 const overallPosition = new Vector2(this.position.x * this.dimensions.x + chunkPosition.x, this.position.y * this.dimensions.y + chunkPosition.y);
 
-                const newLocation:IMapLocation = this.factory.createExactLocation(potentialLocation.key, overallPosition);
+                let keyToUse:string = potentialLocation.key;
+                if(shouldFloat){
+                    keyToUse = potentialLocation.floatingVariant || potentialLocation.key;
+                }
+                const newLocation:IMapLocation = this.factory.createExactLocation(keyToUse, overallPosition);
                 this.locations[chunkPosition.x][chunkPosition.y] = newLocation;
 
-                if(this.rngFunction(0,99) < chanceToFloat){
+                if(shouldFloat){
                     newLocation.setFloating();
                 }
 

@@ -1,6 +1,7 @@
+import ICombatEncounter from "../combat/ICombatEncounter";
 import IRimeEventAction from "./IRimeEventAction";
 
-class RimeEventActionGoto implements IRimeEventAction {
+class RimeEventActionAscendGoto implements IRimeEventAction {
     private setSceneId:(newId:number)=>void;
     private idToSetItTo:number;
 
@@ -14,12 +15,14 @@ class RimeEventActionGoto implements IRimeEventAction {
     }
 
     getName(): string {
-        return "Continue";
+        return "Ascend";
     }
 
     getRequisiteItems(): string[] {
-        return [];
+        return [
+            "Grappling Hook"
+        ];
     }
 }
 
-export default RimeEventActionGoto;
+export default RimeEventActionAscendGoto;

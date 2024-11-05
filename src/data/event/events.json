@@ -10,7 +10,8 @@
         "startCombat":"combat",
         "closeAndClearLocation":"closeAndClear",
         "returnToCaravan":"return",
-        "returnAndLoseInventory":"returnAndLose"
+        "returnAndLoseInventory":"returnAndLose",
+        "gotoAscend":"gotoAscend"
     },
     "allEvents":[
         {
@@ -83,6 +84,35 @@
             "scenes":[
                 {
                     "sceneKey":1,
+                    "text": "Howling and scraping can be heard inside.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat easy-1-combat-2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"easy-1-floating-1",
+            "name": "A frozen hovel",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "A house, foundation and all, plucked from the earth.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"gotoAscend 2"
+                        },
+                        {
+                            "actionType":"close"
+                        }
+                    ]
+                },
+                {
+                    "sceneKey":2,
                     "text": "Howling and scraping can be heard inside.",
                     "type":"text only",
                     "options":[

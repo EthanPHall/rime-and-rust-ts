@@ -15,6 +15,7 @@ import RimeEventActionReturnAndLose from "./RimeEventActionReturnAndLose";
 import RimeEventActionReturn from "./RimeEventActionReturn";
 import RimeEventSceneActionOnly from "./RimeEventSceneActionOnly";
 import { RNGFunction } from "../../context/misc/SettingsContext";
+import RimeEventActionAscendGoto from "./RimeEventActionAscendGoto";
 
 
 
@@ -65,6 +66,9 @@ class RimeEventJSON implements IRimeEvent{
                     switch(action.actionType.split(" ")[0]){
                         case eventRawData.actionTypes.goto:
                             options.push(new RimeEventActionGoto(setSceneId, parseInt(action.actionType.split(" ")[1])));
+                            break;
+                        case eventRawData.actionTypes.gotoAscend:
+                            options.push(new RimeEventActionAscendGoto(setSceneId, parseInt(action.actionType.split(" ")[1])));
                             break;
                         case eventRawData.actionTypes.close:
                             options.push(new RimeEventActionClose(closeEventScreen));

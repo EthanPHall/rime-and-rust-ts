@@ -16,6 +16,14 @@ class RimeEventActionReturnAndLose implements IRimeEventAction {
         this.clearExplorationInventory();
         this.returnAction.execute();
     }
+
+    getName(): string {
+        return "Return...";
+    }
+
+    getRequisiteItems(): string[] {
+        return [];
+    }
 }
 
 export default RimeEventActionReturnAndLose;

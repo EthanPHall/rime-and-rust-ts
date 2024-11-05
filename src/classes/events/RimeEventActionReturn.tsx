@@ -10,6 +10,14 @@ class RimeEventActionReturn implements IRimeEventAction {
     execute(): void {
         this.returnToCaravan();
     }
+
+    getName(): string {
+        return "Return";
+    }
+
+    getRequisiteItems(): string[] {
+        return [];
+    }
 }
 
 export default RimeEventActionReturn;

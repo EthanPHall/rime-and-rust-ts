@@ -29,7 +29,14 @@
             "key": "easy-1",
             "name": "house",
             "description": "Somehow still standing against the wind",
-            "difficultyBrackets": [0]
+            "difficultyBrackets": [0],
+            "floatingVariant": "easy-1-floating"
+        },
+        {
+            "key": "easy-1-floating",
+            "name": "house",
+            "description": "A house, foundation and all, plucked from the earth.",
+            "difficultyBrackets": [-1]
         },
         {
             "key": "variable-1",
@@ -101,7 +108,7 @@
     "difficultyBrackets": 7,
     "explorableLocationsTotalPercentage": 8,
     "percentagesByDifficultyBracket":[3,13,17,23,21,15,8],
-    "chancesToBeFloating":[0, 5, 10, 15, 20, 35, 55],
+    "chancesToBeFloating":[100, 5, 10, 15, 20, 35, 55],
     "homeLocation":{
         "key": "home",
         "name": "Home",
@@ -126,6 +133,10 @@
         },
         {
             "key":"easy-1",
+            "name":"house"
+        },
+        {
+            "key":"easy-1-floating",
             "name":"house"
         },
         {
@@ -204,6 +215,13 @@
         },
         {
             "key":"easy-1",
+            "visualInfo":{
+                "symbol":"h",
+                "styles":"lower"
+            }
+        },
+        {
+            "key":"easy-1-floating",
             "visualInfo":{
                 "symbol":"h",
                 "styles":"lower"
@@ -310,6 +328,15 @@
                 },
                 {
                     "eventKey":"easy-1-combat-2",
+                    "chance": 100
+                }
+            ]
+        },
+        {
+            "key":"easy-1-floating",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"easy-1-floating-1",
                     "chance": 100
                 }
             ]

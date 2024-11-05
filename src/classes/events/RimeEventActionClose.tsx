@@ -10,6 +10,14 @@ class RimeEventActionClose implements IRimeEventAction {
     execute(): void {
         this.closeEventScreen();
     }
+
+    getName(): string {
+        return "Close";
+    }
+
+    getRequisiteItems(): string[] {
+        return [];
+    }
 }
 
 export default RimeEventActionClose;

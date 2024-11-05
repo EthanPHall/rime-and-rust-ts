@@ -16,6 +16,14 @@ class RimeEventActionCloseAndClear implements IRimeEventAction {
         this.clearEventLocation();
         this.closeAction.execute();
     }
+
+    getName(): string {
+        return "Close";
+    }
+
+    getRequisiteItems(): string[] {
+        return [];
+    }
 }
 
 export default RimeEventActionCloseAndClear;
