@@ -52,5 +52,27 @@
                 "mod": 1
             }
         ]
+    },
+    "Grappling Hook": {
+        "key": "Grappling Hook",
+        "name": "Grappling Hook",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 1
+                }
+            ],
+            "results": [
+                {
+                    "key": "Grappling Hook",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [],
+        "actionKey": "Grapple",
+        "actionUses": 1,
+        "statsMods":[]
     }
 }

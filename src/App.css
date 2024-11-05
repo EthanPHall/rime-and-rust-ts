@@ -11,7 +11,7 @@
   color: var(--outline-color);
 }
 
-:root button:hover:not(:disabled){
+:root button:hover:not(:disabled):not(.grey-out){
   text-decoration: underline 2px solid var(--outline-color);
 }
 :root button:disabled{
@@ -58,6 +58,11 @@
   padding: var(--standard-gap);
 
   white-space: pre-wrap;
+}
+
+button.grey-out{
+  border-color: var(--exploration-map-color);
+  color: var(--exploration-map-color);
 }
 
 .App {

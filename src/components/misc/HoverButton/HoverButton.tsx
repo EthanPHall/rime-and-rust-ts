@@ -6,17 +6,24 @@ interface HoverButtonProps {
     buttonText:string;
     popupText:string;
     onClick:()=>void;
+    greyedOut?:boolean;
 }
   
-const HoverButton: FC<HoverButtonProps> = ({buttonText, popupText, onClick}) => {
+const HoverButton: FC<HoverButtonProps> = ({buttonText, popupText, onClick, greyedOut}) => {
+    function executeIfNotGrey(){
+        if(!greyedOut){
+            onClick();
+        }
+    }
+
     return (
         <Popup 
-            trigger={<button onClick={onClick}>{buttonText}</button>}
+            trigger={<button className={`${greyedOut && "grey-out"}`} onClick={executeIfNotGrey}>{buttonText}</button>}
             on={['hover', 'focus']}
             disabled={popupText === ""}
             position="top center"
         >
-            <div className="tooltip">{popupText}</div>
+            <div className={`tooltip ${greyedOut && "grey-out"}`}>{popupText}</div>
         </Popup>
     );
 }

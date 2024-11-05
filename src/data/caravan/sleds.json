@@ -45,6 +45,45 @@
             }
         ]
     },
+    "Debug Sled":{
+        "key": "Debug Sled",
+        "name": "Debug Sled",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 1
+                }
+            ],
+            "results": []
+        },
+        "unlockFlags": [],
+        "passiveRecipe": {
+            "costs": [],
+            "results": []
+        },
+        "workers": 0,
+        "canCraftList": [
+            {
+                "key": "Psychium Scrap"
+            },
+            {
+                "key": "Scrap"
+            },
+            {
+                "key": "Scrap Sword"
+            },
+            {
+                "key": "Scavenger Sled"
+            },
+            {
+                "key": "Forge Sled"
+            },
+            {
+                "key": "Grappling Hook"
+            }
+        ]
+    },
     "Scavenger Sled": {
         "key": "Scavenger Sled",
         "name": "Scavenger Sled",

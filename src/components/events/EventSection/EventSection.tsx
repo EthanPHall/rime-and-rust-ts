@@ -14,6 +14,7 @@ import RimeEventSceneRewards from '../../../classes/events/RimeEventSceneRewards
 import ExplorationResourcesPicker from '../../caravan/ExplorationResourcesPicker/ExplorationResourcesPicker';
 import { UniqueItemQuantitiesList } from '../../../classes/caravan/Item';
 import InventoryTransferer from '../InventoryTransferer/InventoryTransferer';
+import HoverButton from '../../misc/HoverButton/HoverButton';
 
 interface EventSectionProps {
   eventId:string,
@@ -36,6 +37,16 @@ const EventSection: FC<EventSectionProps> = (
     setRewardsInventory
   }
 ) => {
+
+  function inventoryHasRequisiteItems(requisiteItems:string[]):boolean{
+    for(let requisiteItem of requisiteItems){
+      if(!explorationInventory.find((item) => item.getBaseItem().getKey() == requisiteItem && item.getQuantity() > 0)){
+        return false;
+      }
+    }
+    return true;
+  }
+
   return (
   <div className="event-section" data-testid="event-section">
     <div className='title'>{currentEvent.getName()}</div>
@@ -51,8 +62,24 @@ const EventSection: FC<EventSectionProps> = (
       </div>
     </div>
     <div className='buttons'>
-      {currentScene.getOptions()?.[1] && <button onClick={() => {currentScene.getOptions()[1].execute()}}>{currentScene.getOptions()[1].getName()}</button>}
-      {currentScene.getOptions()?.[0] && <button onClick={() => {currentScene.getOptions()[0].execute()}}>{currentScene.getOptions()[0].getName()}</button>}
+      {
+        currentScene.getOptions()?.[1] && 
+          <HoverButton 
+            buttonText={currentScene.getOptions()[1].getName()}
+            popupText={currentScene.getOptions()[1].getRequisiteItems().length > 0 ? `Requires:\n${currentScene.getOptions()[1].getRequisiteItems().join("\n")}` : ""}
+            onClick={() => {currentScene.getOptions()[1].execute()}}
+            greyedOut={!inventoryHasRequisiteItems(currentScene.getOptions()[1].getRequisiteItems())}
+          ></HoverButton>
+      }
+      {
+        currentScene.getOptions()?.[0] && 
+          <HoverButton 
+            buttonText={currentScene.getOptions()[0].getName()}
+            popupText={currentScene.getOptions()[0].getRequisiteItems().length > 0 ? `Requires:\n${currentScene.getOptions()[0].getRequisiteItems().join("\n")}` : ""}
+            onClick={() => {currentScene.getOptions()[0].execute()}}
+            greyedOut={!inventoryHasRequisiteItems(currentScene.getOptions()[0].getRequisiteItems())}  
+          ></HoverButton>
+      }    
     </div>
   </div>
 )};

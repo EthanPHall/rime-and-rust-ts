@@ -100,6 +100,7 @@ function App() {
   const [inventory, getInventory, setInventory] = useRefState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([
       // new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 11),
       // new ItemQuantity(itemFactoryContext.createItem("Forge Sled"), 1),
+      new ItemQuantity(itemFactoryContext.createItem("Debug Sled"), 1),
     ],
     itemFactoryContext
   ));
