@@ -2,6 +2,7 @@
     "Example Equipment": {
         "key": "Example Equipment",
         "name": "Example Equipment",
+        "weapon": false,
         "recipe": {
             "costs": [
                 {
@@ -31,6 +32,7 @@
     "Scrap Sword": {
         "key": "Scrap Sword",
         "name": "Scrap Sword",
+        "weapon": true,
         "recipe": {
             "costs": [
                 {
@@ -60,6 +62,7 @@
     "Grappling Hook": {
         "key": "Grappling Hook",
         "name": "Grappling Hook",
+        "weapon": false,
         "recipe": {
             "costs": [
                 {
@@ -84,6 +87,7 @@
     "Telekinesis Drive": {
         "key": "Telekinesis Drive",
         "name": "Telekinesis Drive",
+        "weapon": false,
         "recipe": {
             "costs": [
                 {

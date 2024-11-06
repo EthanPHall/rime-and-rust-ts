@@ -1,0 +1,7 @@
+{
+    "normalWeaponLimit": 2,
+    "normalLimitExceedMessage": "I only have two hands.",
+    "enhancedWeaponLimit1": 3,
+    "enhancedLimit1ExceedMessage": "My current abilities only go so far.",
+    "modifier1": "Telekinesis Drive"
+}

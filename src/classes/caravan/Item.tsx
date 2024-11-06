@@ -138,6 +138,7 @@ class Resource implements IItem{
 type EquipmentJson = {
     key: string;
     name: string;
+    weapon: boolean;
     recipe: RecipeJson;
     unlockFlags: string[];
     actionKey: string;
@@ -149,6 +150,7 @@ type EquipmentJson = {
 class EquipmentSeed{
     key: string;
     name: string;
+    weapon: boolean;
     recipe: RecipeSeed;
     unlockFlags: string[];
     actionKey: string;
@@ -161,6 +163,7 @@ class EquipmentSeed{
     ){
         this.key = json.key;
         this.name = json.name;
+        this.weapon = json.weapon;
         this.recipe = new RecipeSeed(json.recipe);
         this.unlockFlags = json.unlockFlags;
         this.actionKey = json.actionKey;
@@ -177,6 +180,7 @@ class Equipment implements IItem{
     private id:number;
     private key:string;
     private name:string;
+    private weapon:boolean;
     private recipe:RecipeSeed;
     private unlockFlags:string[];
     actionKey: string;
@@ -185,9 +189,10 @@ class Equipment implements IItem{
     actionUses2: number;
     statsMods: PlayerCombatStatMod[];
 
-    constructor(key:string, name:string, recipe:RecipeSeed, unlockFlags:string[], actionKey: string, actionUses: number, actionKey2: string, actionUses2: number, statMods: PlayerCombatStatMod[]){
+    constructor(key:string, name:string, weapon:boolean, recipe:RecipeSeed, unlockFlags:string[], actionKey: string, actionUses: number, actionKey2: string, actionUses2: number, statMods: PlayerCombatStatMod[]){
         this.key = key;
         this.name= name;
+        this.weapon = weapon;
         this.recipe = recipe;
         this.unlockFlags = unlockFlags;
         this.actionKey = actionKey;
@@ -217,8 +222,12 @@ class Equipment implements IItem{
         })
     }
 
+    getIsWeapon():boolean{
+        return this.weapon;
+    }
+
     clone():IItem{
-        return new Equipment(this.key, this.name, this.recipe, this.unlockFlags, this.actionKey, this.actionUses, this.actionKey2, this.actionUses2, this.statsMods);
+        return new Equipment(this.key, this.name, this.weapon, this.recipe, this.unlockFlags, this.actionKey, this.actionUses, this.actionKey2, this.actionUses2, this.statsMods);
     }
 
     inheritExistingData(existing:IItem){
@@ -852,6 +861,14 @@ class UniqueItemQuantitiesList implements ISaveable{
     capacityReached():boolean{
         return this.getCurrentCapacity() >= this.maxCapacity;
     }
+
+    getHowManyWeapons():number{
+        return this.list.filter((itemQuantity) => {
+            return itemQuantity.getBaseItem() instanceof Equipment && (itemQuantity.getBaseItem() as Equipment).getIsWeapon();
+        }).reduce((acc, itemQuantity) => {
+            return acc + itemQuantity.getQuantity();
+        }, 0);
+    }
 }
 
 type ItemQuantityJson = {
@@ -1124,6 +1141,7 @@ class ItemFactoryJSON implements IItemFactory{
             return new Equipment(
                 this.equipmentJsons[key].key,
                 this.equipmentJsons[key].name,
+                this.equipmentJsons[key].weapon,
                 new RecipeSeed(this.equipmentJsons[key].recipe),
                 this.equipmentJsons[key].unlockFlags,
                 this.equipmentJsons[key].actionKey,
