@@ -970,7 +970,7 @@ abstract class CombatAction{
   }
 
   type CombatActionSeed = {
-    name: string;
+    key: string;
     uses: number;
     id: number;
   }

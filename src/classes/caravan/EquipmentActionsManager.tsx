@@ -35,10 +35,16 @@ class EquipmentActionsManager implements ISaveable {
         
         const actions = this.getActions(equipment.getName());
         for(let i = 0; i < amount - actions.length; i++){
-            this.addAction(equipment.getName(), equipment.getActionSeed() || {name: "Error trying to request actions.", id:-1, uses:0});
+            this.addAction(equipment.getName(), equipment.getActionSeed() || {key: "Error trying to request actions.", id:-1, uses:0});
+        }
+        for(let i = 0; i < amount*2 - actions.length; i++){
+            if(!equipment.getActionSeed2()){
+                continue;
+            }
+            this.addAction(equipment.getName(), equipment.getActionSeed2() || {key: "Error trying to request second actions.", id:-1, uses:0});
         }
 
-        return [actions.slice(0, amount), this.clone()];
+        return [actions.slice(0, equipment.getActionSeed2() ? amount*2 : amount), this.clone()];
     }
 
     getLatterActions(equipment:Equipment, after:number):CombatActionSeed[] {

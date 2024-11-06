@@ -145,13 +145,13 @@ function App() {
 
   const [INITIAL_COMBAT_ACTIONS] = useState<CombatActionSeed[]>(
     [
-      {name:"Punch", uses:2, id:IdGenerator.generateUniqueId()},
-      {name:"Kick", uses:1, id:IdGenerator.generateUniqueId()},
+      {key:"Punch", uses:2, id:IdGenerator.generateUniqueId()},
+      {key:"Kick", uses:1, id:IdGenerator.generateUniqueId()},
     ]
   );
   const [INITIAL_COMBAT_ACTIONS_ALWAYS_PREPPED] = useState<CombatActionSeed[]>(
     [
-      {name:"Move", uses:5, id:IdGenerator.generateUniqueId()},
+      {key:"Move", uses:5, id:IdGenerator.generateUniqueId()},
     ]
   );
 

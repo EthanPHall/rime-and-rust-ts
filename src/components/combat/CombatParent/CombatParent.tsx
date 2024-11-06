@@ -185,7 +185,7 @@ const CombatParent: FC<CombatParentProps> = (
  
   const [playerActions, setPlayerActions] = useState<CombatActionWithUses[]>(
     combatActionSeedList.map((seed) => {
-      return new CombatActionWithUses(combatActionFactory.createAction(stringToCombatActionNames(seed.name), getPlayer().id), seed.uses);
+      return new CombatActionWithUses(combatActionFactory.createAction(stringToCombatActionNames(seed.key), getPlayer().id), seed.uses);
     })
   );
   

@@ -119,7 +119,7 @@ const CombatPrepWindow: FC<CombatPrepWindowProps> = (
     });
 
     if(newCombatActionList.length == combatActionList.length){
-      messageContext.messageHandling.getManager().addMessage(new Message(`You cannot unprep ${actionSeed.name}.`, []));
+      messageContext.messageHandling.getManager().addMessage(new Message(`You cannot unprep ${actionSeed.key}.`, []));
     }
 
     setCombatActionList(newCombatActionList);

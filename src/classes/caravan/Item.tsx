@@ -142,6 +142,8 @@ type EquipmentJson = {
     unlockFlags: string[];
     actionKey: string;
     actionUses: number;
+    actionKey2: string;
+    actionUses2: number;
     statsMods: PlayerCombatStatMod[];
 };
 class EquipmentSeed{
@@ -151,6 +153,8 @@ class EquipmentSeed{
     unlockFlags: string[];
     actionKey: string;
     actionUses: number;
+    actionKey2: string;
+    actionUses2: number;
 
     constructor(
         json: EquipmentJson
@@ -161,6 +165,8 @@ class EquipmentSeed{
         this.unlockFlags = json.unlockFlags;
         this.actionKey = json.actionKey;
         this.actionUses = json.actionUses;
+        this.actionKey2 = json.actionKey2;
+        this.actionUses2 = json.actionUses2;
     }
 
     convertToEquipment(factory:IItemFactory):Equipment{
@@ -175,15 +181,19 @@ class Equipment implements IItem{
     private unlockFlags:string[];
     actionKey: string;
     actionUses: number;
+    actionKey2: string;
+    actionUses2: number;
     statsMods: PlayerCombatStatMod[];
 
-    constructor(key:string, name:string, recipe:RecipeSeed, unlockFlags:string[], actionKey: string, actionUses: number, statMods: PlayerCombatStatMod[]){
+    constructor(key:string, name:string, recipe:RecipeSeed, unlockFlags:string[], actionKey: string, actionUses: number, actionKey2: string, actionUses2: number, statMods: PlayerCombatStatMod[]){
         this.key = key;
         this.name= name;
         this.recipe = recipe;
         this.unlockFlags = unlockFlags;
         this.actionKey = actionKey;
         this.actionUses = actionUses;
+        this.actionKey2 = actionKey2;
+        this.actionUses2 = actionUses2;
         this.statsMods = statMods;
 
         this.id = IdGenerator.generateUniqueId();
@@ -208,7 +218,7 @@ class Equipment implements IItem{
     }
 
     clone():IItem{
-        return new Equipment(this.key, this.name, this.recipe, this.unlockFlags, this.actionKey, this.actionUses, this.statsMods);
+        return new Equipment(this.key, this.name, this.recipe, this.unlockFlags, this.actionKey, this.actionUses, this.actionKey2, this.actionUses2, this.statsMods);
     }
 
     inheritExistingData(existing:IItem){
@@ -222,7 +232,12 @@ class Equipment implements IItem{
     getActionSeed():CombatActionSeed|null{
         if(this.actionKey == "") return null;
 
-        return {name:this.actionKey, uses:this.actionUses, id:IdGenerator.generateUniqueId()};
+        return {key:this.actionKey, uses:this.actionUses, id:IdGenerator.generateUniqueId()};
+    }
+    getActionSeed2():CombatActionSeed|null{
+        if(this.actionKey2 == "") return null;
+
+        return {key:this.actionKey2, uses:this.actionUses2, id:IdGenerator.generateUniqueId()};
     }
 
     getStatMods():PlayerCombatStatMod[]{
@@ -1113,6 +1128,8 @@ class ItemFactoryJSON implements IItemFactory{
                 this.equipmentJsons[key].unlockFlags,
                 this.equipmentJsons[key].actionKey,
                 this.equipmentJsons[key].actionUses,
+                this.equipmentJsons[key].actionKey2,
+                this.equipmentJsons[key].actionUses2,
                 this.equipmentJsons[key].statsMods
             );
         }

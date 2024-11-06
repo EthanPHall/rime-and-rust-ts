@@ -19,6 +19,8 @@
         "unlockFlags": [],
         "actionKey": "Attack",
         "actionUses": 1,
+        "actionKey2": "",
+        "actionUses2": 0,
         "statsMods":[
             {
                 "statName": "health",
@@ -46,6 +48,8 @@
         "unlockFlags": [],
         "actionKey": "Chop",
         "actionUses": 2,
+        "actionKey2": "",
+        "actionUses2": 0,
         "statsMods":[
             {
                 "statName": "health",
@@ -71,8 +75,34 @@
             ]
         },
         "unlockFlags": [],
-        "actionKey": "Grapple",
+        "actionKey": "",
         "actionUses": 1,
+        "actionKey2": "",
+        "actionUses2": 0,
+        "statsMods":[]
+    },
+    "Telekinesis Drive": {
+        "key": "Telekinesis Drive",
+        "name": "Telekinesis Drive",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 1
+                }
+            ],
+            "results": [
+                {
+                    "key": "Telekinesis Drive",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [],
+        "actionKey": "PushRange5",
+        "actionUses": 3,
+        "actionKey2": "PullRange5",
+        "actionUses2": 3,
         "statsMods":[]
     }
 }
