@@ -802,6 +802,9 @@ abstract class CombatAction{
         else{
           result[2].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, reverseDirection, targetIds[i]));
         }
+
+        // result[3].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, targetIds[i]));
+
         this.updateEntity(targetEntity.id, targetEntity);
         
         previousEntity = targetEntity;
@@ -960,6 +963,8 @@ abstract class CombatAction{
         else{
           result[2].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, this.direction, entities[i].id));
         }
+
+        // result[3].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, entities[i].id));
         
         previousEntity = entities[i];
         previousDidBump = bumped;
@@ -969,6 +974,78 @@ abstract class CombatAction{
     }
   }
 
+  class Burn extends CombatAction {
+    getMap: () => CombatMapData;
+    damage: number;
+    aoe: AreaOfEffect;
+
+    constructor(
+      ownerId: number,
+      direction: Directions = Directions.NONE,
+      getMap: () => CombatMapData,
+      updateEntity: (id:number, newEntity: CombatEntity) => void,
+      refreshMap: () => void
+    ){
+      super('Burn', true, ownerId, direction, updateEntity, refreshMap);
+      this.getMap = getMap;
+      this.damage = 8;
+
+      this.aoe = new AreaOfEffect(8, direction, 0, false);
+    }
+  
+    clone(): CombatAction {
+      return new Burn(this.ownerId, this.direction, this.getMap, this.updateEntity, this.refreshMap);
+    }
+
+    getTargets(): [number[], Vector2[], CombatEntity[]]{
+      const map: CombatMapData = this.getMap();
+      const owner: CombatEntity|null = map.getEntityById(this.ownerId);
+
+      if(!owner){return [[], [], []];}
+
+      const [entities, positions] = this.aoe.getAffectedEntities(owner.position.x, owner.position.y, map);
+      const targetIds:number[] = entities.map((entity) => entity.id);
+      return [targetIds, positions, entities];
+    }
+
+    execute() {
+      const [targetIds] = this.getTargets();
+      const map: CombatMapData = this.getMap();
+      
+      for(let i = targetIds.length-1; i >= 0; i--){
+        const targetEntity:CombatEntity|undefined = map.getEntityById(targetIds[i])?.clone();
+        if(!targetEntity){
+          continue;
+        }
+        
+        console.log("Target entity found");
+        targetEntity.takeDamage(this.damage, this);
+        this.updateEntity(targetEntity.id, targetEntity);
+      }
+
+      this.refreshMap();
+    }
+
+    getAnimations(): AnimationDetails[][] {
+      const [targetIds, positions, entities] = this.getTargets();
+      const map: CombatMapData = this.getMap();
+
+      const result:AnimationDetails[][] = [[],[],[]];
+      result[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId));
+
+      positions.forEach((position) => {
+        result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Pyro, this.direction, -1, false, position));
+      });
+
+      for(let i = entities.length-1; i >= 0; i--){
+        result[2].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, entities[i].id));
+      }
+
+      return result;
+    }
+  }
+
+
   type CombatActionSeed = {
     key: string;
     uses: number;
@@ -976,5 +1053,5 @@ abstract class CombatAction{
   }
   
 export default CombatAction;
-export { Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
+export { Burn, Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
 export type { CombatActionSeed };

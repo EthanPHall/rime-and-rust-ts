@@ -108,5 +108,30 @@
         "actionKey2": "PullRange5",
         "actionUses2": 3,
         "statsMods":[]
+    },
+    "Pyrokinesis Drive": {
+        "key": "Pyrokinesis Drive",
+        "name": "Pyrokinesis Drive",
+        "weapon": false,
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 1
+                }
+            ],
+            "results": [
+                {
+                    "key": "Pyrokinesis Drive",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [],
+        "actionKey": "Burn",
+        "actionUses": 3,
+        "actionKey2": "",
+        "actionUses2": 0,
+        "statsMods":[]
     }
 }

@@ -22,7 +22,8 @@ class MotionAnimation{
 class CombatAnimationDetailsToMotionAnimation{
     static convert(combatAnimation: AnimationDetails): MotionAnimation{
         const xyIncrement:Vector2 = DirectionsUtility.getVectorFromDirection(combatAnimation.direction);
-        
+        let emphasisScale:number = 1;
+
         switch(combatAnimation.animationName){
             case CombatAnimationNames.Move:
                 xyIncrement.x *= parseFloat(CSSPropertyGetter.getProperty("--combat-location-width"));
@@ -111,11 +112,25 @@ class CombatAnimationDetailsToMotionAnimation{
                     combatAnimation.positionToAnimate
                 );
             case CombatAnimationNames.Psychic:
-                const emphasisScale:number = parseFloat(CSSPropertyGetter.getProperty("--emphasis-scale"));
+                emphasisScale = parseFloat(CSSPropertyGetter.getProperty("--emphasis-scale"));
                 return new MotionAnimation(
                     combatAnimation.entityToAnimateId, 
                     [
                         {scaleX: emphasisScale, scaleY: emphasisScale, color: CSSPropertyGetter.getProperty("--psychic-color")},
+                        {scaleX: 1, scaleY: 1, color: CSSPropertyGetter.getProperty("--text-color")}
+                    ], 
+                    [
+                        {duration: combatAnimation.animationLength/2000},
+                        {duration: combatAnimation.animationLength/2000},
+                    ],
+                    combatAnimation.positionToAnimate
+                );
+            case CombatAnimationNames.Pyro:
+                emphasisScale = parseFloat(CSSPropertyGetter.getProperty("--emphasis-scale"));
+                return new MotionAnimation(
+                    combatAnimation.entityToAnimateId, 
+                    [
+                        {scaleX: emphasisScale, scaleY: emphasisScale, color: CSSPropertyGetter.getProperty("--burn-color-1")},
                         {scaleX: 1, scaleY: 1, color: CSSPropertyGetter.getProperty("--text-color")}
                     ], 
                     [

@@ -12,6 +12,7 @@ enum CombatAnimationNames {
     Reset = "Reset",
     Hurt = "Hurt",
     Psychic = "Psychic",
+    Pyro = "Pyro",
     Burn = "Burn",
     Explosion = "Explosion",
     None = "None",
@@ -34,6 +35,8 @@ class CombatAnimationFactory{
                 return new AnimationDetails(CombatAnimationNames.Hurt, 200, direction, entityToAnimateId);
             case CombatAnimationNames.Psychic:
                 return new AnimationDetails(CombatAnimationNames.Psychic, 400, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate);
+            case CombatAnimationNames.Pyro:
+                return new AnimationDetails(CombatAnimationNames.Pyro, 400, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate);
             case CombatAnimationNames.Burn:
                 return new AnimationDetails(CombatAnimationNames.Burn, 1200, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate);
             case CombatAnimationNames.Explosion:

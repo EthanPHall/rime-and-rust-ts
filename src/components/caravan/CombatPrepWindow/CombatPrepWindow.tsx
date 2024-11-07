@@ -104,6 +104,7 @@ const CombatPrepWindow: FC<CombatPrepWindowProps> = (
     }
     else{
       messageContext.messageHandling.getManager().addMessage(new Message('You can only have 8 actions prepped at a time.', []));
+      messageContext.setMessageHandling(messageContext.messageHandling.clone());
     }
   }
 
