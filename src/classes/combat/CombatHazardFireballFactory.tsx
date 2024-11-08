@@ -7,6 +7,7 @@ import CombatEntity from "./CombatEntity";
 import CombatAction from "./CombatAction";
 import CombatActionFactory from "./CombatActionFactory";
 import { ISettingsManager, RNGFunction } from "../../context/misc/SettingsContext";
+import Directions from "../utility/Directions";
 
 class CombatHazardFireballFactory{
     private getMap: () => CombatMapData;
@@ -38,11 +39,12 @@ class CombatHazardFireballFactory{
         this.settingsManager = settingsManager;
     }
 
-    createFireball(position:Vector2):CombatHazard{
+    createFireball(position:Vector2, direction:Directions):CombatHazard{
         const id:number = IdGenerator.generateUniqueId();
         return new Fireball(
             id,
             position,
+            direction,
             this.advanceTurn,
             this.addActionToList,
             this.executeActionsList,

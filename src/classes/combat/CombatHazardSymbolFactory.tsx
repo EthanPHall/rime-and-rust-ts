@@ -10,6 +10,7 @@ import CombatActionFactory from "./CombatActionFactory";
 import CombatAction from "./CombatAction";
 import ArrayScrambler from "../utility/ArrayScrambler";
 import { ISettingsManager, RNGFunction } from "../../context/misc/SettingsContext";
+import Directions from "../utility/Directions";
 
 class CombatHazardSymbolFactory implements ICombatHazardFactory{
     private mapRepresentation:string[][];
@@ -85,6 +86,7 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
                 return new Fireball(
                     id,
                     position,
+                    Directions.RIGHT,
                     this.advanceTurn,
                     this.addActionToList,
                     this.executeActionsList,

@@ -239,17 +239,20 @@ class FireballAI implements AIHandler{
   playerId: number;
   getMap: () => CombatMapData;
   action: CombatActionWithUses;
+  direction:Directions;
 
   constructor(entity: CombatEntity, playerPosition: Vector2, playerId: number, getMap: () => CombatMapData,
     updateEntity: (id:number, newEntity: CombatEntity) => void,
-    refreshMap: () => void
+    refreshMap: () => void,
+    direction:Directions = Directions.RIGHT
   ){
     this.entity = entity;
     this.playerPosition = playerPosition;
     this.playerId = playerId;
     this.getMap = getMap;
+    this.direction = direction;
     this.action = new CombatActionWithUses(
-      new Move(this.entity.id, Directions.RIGHT, this.getMap, updateEntity, refreshMap),
+      new Move(this.entity.id, this.direction, this.getMap, updateEntity, refreshMap),
       3
     );
   }
@@ -292,10 +295,13 @@ class Fireball extends CombatHazard implements TurnTaker{
   canTakeTurn(): boolean {
     return true;
   }
+
+  private direction:Directions;
   
   constructor(
     id:number, 
     position: Vector2,
+    direction:Directions,
     advanceTurn: () => void,
     addActionToList: (action: CombatAction) => void,
     executeActionsList: () => void,
@@ -313,6 +319,7 @@ class Fireball extends CombatHazard implements TurnTaker{
     this.addActionToList = addActionToList;
     this.executeActionsList = executeActionsList;
     this.settingsManager = settingsManager;
+    this.direction = direction;
   }
 
   async executeTurn(): Promise<void> {
@@ -325,7 +332,7 @@ class Fireball extends CombatHazard implements TurnTaker{
     await new Promise((resolve) => setTimeout(resolve, this.settingsManager.getCorrectTiming(CombatEnemy.TURN_START_DELAY)));
 
     if(playerPosition){
-      const aiHandler = new FireballAI(this.combatEntity, playerPosition, this.playerId, this.getMap, this.updateEntity, this.refreshMap);
+      const aiHandler = new FireballAI(this.combatEntity, playerPosition, this.playerId, this.getMap, this.updateEntity, this.refreshMap, this.direction);
       const aiActions = aiHandler.handleAI();
 
       for(const action of aiActions){
@@ -342,7 +349,8 @@ class Fireball extends CombatHazard implements TurnTaker{
   clone(): CombatHazard{
     return new Fireball(
       this.id, 
-      this.position, 
+      this.position,
+      this.direction,
       this.advanceTurn,
       this.addActionToList,
       this.executeActionsList,

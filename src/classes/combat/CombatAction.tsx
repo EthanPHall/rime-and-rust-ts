@@ -1060,7 +1060,7 @@ abstract class CombatAction{
 
     constructor(
       ownerId: number,
-      direction: Directions = Directions.NONE,
+      direction: Directions,
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void,
       entitySpawner: EntitySpawner,
@@ -1104,7 +1104,7 @@ abstract class CombatAction{
         return;
       }
 
-      const fireball:CombatHazard = this.combatHazardFireballFactory.createFireball(positionToSpawnAt);
+      const fireball:CombatHazard = this.combatHazardFireballFactory.createFireball(positionToSpawnAt, this.direction);
       this.entitySpawner.spawnEntity(fireball);
 
       this.refreshMap();
