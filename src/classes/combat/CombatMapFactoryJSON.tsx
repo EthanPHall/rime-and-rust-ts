@@ -90,7 +90,7 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
 
         const size:Vector2 = new Vector2(mapRepresentationModified.length, longestRowLength);
 
-        //Determine what enemies and hazards may spawn on this map, and the chancees for each player spawn point
+        //Determine what enemies and hazards may spawn on this map, and the chances for each player spawn point
         const rng:number = rngFunction(0,99);
         let cumulativeChance:number = 0;
         const enemyGroup = mapRepresentation.potentialEnemyGroups.find((group) => {
@@ -147,7 +147,11 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
             this.refreshMap,
             this.actionFactory,
             this.addActionToList,
-            rngFunction
+            rngFunction,
+            this.advanceTurn,
+            this.addActionToList,
+            this.executeActionsList,
+            this.settingsManager
         )
         const hazards:CombatHazard[] = hazardFactory.createGivenPositions(hazardPositions);
 

@@ -34,7 +34,7 @@ import { AnimationPlaybackControls, TargetAndTransition, useAnimate } from 'fram
 import MotionCombatAnimator from '../../../classes/animation/MotionCombatAnimator';
 import { MotionAnimation } from '../../../classes/animation/CombatAnimationDetailsToMotionAnimation';
 import CombatEnemyFactory from '../../../classes/combat/CombatEnemyFactory';
-import TurnTaker from '../../../classes/combat/TurnTaker';
+import TurnTaker, { isTurnTaker } from '../../../classes/combat/TurnTaker';
 import CombatAnimationFactory, { CombatAnimationNames } from '../../../classes/animation/CombatAnimationFactory';
 import useCombatHazardAnimations from '../../../hooks/combat/useCombatHazardAnimations';
 import CombatActionFactory, { CombatActionNames, stringToCombatActionNames } from '../../../classes/combat/CombatActionFactory';
@@ -213,7 +213,7 @@ const CombatParent: FC<CombatParentProps> = (
   );
   const actionExecutorRef = useRef<IActionExecutor>(actionExecutor);
   
-  const allTurnTakers = useRef<TurnTaker[]>([getPlayer(), ...getEnemies()]);
+  const allTurnTakers = useRef<TurnTaker[]>([getPlayer(), ...getEnemies(), ...getHazards().filter(hazard => isTurnTaker(hazard)).map(hazard => hazard as unknown as TurnTaker)]);
 
   const setupFinished = useRef(false);
 
@@ -336,7 +336,7 @@ const CombatParent: FC<CombatParentProps> = (
       }
     }
 
-    allTurnTakers.current = [getPlayer(), ...getEnemies()];
+    allTurnTakers.current = [getPlayer(), ...getEnemies(), ...getHazards().filter(hazard => isTurnTaker(hazard)).map(hazard => hazard as unknown as TurnTaker)];
   }, [playerForEffects, enemiesForEffects]);
 
   useEffect(() => {

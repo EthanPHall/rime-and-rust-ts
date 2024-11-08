@@ -1,6 +1,6 @@
 import IdGenerator from "../utility/IdGenerator";
 import Vector2 from "../utility/Vector2";
-import CombatHazard, { BurningFloor, VolatileCanister, Wall } from "./CombatHazard";
+import CombatHazard, { BurningFloor, Fireball, VolatileCanister, Wall } from "./CombatHazard";
 import ICombatHazardFactory from "./ICombatHazardFactory";
 import hazardsJSONData from "../../data/combat/hazards.json"
 import hazardGroupsJSONData from "../../data/combat/hazard-groups.json"
@@ -9,7 +9,7 @@ import CombatEntity from "./CombatEntity";
 import CombatActionFactory from "./CombatActionFactory";
 import CombatAction from "./CombatAction";
 import ArrayScrambler from "../utility/ArrayScrambler";
-import { RNGFunction } from "../../context/misc/SettingsContext";
+import { ISettingsManager, RNGFunction } from "../../context/misc/SettingsContext";
 
 class CombatHazardSymbolFactory implements ICombatHazardFactory{
     private mapRepresentation:string[][];
@@ -22,6 +22,12 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
     private actionFactory: CombatActionFactory;
     private rngFunction:RNGFunction;
 
+    private advanceTurn: () => void;
+    private addActionToList: (action: CombatAction) => void;
+    private executeActionsList: () => void;
+    private settingsManager:ISettingsManager;
+
+
     constructor(
         mapRepresentation:string[][],
         hazardGroupKey:string,
@@ -30,7 +36,11 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
         refreshMap: () => void,
         actionFactory: CombatActionFactory,
         addToComboList: (action: CombatAction) => void,
-        rngFunction:RNGFunction
+        rngFunction:RNGFunction,
+        advanceTurn: () => void,
+        addActionToList: (action: CombatAction) => void,
+        executeActionsList: () => void,
+        settingsManager:ISettingsManager
     ){
         this.mapRepresentation = mapRepresentation;
         this.hazardGroupKey = hazardGroupKey;
@@ -42,6 +52,12 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
         this.addToComboList = addToComboList;
     
         this.rngFunction = rngFunction;
+
+        this.advanceTurn = advanceTurn;
+        this.addActionToList = addActionToList;
+        this.executeActionsList = executeActionsList;
+
+        this.settingsManager = settingsManager;
     }
 
     createHazard(hazardKey:string, position:Vector2):CombatHazard{
@@ -64,6 +80,18 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
                     position,
                     this.actionFactory,
                     this.addToComboList
+                );
+            case hazardsJSONData.keys.fireball:
+                return new Fireball(
+                    id,
+                    position,
+                    this.advanceTurn,
+                    this.addActionToList,
+                    this.executeActionsList,
+                    this.getMap,
+                    this.updateEntity,
+                    this.refreshMap,
+                    this.settingsManager,
                 );
             default:
                 console.log("No hazard with key " + hazardKey + " found, using default instead.");

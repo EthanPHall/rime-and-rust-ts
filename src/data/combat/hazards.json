@@ -2,7 +2,8 @@
     "keys":{
         "basicWall":"basic-wall",
         "volatileCanister":"volatile-canister",
-        "burning":"burning-floor"
+        "burning":"burning-floor",
+        "fireball":"fireball"
     },
     "hazards":[
         {

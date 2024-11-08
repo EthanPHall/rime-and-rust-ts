@@ -31,7 +31,7 @@
             "hazardGroupKey": "variable-1-group-1",
             "hazards":[
                 {
-                    "hazardKey": "volatile-canister",
+                    "hazardKey": "fireball",
                     "percent": 50
                 }
             ]
