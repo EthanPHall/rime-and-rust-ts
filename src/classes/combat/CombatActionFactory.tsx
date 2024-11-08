@@ -1,9 +1,11 @@
 import Directions from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
-import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion, Chop, Punch, Kick, Burn } from "./CombatAction";
+import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion, Chop, Punch, Kick, Burn, Fireball } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
 import CombatHazard from "./CombatHazard";
+import CombatHazardFireballFactory from "./CombatHazardFireballFactory";
 import CombatMapData from "./CombatMapData";
+import EntitySpawner from "./EntitySpawner";
 
 enum CombatActionNames{
     Move = "Move",
@@ -17,6 +19,7 @@ enum CombatActionNames{
     Punch = "Punch",
     Kick = "Kick",
     Burn = "Burn",
+    Fireball = "Fireball",
 }
 
 function stringToCombatActionNames(actionName: string): CombatActionNames{
@@ -43,6 +46,8 @@ function stringToCombatActionNames(actionName: string): CombatActionNames{
             return CombatActionNames.Kick;
         case "Burn":
             return CombatActionNames.Burn;
+        case "Fireball":
+            return CombatActionNames.Fireball;
         default:
             throw new Error("Invalid action name: " + actionName);
     }
@@ -55,18 +60,25 @@ class CombatActionFactory{
     getHazardsList: () => CombatHazard[];
     setHazardsList: (newHazards: CombatHazard[]) => void;
 
+    entitySpawner: EntitySpawner;
+    fireballFactory: CombatHazardFireballFactory;
+
     constructor(
         getMap: () => CombatMapData,
         updateEntity: (id: number, newEntity: CombatEntity) => void,
         refreshMap: () => void,
         getHazardsList: () => CombatHazard[],
-        setHazardsList: (newHazards: CombatHazard[]) => void
+        setHazardsList: (newHazards: CombatHazard[]) => void,
+        entitySpawner: EntitySpawner,
+        fireballFactory: CombatHazardFireballFactory
     ){
         this.getMap = getMap;
         this.updateEntity = updateEntity;
         this.refreshMap = refreshMap;
         this.getHazardsList = getHazardsList;
         this.setHazardsList = setHazardsList;
+        this.entitySpawner = entitySpawner;
+        this.fireballFactory = fireballFactory;
     }
 
     createAction(actionName: CombatActionNames, ownerId: number, direction: Directions = Directions.NONE, ownerEntity:CombatEntity|undefined = undefined): CombatAction{
@@ -96,6 +108,8 @@ class CombatActionFactory{
                 return new Kick(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
             case CombatActionNames.Burn:
                 return new Burn(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
+            case CombatActionNames.Fireball:
+                return new Fireball(ownerId, direction, this.updateEntity, this.refreshMap, this.entitySpawner, this.getMap, this.fireballFactory);
             default:
                 throw new Error("Invalid action name: " + actionName);
         }

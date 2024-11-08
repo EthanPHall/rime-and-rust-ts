@@ -129,9 +129,9 @@
         },
         "unlockFlags": [],
         "actionKey": "Burn",
-        "actionUses": 3,
-        "actionKey2": "",
-        "actionUses2": 0,
+        "actionUses": 1,
+        "actionKey2": "Fireball",
+        "actionUses2": 1,
         "statsMods":[]
     }
 }

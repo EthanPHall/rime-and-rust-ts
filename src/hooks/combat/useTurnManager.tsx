@@ -41,11 +41,15 @@ const useTurnManager = (): [TurnManager, ()=>boolean] => {
         }
     };
 
+    function addNewTurnTaker(turnTaker: TurnTaker){
+        turnTakersRefOfRef.current.current.push(turnTaker);
+    }
+
     function isTurnTakerPlayer(): boolean{
         return currentIndex.current === 0;
     }
 
-    return [new TurnManager(currentTurnTaker, advanceTurn, finishSetup), isTurnTakerPlayer];
+    return [new TurnManager(currentTurnTaker, advanceTurn, addNewTurnTaker, finishSetup), isTurnTakerPlayer];
 };
 
 export default useTurnManager;

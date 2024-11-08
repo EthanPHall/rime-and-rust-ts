@@ -6,9 +6,14 @@ import Vector2 from "../utility/Vector2";
 import AreaOfEffect from "./AreaOfEffect";
 import CombatEnemy, { ReactionFlags } from "./CombatEnemy";
 import CombatEntity from "./CombatEntity";
-import CombatHazard, { BurningFloor, Wall } from "./CombatHazard";
+import CombatHazard, { BurningFloor, Wall, Fireball as FireballHazard } from "./CombatHazard";
+import CombatHazardSymbolFactory from "./CombatHazardSymbolFactory";
 import CombatMapData from "./CombatMapData";
 import CombatPlayer from "./CombatPlayer";
+import EntitySpawner from "./EntitySpawner";
+import hazardsJSONData from "../../data/combat/hazards.json"
+import { ISettingsManager } from "../../context/misc/SettingsContext";
+import CombatHazardFireballFactory from "./CombatHazardFireballFactory";
 
 abstract class CombatAction{
     name: string;
@@ -1045,6 +1050,73 @@ abstract class CombatAction{
     }
   }
 
+  class Fireball extends CombatAction {
+    getMap: () => CombatMapData;
+
+    private entitySpawner: EntitySpawner;
+    private radius = 2;
+
+    private combatHazardFireballFactory: CombatHazardFireballFactory;
+
+    constructor(
+      ownerId: number,
+      direction: Directions = Directions.NONE,
+      updateEntity: (id:number, newEntity: CombatEntity) => void,
+      refreshMap: () => void,
+      entitySpawner: EntitySpawner,
+      getMap: () => CombatMapData,
+      combatHazardFireballFactory: CombatHazardFireballFactory
+    ){
+      super('Fireball', true, ownerId, direction, updateEntity, refreshMap);
+      this.entitySpawner = entitySpawner;
+      this.getMap = getMap;
+
+      this.combatHazardFireballFactory = combatHazardFireballFactory;
+    }
+
+    clone(newDirection?: Directions): CombatAction {
+      return new Fireball(
+        this.ownerId,
+        newDirection ? newDirection : this.direction,
+        this.updateEntity,
+        this.refreshMap,
+        this.entitySpawner,
+        this.getMap,
+        this.combatHazardFireballFactory
+      );
+    }
+    execute(): void {
+      console.log('Fireball');
+
+      const player:CombatEntity|null = this.getMap().getPlayer();
+      if(!player){return;}
+
+      const playerPosition:Vector2 = player.position;
+      const directionVector:Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
+      const increment:number = this.radius + 1;
+      const positionToSpawnAt:Vector2 = new Vector2(playerPosition.x + directionVector.x * increment, playerPosition.y + directionVector.y * increment);
+
+      if(
+        !this.getMap().isInBounds(positionToSpawnAt) ||
+        this.getMap().locations[positionToSpawnAt.y][positionToSpawnAt.x].entity
+      ){
+        console.log('Fireball blocked');
+        return;
+      }
+
+      const fireball:CombatHazard = this.combatHazardFireballFactory.createFireball(positionToSpawnAt);
+      this.entitySpawner.spawnEntity(fireball);
+
+      this.refreshMap();
+    }
+    getAnimations(): AnimationDetails[][] {
+      const result:AnimationDetails[][] = [[]];
+      result[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId));
+
+      return result;
+    }
+  }
+
 
   type CombatActionSeed = {
     key: string;
@@ -1053,5 +1125,5 @@ abstract class CombatAction{
   }
   
 export default CombatAction;
-export { Burn, Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
+export { Fireball, Burn, Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
 export type { CombatActionSeed };

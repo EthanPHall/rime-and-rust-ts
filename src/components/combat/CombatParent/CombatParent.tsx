@@ -48,6 +48,8 @@ import { SettingsContext } from '../../../context/misc/SettingsContext';
 import PlayerCombatStats from '../../../classes/combat/PlayerCombatStats';
 import analyzeDirectionInput from '../../../classes/utility/analyzeDirectionInput';
 import HoverButton from '../../misc/HoverButton/HoverButton';
+import EntitySpawner from '../../../classes/combat/EntitySpawner';
+import CombatHazardFireballFactory from '../../../classes/combat/CombatHazardFireballFactory';
 
 export enum EnemyType {
   RustedShambler = 'RustedShambler',
@@ -146,7 +148,7 @@ const CombatParent: FC<CombatParentProps> = (
   
   const [turnManager, isTurnTakerPlayer] = useTurnManager();
   const [comboListForEffects, getComboList, setComboList] = useRefState<CombatActionWithRepeat[]>([]);
-  
+
   const settingsContext = useContext(SettingsContext);
 
   //I was running into issues with closures I think. I was passing refreshMap() to the animator, but when it was called there,
@@ -158,7 +160,21 @@ const CombatParent: FC<CombatParentProps> = (
   const [enemiesForEffects, getEnemies, setEnemies] = useRefState<CombatEnemy[]>([]);
   const [hazardsForEffects, getHazards, setHazards] = useRefState<CombatHazard[]>([]);
 
-  const combatActionFactory:CombatActionFactory = new CombatActionFactory(getCachedMap, updateEntity, refreshMap, getHazards, setHazards);
+  const [entitySpawner, setEntitySpawner] = useState<EntitySpawner>(new EntitySpawner(turnManager, getHazards, getEnemies, setHazards, setEnemies));
+
+  const [combatHazardFireballFactory] = useState<CombatHazardFireballFactory>(
+    new CombatHazardFireballFactory(
+      getCachedMap,
+      updateEntity,
+      refreshMap,
+      turnManager.advanceTurn,
+      addToComboList,
+      executeActionsList,
+      settingsContext.settingsManager
+    )
+  )
+
+  const combatActionFactory:CombatActionFactory = new CombatActionFactory(getCachedMap, updateEntity, refreshMap, getHazards, setHazards, entitySpawner, combatHazardFireballFactory);
   const [combatMapTemplateFactory] = useState<ICombatMapTemplateFactory>(new CombatMapTemplateFactoryJSON(
     turnManager.advanceTurn,
     addToComboList,
