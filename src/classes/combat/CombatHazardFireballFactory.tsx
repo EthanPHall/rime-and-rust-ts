@@ -8,7 +8,11 @@ import CombatAction from "./CombatAction";
 import CombatActionFactory from "./CombatActionFactory";
 import { ISettingsManager, RNGFunction } from "../../context/misc/SettingsContext";
 import Directions from "../utility/Directions";
+import EntitySpawner from "./EntitySpawner";
 
+//Trying to fit the Fireball creating into the main factory posed problems because
+//some of the dependencies that needed to be added to the main factory ended up being 
+//circular. So I made a separate factory for creating just fireballs.
 class CombatHazardFireballFactory{
     private getMap: () => CombatMapData;
     private updateEntity: (id:number, newEntity: CombatEntity) => void;
@@ -18,6 +22,7 @@ class CombatHazardFireballFactory{
     private addActionToList: (action: CombatAction) => void;
     private executeActionsList: () => void;
     private settingsManager:ISettingsManager;
+    private entitySpawner: EntitySpawner;
 
     constructor(
         getMap: () => CombatMapData,
@@ -26,7 +31,8 @@ class CombatHazardFireballFactory{
         advanceTurn: () => void,
         addActionToList: (action: CombatAction) => void,
         executeActionsList: () => void,
-        settingsManager:ISettingsManager
+        settingsManager:ISettingsManager,
+        entitySpawner: EntitySpawner
     ){
         this.getMap = getMap;
         this.updateEntity = updateEntity;
@@ -37,6 +43,7 @@ class CombatHazardFireballFactory{
         this.executeActionsList = executeActionsList;
 
         this.settingsManager = settingsManager;
+        this.entitySpawner = entitySpawner;
     }
 
     createFireball(position:Vector2, direction:Directions):CombatHazard{
@@ -45,6 +52,7 @@ class CombatHazardFireballFactory{
             id,
             position,
             direction,
+            this.entitySpawner,
             this.advanceTurn,
             this.addActionToList,
             this.executeActionsList,
@@ -54,6 +62,8 @@ class CombatHazardFireballFactory{
             this.settingsManager,
         );
     }
+
+
 
 }
 

@@ -170,7 +170,8 @@ const CombatParent: FC<CombatParentProps> = (
       turnManager.advanceTurn,
       addToComboList,
       executeActionsList,
-      settingsContext.settingsManager
+      settingsContext.settingsManager,
+      entitySpawner
     )
   )
 
@@ -186,7 +187,8 @@ const CombatParent: FC<CombatParentProps> = (
     settingsContext.settingsManager,
     settingsContext.settingsManager.getNextRandomNumber,
     getPlayer(),
-    setPlayer
+    setPlayer,
+    entitySpawner
   ))
   
   const [mapTemplate, setMapTemplate] = useState<CombatMapTemplate>();

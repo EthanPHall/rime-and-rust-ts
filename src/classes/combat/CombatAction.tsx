@@ -465,6 +465,114 @@ abstract class CombatAction{
   }
 
 
+  function spawnBurningHazards(owner: CombatEntity | undefined, positions: Vector2[], getMap: () => CombatMapData, updateEntity: (id:number, newEntity: CombatEntity) => void, refreshMap: () => void, getHazardsList: () => CombatHazard[], setHazardsList: (newHazards: CombatHazard[]) => void){
+    const hazards =  getHazardsList();
+    const dontHaveHazardsYet:Vector2[] = positions.filter((position) => {
+      return !hazards.some((hazard) => Vector2.equals(hazard.position, position));
+    });
+
+    owner && dontHaveHazardsYet.push(owner.position);
+    
+    const newBurningFloors:CombatHazard[] = dontHaveHazardsYet.map((position) => {
+      return new BurningFloor(
+        IdGenerator.generateUniqueId(),
+        position,
+        getMap,
+        updateEntity,
+        refreshMap
+      );
+    });
+
+    setHazardsList(hazards.concat(newBurningFloors));
+  }
+
+  //TODO: Replace instances of the original function with this one
+  function spawnBurningHazardsWithSpawner(
+    owner: CombatEntity | undefined | null, 
+    positions: Vector2[], 
+    getMap: () => CombatMapData, 
+    updateEntity: (id:number, newEntity: CombatEntity) => void, 
+    refreshMap: () => void, 
+    entitySpawner: EntitySpawner
+  ){
+    const dontHaveHazardsYet:Vector2[] = positions.filter((position) => {
+      if(owner && Vector2.equals(owner.position, position)){
+        return false;
+      }
+
+      const entityAtLocation = getMap().locations?.[position.y]?.[position.x]?.entity;
+
+      if(entityAtLocation && entityAtLocation instanceof CombatHazard){
+        return false;
+      }
+      else{
+        return true;
+      }
+    });
+    
+    const newBurningFloors:CombatHazard[] = dontHaveHazardsYet.map((position) => {
+      return new BurningFloor(
+        IdGenerator.generateUniqueId(),
+        position,
+        getMap,
+        updateEntity,
+        refreshMap
+      );
+    });
+
+    for(const hazard of newBurningFloors){
+      entitySpawner.spawnEntity(hazard);
+    }
+  }
+
+  function despawnBurningHazardsWithSpawner(
+    owner: CombatEntity | undefined | null, 
+    positions: Vector2[], 
+    getMap: () => CombatMapData, 
+    entitySpawner: EntitySpawner
+  ){
+    const hazardsToDespawn:CombatEntity[] = positions.filter((position) => {
+      const entityAtLocation = getMap().locations?.[position.y]?.[position.x]?.entity;
+
+      return entityAtLocation && entityAtLocation instanceof BurningFloor;
+    }).map((position) => {
+      return getMap().locations?.[position.y]?.[position.x]?.entity as CombatEntity;
+    });
+    
+    entitySpawner.despawnEntities(hazardsToDespawn.map((hazard) => hazard.id));
+  }
+
+
+  //TODO: Replace instances of getTargets that are local to teh specific classes with this one.
+  /**
+   * 
+   * @param ownerId 
+   * @param aoe 
+   * @param getMap 
+   * @param positionOverride If not undefined, this will be used in place of the owner's position 
+   * @returns 
+   */
+  function getTargets(
+    ownerId: number,
+    aoe: AreaOfEffect,
+    getMap: () => CombatMapData,
+    positionOverride?: Vector2
+  ): [number[], Vector2[], CombatEntity?]{
+    const map: CombatMapData = getMap();
+    const owner: CombatEntity|null = map.getEntityById(ownerId);
+
+    if(!owner){return [[], []];}
+
+    const [entities, positions] = aoe.getAffectedEntities(
+      positionOverride ? positionOverride.x : owner.position.x, 
+      positionOverride ? positionOverride.y : owner.position.y, 
+      map,
+      true,
+    );
+    const targetIds:number[] = entities.map((entity) => entity.id);
+    return [targetIds, positions, owner];
+  }
+
 
 
   class VolatileCanExplosion extends CombatAction {
@@ -488,7 +596,7 @@ abstract class CombatAction{
       this.setHazardsList = setHazardsList;
       this.damage = 5;
 
-      this.aoe = new AreaOfEffect(0, Directions.NONE, 3, false);
+      this.aoe = new AreaOfEffect(0, Directions.NONE, 2, false);
     }
   
     clone(): CombatAction {
@@ -531,24 +639,33 @@ abstract class CombatAction{
       });
 
       //Spawn burning hazards
-      const hazards = this.getHazardsList();
-      const dontHaveHazardsYet:Vector2[] = positions.filter((position) => {
-        return !hazards.some((hazard) => Vector2.equals(hazard.position, position));
-      });
+      // const hazards = this.getHazardsList();
+      // const dontHaveHazardsYet:Vector2[] = positions.filter((position) => {
+      //   return !hazards.some((hazard) => Vector2.equals(hazard.position, position));
+      // });
 
-      owner && dontHaveHazardsYet.push(owner.position);
+      // owner && dontHaveHazardsYet.push(owner.position);
       
-      const newBurningFloors:CombatHazard[] = dontHaveHazardsYet.map((position) => {
-        return new BurningFloor(
-          IdGenerator.generateUniqueId(),
-          position,
-          this.getMap,
-          this.updateEntity,
-          this.refreshMap
-        );
-      });
+      // const newBurningFloors:CombatHazard[] = dontHaveHazardsYet.map((position) => {
+      //   return new BurningFloor(
+      //     IdGenerator.generateUniqueId(),
+      //     position,
+      //     this.getMap,
+      //     this.updateEntity,
+      //     this.refreshMap
+      //   );
+      // });
 
-      this.setHazardsList(hazards.concat(newBurningFloors));
+      // this.setHazardsList(hazards.concat(newBurningFloors));
+      spawnBurningHazards(
+        owner,
+        positions,
+        this.getMap,
+        this.updateEntity,
+        this.refreshMap,
+        this.getHazardsList,
+        this.setHazardsList
+      );
 
       this.refreshMap();
     }
@@ -1053,6 +1170,7 @@ abstract class CombatAction{
   class Fireball extends CombatAction {
     getMap: () => CombatMapData;
 
+    //TODO: Change earlier actions to use this when they spawn hazards.
     private entitySpawner: EntitySpawner;
     private radius = 2;
 
@@ -1107,6 +1225,16 @@ abstract class CombatAction{
       const fireball:CombatHazard = this.combatHazardFireballFactory.createFireball(positionToSpawnAt, this.direction);
       this.entitySpawner.spawnEntity(fireball);
 
+      const aoe = new AreaOfEffect(0, this.direction, this.radius, false);
+      spawnBurningHazardsWithSpawner(
+        player,
+        aoe.getAffectedCoordinates(positionToSpawnAt.x, positionToSpawnAt.y, this.getMap()),
+        this.getMap,
+        this.updateEntity,
+        this.refreshMap,
+        this.entitySpawner
+      )
+
       this.refreshMap();
     }
     getAnimations(): AnimationDetails[][] {
@@ -1114,6 +1242,100 @@ abstract class CombatAction{
       result[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId));
 
       return result;
+    }
+  }
+
+  class SpawnBurningRadius extends CombatAction {
+    private radius:number;
+    private entitySpawner: EntitySpawner;
+    private getMap: () => CombatMapData;
+
+    constructor(
+      ownerId: number,
+      updateEntity: (id:number, newEntity: CombatEntity) => void,
+      refreshMap: () => void,
+      entitySpawner: EntitySpawner,
+      getMap: () => CombatMapData,
+      radius: number = 2
+    ){
+      super('SpawnBurningRadius', false, ownerId, Directions.NONE, updateEntity, refreshMap);
+      this.radius = radius;
+      this.entitySpawner = entitySpawner;
+      this.getMap = getMap;
+    }
+
+    clone(newDirection?: Directions): CombatAction {
+      return new SpawnBurningRadius(
+        this.ownerId,
+        this.updateEntity,
+        this.refreshMap,
+        this.entitySpawner,
+        this.getMap,
+        this.radius
+      );
+    }
+    execute(): void {
+      const [ids, positions] = getTargets(this.ownerId, new AreaOfEffect(0, this.direction, this.radius, false), this.getMap);
+      spawnBurningHazardsWithSpawner(
+        this.getMap().getPlayer(),
+        positions,
+        this.getMap,
+        this.updateEntity,
+        this.refreshMap,
+        this.entitySpawner
+      );
+
+      this.refreshMap();
+    }
+    getAnimations(): AnimationDetails[][] {
+      return [[]];
+    }
+    
+  }
+
+  class DespawnBurningRadius extends CombatAction {
+    private radius:number;
+    private getMap: () => CombatMapData;
+    private entitySpawner: EntitySpawner;
+
+    constructor(
+      ownerId: number,
+      entitySpawner: EntitySpawner,
+      updateEntity: (id:number, newEntity: CombatEntity) => void,
+      refreshMap: () => void,
+      getMap: () => CombatMapData,
+      radius: number = 2,
+    ){
+      super('DespawnBurningRadius', false, ownerId, Directions.NONE, updateEntity, refreshMap);
+      this.radius = radius;
+      this.getMap = getMap;
+      this.entitySpawner = entitySpawner;
+    }
+
+    clone(newDirection?: Directions): CombatAction {
+      return new DespawnBurningRadius(
+        this.ownerId,
+        this.entitySpawner,
+        this.updateEntity,
+        this.refreshMap,
+        this.getMap,
+        this.radius
+      );
+    }
+    execute(): void {
+      const [ids, positions] = getTargets(this.ownerId, new AreaOfEffect(0, this.direction, this.radius, false), this.getMap);
+      
+      despawnBurningHazardsWithSpawner(
+        this.getMap().getPlayer(),
+        positions,
+        this.getMap,
+        this.entitySpawner
+      );
+
+      this.refreshMap();
+    }
+    getAnimations(): AnimationDetails[][] {
+      return [[]];
     }
   }
 
@@ -1125,5 +1347,5 @@ abstract class CombatAction{
   }
   
 export default CombatAction;
-export { Fireball, Burn, Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
+export {DespawnBurningRadius, SpawnBurningRadius, Fireball, Burn, Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
 export type { CombatActionSeed };

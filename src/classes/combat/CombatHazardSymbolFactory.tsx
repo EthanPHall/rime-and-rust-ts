@@ -11,6 +11,7 @@ import CombatAction from "./CombatAction";
 import ArrayScrambler from "../utility/ArrayScrambler";
 import { ISettingsManager, RNGFunction } from "../../context/misc/SettingsContext";
 import Directions from "../utility/Directions";
+import EntitySpawner from "./EntitySpawner";
 
 class CombatHazardSymbolFactory implements ICombatHazardFactory{
     private mapRepresentation:string[][];
@@ -27,6 +28,7 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
     private addActionToList: (action: CombatAction) => void;
     private executeActionsList: () => void;
     private settingsManager:ISettingsManager;
+    private entitySpawner: EntitySpawner;
 
 
     constructor(
@@ -41,7 +43,8 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
         advanceTurn: () => void,
         addActionToList: (action: CombatAction) => void,
         executeActionsList: () => void,
-        settingsManager:ISettingsManager
+        settingsManager:ISettingsManager,
+        entitySpawner: EntitySpawner
     ){
         this.mapRepresentation = mapRepresentation;
         this.hazardGroupKey = hazardGroupKey;
@@ -59,6 +62,7 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
         this.executeActionsList = executeActionsList;
 
         this.settingsManager = settingsManager;
+        this.entitySpawner = entitySpawner;
     }
 
     createHazard(hazardKey:string, position:Vector2):CombatHazard{
@@ -87,6 +91,7 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
                     id,
                     position,
                     Directions.RIGHT,
+                    this.entitySpawner,
                     this.advanceTurn,
                     this.addActionToList,
                     this.executeActionsList,

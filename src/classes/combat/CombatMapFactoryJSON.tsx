@@ -15,6 +15,7 @@ import ICombatHazardFactory from "./ICombatHazardFactory";
 import CombatHazardSymbolFactory from "./CombatHazardSymbolFactory";
 import CombatActionFactory from "./CombatActionFactory";
 import { ISettingsManager, RNGFunction, SettingsManager } from "../../context/misc/SettingsContext";
+import EntitySpawner from "./EntitySpawner";
 
 class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
     private advanceTurn: () => void;
@@ -29,6 +30,7 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
     private rngFunction:RNGFunction;
     private player: CombatPlayer;
     private setPlayer: (newValue: CombatPlayer) => void;
+    private entitySpawner: EntitySpawner;
 
     constructor(
         advanceTurn: () => void,
@@ -41,7 +43,8 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
         settingsManager:ISettingsManager,
         rngFunction:RNGFunction,
         player: CombatPlayer,
-        setPlayer: (newValue: CombatPlayer) => void
+        setPlayer: (newValue: CombatPlayer) => void,
+        entitySpawner: EntitySpawner
     ){
         this.advanceTurn = advanceTurn;
         this.addActionToList = addActionToList;
@@ -54,6 +57,7 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
         this.rngFunction = rngFunction;
         this.player = player;
         this.setPlayer = setPlayer;
+        this.entitySpawner = entitySpawner;
     }
 
     createMap(mapKey: string, rngFunction:RNGFunction): CombatMapTemplate {
@@ -151,7 +155,8 @@ class CombatMapTemplateFactoryJSON implements ICombatMapTemplateFactory{
             this.advanceTurn,
             this.addActionToList,
             this.executeActionsList,
-            this.settingsManager
+            this.settingsManager,
+            this.entitySpawner
         )
         const hazards:CombatHazard[] = hazardFactory.createGivenPositions(hazardPositions);
 

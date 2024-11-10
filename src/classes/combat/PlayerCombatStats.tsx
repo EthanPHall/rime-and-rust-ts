@@ -8,7 +8,7 @@ class PlayerCombatStats {
     private baseSpeed: number;
     private statMods: PlayerCombatStatMod[];
 
-    constructor(baseHealth: number = 10, baseSpeed: number = 5, initialStatMods: PlayerCombatStatMod[] = []){ 
+    constructor(baseHealth: number = 10, baseSpeed: number = 7, initialStatMods: PlayerCombatStatMod[] = []){ 
         this.baseHealth = baseHealth;
         this.baseSpeed = baseSpeed;
         this.statMods = initialStatMods;

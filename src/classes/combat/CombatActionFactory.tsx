@@ -1,6 +1,6 @@
 import Directions from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
-import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion, Chop, Punch, Kick, Burn, Fireball } from "./CombatAction";
+import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion, Chop, Punch, Kick, Burn, Fireball, SpawnBurningRadius, DespawnBurningRadius } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
 import CombatHazard from "./CombatHazard";
 import CombatHazardFireballFactory from "./CombatHazardFireballFactory";
@@ -20,6 +20,8 @@ enum CombatActionNames{
     Kick = "Kick",
     Burn = "Burn",
     Fireball = "Fireball",
+    SpawnBurningRadius = "SpawnBurningRadius",
+    DespawnBurningRadius = "DespawnBurningRadius",
 }
 
 function stringToCombatActionNames(actionName: string): CombatActionNames{
@@ -48,6 +50,10 @@ function stringToCombatActionNames(actionName: string): CombatActionNames{
             return CombatActionNames.Burn;
         case "Fireball":
             return CombatActionNames.Fireball;
+        case "SpawnBurningRadius":
+            return CombatActionNames.SpawnBurningRadius;
+        case "DespawnBurningRadius":
+            return CombatActionNames.DespawnBurningRadius;
         default:
             throw new Error("Invalid action name: " + actionName);
     }
@@ -110,6 +116,10 @@ class CombatActionFactory{
                 return new Burn(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
             case CombatActionNames.Fireball:
                 return new Fireball(ownerId, direction, this.updateEntity, this.refreshMap, this.entitySpawner, this.getMap, this.fireballFactory);
+            case CombatActionNames.SpawnBurningRadius:
+                return new SpawnBurningRadius(ownerId, this.updateEntity, this.refreshMap, this.entitySpawner, this.getMap);
+            case CombatActionNames.DespawnBurningRadius:
+                return new DespawnBurningRadius(ownerId, this.entitySpawner, this.updateEntity, this.refreshMap, this.getMap);
             default:
                 throw new Error("Invalid action name: " + actionName);
         }

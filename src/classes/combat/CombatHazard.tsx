@@ -6,11 +6,12 @@ import Directions from "../utility/Directions";
 import IdGenerator from "../utility/IdGenerator";
 import MapUtilities from "../utility/MapUtilities";
 import Vector2 from "../utility/Vector2";
-import CombatAction, { Attack, BurningFloorAttack, CombatActionWithUses, Move } from "./CombatAction";
+import CombatAction, { Attack, BurningFloorAttack, CombatActionWithUses, DespawnBurningRadius, Move, SpawnBurningRadius } from "./CombatAction";
 import CombatActionFactory from "./CombatActionFactory";
 import CombatEnemy, { AIHandler, Reaction, ReactionFlags } from "./CombatEnemy";
 import CombatEntity from "./CombatEntity";
 import CombatMapData from "./CombatMapData";
+import EntitySpawner from "./EntitySpawner";
 import TurnTaker from "./TurnTaker";
 
 abstract class CombatHazard extends CombatEntity{
@@ -53,6 +54,8 @@ abstract class CombatHazard extends CombatEntity{
 
     abstract handleNewEntityOnThisSpace(newEntity: CombatEntity|null): CombatEntity|null;
     abstract getActionForNewEntityOnSpace(newEntity: CombatEntity|null): CombatAction|null;
+
+    
   }
   
   class Wall extends CombatHazard{
@@ -234,35 +237,65 @@ abstract class CombatHazard extends CombatEntity{
 }
 
 class FireballAI implements AIHandler{
-  entity: CombatEntity;
-  playerPosition: Vector2;
-  playerId: number;
-  getMap: () => CombatMapData;
-  action: CombatActionWithUses;
-  direction:Directions;
+  private entity: CombatEntity;
+  private playerPosition: Vector2;
+  private playerId: number;
+  private getMap: () => CombatMapData;
+  private actionMove: CombatActionWithUses;
+  private actionSpawnAOE: CombatActionWithUses;
+  private actionDespawnAOE: CombatActionWithUses;
+  private direction:Directions;
+  private entitySpawner: EntitySpawner
 
   constructor(entity: CombatEntity, playerPosition: Vector2, playerId: number, getMap: () => CombatMapData,
     updateEntity: (id:number, newEntity: CombatEntity) => void,
     refreshMap: () => void,
-    direction:Directions = Directions.RIGHT
+    direction:Directions = Directions.RIGHT,
+    entitySpawner: EntitySpawner
   ){
     this.entity = entity;
     this.playerPosition = playerPosition;
     this.playerId = playerId;
     this.getMap = getMap;
     this.direction = direction;
-    this.action = new CombatActionWithUses(
+    this.entitySpawner = entitySpawner;
+
+    this.actionMove = new CombatActionWithUses(
       new Move(this.entity.id, this.direction, this.getMap, updateEntity, refreshMap),
       3
+    );
+
+    this.actionSpawnAOE = new CombatActionWithUses(
+      new SpawnBurningRadius(
+        this.entity.id,
+        updateEntity,
+        refreshMap,
+        entitySpawner,
+        getMap,
+      ),
+      1
+    );
+
+    this.actionDespawnAOE = new CombatActionWithUses(
+      new DespawnBurningRadius(
+        this.entity.id,
+        entitySpawner,
+        updateEntity,
+        refreshMap,
+        getMap,
+      ),
+      1
     );
   }
 
   handleAI():CombatAction[]{
     const actions:CombatAction[] = [];
 
-    for(let i = 0; i < this.action.uses; i++){
-      actions.push(this.action.action);
+    actions.push(this.actionDespawnAOE.action);
+    for(let i = 0; i < this.actionMove.uses; i++){
+      actions.push(this.actionMove.action);
     }
+    actions.push(this.actionSpawnAOE.action);
 
     return actions;
   }
@@ -274,6 +307,7 @@ class Fireball extends CombatHazard implements TurnTaker{
   damage: number;
   playerId: number = -1;
   settingsManager:ISettingsManager;
+  entitySpawner: EntitySpawner;
 
   getMap: ()=>CombatMapData;
   updateEntity: (id: number, newEntity: CombatEntity) => void;
@@ -302,6 +336,7 @@ class Fireball extends CombatHazard implements TurnTaker{
     id:number, 
     position: Vector2,
     direction:Directions,
+    entitySpawner: EntitySpawner,
     advanceTurn: () => void,
     addActionToList: (action: CombatAction) => void,
     executeActionsList: () => void,
@@ -320,6 +355,7 @@ class Fireball extends CombatHazard implements TurnTaker{
     this.executeActionsList = executeActionsList;
     this.settingsManager = settingsManager;
     this.direction = direction;
+    this.entitySpawner = entitySpawner;
   }
 
   async executeTurn(): Promise<void> {
@@ -332,7 +368,7 @@ class Fireball extends CombatHazard implements TurnTaker{
     await new Promise((resolve) => setTimeout(resolve, this.settingsManager.getCorrectTiming(CombatEnemy.TURN_START_DELAY)));
 
     if(playerPosition){
-      const aiHandler = new FireballAI(this.combatEntity, playerPosition, this.playerId, this.getMap, this.updateEntity, this.refreshMap, this.direction);
+      const aiHandler = new FireballAI(this.combatEntity, playerPosition, this.playerId, this.getMap, this.updateEntity, this.refreshMap, this.direction, this.entitySpawner);
       const aiActions = aiHandler.handleAI();
 
       for(const action of aiActions){
@@ -351,6 +387,7 @@ class Fireball extends CombatHazard implements TurnTaker{
       this.id, 
       this.position,
       this.direction,
+      this.entitySpawner,
       this.advanceTurn,
       this.addActionToList,
       this.executeActionsList,

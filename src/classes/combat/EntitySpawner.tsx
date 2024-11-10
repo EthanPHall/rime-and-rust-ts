@@ -47,6 +47,26 @@ class EntitySpawner {
             throw new Error("Invalid entity type: " + entity);
         }
     }
+
+    despawnEntities(ids: number[]) {
+        const hazards = this.getHazards();
+        const enemies = this.getEnemies();
+
+        ids.forEach((id) => {
+            const hazardIndex = hazards.findIndex((hazard) => hazard.id === id);
+            if (hazardIndex !== -1) {
+                hazards.splice(hazardIndex, 1);
+            }
+
+            const enemyIndex = enemies.findIndex((enemy) => enemy.id === id);
+            if (enemyIndex !== -1) {
+                enemies.splice(enemyIndex, 1);
+            }
+        });
+
+        this.setHazards(hazards);
+        this.setEnemies(enemies);
+    }
 }
 
 export default EntitySpawner;
