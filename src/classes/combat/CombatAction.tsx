@@ -1219,6 +1219,7 @@ abstract class CombatAction{
         this.getMap().locations[positionToSpawnAt.y][positionToSpawnAt.x].entity
       ){
         console.log('Fireball blocked');
+        this.refreshMap();
         return;
       }
 

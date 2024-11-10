@@ -133,5 +133,35 @@
         "actionKey2": "Fireball",
         "actionUses2": 1,
         "statsMods":[]
+    },
+    "Cartridge": {
+        "key": "Cartridge",
+        "name": "Cartridge",
+        "weapon": false,
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 1
+                }
+            ],
+            "results": [
+                {
+                    "key": "Cartridge",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [],
+        "actionKey": "",
+        "actionUses": 0,
+        "actionKey2": "",
+        "actionUses2": 0,
+        "statsMods":[
+            {
+                "statName": "health",
+                "mod": 4
+            }
+        ]
     }
 }
