@@ -59,6 +59,67 @@
             }
         ]
     },
+    "Psychium Sword": {
+        "key": "Psychium Sword",
+        "name": "Psychium Sword",
+        "weapon": true,
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 1
+                }
+            ],
+            "results": [
+                {
+                    "key": "Psychium Sword",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [],
+        "actionKey": "Slice",
+        "actionUses": 2,
+        "actionKey2": "",
+        "actionUses2": 0,
+        "statsMods":[
+            {
+                "statName": "health",
+                "mod": 2
+            }
+        ]
+    },
+    "Pure Sword": {
+        "key": "Pure Sword",
+        "name": "Pure Sword",
+        "weapon": true,
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 1
+                }
+            ],
+            "results": [
+                {
+                    "key": "Pure Sword",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [],
+        "actionKey": "Lacerate",
+        "actionUses": 2,
+        "actionKey2": "",
+        "actionUses2": 0,
+        "statsMods":[
+            {
+                "statName": "health",
+                "mod": 3
+            }
+        ]
+    },
+
     "Grappling Hook": {
         "key": "Grappling Hook",
         "name": "Grappling Hook",
