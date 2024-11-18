@@ -97,6 +97,44 @@ abstract class CombatHazard extends CombatEntity{
     }
   }
 
+  class InvisibleWall extends CombatHazard{
+    static WALL_HP = Infinity;
+    static WALL_DESCRIPTION:string = '';
+  
+    constructor(id:number, hp: number, maxHp: number, symbol: string, name: string, position: Vector2, solid: boolean){
+      super(id, InvisibleWall.WALL_HP, InvisibleWall.WALL_HP, "0", "invisible-wall", position, solid, InvisibleWall.WALL_DESCRIPTION, true);
+    }
+  
+    static createDefaultWall(position: Vector2): InvisibleWall{
+      return new InvisibleWall(IdGenerator.generateUniqueId(), InvisibleWall.WALL_HP, InvisibleWall.WALL_HP, '0', 'invisible-wall', position, true);
+    }
+  
+    static createDefaultWalls(startEndPointPair: {start:Vector2, end:Vector2}[]): InvisibleWall[]{
+      const walls: InvisibleWall[] = [];
+  
+      startEndPointPair.forEach(pair => {
+        const line:Vector2[] = MapUtilities.getLineBetweenPoints(pair.start, pair.end);
+  
+        line.forEach(point => {
+          walls.push(InvisibleWall.createDefaultWall(point));
+        });
+      });
+  
+      return walls;
+    }
+
+    clone(): CombatHazard{
+      return new InvisibleWall(this.id, this.hp, this.maxHp, this.symbol, this.name, this.position, this.solid);
+    }
+
+    handleNewEntityOnThisSpace(newEntity: CombatEntity|null): CombatEntity|null {
+      this.previousEntityOnThisSpace = newEntity;
+      return null;
+    }
+    getActionForNewEntityOnSpace(newEntity: CombatEntity | null): CombatAction | null {
+      return null;
+    }
+  }
 
 
 
@@ -428,4 +466,4 @@ class Fireball extends CombatHazard implements TurnTaker{
 
 
 export default CombatHazard;
-export { Wall, VolatileCanister, BurningFloor, Fireball };
+export { InvisibleWall, Wall, VolatileCanister, BurningFloor, Fireball };

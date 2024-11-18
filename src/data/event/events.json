@@ -244,6 +244,166 @@
                     ]
                 }
             ]
+        },
+        {
+            "key":"medium-1-combat-2",
+            "name": "City Streets",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "A not-so-lifeless city.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat medium-1-combat-2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"medium-2-combat-1",
+            "name": "Rival Caravan",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "A rival in our territory.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat medium-2-combat-1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"medium-2-combat-2",
+            "name": "Broke for Camp",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "Fires led the way.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat medium-2-combat-2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"medium-3-combat-1",
+            "name": "Tower",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "Ambushed near the top.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat medium-3-combat-1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"medium-3-combat-2",
+            "name": "Warehouse",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "Useful items, dangerous foes.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat medium-3-combat-2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"medium-4-combat-1",
+            "name": "A Battle",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "Rival caravans fight for dominance.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat medium-4-combat-1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"hard-1-combat-1",
+            "name": "Tanks",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "Rusted fools will blow everything up.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat hard-1-combat-1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"hard-1-combat-2",
+            "name": "Defences",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "Lines of fences guard the base.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat hard-1-combat-2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"hard-2-combat-1",
+            "name": "Active Production",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "The factory roars with activity.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat hard-2-combat-1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"hard-2-combat-2",
+            "name": "Living Facility",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "The facility itself is against me.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat hard-2-combat-2"
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

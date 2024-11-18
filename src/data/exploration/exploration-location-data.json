@@ -376,11 +376,76 @@
             "eventKeyChancePairs":[
                 {
                     "eventKey":"medium-1-combat-1",
-                    "chance": 100
+                    "chance": 50
                 },
                 {
                     "eventKey":"medium-1-combat-2",
+                    "chance": 50
+                }
+            ]
+        },
+        {
+            "key":"medium-2",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"medium-2-combat-1",
+                    "chance": 50
+                },
+                {
+                    "eventKey":"medium-2-combat-2",
+                    "chance": 50
+                }
+            ]
+        },
+        {
+            "key":"medium-3",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"medium-3-combat-1",
+                    "chance": 50
+                },
+                {
+                    "eventKey":"medium-3-combat-2",
+                    "chance": 50
+                }
+            ]
+        },
+        {
+            "key":"medium-4",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"medium-4-combat-1",
+                    "chance": 100
+                },
+                {
+                    "eventKey":"medium-4-combat-2",
                     "chance": 0
+                }
+            ]
+        },
+        {
+            "key":"hard-1",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"hard-1-combat-1",
+                    "chance": 50
+                },
+                {
+                    "eventKey":"hard-1-combat-2",
+                    "chance": 50
+                }
+            ]
+        },
+        {
+            "key":"hard-2",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"hard-2-combat-1",
+                    "chance": 50
+                },
+                {
+                    "eventKey":"hard-2-combat-2",
+                    "chance": 50
                 }
             ]
         }

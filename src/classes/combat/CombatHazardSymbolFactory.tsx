@@ -1,6 +1,6 @@
 import IdGenerator from "../utility/IdGenerator";
 import Vector2 from "../utility/Vector2";
-import CombatHazard, { BurningFloor, Fireball, VolatileCanister, Wall } from "./CombatHazard";
+import CombatHazard, { BurningFloor, Fireball, InvisibleWall, VolatileCanister, Wall } from "./CombatHazard";
 import ICombatHazardFactory from "./ICombatHazardFactory";
 import hazardsJSONData from "../../data/combat/hazards.json"
 import hazardGroupsJSONData from "../../data/combat/hazard-groups.json"
@@ -70,6 +70,10 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
         switch(hazardKey){
             case hazardsJSONData.keys.basicWall:    
                 return Wall.createDefaultWall(
+                    position
+                );
+            case hazardsJSONData.keys.invisibleWall:    
+                return InvisibleWall.createDefaultWall(
                     position
                 );
             case hazardsJSONData.keys.burning:    

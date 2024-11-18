@@ -89,7 +89,7 @@ const CombatMapFramerMotion: FC<CombatMapProps> = ({map, setMap, aoeToDisplay, s
 
                     onClick={() => {console.log(location)}} 
                     id={positionToId(new Vector2(j, i))} 
-                    className={`combat-map-location ${location.highlight ? "highlight" : ""}`} 
+                    className={`combat-map-location ${location.highlight ? "highlight" : ""} ${location.name.split(" ")[0] == "invisible-wall" ? "invisible" : ""}`} 
                     key={"combat-map-location:" + location.y*10+location.x}>
                       {location.symbol}
                   </motion.span>

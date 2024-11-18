@@ -53,6 +53,77 @@
                     "percent": 0
                 }
             ]
+        },
+        {
+            "hazardGroupKey": "medium-2-group-1",
+            "hazards":[
+                {
+                    "hazardKey": "burning-floor",
+                    "percent": 100
+                }
+            ]
+        },
+        {
+            "hazardGroupKey": "medium-3-group-1",
+            "hazards":[
+                {
+                    "hazardKey": "basic-wall",
+                    "percent": 60
+                },
+                {
+                    "hazardKey": "volatile-canister",
+                    "percent": 40
+                }
+            ]
+        },
+        {
+            "hazardGroupKey": "medium-4-group-1",
+            "hazards":[
+                {
+                    "hazardKey": "burning-floor",
+                    "percent": 100
+                }
+            ]
+        },
+        {
+            "hazardGroupKey": "hard-1-group-1",
+            "hazards":[
+                {
+                    "hazardKey": "burning-floor",
+                    "percent": 100
+                }
+            ]
+        },
+        {
+            "hazardGroupKey": "hard-1-group-2",
+            "hazards":[
+                {
+                    "hazardKey": "volatile-canister",
+                    "percent": 20
+                },
+                {
+                    "hazardKey": "basic-wall",
+                    "percent": 80
+                }
+            ]
+        },
+        {
+            "hazardGroupKey": "hard-2-group-1",
+            "hazards":[
+                {
+                    "hazardKey": "burning-floor",
+                    "percent": 100
+                }
+            ]
+        },
+        {
+            "hazardGroupKey": "hard-2-group-2",
+            "hazards":[
+                {
+                    "hazardKey": "burning-floor",
+                    "percent": 100
+                }
+            ]
         }
         
     ]

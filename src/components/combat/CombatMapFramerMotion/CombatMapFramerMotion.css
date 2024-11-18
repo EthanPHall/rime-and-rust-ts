@@ -9,6 +9,8 @@
 
     font-size: var(--font-size-much-larger);
     font-family: monospace;
+
+    padding: var(--combat-location-width);
 }
 
 .combat-map .combat-map-row{
@@ -20,6 +22,10 @@
 
 .combat-map-location {
     width: var(--combat-location-width);
+}
+
+.invisible{
+    visibility: hidden;
 }
 
 @keyframes textGrow {

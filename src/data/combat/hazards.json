@@ -3,7 +3,8 @@
         "basicWall":"basic-wall",
         "volatileCanister":"volatile-canister",
         "burning":"burning-floor",
-        "fireball":"fireball"
+        "fireball":"fireball",
+        "invisibleWall":"invisible-wall"
     },
     "hazards":[
         {
@@ -17,6 +18,14 @@
         {
             "hazardKey":"burning-floor",
             "mapGenerationSymbol":"F"
+        },
+        {
+            "hazardKey":"fireball",
+            "mapGenerationSymbol":">"
+        },
+        {
+            "hazardKey":"invisible-wall",
+            "mapGenerationSymbol":"0"
         }
     ]
 }
