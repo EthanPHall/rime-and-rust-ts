@@ -99,33 +99,28 @@
             }
         ]
     },
-    "Scavenger Sled": {
-        "key": "Scavenger Sled",
-        "name": "Scavenger Sled",
+    "My Sled": {
+        "key": "My Sled",
+        "name": "My Sled",
         "recipe": {
-            "costs": [
-                {
-                    "key": "Scrap",
-                    "quantity": 100
-                },
-                {
-                    "key": "Junk",
-                    "quantity": 50
-                }
-            ],
-            "results": []
+            "costs": [],
+            "results": [
+            ]
         },
         "unlockFlags": [],
         "passiveRecipe": {
-            "costs": [
-                {
-                    "key": "Junk",
-                    "quantity": 1
-                }
-            ],
+            "costs": [],
             "results": [
                 {
                     "key": "Scrap",
+                    "quantity": 1
+                },
+                {
+                    "key": "Wood",
+                    "quantity": 2
+                },
+                {
+                    "key": "Lashing",
                     "quantity": 1
                 }
             ]
@@ -133,12 +128,276 @@
         "workers": 0,
         "canCraftList": [
             {
-                "key": "Scrap"
+                "key": "Scavenger Sled"
             },
             {
-                "key": "Debug Pure Psychium"
+                "key": "Lab Sled"
             }
         ]
+    },
+    "Scavenger Sled": {
+        "key": "Scavenger Sled",
+        "name": "Scavenger Sled",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 50
+                },
+                {
+                    "key": "Wood",
+                    "quantity": 100
+                },
+                {
+                    "key": "Lashing",
+                    "quantity": 40
+                }
+            ],
+            "results": [
+                {
+                    "key": "Scavenger Sled",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [],
+        "passiveRecipe": {
+            "costs": [],
+            "results": [
+                {
+                    "key": "Junk",
+                    "quantity": 5
+                },
+                {
+                    "key": "Scrap",
+                    "quantity": 3
+                },
+                {
+                    "key": "Wood",
+                    "quantity": 1
+                }
+            ]
+        },
+        "workers": 0,
+        "canCraftList": [
+            {
+                "key": "Workshop Sled"
+            },
+            {
+                "key": "Forge Sled"
+            },
+            {
+                "key": "Sled Dog"
+            }
+        ]
+    },
+    "Workshop Sled": {
+        "key": "Workshop Sled",
+        "name": "Workshop Sled",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 250
+                },
+                {
+                    "key": "Wood",
+                    "quantity": 250
+                },
+                {
+                    "key": "Lashing",
+                    "quantity": 40
+                }
+            ],
+            "results": [
+                {
+                    "key": "Workshop Sled",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [],
+        "passiveRecipe": {
+            "costs": [
+                {
+                    "key": "Junk",
+                    "quantity": 10
+                }
+            ],
+            "results": [
+                {
+                    "key": "Wood",
+                    "quantity": 5
+                }
+            ]
+        },
+        "workers": 0,
+        "canCraftList": [
+            {
+                "key": "House Sled"
+            },
+            {
+                "key": "Lashing"
+            }
+        ]
+    },
+    "House Sled": {
+        "key": "House Sled",
+        "name": "House Sled",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 150
+                },
+                {
+                    "key": "Wood",
+                    "quantity": 450
+                },
+                {
+                    "key": "Lashing",
+                    "quantity": 65
+                }
+            ],
+            "results": [
+                {
+                    "key": "House Sled",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [],
+        "passiveRecipe": {
+            "costs": [
+                {
+                    "key": "Junk",
+                    "quantity": 10
+                }
+            ],
+            "results": [
+                {
+                    "key": "Wood",
+                    "quantity": 2
+                },
+                {
+                    "key": "Scrap",
+                    "quantity": 2
+                },
+                {
+                    "key": "Lashing",
+                    "quantity": 2
+                }
+            ]
+        },
+        "workers": 0,
+        "canCraftList": []
+    },
+    "Lab Sled": {
+        "key": "Lab Sled",
+        "name": "Lab Sled",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 350
+                },
+                {
+                    "key": "Wood",
+                    "quantity": 650
+                },
+                {
+                    "key": "Lashing",
+                    "quantity": 130
+                },
+                {
+                    "key": "Psychium Scrap",
+                    "quantity": 5
+                },
+                {
+                    "key": "Components",
+                    "quantity": 5
+                }
+            ],
+            "results": [
+                {
+                    "key": "Lab Sled",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [
+            "Obtained Components"
+        ],
+        "passiveRecipe": {
+            "costs": [
+                {
+                    "key": "Junk",
+                    "quantity": 50
+                },
+                {
+                    "key": "Psychium Scrap",
+                    "quantity": 3
+                }
+            ],
+            "results": [
+                {
+                    "key": "Components",
+                    "quantity": 1
+                }
+            ]
+        },
+        "workers": 0,
+        "canCraftList": [
+            {
+                "key": "Components"
+            },
+            {
+                "key": "Cartridge"
+            },
+            {
+                "key": "Telekinesis Drive"
+            },
+            {
+                "key": "Pyrokinesis Drive"
+            }
+        ]
+    },
+    "Reinforced Sled": {
+        "key": "Reinforced Sled",
+        "name": "Reinforced Sled",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 250
+                },
+                {
+                    "key": "Wood",
+                    "quantity": 450
+                },
+                {
+                    "key": "Lashing",
+                    "quantity": 90
+                },
+                {
+                    "key": "Psychium Scrap",
+                    "quantity": 1
+                }
+            ],
+            "results": [
+                {
+                    "key": "Reinforced Sled",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [],
+        "passiveRecipe": {
+            "costs": [],
+            "results": []
+        },
+        "workers": 0,
+        "canCraftList": []
     },
     "Scavenger Sled Cheap": {
         "key": "Scavenger Sled Cheap",
@@ -193,25 +452,30 @@
             "costs": [
                 {
                     "key": "Scrap",
-                    "quantity": 300
+                    "quantity": 350
                 },
                 {
-                    "key": "Psychium Scrap",
-                    "quantity": 20
+                    "key": "Wood",
+                    "quantity": 150
+                },
+                {
+                    "key": "Lashing",
+                    "quantity": 40
                 }
             ],
-            "results": []
+            "results": [
+                {
+                    "key": "Forge Sled",
+                    "quantity": 1
+                }
+            ]
         },
         "unlockFlags": [],
         "passiveRecipe": {
             "costs": [
                 {
                     "key": "Scrap",
-                    "quantity": 5
-                },
-                {
-                    "key": "Junk",
-                    "quantity": 10
+                    "quantity": 100
                 }
             ],
             "results": [
@@ -231,6 +495,15 @@
             },
             {
                 "key": "Scrap Sword"
+            },
+            {
+                "key": "Psychium Sword"
+            },
+            {
+                "key": "Pure Sword"
+            },
+            {
+                "key": "Reinforced Sled"
             }
         ]
     },

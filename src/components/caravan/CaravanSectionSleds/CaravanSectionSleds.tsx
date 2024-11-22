@@ -5,6 +5,7 @@ import { IItemFactory, Recipe, SledDogQuantity, SledQuantity } from '../../../cl
 import { ItemFactoryContext } from '../../../App';
 import Popup from 'reactjs-popup';
 import IdGenerator from '../../../classes/utility/IdGenerator';
+import sledsJson from '../../../data/caravan/sleds.json';
 
 interface CaravanSectionSledsProps {
   sleds:Sled[];
@@ -18,6 +19,7 @@ interface CaravanSectionSledsProps {
 
 const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sleds, setSleds, dogs, workers, setWorkers, executeRecipe, sellSled}) => {
   const SLED_MAX_WORKERS = 10;
+  const MY_SLED_WORKERS = 0;
   
   const itemFactory:IItemFactory = useContext(ItemFactoryContext);
 
@@ -40,6 +42,9 @@ const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sleds, setSleds, dog
     }
   }
 
+  function isMySled(sled:Sled):boolean{
+    return sled.getKey() == sledsJson['My Sled'].key;
+  }
 
   
   // Split sleds into groups of 3
@@ -88,7 +93,7 @@ trigger=
 <div className='sled'>
     {sled.getName()}
     <br/>    
-    {sled.getWorkers()}/{SLED_MAX_WORKERS}     
+    {!isMySled(sled) && `${sled.getWorkers()}/${SLED_MAX_WORKERS}`}     
     {`
                       +#+
 ++-                 ++-##+
@@ -104,41 +109,58 @@ position={['bottom center', 'top center']}
 on={['hover', 'focus']}
 >
   <div className='tooltip'>
-    Workers: {sled.getWorkers()}
-    <div className='add-subtract-section'>
-      <button onClick={() => {removeWorkersFromSled(sled, 1)}}>- workers</button>
-      <button onClick={() => {addWorkersToSled(sled, 1)}}>+ workers</button>
-    </div>
-    <div className='add-subtract-section'>
-      <button onClick={() => {removeWorkersFromSled(sled, 5)}}>-5 workers</button>
-      <button onClick={() => {addWorkersToSled(sled, 5)}}>+5 workers</button>
-    </div>
-    <div className='passive-recipe-section'>
-      <div className='resources-separator'></div>
-      {
-        sled.getWorkerAdjustedPassiveRecipe(itemFactory).getCosts().map((cost, index) => {
-          return (
-            <div key={`passive-recipe-costs-entry-${index}`} className='passive-recipe-entry'>
-              <div className='cost-name'>{cost.getBaseItem().getName()}:</div>
-              <div className='cost-amount'>-{cost.getQuantity()}</div>
-            </div>
-          )
-        })
-      }
-      <div className='resources-separator'></div>
-      {
-        sled.getWorkerAdjustedPassiveRecipe(itemFactory).getResults().map((cost, index) => {
-          return (
-            <div key={`passive-recipe-result-entry-${index}`} className='passive-recipe-entry'>
-              <div className='result-name'>{cost.getBaseItem().getName()}:</div>
-              <div className='result-amount'>+{cost.getQuantity()}</div>
-            </div>
-          )
-        })
-      }
-    </div>
+    {!isMySled(sled) && `Workers: ${sled.getWorkers()}`}
+    {
+      //No need to add or subtract workers from "my sled"
+      !isMySled(sled) &&
+      <>
+        <div className='add-subtract-section'>
+          <button onClick={() => {removeWorkersFromSled(sled, 1)}}>- workers</button>
+          <button onClick={() => {addWorkersToSled(sled, 1)}}>+ workers</button>
+        </div>
+        <div className='add-subtract-section'>
+          <button onClick={() => {removeWorkersFromSled(sled, 5)}}>-5 workers</button>
+          <button onClick={() => {addWorkersToSled(sled, 5)}}>+5 workers</button>
+        </div>
+      </>
+    }
+    {
+      isMySled(sled) ?
+
+        <button onClick={() => executeRecipe(sled.getPassiveRecipe().convertToRecipe(itemFactory))}>Scavenge for Resources</button>
+        :
+        <div className='passive-recipe-section'>
+          <div className='resources-separator'></div>
+          {
+            sled.getWorkerAdjustedPassiveRecipe(itemFactory).getCosts().map((cost, index) => {
+              return (
+                <div key={`passive-recipe-costs-entry-${index}`} className='passive-recipe-entry'>
+                  <div className='cost-name'>{cost.getBaseItem().getName()}:</div>
+                  <div className='cost-amount'>-{cost.getQuantity()}</div>
+                </div>
+              )
+            })
+          }
+          <div className='resources-separator'></div>
+          {
+            sled.getWorkerAdjustedPassiveRecipe(itemFactory).getResults().map((cost, index) => {
+              return (
+                <div key={`passive-recipe-result-entry-${index}`} className='passive-recipe-entry'>
+                  <div className='result-name'>{cost.getBaseItem().getName()}:</div>
+                  <div className='result-amount'>+{cost.getQuantity()}</div>
+                </div>
+              )
+            })
+          }
+        </div>
+    }
     <div className='sell-section'>
-      <button onClick={() => {sellSled(sled)}}>Sell</button>
+      {
+        isMySled(sled) ?
+          <></>// <button>Upgrade</button>
+          :
+          <button onClick={() => {sellSled(sled)}}>Sell</button>
+      }
     </div>
   </div>
 </Popup>

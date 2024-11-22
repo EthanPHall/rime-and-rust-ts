@@ -85,6 +85,9 @@ enum MainGameScreens{
 
 
 function App() {
+  const INITIAL_SLED = "My Sled";
+  const INITIAL_SLED_DOGS = 3;
+
   const [progressionFlags, setProgressionFlags] = React.useState<ProgressionFlags>(new ProgressionFlags(progressionFlagsData));
   const progressionFlagsRef = useRef(progressionFlags);
   useEffect(() => {progressionFlagsRef.current = progressionFlags}, [progressionFlags])
@@ -100,7 +103,8 @@ function App() {
   const [inventory, getInventory, setInventory] = useRefState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([
       // new ItemQuantity(itemFactoryContext.createItem("Scavenger Sled Cheap"), 11),
       // new ItemQuantity(itemFactoryContext.createItem("Forge Sled"), 1),
-      new ItemQuantity(itemFactoryContext.createItem("Debug Sled"), 1),
+      new ItemQuantity(itemFactoryContext.createItem(INITIAL_SLED), 1),
+      new ItemQuantity(itemFactoryContext.createItem("Sled Dog"), INITIAL_SLED_DOGS),
     ],
     itemFactoryContext
   ));

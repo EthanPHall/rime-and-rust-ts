@@ -61,6 +61,25 @@
         },
         "unlockFlags": []
     },
+    "Wood": {
+        "key": "Wood",
+        "name": "Wood",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Junk",
+                    "quantity": 1
+                }
+            ],
+            "results": [
+                {
+                    "key": "Wood",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": []
+    },
     "Psychium Scrap": {
         "key": "Psychium Scrap",
         "name": "Psychium Scrap",
@@ -102,6 +121,81 @@
             ]
         },
         "unlockFlags": ["Obtained Pure Psychium"]
+    },
+    "Lashing": {
+        "key": "Lashing",
+        "name": "Lashing",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Wood",
+                    "quantity": 10
+                },
+                {
+                    "key": "Junk",
+                    "quantity": 5
+                }
+            ],
+            "results": [
+                {
+                    "key": "Lashing",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": []
+    },
+    "Components": {
+        "key": "Components",
+        "name": "Components",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Psychium Scrap",
+                    "quantity": 10
+                }
+            ],
+            "results": [
+                {
+                    "key": "Components",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [
+            "Obtained Components"
+        ]
+    },
+    "Reinforced Sled": {
+        "key": "Reinforced Sled",
+        "name": "Reinforced Sled",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 250
+                },
+                {
+                    "key": "Wood",
+                    "quantity": 450
+                },
+                {
+                    "key": "Lashing",
+                    "quantity": 90
+                },
+                {
+                    "key": "Psychium Scrap",
+                    "quantity": 1
+                }
+            ],
+            "results": [
+                {
+                    "key": "Reinforced Sled",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": []
     },
     "Debug Pure Psychium": {
         "key": "Debug Pure Psychium",
