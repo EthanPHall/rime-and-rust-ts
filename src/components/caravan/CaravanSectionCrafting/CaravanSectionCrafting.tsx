@@ -55,12 +55,14 @@ const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeRe
                             buttonText={item1.getName()} 
                             popupText={item1.getRecipe().convertToRecipe(itemFactory).stringifyCosts()} 
                             onClick={() => {executeRecipe(item1.getRecipe().convertToRecipe(itemFactory))}}
+                            popupLeft={true}
                           ></HoverButton>
                           {item2 && 
                             <HoverButton
                               buttonText={item2.getName()}
                               popupText={item2.getRecipe().convertToRecipe(itemFactory).stringifyCosts()}
                               onClick={() => {executeRecipe(item2.getRecipe().convertToRecipe(itemFactory))}}
+                              popupRight={true}
                             ></HoverButton>}
                         </div>
                       );
@@ -84,6 +86,7 @@ const CaravanSectionCrafting: FC<CaravanSectionCraftingProps> = ({sleds, tradeRe
                 buttonText={item.getName()}
                 popupText={tradeManager.getTradeRecipe(item.getRecipe().convertToRecipe(itemFactory)).stringifyCosts()}
                 onClick={() => {executeRecipe(tradeManager.getTradeRecipe(item.getRecipe().convertToRecipe(itemFactory)))}}
+                popupLeft={true}
               ></HoverButton>
             );
           })

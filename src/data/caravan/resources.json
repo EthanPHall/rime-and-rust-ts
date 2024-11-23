@@ -197,6 +197,27 @@
         },
         "unlockFlags": []
     },
+    "Nutrient Slurry": {
+        "key": "Nutrient Slurry",
+        "name": "Nutrient Slurry",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Junk",
+                    "quantity": 150
+                }
+            ],
+            "results": [
+                {
+                    "key": "Nutrient Slurry",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": [
+            "Obtained House Sled"
+        ]
+    },
     "Debug Pure Psychium": {
         "key": "Debug Pure Psychium",
         "name": "Pure Psychium",

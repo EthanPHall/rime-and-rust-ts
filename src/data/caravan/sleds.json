@@ -129,9 +129,6 @@
         "canCraftList": [
             {
                 "key": "Scavenger Sled"
-            },
-            {
-                "key": "Lab Sled"
             }
         ]
     },
@@ -182,9 +179,6 @@
         "canCraftList": [
             {
                 "key": "Workshop Sled"
-            },
-            {
-                "key": "Forge Sled"
             },
             {
                 "key": "Sled Dog"
@@ -238,6 +232,12 @@
             },
             {
                 "key": "Lashing"
+            },
+            {
+                "key": "Lab Sled"
+            },
+            {
+                "key": "Forge Sled"
             }
         ]
     },
@@ -271,7 +271,7 @@
             "costs": [
                 {
                     "key": "Junk",
-                    "quantity": 10
+                    "quantity": 20
                 }
             ],
             "results": [
@@ -286,11 +286,19 @@
                 {
                     "key": "Lashing",
                     "quantity": 2
+                },
+                {
+                    "key": "Nutrient Slurry",
+                    "quantity": 1
                 }
             ]
         },
         "workers": 0,
-        "canCraftList": []
+        "canCraftList": [
+            {
+                "key": "Nutrient Slurry"
+            }
+        ]
     },
     "Lab Sled": {
         "key": "Lab Sled",
@@ -359,6 +367,9 @@
             },
             {
                 "key": "Pyrokinesis Drive"
+            },
+            {
+                "key": "Grappling Hook"
             }
         ]
     },

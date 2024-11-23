@@ -37,7 +37,11 @@
             "costs": [
                 {
                     "key": "Scrap",
-                    "quantity": 1
+                    "quantity": 100
+                },
+                {
+                    "key": "Wood",
+                    "quantity": 150
                 }
             ],
             "results": [
@@ -66,8 +70,12 @@
         "recipe": {
             "costs": [
                 {
+                    "key": "Psychium Scrap",
+                    "quantity": 50
+                },
+                {
                     "key": "Scrap",
-                    "quantity": 1
+                    "quantity": 200
                 }
             ],
             "results": [
@@ -77,7 +85,9 @@
                 }
             ]
         },
-        "unlockFlags": [],
+        "unlockFlags": [
+            "Obtained Psychium Scrap"
+        ],
         "actionKey": "Slice",
         "actionUses": 2,
         "actionKey2": "",
@@ -96,8 +106,16 @@
         "recipe": {
             "costs": [
                 {
+                    "key": "Pure Psychium",
+                    "quantity": 100
+                },
+                {
+                    "key": "Psychium Scrap",
+                    "quantity": 300
+                },
+                {
                     "key": "Scrap",
-                    "quantity": 1
+                    "quantity": 900
                 }
             ],
             "results": [
@@ -107,7 +125,9 @@
                 }
             ]
         },
-        "unlockFlags": [],
+        "unlockFlags": [
+            "Obtained Pure Psychium"
+        ],
         "actionKey": "Lacerate",
         "actionUses": 2,
         "actionKey2": "",
@@ -127,8 +147,16 @@
         "recipe": {
             "costs": [
                 {
-                    "key": "Scrap",
-                    "quantity": 1
+                    "key": "Psychium Scrap",
+                    "quantity": 30
+                },
+                {
+                    "key": "Lashing",
+                    "quantity": 200
+                },
+                {
+                    "key": "Components",
+                    "quantity": 10
                 }
             ],
             "results": [
@@ -152,7 +180,15 @@
         "recipe": {
             "costs": [
                 {
-                    "key": "Scrap",
+                    "key": "Components",
+                    "quantity": 100
+                },
+                {
+                    "key": "Psychium Scrap",
+                    "quantity": 70
+                },
+                {
+                    "key": "Cartridge",
                     "quantity": 1
                 }
             ],
@@ -177,7 +213,19 @@
         "recipe": {
             "costs": [
                 {
-                    "key": "Scrap",
+                    "key": "Components",
+                    "quantity": 250
+                },
+                {
+                    "key": "Psychium Scrap",
+                    "quantity": 140
+                },
+                {
+                    "key": "Pure Psychium",
+                    "quantity": 5
+                },
+                {
+                    "key": "Cartridge",
                     "quantity": 1
                 }
             ],
@@ -202,8 +250,20 @@
         "recipe": {
             "costs": [
                 {
+                    "key": "Components",
+                    "quantity": 10
+                },
+                {
+                    "key": "Psychium Scrap",
+                    "quantity": 20
+                },
+                {
                     "key": "Scrap",
-                    "quantity": 1
+                    "quantity": 50
+                },
+                {
+                    "key": "Nutrient Slurry",
+                    "quantity": 50
                 }
             ],
             "results": [
