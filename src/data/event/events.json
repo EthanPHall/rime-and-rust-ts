@@ -17,8 +17,23 @@
     },
     "randomEvents":[
         {
-            "key":"survivors-increase",
-            "chance": 100,
+            "key":"survivors-increase-1",
+            "chance": 20,
+            "cooldown_eventTriggersToSkip": 5
+        },
+        {
+            "key":"survivors-increase-2",
+            "chance": 10,
+            "cooldown_eventTriggersToSkip": 5
+        },
+        {
+            "key":"survivors-increase-3",
+            "chance": 5,
+            "cooldown_eventTriggersToSkip": 5
+        },
+        {
+            "key":"survivors-increase-4",
+            "chance": 5,
             "cooldown_eventTriggersToSkip": 5
         }
     ],
@@ -41,7 +56,7 @@
             ]
         },
         {
-            "key":"survivors-increase",
+            "key":"survivors-increase-1",
             "name": "A lone survivor",
             "scenes":[
                 {
@@ -54,6 +69,57 @@
                         }
                     ],
                     "amount": 1
+                }
+            ]
+        },
+        {
+            "key":"survivors-increase-2",
+            "name": "Survivors",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "Two survivors joined the caravan.",
+                    "type":"survivors-increase",
+                    "options":[
+                        {
+                            "actionType":"closeAndModifyWorkers"
+                        }
+                    ],
+                    "amount": 2
+                }
+            ]
+        },
+        {
+            "key":"survivors-increase-3",
+            "name": "A group of survivors",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "Several survivors seek refuge in the caravan.",
+                    "type":"survivors-increase",
+                    "options":[
+                        {
+                            "actionType":"closeAndModifyWorkers"
+                        }
+                    ],
+                    "amount": 3
+                }
+            ]
+        },
+        {
+            "key":"survivors-increase-4",
+            "name": "Remnants of a caravan",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "Refugees from a destroyed caravan ask to join.",
+                    "type":"survivors-increase",
+                    "options":[
+                        {
+                            "actionType":"closeAndModifyWorkers"
+                        }
+                    ],
+                    "amount": 4
                 }
             ]
         },

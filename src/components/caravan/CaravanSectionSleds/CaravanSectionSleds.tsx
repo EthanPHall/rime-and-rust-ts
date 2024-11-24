@@ -12,12 +12,13 @@ interface CaravanSectionSledsProps {
   setSleds:React.Dispatch<React.SetStateAction<Sled[]>>;
   dogs:SledDogQuantity[];
   workers:number;
+  workersMax:number;
   setWorkers:React.Dispatch<React.SetStateAction<number>>
   executeRecipe:(recipe:Recipe) => void;
   sellSled:(sled:Sled) => void;
 }
 
-const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sleds, setSleds, dogs, workers, setWorkers, executeRecipe, sellSled}) => {
+const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sleds, setSleds, dogs, workers, workersMax, setWorkers, executeRecipe, sellSled}) => {
   const SLED_MAX_WORKERS = 10;
   const MY_SLED_WORKERS = 0;
   
@@ -185,7 +186,7 @@ on={['hover', 'focus']}
   }
 
   return (<div className="caravan-section-sleds" data-testid="caravan-section-sleds">
-    <div className='survivors-count'>Survivors: {workers}, Sleds: {sleds.length}</div>
+    <div className='survivors-count'>Survivors: {workers}/{workersMax}, Sleds: {sleds.length}</div>
     {
       sledGroups.map((group) => {
         return (

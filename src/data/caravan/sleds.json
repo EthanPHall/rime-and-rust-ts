@@ -43,7 +43,8 @@
             {
                 "key": "craftableItem2"
             }
-        ]
+        ],
+        "maxWorkersAugment": 1
     },
     "Debug Sled":{
         "key": "Debug Sled",
@@ -97,7 +98,8 @@
             {
                 "key": "Cartridge"
             }
-        ]
+        ],
+        "maxWorkersAugment": 1
     },
     "My Sled": {
         "key": "My Sled",
@@ -130,7 +132,8 @@
             {
                 "key": "Scavenger Sled"
             }
-        ]
+        ],
+        "maxWorkersAugment": 0
     },
     "Scavenger Sled": {
         "key": "Scavenger Sled",
@@ -183,7 +186,8 @@
             {
                 "key": "Sled Dog"
             }
-        ]
+        ],
+        "maxWorkersAugment": 1
     },
     "Workshop Sled": {
         "key": "Workshop Sled",
@@ -239,7 +243,8 @@
             {
                 "key": "Forge Sled"
             }
-        ]
+        ],
+        "maxWorkersAugment": 1
     },
     "House Sled": {
         "key": "House Sled",
@@ -298,7 +303,8 @@
             {
                 "key": "Nutrient Slurry"
             }
-        ]
+        ],
+        "maxWorkersAugment": 5
     },
     "Lab Sled": {
         "key": "Lab Sled",
@@ -371,44 +377,8 @@
             {
                 "key": "Grappling Hook"
             }
-        ]
-    },
-    "Reinforced Sled": {
-        "key": "Reinforced Sled",
-        "name": "Reinforced Sled",
-        "recipe": {
-            "costs": [
-                {
-                    "key": "Scrap",
-                    "quantity": 250
-                },
-                {
-                    "key": "Wood",
-                    "quantity": 450
-                },
-                {
-                    "key": "Lashing",
-                    "quantity": 90
-                },
-                {
-                    "key": "Psychium Scrap",
-                    "quantity": 1
-                }
-            ],
-            "results": [
-                {
-                    "key": "Reinforced Sled",
-                    "quantity": 1
-                }
-            ]
-        },
-        "unlockFlags": [],
-        "passiveRecipe": {
-            "costs": [],
-            "results": []
-        },
-        "workers": 0,
-        "canCraftList": []
+        ],
+        "maxWorkersAugment": 1
     },
     "Scavenger Sled Cheap": {
         "key": "Scavenger Sled Cheap",
@@ -454,7 +424,8 @@
             {
                 "key": "Pure Psychium"
             }
-        ]
+        ],
+        "maxWorkersAugment": 1
     },
     "Forge Sled": {
         "key": "Forge Sled",
@@ -516,7 +487,8 @@
             {
                 "key": "Reinforced Sled"
             }
-        ]
+        ],
+        "maxWorkersAugment": 1
     },
     "Forge Sled Cheap": {
         "key": "Forge Sled Cheap",
@@ -561,7 +533,8 @@
             {
                 "key": "Scrap Sword"
             }
-        ]
+        ],
+        "maxWorkersAugment": 1
     },
     "Invalid Sled": {
         "key": "Invalid Sled",
@@ -581,6 +554,7 @@
             "results": []
         },
         "workers": 0,
-        "canCraftList": []
+        "canCraftList": [],
+        "maxWorkersAugment": 1
     }
 }

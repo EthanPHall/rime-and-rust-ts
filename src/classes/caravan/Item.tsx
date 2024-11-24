@@ -316,6 +316,7 @@ type SledJson = {
     passiveRecipe: RecipeJson;
     workers: number;
     canCraftList: ItemJson[];
+    maxWorkersAugment: number;
 }
 class SledSeed{
     key: string;
@@ -325,6 +326,7 @@ class SledSeed{
     passiveRecipe: RecipeSeed;
     workers: number;
     canCraftList: ItemSeed[];
+    maxWorkersAugment: number;
 
     constructor(
         json: SledJson
@@ -338,6 +340,7 @@ class SledSeed{
         this.canCraftList = json.canCraftList.map((item) => {
             return new ItemSeed(item);
         });
+        this.maxWorkersAugment = json.maxWorkersAugment;
     }
 
     convertToSled(factory:IItemFactory):Sled{
@@ -353,6 +356,7 @@ class Sled implements IItem{
     private passiveRecipe:RecipeSeed;
     private workers:number;
     private canCraftList: ItemSeed[];
+    private maxWorkerAugment:number;
 
     private factory:IItemFactory;
     private id:number;
@@ -367,6 +371,7 @@ class Sled implements IItem{
         passiveRecipe:RecipeSeed,
         workers:number,
         canCraftList: ItemSeed[],
+        maxWorkerAugment:number,
         factory:IItemFactory,
         getExistingSledCount:()=>number,
     ){
@@ -378,6 +383,7 @@ class Sled implements IItem{
         this.passiveRecipe = passiveRecipe;
         this.workers = workers;
         this.canCraftList = canCraftList;
+        this.maxWorkerAugment = maxWorkerAugment;
 
         this.factory = factory;
         this.id = IdGenerator.generateUniqueId();
@@ -401,7 +407,7 @@ class Sled implements IItem{
     }
 
     clone():IItem{
-        return new Sled(this.key, this.name, this.recipe, this.unlockFlags, this.passiveRecipe, this.workers, this.canCraftList, this.factory, this.getExistingSledCount);
+        return new Sled(this.key, this.name, this.recipe, this.unlockFlags, this.passiveRecipe, this.workers, this.canCraftList, this.maxWorkerAugment, this.factory, this.getExistingSledCount);
     }
 
     inheritExistingData(existing:IItem){
@@ -484,6 +490,9 @@ class Sled implements IItem{
     }
     getCanCraftList():ItemSeed[]{
         return this.canCraftList;
+    }
+    getMaxWorkerAugment():number{
+        return this.maxWorkerAugment;
     }
     getId():number{
         return this.id;
@@ -1121,6 +1130,7 @@ class ItemFactoryJSON implements IItemFactory{
                 this.sledJsons[key].canCraftList.map((itemJson) => {
                     return new ItemSeed(itemJson);
                 }),
+                this.sledJsons[key].maxWorkersAugment,
                 this,
                 this.getExistingSledCount
             );

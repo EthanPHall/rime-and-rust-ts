@@ -26,6 +26,8 @@ interface ISettingsManager{
         inventory:ISaveable|null,
         explorationInventory:ISaveable|null,
         freeWorkers:number,
+        totalWorkers:number,
+        maxWorkers:number,
         flags:ISaveable|null,
         messages:ISaveable|null
     ):SaveObject
@@ -39,7 +41,9 @@ interface ISettingsManager{
         map:ISaveable,
         inventory:ISaveable,
         explorationInventory:ISaveable,
-        freeWorkers:React.MutableRefObject<number>,
+        currentWorkers:React.MutableRefObject<number>,
+        totalWorkers:React.MutableRefObject<number>,
+        maxWorkers:React.MutableRefObject<number>,
         flags:ISaveable,
         messages:ISaveable
     ):boolean
@@ -119,7 +123,9 @@ class SettingsManager implements ISettingsManager{
         map:ISaveable|null,
         inventory:ISaveable|null,
         explorationInventory:ISaveable|null,
-        freeWorkers:number,
+        currentWorkers:number,
+        totalWorkers:number,
+        maxWorkers:number,
         flags:ISaveable|null,
         messages:ISaveable|null
     ):SaveObject{
@@ -134,7 +140,9 @@ class SettingsManager implements ISettingsManager{
             mapData: mapData,
             inventoryData:inventoryData,
             explorationInventoryData:explorationInventoryData,
-            freeWorkers:freeWorkers,
+            currentWorkers:currentWorkers,
+            totalWorkers:totalWorkers,
+            maxWorkers:maxWorkers,
             messagesData:messagesData,
             flagsData: flagsData
         }
@@ -145,7 +153,9 @@ class SettingsManager implements ISettingsManager{
         map:ISaveable,
         inventory:ISaveable,
         explorationInventory:ISaveable,
-        freeWorkers:React.MutableRefObject<number>,
+        currentWorkers:React.MutableRefObject<number>,
+        totalWorkers:React.MutableRefObject<number>,
+        maxWorkers:React.MutableRefObject<number>,
         flags:ISaveable,
         messages:ISaveable
     ){
@@ -166,7 +176,9 @@ class SettingsManager implements ISettingsManager{
         }
         inventory.loadSaveObject(saveObject.inventoryData);
         explorationInventory.loadSaveObject(saveObject.explorationInventoryData);
-        freeWorkers.current = saveObject.freeWorkers;
+        currentWorkers.current = saveObject.totalWorkers;
+        totalWorkers.current = saveObject.totalWorkers;
+        maxWorkers.current = saveObject.maxWorkers;
         flags.loadSaveObject(saveObject.flagsData);
         messages.loadSaveObject(saveObject.messagesData);
     
@@ -209,7 +221,9 @@ type SaveObject = {
     mapData:any;
     inventoryData:any;
     explorationInventoryData:any;
-    freeWorkers:number;
+    currentWorkers:number;
+    totalWorkers:number;
+    maxWorkers:number;
     messagesData:any;
     flagsData:any;
 }
@@ -232,10 +246,10 @@ class SettingManagerDummy implements ISettingsManager{
     clone(): ISettingsManager {
         throw new Error('Method not implemented.');
     }
-    getSaveObject(map: ISaveable | null, inventory: ISaveable | null, explorationInventory: ISaveable | null, freeWorkers: number, flags: ISaveable | null, messages: ISaveable | null): SaveObject {
+    getSaveObject(map: ISaveable | null, inventory: ISaveable | null, explorationInventory: ISaveable | null, freeWorkers: number, totalWorkers:number, maxWorkers:number, flags: ISaveable | null, messages: ISaveable | null): SaveObject {
         throw new Error('Method not implemented.');
     }
-    loadFromSaveObject(saveObject: SaveObject, map: ISaveable, inventory: ISaveable, explorationInventory: ISaveable, freeWorkers: React.MutableRefObject<number>, flags: ISaveable, messages: ISaveable): boolean {
+    loadFromSaveObject(saveObject: SaveObject, map: ISaveable, inventory: ISaveable, explorationInventory: ISaveable, currentWorkers: React.MutableRefObject<number>, totalWorkers: React.MutableRefObject<number>, maxWorkers: React.MutableRefObject<number>, flags: ISaveable, messages: ISaveable): boolean {
         throw new Error('Method not implemented.');
     }
     getNextRandomNumber(): number {

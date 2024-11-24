@@ -97,8 +97,47 @@ function App() {
   const [settingsManagerContext, setSettingsManagerContext] = React.useState<ISettingsManager>(new SettingsManager());
   const settingsManagerContextRef = useRef<ISettingsManager>(settingsManagerContext);
 
-  const [workers, setWorkers] = useState<number>(1);
-  const workersMax = useRef(workers);
+
+
+  //Getting workers working was surprisingly complicated
+  const [maxWorkers, setMaxWorkers] = useState<number>(1);
+  const [totalWorkers, setTotalWorkers] = useState<number>(maxWorkers);
+  const [currentWorkers, setCurrentWorkers] = useState<number>(totalWorkers);
+  const maxWorkersRef = useRef(maxWorkers);
+  const previousMaxWorkersRef = useRef(maxWorkers);
+  const currentWorkersRef = useRef(currentWorkers);
+  const totalWorkersRef = useRef(totalWorkers);
+  const previousTotalWorkersRef = useRef(totalWorkers);
+
+  const totalWorkersEffectShouldNotSetCurrentWorkers = useRef(false);
+
+  useEffect(() => {
+    if(maxWorkers < previousMaxWorkersRef.current){
+      setTotalWorkers((current) => {
+        return Math.min(current, maxWorkers);
+      });
+    }
+
+    maxWorkersRef.current = maxWorkers;
+    previousMaxWorkersRef.current = maxWorkers;
+  }, [maxWorkers]);
+  useEffect(() => {
+    if(!totalWorkersEffectShouldNotSetCurrentWorkers.current){
+      setCurrentWorkers(
+        Math.min(currentWorkersRef.current + (totalWorkers - previousTotalWorkersRef.current), maxWorkersRef.current)
+      );
+    }
+
+    totalWorkersRef.current = totalWorkers;
+    previousTotalWorkersRef.current = totalWorkers;
+
+    totalWorkersEffectShouldNotSetCurrentWorkers.current = false;
+  }, [totalWorkers]);
+  useEffect(() => {
+    currentWorkersRef.current = currentWorkers;
+  }, [currentWorkers]);
+
+
 
   const [randomEventLoopTracker, setRandomEventLoopTracker] = useState<number>(0);
   const GAME_LOOP_INTERVAL:number = 10000;
@@ -147,6 +186,11 @@ function App() {
   const [currentEvent, setCurrentEvent] = useState<string|null>(null);
   const [currentEventLocation, setCurrentEventLocation] = useState<IMapLocation|null>(null);
   const [mainGameScreen, setMainGameScreen] = useState<MainGameScreens>(MainGameScreens.CARAVAN);
+  const mainGameScreenRef = useRef(mainGameScreen);
+  useEffect(() => {
+    mainGameScreenRef.current = mainGameScreen;
+  }, [mainGameScreen]);
+
   const [previousGameScreen, setPreviousGameScreen] = useState<MainGameScreens>(mainGameScreen);
 
   const [combatEncounterKey, setCombatEncounterKey] = useState<string|null>(null);
@@ -219,6 +263,8 @@ function App() {
     const sledsGroupedByKey:Sled[][] = groupSledsByKey(sledsList);
     let changed = false;
 
+    let maxWorkersAugment = 0;
+
     inventorySledQuantities.forEach((sledQuantity) => {
       
       const sledKey = sledQuantity.getBaseSled().getKey();
@@ -249,6 +295,8 @@ function App() {
         }
         changed = true;
       }
+
+      maxWorkersAugment += sledQuantity.getBaseSled().getMaxWorkerAugment() * sledQuantity.getQuantity();
     });
 
     if(changed){
@@ -264,6 +312,9 @@ function App() {
         setSledsList(newSledsList);
       }
     }
+
+    console.log("Total Workers Augment:", maxWorkersAugment);
+    setMaxWorkers(1 + maxWorkersAugment);
   }, [inventory]);
 
   function sellSled(sled:Sled){
@@ -332,7 +383,7 @@ function App() {
   }
 
   function refundSledWorkers(sled:Sled){
-    setWorkers((current) => {
+    setCurrentWorkers((current) => {
       return current + sled.getWorkers();
     });
   }
@@ -482,7 +533,7 @@ function App() {
       return current;
     });
 
-    if(mainGameScreen != MainGameScreens.CARAVAN){
+    if(mainGameScreenRef.current != MainGameScreens.CARAVAN){
       shouldSkipRandomEvent.current = true;
     }
 
@@ -517,6 +568,25 @@ function App() {
           }
         }
 
+        console.log("totalWorkersRef", totalWorkersRef.current)
+          console.log("maxWorkersRef", maxWorkersRef.current)
+        //Certain events may not be able to fire, given the current state.
+        if(eventKey){
+          console.log("Event Key:", eventKey);
+          if(eventKey == "survivors-increase-1" && totalWorkersRef.current >= maxWorkersRef.current){
+            eventKey = null;
+          }
+          else if(eventKey == "survivors-increase-2" && totalWorkersRef.current >= maxWorkersRef.current - 1){
+            eventKey = null;
+          }
+          else if(eventKey == "survivors-increase-3" && totalWorkersRef.current >= maxWorkersRef.current - 2){
+            eventKey = null;
+          }
+          else if(eventKey == "survivors-increase-4" && totalWorkersRef.current >= maxWorkersRef.current - 3){
+            eventKey = null;
+          }
+        }
+        
         //If there is an event key, then run the event.
         if(eventKey){
           setCurrentEvent(eventKey);
@@ -609,7 +679,9 @@ function App() {
       savedMapRef.current,
       getInventory(),
       explorationInventoryRef.current,
-      workersMax.current,
+      currentWorkersRef.current,
+      totalWorkersRef.current,
+      maxWorkersRef.current,
       progressionFlagsRef.current,
       messageManager
     );
@@ -640,7 +712,9 @@ function App() {
       map,
       inventory,
       explorationInventory,
-      workersMax,
+      currentWorkersRef,
+      totalWorkersRef,
+      maxWorkersRef,
       progressionFlags,
       messageManager
     );
@@ -650,12 +724,18 @@ function App() {
     setSavedMap(mapWasLoaded ? map.clone() : null);
     setInventory(inventory.clone());
     setExplorationInventory(explorationInventory.clone());
-    setWorkers(workersMax.current);
+    // setCurrentWorkers(currentWorkersRef.current);
+
+    totalWorkersEffectShouldNotSetCurrentWorkers.current = true;
+    setMaxWorkers(maxWorkersRef.current);
+    setTotalWorkers(totalWorkersRef.current);
+    setCurrentWorkers(currentWorkersRef.current);
+
     setProgressionFlags(progressionFlags.clone());
   }, [loadObject]);
 
-  function modifySurvivors(amount:number){
-    setWorkers((current) => {
+  function modifyWorkers(amount:number){
+    setTotalWorkers((current) => {
       return current + amount;
     });
   }
@@ -668,7 +748,18 @@ function App() {
         <ItemFactoryContext.Provider value={itemFactoryContext}>
           <ProgressionContext.Provider value={{flags:progressionFlags, setFlags:setProgressionFlags}}>
             <div className="App">
-              {mainGameScreen == MainGameScreens.CARAVAN && <CaravanParent autoSaveInterval={autoSaveInterval} setLoadObject={setLoadObject} getSaveObject={getSaveObject} inventory={inventory} sleds={sledsList} sellSled={sellSled} setSleds={setSledsList} getInventory={getInventory} setInventory={setInventory} executeRecipe={executeRecipe} workers={workers} setWorkers={setWorkers} 
+              {mainGameScreen == MainGameScreens.CARAVAN && <CaravanParent 
+                autoSaveInterval={autoSaveInterval} 
+                setLoadObject={setLoadObject} 
+                getSaveObject={getSaveObject} 
+                inventory={inventory} sleds={sledsList} 
+                sellSled={sellSled} setSleds={setSledsList} 
+                getInventory={getInventory} 
+                setInventory={setInventory} 
+                executeRecipe={executeRecipe} 
+                workers={currentWorkers} 
+                workersMax={maxWorkersRef.current} 
+                setWorkers={setCurrentWorkers} 
                 explorationInventory={explorationInventory}
                 setExplorationInventory={setExplorationInventory}
                 setMainGameScreen={setMainGameScreen}
@@ -681,7 +772,7 @@ function App() {
                 playerCombatStats={playerCombatStats}
               ></CaravanParent>}
               {mainGameScreen == MainGameScreens.MAP && <MapParent saveGame={saveGame} explorationInventory={explorationInventory} currentCombat={combatEncounterKey} savedMap={savedMap} setSavedMap={setSavedMap} currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></MapParent>}
-              {currentEvent != null && <EventParent modifySurvivors={modifySurvivors} returnToCaravan={returnToCaravan} clearExplorationInventory={clearExplorationInventory} eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen} clearEventLocation={clearEventLocation} setCombatEncounterKey={setCombatEncounterKey}></EventParent>}
+              {currentEvent != null && <EventParent modifySurvivors={modifyWorkers} returnToCaravan={returnToCaravan} clearExplorationInventory={clearExplorationInventory} eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen} clearEventLocation={clearEventLocation} setCombatEncounterKey={setCombatEncounterKey}></EventParent>}
               {combatEncounterKey != null && <CombatParent combatPlayerStats={playerCombatStats} combatActionSeedList={combatActionsList} combatEncounterKey={combatEncounterKey} setCombatEncounterKey={setCombatEncounterKey} setCurrentEvent={setCurrentEvent}></CombatParent>}
             </div>
           </ProgressionContext.Provider>
