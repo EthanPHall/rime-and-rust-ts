@@ -35,6 +35,16 @@
             "key":"survivors-increase-4",
             "chance": 5,
             "cooldown_eventTriggersToSkip": 5
+        },
+        {
+            "key":"raid-1",
+            "chance": 5,
+            "cooldown_eventTriggersToSkip": 5
+        },
+        {
+            "key":"scavengers-1",
+            "chance": 5,
+            "cooldown_eventTriggersToSkip": 5
         }
     ],
     "triggerRandomEventEveryXLoops":5,
@@ -120,6 +130,22 @@
                         }
                     ],
                     "amount": 4
+                }
+            ]
+        },
+        {
+            "key":"raid-1",
+            "name": "Bandits",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "Bandits attack the caravan.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat raid-1-combat-1"
+                        }
+                    ]
                 }
             ]
         },
@@ -227,6 +253,62 @@
                     "options":[
                         {
                             "actionType":"closeAndClear"
+                        }
+                    ],
+                    "rewards":[
+                        {
+                            "itemKey":"Scrap",
+                            "range": {"min": 2, "max": 6}
+                        },
+                        {
+                            "itemKey":"Components",
+                            "range": {"min": 1, "max": 3}
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"scavengers-1",
+            "name": "Scavengers brought back a little extra.",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "",
+                    "type":"rewards",
+                    "options":[
+                        {
+                            "actionType":"return"
+                        }
+                    ],
+                    "rewards":[
+                        {
+                            "itemKey":"Scrap",
+                            "range": {"min": 1, "max": 3}
+                        },
+                        {
+                            "itemKey":"Components",
+                            "range": {"min": 0, "max": 2}
+                        },
+                        {
+                            "itemKey":"Junk",
+                            "range": {"min": 5, "max": 10}
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"raid-1-combat-1-victory",
+            "name": "Scrap, rusted but useful",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "",
+                    "type":"rewards",
+                    "options":[
+                        {
+                            "actionType":"return"
                         }
                     ],
                     "rewards":[

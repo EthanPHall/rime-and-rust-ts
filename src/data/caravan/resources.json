@@ -197,6 +197,25 @@
         },
         "unlockFlags": []
     },
+    "Reinforced Sled Cheap": {
+        "key": "Reinforced Sled Cheap",
+        "name": "Reinforced Sled Cheap",
+        "recipe": {
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 1
+                }
+            ],
+            "results": [
+                {
+                    "key": "Reinforced Sled",
+                    "quantity": 1
+                }
+            ]
+        },
+        "unlockFlags": []
+    },
     "Nutrient Slurry": {
         "key": "Nutrient Slurry",
         "name": "Nutrient Slurry",

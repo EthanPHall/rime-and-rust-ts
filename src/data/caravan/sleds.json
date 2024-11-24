@@ -131,6 +131,9 @@
         "canCraftList": [
             {
                 "key": "Scavenger Sled"
+            },
+            {
+                "key": "Reinforced Sled Cheap"
             }
         ],
         "maxWorkersAugment": 0

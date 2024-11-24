@@ -194,6 +194,12 @@ function App() {
   const [previousGameScreen, setPreviousGameScreen] = useState<MainGameScreens>(mainGameScreen);
 
   const [combatEncounterKey, setCombatEncounterKey] = useState<string|null>(null);
+  const combatEncounterKeyRef = useRef(combatEncounterKey);
+  useEffect(() => {
+    
+
+    combatEncounterKeyRef.current = combatEncounterKey;
+  }, [combatEncounterKey]);
 
   const [INITIAL_COMBAT_ACTIONS] = useState<CombatActionSeed[]>(
     [
@@ -229,8 +235,7 @@ function App() {
 
   const [playerCombatStats, setPlayerCombatStats] = useState<PlayerCombatStats>(new PlayerCombatStats());
 
-  useEffect(() => {
-    if(mainGameScreen == MainGameScreens.CARAVAN && previousGameScreen == MainGameScreens.MAP){
+  function transferExplorationItemsToCaravan(){
       //Transfer regular resources from the explorationInventory to the regular inventory.
       const itemsToTransfer:string[] = explorationInventory.getListCopy().filter((quantity) => {
         return !explorationItems.includes(quantity.getBaseItem().getKey());
@@ -251,7 +256,12 @@ function App() {
 
       itemsToMakeSureInventoryHasEntryFor.forEach((itemKey) => {
         transferItems(explorationInventory, inventory, itemKey, 0)
-      });
+      });    
+  }
+
+  useEffect(() => {
+    if(mainGameScreen == MainGameScreens.CARAVAN && previousGameScreen == MainGameScreens.MAP){
+      // transferExplorationItemsToCaravan();
     }
 
 
@@ -537,6 +547,10 @@ function App() {
       shouldSkipRandomEvent.current = true;
     }
 
+    if(combatEncounterKeyRef.current){
+      shouldSkipRandomEvent.current = true;
+    }
+
     if(shouldSkipRandomEvent.current){
       shouldSkipRandomEvent.current = false;
       return;
@@ -559,7 +573,7 @@ function App() {
           return previous + current;
         }, 0);
 
-        const rng = settingsManagerContextRef.current.getNextRandomNumber(0, thresholdTotal);
+        const rng = settingsManagerContextRef.current.getNextRandomNumber(0, Math.max(thresholdTotal, 100));
 
         for(let i = 0; i < thresholds.length; i++){
           if(rng < thresholds[i]){
@@ -583,6 +597,9 @@ function App() {
             eventKey = null;
           }
           else if(eventKey == "survivors-increase-4" && totalWorkersRef.current >= maxWorkersRef.current - 3){
+            eventKey = null;
+          }
+          else if(eventKey == "raid-1" && !progressionFlagsRef.current.getFlag("Obtained Reinforced Sled")){
             eventKey = null;
           }
         }
@@ -670,6 +687,7 @@ function App() {
     setCurrentEvent(null);
     setCombatEncounterKey(null);
     setMainGameScreen(MainGameScreens.CARAVAN);
+    transferExplorationItemsToCaravan();
   }
 
   function getSaveObject():SaveObject{
