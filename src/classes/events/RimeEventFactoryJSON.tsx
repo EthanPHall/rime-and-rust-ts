@@ -15,6 +15,7 @@ class RimeEventFactoryJSON implements IRimeEventFactory{
     private clearExplorationInventory: () => void
     private returnToCaravan:() =>void;
     private rngFunction:RNGFunction;
+    private modifySurvivors:(amount:number)=>void;
 
     constructor(
         itemFactory:IItemFactory,
@@ -24,7 +25,8 @@ class RimeEventFactoryJSON implements IRimeEventFactory{
         setCombatEncounterKey: (newEncounter: string|null) => void,
         clearExplorationInventory: () => void,
         returnToCaravan:() =>void,
-        rngFunction:RNGFunction
+        rngFunction:RNGFunction,
+        modifySurvivors:(amount:number)=>void
     ){
         this.setCombatEncounterKey = setCombatEncounterKey;
         this.clearEventLocation = clearEventLocation;
@@ -34,6 +36,7 @@ class RimeEventFactoryJSON implements IRimeEventFactory{
         this.clearExplorationInventory = clearExplorationInventory;
         this.returnToCaravan = returnToCaravan;
         this.rngFunction = rngFunction;
+        this.modifySurvivors = modifySurvivors;
     }
 
     createEventById(id: string): RimeEventJSON {
@@ -43,10 +46,10 @@ class RimeEventFactoryJSON implements IRimeEventFactory{
 
         if(!data){
             console.log(`Event with key/id of ${id} not found, using default event instead.`)
-            return new RimeEventJSON(eventRawData.allEvents[0].key, this.itemFactory, this.setSceneId, this.closeEventScreen, this.clearEventLocation, this.setCombatEncounterKey, this.clearExplorationInventory, this.returnToCaravan, this.rngFunction);
+            return new RimeEventJSON(eventRawData.allEvents[0].key, this.itemFactory, this.setSceneId, this.closeEventScreen, this.clearEventLocation, this.setCombatEncounterKey, this.clearExplorationInventory, this.returnToCaravan, this.rngFunction, this.modifySurvivors);
         }
 
-        return new RimeEventJSON(data.key, this.itemFactory, this.setSceneId, this.closeEventScreen, this.clearEventLocation, this.setCombatEncounterKey, this.clearExplorationInventory, this.returnToCaravan, this.rngFunction);
+        return new RimeEventJSON(data.key, this.itemFactory, this.setSceneId, this.closeEventScreen, this.clearEventLocation, this.setCombatEncounterKey, this.clearExplorationInventory, this.returnToCaravan, this.rngFunction, this.modifySurvivors);
     }
 }
 

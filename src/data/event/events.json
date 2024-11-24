@@ -2,17 +2,27 @@
     "sceneTypes":{
         "rewards":"rewards",
         "textOnly":"text only",
-        "actionOnly":"action only"
+        "actionOnly":"action only",
+        "survivorsIncrease":"survivors-increase"
     },
     "actionTypes":{
         "goto":"goto",
         "close":"close",
         "startCombat":"combat",
         "closeAndClearLocation":"closeAndClear",
+        "closeAndModifyWorkers":"closeAndModifyWorkers",
         "returnToCaravan":"return",
         "returnAndLoseInventory":"returnAndLose",
         "gotoAscend":"gotoAscend"
     },
+    "randomEvents":[
+        {
+            "key":"survivors-increase",
+            "chance": 100,
+            "cooldown_eventTriggersToSkip": 5
+        }
+    ],
+    "triggerRandomEventEveryXLoops":5,
     "allEvents":[
         {
             "key":"home-return",
@@ -27,6 +37,23 @@
                             "actionType":"return"
                         }
                     ]
+                }
+            ]
+        },
+        {
+            "key":"survivors-increase",
+            "name": "A lone survivor",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "Ran across a survivor, not yet rusted.",
+                    "type":"survivors-increase",
+                    "options":[
+                        {
+                            "actionType":"closeAndModifyWorkers"
+                        }
+                    ],
+                    "amount": 1
                 }
             ]
         },

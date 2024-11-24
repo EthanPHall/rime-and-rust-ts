@@ -44,7 +44,7 @@ interface ISettingsManager{
         messages:ISaveable
     ):boolean
 
-    getNextRandomNumber():number;
+    getNextRandomNumber(min?:number, max?:number):number;
 
     getOneClickCombatMove():boolean;
     setOneClickCombatMove(value:boolean):void;

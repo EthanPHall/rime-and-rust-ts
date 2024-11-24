@@ -26,7 +26,8 @@ interface EventParentProps {
   clearEventLocation:() => void
   setCombatEncounterKey: (newEncounter: string|null) => void
   clearExplorationInventory: () => void,
-  returnToCaravan:() => void
+  returnToCaravan:() => void,
+  modifySurvivors:(amount:number)=>void
 }
 
 const EventParent: FC<EventParentProps> = (
@@ -38,9 +39,11 @@ const EventParent: FC<EventParentProps> = (
     clearEventLocation,
     setCombatEncounterKey,
     clearExplorationInventory,
-    returnToCaravan
+    returnToCaravan,
+    modifySurvivors
   }
 ) => {
+
   const settingsContext = useContext(SettingsContext);
   
   const [rewardsInventory, setRewardsInventory] = useState<UniqueItemQuantitiesList|null>(null);
@@ -65,8 +68,10 @@ const EventParent: FC<EventParentProps> = (
   const [sceneKey, setSceneKey] = useState<number>(1);
   
   const [rimeEventFactory, setRimeEventFactory] = useState<IRimeEventFactory>(
-    new RimeEventFactoryJSON(itemFactory, setSceneKey, closeEventScreen, clearEventLocation, setCombatEncounterKey, clearExplorationInventory, returnToCaravan, settingsContext.settingsManager.getNextRandomNumber)
+    new RimeEventFactoryJSON(itemFactory, setSceneKey, closeEventScreen, clearEventLocation, setCombatEncounterKey, clearExplorationInventory, returnToCaravan, settingsContext.settingsManager.getNextRandomNumber, modifySurvivors)
   )
+
+  // console.log("EventParent: eventId: ", eventId);
 
   const [currentEvent, setCurrentEvent] = useState<IRimeEvent>(
     rimeEventFactory.createEventById(eventId)
@@ -124,6 +129,7 @@ const EventParent: FC<EventParentProps> = (
       }
     </div>
   </div>
-);}
+);
+}
 
 export default EventParent;

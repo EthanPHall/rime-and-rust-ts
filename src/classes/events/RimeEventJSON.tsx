@@ -16,6 +16,7 @@ import RimeEventActionReturn from "./RimeEventActionReturn";
 import RimeEventSceneActionOnly from "./RimeEventSceneActionOnly";
 import { RNGFunction } from "../../context/misc/SettingsContext";
 import RimeEventActionAscendGoto from "./RimeEventActionAscendGoto";
+import RimeEventActionCloseAndModifyWorkers from "./RimeEventActionCloseAndModifyWorkers";
 
 
 
@@ -30,6 +31,7 @@ class RimeEventJSON implements IRimeEvent{
     private clearEventLocation: () => void;
     private setCombatEncounterKey: (newEncounter: string|null) => void;
     private clearExplorationInventory: () => void;
+    private modifySurvivors:(amount:number)=>void;
 
     constructor(
         key:string,
@@ -40,7 +42,8 @@ class RimeEventJSON implements IRimeEvent{
         setCombatEncounterKey: (newEncounter: string|null) => void,
         clearExplorationInventory: () => void,
         returnToCaravan:() =>void,
-        rngFunction:RNGFunction
+        rngFunction:RNGFunction,
+        modifySurvivors:(amount:number)=>void
     ){
         this.setCombatEncounterKey = setCombatEncounterKey; 
         this.clearEventLocation = clearEventLocation;  
@@ -49,6 +52,7 @@ class RimeEventJSON implements IRimeEvent{
         this.itemFactory = itemFactory; 
         this.clearExplorationInventory = clearExplorationInventory;
         this.returnToCaravan = returnToCaravan;
+        this.modifySurvivors = modifySurvivors;
 
         this.key = key;
         this.name = "Error, event " + key + " not found.";
@@ -59,6 +63,7 @@ class RimeEventJSON implements IRimeEvent{
 
         if(event){
             this.name = event.name;
+            // console.log("Survivors increased by");
             
             event.scenes?.forEach((scene) => {
                 const options:IRimeEventAction[] = [];
@@ -76,6 +81,13 @@ class RimeEventJSON implements IRimeEvent{
                         case eventRawData.actionTypes.closeAndClearLocation:
                             options.push(new RimeEventActionCloseAndClear(clearEventLocation, closeEventScreen));
                             break;
+                        case eventRawData.actionTypes.closeAndModifyWorkers:
+                            const amount:number|null = "amount" in scene ? scene.amount : null;
+                            if(amount === null){
+                                throw new Error("Event scene with action type 'closeAndModifyWorkers' did not have an amount field.");
+                            } 
+                            options.push(new RimeEventActionCloseAndModifyWorkers(modifySurvivors, amount, closeEventScreen));
+                            break;
                         case eventRawData.actionTypes.returnToCaravan:
                             options.push(new RimeEventActionReturn(returnToCaravan));
                             break;
@@ -92,7 +104,7 @@ class RimeEventJSON implements IRimeEvent{
                 
                 switch(scene.type){
                     case eventRawData.sceneTypes.rewards:
-                        if(!scene.rewards){
+                        if(!("rewards" in scene && scene.rewards)){
                             console.log("Event with type 'rewards' did not have a rewards field.");
                             break;
                         }
@@ -115,6 +127,16 @@ class RimeEventJSON implements IRimeEvent{
                                 scene.text,
                                 options,
                                 rewardsInventory
+                            )
+                        );
+                        break;
+                    case eventRawData.sceneTypes.survivorsIncrease:
+                        this.scenes.push(
+                            new RimeEventSceneTextOnly(
+                                scene.sceneKey,
+                                scene.type,
+                                scene.text,
+                                options
                             )
                         );
                         break;

@@ -29,6 +29,7 @@ import { CombatActionSeed } from './classes/combat/CombatAction';
 import IdGenerator from './classes/utility/IdGenerator';
 import EquipmentActionsManager from './classes/caravan/EquipmentActionsManager';
 import PlayerCombatStats, { PlayerCombatStatMod } from './classes/combat/PlayerCombatStats';
+import eventDataJson from './data/event/events.json';
 
 type ProgressionFlagsSeed = {
   [key: string]: boolean;
@@ -96,8 +97,11 @@ function App() {
   const [settingsManagerContext, setSettingsManagerContext] = React.useState<ISettingsManager>(new SettingsManager());
   const settingsManagerContextRef = useRef<ISettingsManager>(settingsManagerContext);
 
-  const [workers, setWorkers] = useState<number>(20);
+  const [workers, setWorkers] = useState<number>(1);
   const workersMax = useRef(workers);
+
+  const [randomEventLoopTracker, setRandomEventLoopTracker] = useState<number>(0);
+  const GAME_LOOP_INTERVAL:number = 10000;
 
   const itemFactoryContext = new ItemFactoryJSON(getExistingSledCount);
   const [inventory, getInventory, setInventory] = useRefState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([
@@ -283,7 +287,7 @@ function App() {
   }, [settingsManagerContext]);
 
   useEffect(() => {
-    const passiveRecipeTimeout = createPassiveRecipeTimeout();
+    const gameLoopTimeout = createGameLoopTimeout();
     autoSaveInterval = setInterval(() => {
       saveGame();
       console.log("Autosave");
@@ -295,7 +299,7 @@ function App() {
     }
 
     return () => {
-      clearTimeout(passiveRecipeTimeout);
+      clearTimeout(gameLoopTimeout);
       clearInterval(autoSaveInterval);
       // localStorage.removeItem("saveFile");
     }
@@ -456,8 +460,75 @@ function App() {
     });
   }
 
-  function createPassiveRecipeTimeout():NodeJS.Timeout{
-    return setTimeout(executePassiveRecipes, settingsManagerContextRef.current.getCorrectTiming(10000));
+  function createGameLoopTimeout():NodeJS.Timeout{
+    return setTimeout(handleGameLoop, settingsManagerContextRef.current.getCorrectTiming(GAME_LOOP_INTERVAL));
+  }
+
+  function handleGameLoop(){
+    // console.log("Game Loop");
+    executePassiveRecipes();
+    handleRandomEvent();
+
+    createGameLoopTimeout();
+  }
+
+  const shouldSkipRandomEvent = useRef(false);
+  function handleRandomEvent(){
+    setCurrentEvent(current => {
+      if(current){
+        shouldSkipRandomEvent.current = true;
+      }
+      
+      return current;
+    });
+
+    if(mainGameScreen != MainGameScreens.CARAVAN){
+      shouldSkipRandomEvent.current = true;
+    }
+
+    if(shouldSkipRandomEvent.current){
+      shouldSkipRandomEvent.current = false;
+      return;
+    }
+
+    setRandomEventLoopTracker((current) => {
+      //Should we try to run an event?
+      if(current >= eventDataJson.triggerRandomEventEveryXLoops){
+        const randomEvents = eventDataJson.randomEvents;
+
+        //Pick an event key, or no key depending on rng
+        let eventKey:string|null = null;
+        const thresholds:number[] = [];
+        let threshold = 0;
+        for(let i = 0; i < randomEvents.length; i++){
+          thresholds.push(randomEvents[i].chance + threshold);
+          threshold += randomEvents[i].chance;  
+        }
+        const thresholdTotal:number = thresholds.reduce((previous, current) => {
+          return previous + current;
+        }, 0);
+
+        const rng = settingsManagerContextRef.current.getNextRandomNumber(0, thresholdTotal);
+
+        for(let i = 0; i < thresholds.length; i++){
+          if(rng < thresholds[i]){
+            eventKey = randomEvents[i].key;
+            break;
+          }
+        }
+
+        //If there is an event key, then run the event.
+        if(eventKey){
+          setCurrentEvent(eventKey);
+        }
+
+        //Reset the tracker
+        return 0;
+      }
+      else{
+        return current + 1;
+      }
+    });
   }
 
   function executePassiveRecipes(){
@@ -478,8 +549,6 @@ function App() {
           }
         }
     });
-
-    createPassiveRecipeTimeout();
   }
 
   function getAdjustedRecipe(recipe:Recipe, workers:number):Recipe{
@@ -585,6 +654,14 @@ function App() {
     setProgressionFlags(progressionFlags.clone());
   }, [loadObject]);
 
+  function modifySurvivors(amount:number){
+    setWorkers((current) => {
+      return current + amount;
+    });
+  }
+
+  console.log("App Render");
+
   return (
     <SettingsContext.Provider value={{settingsManager:settingsManagerContext, setSettingsManager:setSettingsManagerContext}}>
       <MessageHandlingContext.Provider value={{messageHandling:messageHandlingContext, setMessageHandling:setMessageHandlingContext}}>
@@ -604,7 +681,7 @@ function App() {
                 playerCombatStats={playerCombatStats}
               ></CaravanParent>}
               {mainGameScreen == MainGameScreens.MAP && <MapParent saveGame={saveGame} explorationInventory={explorationInventory} currentCombat={combatEncounterKey} savedMap={savedMap} setSavedMap={setSavedMap} currentEvent={currentEvent} setCurrentEvent={setCurrentEvent} setCurrentEventLocation={setCurrentEventLocation} locationToClear={locationToClear} setLocationToClear={setLocationToClear}></MapParent>}
-              {currentEvent != null && <EventParent returnToCaravan={returnToCaravan} clearExplorationInventory={clearExplorationInventory} eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen} clearEventLocation={clearEventLocation} setCombatEncounterKey={setCombatEncounterKey}></EventParent>}
+              {currentEvent != null && <EventParent modifySurvivors={modifySurvivors} returnToCaravan={returnToCaravan} clearExplorationInventory={clearExplorationInventory} eventId={currentEvent} explorationInventory={explorationInventory} setExplorationInventory={setExplorationInventory} closeEventScreen={closeEventScreen} clearEventLocation={clearEventLocation} setCombatEncounterKey={setCombatEncounterKey}></EventParent>}
               {combatEncounterKey != null && <CombatParent combatPlayerStats={playerCombatStats} combatActionSeedList={combatActionsList} combatEncounterKey={combatEncounterKey} setCombatEncounterKey={setCombatEncounterKey} setCurrentEvent={setCurrentEvent}></CombatParent>}
             </div>
           </ProgressionContext.Provider>
