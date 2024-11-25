@@ -108,7 +108,7 @@
     "difficultyBrackets": 7,
     "explorableLocationsTotalPercentage": 8,
     "percentagesByDifficultyBracket":[3,13,17,23,21,15,8],
-    "chancesToBeFloating":[100, 5, 10, 15, 20, 35, 55],
+    "chancesToBeFloating":[0, 5, 10, 15, 20, 35, 55],
     "homeLocation":{
         "key": "home",
         "name": "Home",
@@ -345,16 +345,12 @@
             "key":"variable-1",
             "eventKeyChancePairs":[
                 {
-                    "eventKey":"variable-1-safe",
-                    "chance": 20
-                },
-                {
                     "eventKey":"variable-1-combat-1",
-                    "chance": 40
+                    "chance": 50
                 },
                 {
                     "eventKey":"variable-1-combat-2",
-                    "chance": 40
+                    "chance": 50
                 }
             ]
         },

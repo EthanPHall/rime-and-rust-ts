@@ -32,7 +32,7 @@ const useActionExecutor = (
     updateEntity:(id: number, newEntity: CombatEntity) => void,
     refreshMap: () => void
 ):IActionExecutor => {
-    const ACTION_DELAY = 200;
+    const ACTION_DELAY = 100;
     const DEBUG_DELAY = 4000;
 
     const currentStep = useRef(ActionSteps.ACTION);

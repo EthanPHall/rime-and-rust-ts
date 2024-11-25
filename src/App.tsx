@@ -87,7 +87,7 @@ enum MainGameScreens{
 
 function App() {
   const INITIAL_SLED = "My Sled";
-  const INITIAL_SLED_DOGS = 3;
+  const INITIAL_SLED_DOGS = 2;
 
   const [progressionFlags, setProgressionFlags] = React.useState<ProgressionFlags>(new ProgressionFlags(progressionFlagsData));
   const progressionFlagsRef = useRef(progressionFlags);
@@ -600,6 +600,9 @@ function App() {
             eventKey = null;
           }
           else if(eventKey == "raid-1" && !progressionFlagsRef.current.getFlag("Obtained Reinforced Sled")){
+            eventKey = null;
+          }
+          else if(eventKey == "scavengers-1" && !progressionFlagsRef.current.getFlag("Obtained Scavenger Sled")){
             eventKey = null;
           }
         }

@@ -75,7 +75,7 @@ class MoveWhenPlayerMoves implements ReactionGenerator{
 }
 
 abstract class CombatEnemy extends CombatEntity implements TurnTaker{
-  static ACTION_DELAY = 500;
+  static ACTION_DELAY = 300;
   static TURN_START_DELAY = 1000;
   static ACTION_SHOW_OFF_DELAY = 1500;
 

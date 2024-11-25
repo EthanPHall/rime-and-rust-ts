@@ -7,8 +7,8 @@
             "name": "Sled Dog",
             "recipe": {
                 "costs": [
-                    { "key": "Scrap", "quantity": 1 },
-                    { "key": "Junk", "quantity": 1 }
+                    { "key": "Scrap", "quantity": 45 },
+                    { "key": "Junk", "quantity": 80 }
                 ],
                 "results": [
                     { "key": "Sled Dog", "quantity": 1 }
