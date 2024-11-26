@@ -252,8 +252,8 @@ class RustedBrute extends CombatEnemy{
   ){
     super(
       id, 
-      20, 
-      20, 
+      10, 
+      10, 
       'B', 
       'Rusted Brute', 
       position, 
