@@ -356,7 +356,7 @@ function App() {
     const gameLoopTimeout = createGameLoopTimeout();
     autoSaveInterval = setInterval(() => {
       saveGame();
-      console.log("Autosave");
+      // console.log("Autosave");
     }, 10000);
 
     const saveFile = localStorage.getItem("saveFile");
@@ -772,7 +772,7 @@ function App() {
     });
   }
 
-  console.log("App Render");
+  // console.log("App Render");
 
   return (
     <SettingsContext.Provider value={{settingsManager:settingsManagerContext, setSettingsManager:setSettingsManagerContext}}>

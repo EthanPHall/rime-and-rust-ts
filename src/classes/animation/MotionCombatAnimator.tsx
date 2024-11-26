@@ -24,14 +24,18 @@ class MotionCombatAnimator implements IAnimator{
             return animationSet.map((animation) => CombatAnimationDetailsToMotionAnimation.convert(animation));
         });
         const mapData:CombatMapData = this.getMapData();
-        
+
         return new Promise<IAnimationCleanup>(async (resolve) => {
             let keyFrameIndex = 0;
 
+
+            // console.log("Animation Sets", animationSets);
             //i increments when all animations in the set are complete
             for(let animationSetIndex = 0; animationSetIndex < animationSets.length;){
                 const currentAnimationSet: MotionAnimation[] = animationSets[animationSetIndex];
                 const playbackControls: AnimationPlaybackControls[] = [];
+
+                // console.log("Current Animation Set", currentAnimationSet);
 
                 for(let animationIndex = 0; animationIndex < currentAnimationSet.length; animationIndex++){
                     const currentAnimation: MotionAnimation = currentAnimationSet[animationIndex];
@@ -42,14 +46,33 @@ class MotionCombatAnimator implements IAnimator{
                     }
 
                     if(keyFrameIndex < currentAnimation.keyframes.length){
-                        playbackControls.push(
-                            this.mapAnimate(mapData.positionToCSSIdString(new Vector2(positionToAnimate.y, positionToAnimate.x)), currentAnimation.keyframes[keyFrameIndex], currentAnimation.options?.[keyFrameIndex])
-                        );
+                        if(this.getMapData().locations[positionToAnimate.y][positionToAnimate.x].entity){
+                            playbackControls.push(
+                                this.mapAnimate(mapData.positionToCSSIdString(new Vector2(positionToAnimate.y, positionToAnimate.x)), currentAnimation.keyframes[keyFrameIndex], currentAnimation.options?.[keyFrameIndex])
+                            );
+                        }
                     }
                 }
 
                 if(playbackControls.length > 0){
-                    await Promise.all(playbackControls);
+                    // Adding any sort of delay in addition to the playbackControls promise actually breaks this for some reason
+                    // await new Promise<void>((resolve) => {
+                    //     setTimeout(() => {console.log("Resolved"); resolve()}, 200);
+                    // });
+
+                    // Theres an issue here where, if the player blows up a volatile can and is in the radius,
+                    // this promise fails to resolve. I don't know why, and it isn't consistent.
+
+                    //Well, I was able to come up with a bandaid fix that seems to work. I added a fallback promise that resolves 
+                    //after a little while (I don't expect any individual animation section to last longer than the fallback),
+                    //so that if/when the main promise fails to resolve, the fallback promise will resolve and the animation will continue. It looks wonky, but it works.
+
+                    //NOTE: In the future, if you're ever wondering why the animation gets stuck for a sec in certain cases, this is why.
+                    const normalPromise = Promise.all(playbackControls);
+                    const fallbackPromise = new Promise<void>((resolve) => {
+                        setTimeout(() => {resolve()}, 700);
+                    });
+                    await Promise.race([normalPromise, fallbackPromise]);
                     keyFrameIndex++;
                 }
                 else{

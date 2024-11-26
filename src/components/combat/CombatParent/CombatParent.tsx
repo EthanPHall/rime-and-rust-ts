@@ -499,6 +499,11 @@ function executeActionsList() {
     setCombatEndState(CombatEndState.VICTORY);
   }
 
+  function debug_UpdateMap(){
+    const newMap = CombatMapData.clone(mapToSendOff);
+    setMapToSendOff(newMap);
+  }
+
   return (
     <div className="combat-parent" data-testid="combat-parent">
         {/* <button onClick={debug_Animate}>Debug Animate Map</button>
@@ -533,7 +538,8 @@ function executeActionsList() {
                 }
               }
             />
-            <button onClick={debug_EndEncounter}>DEBUG: End Ecnounter</button>
+            <button onClick={debug_EndEncounter}>DEBUG: End Encounter</button>
+            <button onClick={debug_UpdateMap}>DEBUG: Update Map</button>
           </div>
         </div>
     </div>

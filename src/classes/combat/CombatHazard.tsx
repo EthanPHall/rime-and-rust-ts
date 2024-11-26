@@ -262,10 +262,12 @@ abstract class CombatHazard extends CombatEntity{
       let action:CombatAction|null = null;
       
       if(newEntity !== null && this.newEntityIsDifferent(newEntity)){
+        // action = new Attack(this.id, Directions.NONE, this.getMap, this.updateEntity, this.refreshMap);
         action = new BurningFloorAttack(this.id, Directions.NONE, this.damage, this, this.getMap, this.updateEntity, this.refreshMap);
       }
       
       this.previousEntityOnThisSpace = newEntity;
+
       return action;
     }
 

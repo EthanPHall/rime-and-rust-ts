@@ -466,7 +466,7 @@ class Sled implements IItem{
     }
 
     getSellRecipe(itemFactory:IItemFactory):Recipe{
-        console.log(this.recipe);
+        // console.log(this.recipe);
 
         //Get the new costs list, which is just this Item with quantity 1
         const costs:ItemQuantity[] = [new ItemQuantity(this, 1)];
@@ -724,18 +724,18 @@ class UniqueItemQuantitiesList implements ISaveable{
         this.itemFactory = itemFactory;
     }
     createSaveObject() {
-        console.log(
-            {
-                listData:this.list.map((itemQuantity) => {
-                    return {
-                        itemKey:itemQuantity.getBaseItem().getKey(),
-                        quantity:itemQuantity.getQuantity()
-                    }
-                }),
-                maxCapacityData:this.maxCapacity,
-                currentCapacityData:this.currentCapacity,
-            }
-        )
+        // console.log(
+        //     {
+        //         listData:this.list.map((itemQuantity) => {
+        //             return {
+        //                 itemKey:itemQuantity.getBaseItem().getKey(),
+        //                 quantity:itemQuantity.getQuantity()
+        //             }
+        //         }),
+        //         maxCapacityData:this.maxCapacity,
+        //         currentCapacityData:this.currentCapacity,
+        //     }
+        // )
 
         return{
             listData:this.list.map((itemQuantity) => {
