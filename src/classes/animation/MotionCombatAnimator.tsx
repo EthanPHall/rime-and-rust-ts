@@ -6,17 +6,24 @@ import Vector2 from "../utility/Vector2";
 import CombatMapData from "../combat/CombatMapData";
 import CombatAnimationFactory, { CombatAnimationNames } from "./CombatAnimationFactory";
 import Directions from "../utility/Directions";
+import { CombatEndState } from "../../components/combat/CombatParent/CombatParent";
 
 class MotionCombatAnimator implements IAnimator{
     private getMapData: () => CombatMapData;
     private mapAnimate: (value: ElementOrSelector, keyframes: DOMKeyframesDefinition, options?: DynamicAnimationOptions | undefined) => AnimationPlaybackControls;
-    constructor(getMapData: () => CombatMapData, mapAnimate: (value: ElementOrSelector, keyframes: DOMKeyframesDefinition, options?: DynamicAnimationOptions | undefined) => AnimationPlaybackControls){
+    private combatEndStateRef: React.MutableRefObject<CombatEndState>;
+    constructor(
+        getMapData: () => CombatMapData,
+        mapAnimate: (value: ElementOrSelector, keyframes: DOMKeyframesDefinition, options?: DynamicAnimationOptions | undefined) => AnimationPlaybackControls,
+        combatEndStateRef: React.MutableRefObject<CombatEndState>
+    ){
         this.mapAnimate = mapAnimate;
         this.getMapData = getMapData;
+        this.combatEndStateRef = combatEndStateRef;
     }
 
     animate(animationDetails: AnimationDetails[][]): Promise<IAnimationCleanup>{
-        if(animationDetails.length === 0){
+        if(animationDetails.length === 0 || this.combatEndStateRef.current !== CombatEndState.UNDECIDED){
             return Promise.resolve({cleanupAnimations: this.cleanupAnimations, args: [this.getMapData, this.mapAnimate]});
         }
 
@@ -46,11 +53,9 @@ class MotionCombatAnimator implements IAnimator{
                     }
 
                     if(keyFrameIndex < currentAnimation.keyframes.length){
-                        if(this.getMapData().locations[positionToAnimate.y][positionToAnimate.x].entity){
-                            playbackControls.push(
-                                this.mapAnimate(mapData.positionToCSSIdString(new Vector2(positionToAnimate.y, positionToAnimate.x)), currentAnimation.keyframes[keyFrameIndex], currentAnimation.options?.[keyFrameIndex])
-                            );
-                        }
+                        playbackControls.push(
+                            this.mapAnimate(mapData.positionToCSSIdString(new Vector2(positionToAnimate.y, positionToAnimate.x)), currentAnimation.keyframes[keyFrameIndex], currentAnimation.options?.[keyFrameIndex])
+                        );
                     }
                 }
 

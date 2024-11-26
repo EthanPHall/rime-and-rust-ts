@@ -214,9 +214,26 @@ const CombatParent: FC<CombatParentProps> = (
   function showCard(title: string, description: string){
     setInfoCardData({title, description, hideCard});
   }
+
+
+  const [combatEndState, setCombatEndState] = useState<CombatEndState>(CombatEndState.UNDECIDED);
+  const combatEndStateRef = useRef(combatEndState);
+  useEffect(() => {
+    combatEndStateRef.current = combatEndState;
+    if(combatEndState == CombatEndState.DEFEAT){
+      setCombatEncounterKey(null);
+      setCurrentEvent(getEncounter().defeatEventKey);
+    }
+    else if(combatEndState == CombatEndState.VICTORY){
+      setCombatEncounterKey(null);
+      setCurrentEvent(getEncounter().victoryEventKey);
+    }
+  }, [combatEndState]);
+
+
   
   const [mapScope, mapAnimate] = useAnimate();
-  const [animator, setAnimator] = useState<MotionCombatAnimator>(new MotionCombatAnimator(getCachedMap, mapAnimate));
+  const [animator, setAnimator] = useState<MotionCombatAnimator>(new MotionCombatAnimator(getCachedMap, mapAnimate, combatEndStateRef));
   
   const actionExecutor:IActionExecutor = useActionExecutor(
     mapToSendOff, 
@@ -241,17 +258,6 @@ const CombatParent: FC<CombatParentProps> = (
     }) || combatEncounterRawJSON.defaultEncounter : combatEncounterRawJSON.defaultEncounter;
   }
 
-  const [combatEndState, setCombatEndState] = useState<CombatEndState>(CombatEndState.UNDECIDED);
-  useEffect(() => {
-    if(combatEndState == CombatEndState.DEFEAT){
-      setCombatEncounterKey(null);
-      setCurrentEvent(getEncounter().defeatEventKey);
-    }
-    else if(combatEndState == CombatEndState.VICTORY){
-      setCombatEncounterKey(null);
-      setCurrentEvent(getEncounter().victoryEventKey);
-    }
-  }, [combatEndState]);
 
   useCombatHazardAnimations(mapToSendOff, animator, getPlayer, hazardsForEffects, actionExecutor.isExecuting, mapAnimate);
 
@@ -345,11 +351,13 @@ const CombatParent: FC<CombatParentProps> = (
     //Handle determining if the encounter is done yet.
     if(setupFinished.current){
       if(getPlayer().getHp() <= 0){
+        combatEndStateRef.current = CombatEndState.DEFEAT;
         setCombatEndState(CombatEndState.DEFEAT);
       }
       else if(!getEnemies().find((enemy) => {
         return enemy.getHp() > 0;
       })){
+        combatEndStateRef.current = CombatEndState.VICTORY;
         setCombatEndState(CombatEndState.VICTORY);
       }
     }
@@ -547,4 +555,4 @@ function executeActionsList() {
 }
 
 export default CombatParent;
-export {CombatMapTemplate, CombatMapTemplateBasic};
+export {CombatMapTemplate, CombatMapTemplateBasic, CombatEndState};
