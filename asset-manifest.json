@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/rime-and-rust-ts/static/css/main.287e3122.css",
+    "main.js": "/rime-and-rust-ts/static/js/main.84c4cd48.js",
+    "static/js/453.c26d03b4.chunk.js": "/rime-and-rust-ts/static/js/453.c26d03b4.chunk.js",
+    "index.html": "/rime-and-rust-ts/index.html",
+    "main.287e3122.css.map": "/rime-and-rust-ts/static/css/main.287e3122.css.map",
+    "main.84c4cd48.js.map": "/rime-and-rust-ts/static/js/main.84c4cd48.js.map",
+    "453.c26d03b4.chunk.js.map": "/rime-and-rust-ts/static/js/453.c26d03b4.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.287e3122.css",
+    "static/js/main.84c4cd48.js"
+  ]
+}
