@@ -1,15 +1,15 @@
 [
     {
         "name": "Slow",
-        "speedMult": 1.5
-    },
-    {
-        "name": "Normal",
         "speedMult": 1
     },
     {
-        "name": "Fast",
+        "name": "Normal",
         "speedMult": 0.5
+    },
+    {
+        "name": "Fast",
+        "speedMult": 0.2
     },
     {
         "name": "Debug Fast",

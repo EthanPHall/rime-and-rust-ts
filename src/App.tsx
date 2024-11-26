@@ -184,6 +184,11 @@ function App() {
   const sledsListOverrideForInventoryEffect = useRef<Sled[]|null>(null);
 
   const [currentEvent, setCurrentEvent] = useState<string|null>(null);
+  const currentEventRef = useRef(currentEvent);
+  useEffect(() => {
+    currentEventRef.current = currentEvent;
+  }, [currentEvent]);
+
   const [currentEventLocation, setCurrentEventLocation] = useState<IMapLocation|null>(null);
   const [mainGameScreen, setMainGameScreen] = useState<MainGameScreens>(MainGameScreens.CARAVAN);
   const mainGameScreenRef = useRef(mainGameScreen);
@@ -622,6 +627,12 @@ function App() {
   }
 
   function executePassiveRecipes(){
+    //If there is an event running, then don't execute passive recipes.
+    //If passive recipes are firing, the scavengers event that grants additional items tends not to actually grant the items.
+    if(currentEventRef.current){
+      return;
+    }
+
     const sleds:Sled[] = sledsListRef.current;
     sleds.forEach((sled) => {
         const recipe = sled.getPassiveRecipe().convertToRecipe(itemFactoryContext);

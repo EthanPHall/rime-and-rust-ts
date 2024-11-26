@@ -189,7 +189,7 @@
                 },
                 {
                     "key": "Cartridge",
-                    "quantity": 1
+                    "quantity": 2
                 }
             ],
             "results": [
@@ -226,7 +226,7 @@
                 },
                 {
                     "key": "Cartridge",
-                    "quantity": 1
+                    "quantity": 2
                 }
             ],
             "results": [
@@ -258,12 +258,8 @@
                     "quantity": 20
                 },
                 {
-                    "key": "Scrap",
-                    "quantity": 50
-                },
-                {
                     "key": "Nutrient Slurry",
-                    "quantity": 50
+                    "quantity": 200
                 }
             ],
             "results": [

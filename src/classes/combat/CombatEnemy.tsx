@@ -3,7 +3,7 @@ import PathfindingUtil from "../ai/PathfindingUtil";
 import Directions, { DirectionsUtility } from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
 import AIHandler from "./AIHandler";
-import CombatAction, {  Attack, CombatActionWithRepeat, CombatActionWithUses, Move } from "./CombatAction";
+import CombatAction, {  Attack, CombatActionWithRepeat, CombatActionWithUses, Move, Punch } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
 import CombatMapData from "./CombatMapData";
 import IActionExecutor from "./IActionExecutor";
@@ -75,8 +75,8 @@ class MoveWhenPlayerMoves implements ReactionGenerator{
 }
 
 abstract class CombatEnemy extends CombatEntity implements TurnTaker{
-  static ACTION_DELAY = 300;
-  static TURN_START_DELAY = 1000;
+  static ACTION_DELAY = 600;
+  static TURN_START_DELAY = 1500;
   static ACTION_SHOW_OFF_DELAY = 1500;
 
   getMap: () => CombatMapData;
@@ -170,8 +170,8 @@ class RustedShambler extends CombatEnemy{
   ){
     super(
       id, 
-      10, 
-      10, 
+      3, 
+      3, 
       'S', 
       'Rusted Shambler', 
       position, 
@@ -185,8 +185,8 @@ class RustedShambler extends CombatEnemy{
     );
 
     this.actions = {
-      attack: new CombatActionWithUses(new Attack(this.id, undefined, this.getMap, this.updateEntity, this.refreshMap), 2),
-      move: new CombatActionWithUses(new Move(this.id, undefined, getMap, updateEntity, refreshMap), 3),
+      attack: new CombatActionWithUses(new Punch(this.id, undefined, this.getMap, this.updateEntity, this.refreshMap), 2),
+      move: new CombatActionWithUses(new Move(this.id, undefined, getMap, updateEntity, refreshMap), 4),
     };
   }
 

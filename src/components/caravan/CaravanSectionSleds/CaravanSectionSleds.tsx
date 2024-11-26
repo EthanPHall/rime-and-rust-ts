@@ -19,7 +19,7 @@ interface CaravanSectionSledsProps {
 }
 
 const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sleds, setSleds, dogs, workers, workersMax, setWorkers, executeRecipe, sellSled}) => {
-  const SLED_MAX_WORKERS = 10;
+  const SLED_MAX_WORKERS = 4;
   const MY_SLED_WORKERS = 0;
   
   const itemFactory:IItemFactory = useContext(ItemFactoryContext);
@@ -186,7 +186,7 @@ on={['hover', 'focus']}
   }
 
   return (<div className="caravan-section-sleds" data-testid="caravan-section-sleds">
-    <div className='survivors-count'>Survivors: {workers}/{workersMax}, Sleds: {sleds.length}</div>
+    <div className='survivors-count'>Free Survivors: {workers}/{workersMax}, Sleds: {sleds.length}</div>
     {
       sledGroups.map((group) => {
         return (

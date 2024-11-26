@@ -32,7 +32,12 @@
         "key": "Junk",
         "name": "Junk",
         "recipe": {
-            "costs": [],
+            "costs": [
+                {
+                    "key": "Scrap",
+                    "quantity": 1
+                }
+            ],
             "results": [
                 {
                     "key": "Junk",

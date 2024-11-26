@@ -22,25 +22,25 @@ class CombatAnimationFactory{
     static createAnimation(animationName: string, direction:Directions, entityToAnimateId:number, dontPlayIfLast:boolean = false, positionToAnimate:Vector2|null = null): AnimationDetails {
         switch(animationName){
             case CombatAnimationNames.Move:
-                return new AnimationDetails(CombatAnimationNames.Move, 150, direction, entityToAnimateId);
+                return new AnimationDetails(CombatAnimationNames.Move, 250, direction, entityToAnimateId);
             case CombatAnimationNames.Attack:
-                return new AnimationDetails(CombatAnimationNames.Attack, 100, direction, entityToAnimateId);
+                return new AnimationDetails(CombatAnimationNames.Attack, 200, direction, entityToAnimateId);
             case CombatAnimationNames.Block:
-                return new AnimationDetails(CombatAnimationNames.Block, 150, direction, entityToAnimateId);
+                return new AnimationDetails(CombatAnimationNames.Block, 250, direction, entityToAnimateId);
             case CombatAnimationNames.Bump:
-                return new AnimationDetails(CombatAnimationNames.Bump, 100, direction, entityToAnimateId);
+                return new AnimationDetails(CombatAnimationNames.Bump, 200, direction, entityToAnimateId);
             case CombatAnimationNames.ShortBump:
-                return new AnimationDetails(CombatAnimationNames.ShortBump, 100, direction, entityToAnimateId);
+                return new AnimationDetails(CombatAnimationNames.ShortBump, 200, direction, entityToAnimateId);
             case CombatAnimationNames.Hurt:
-                return new AnimationDetails(CombatAnimationNames.Hurt, 100, direction, entityToAnimateId);
+                return new AnimationDetails(CombatAnimationNames.Hurt, 200, direction, entityToAnimateId);
             case CombatAnimationNames.Psychic:
                 return new AnimationDetails(CombatAnimationNames.Psychic, 200, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate);
             case CombatAnimationNames.Pyro:
-                return new AnimationDetails(CombatAnimationNames.Pyro, 200, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate);
+                return new AnimationDetails(CombatAnimationNames.Pyro, 300, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate);
             case CombatAnimationNames.Burn:
-                return new AnimationDetails(CombatAnimationNames.Burn, 800, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate);
+                return new AnimationDetails(CombatAnimationNames.Burn, 1000, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate);
             case CombatAnimationNames.Explosion:
-                return new AnimationDetails(CombatAnimationNames.Explosion, 800, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate);
+                return new AnimationDetails(CombatAnimationNames.Explosion, 1000, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate);
             case CombatAnimationNames.Reset:
                 return new AnimationDetails(CombatAnimationNames.Reset, 0, direction, entityToAnimateId);
             default:

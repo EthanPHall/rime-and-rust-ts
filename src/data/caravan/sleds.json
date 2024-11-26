@@ -142,15 +142,15 @@
             "costs": [
                 {
                     "key": "Scrap",
-                    "quantity": 50
+                    "quantity": 20
                 },
                 {
                     "key": "Wood",
-                    "quantity": 100
+                    "quantity": 40
                 },
                 {
                     "key": "Lashing",
-                    "quantity": 40
+                    "quantity": 20
                 }
             ],
             "results": [

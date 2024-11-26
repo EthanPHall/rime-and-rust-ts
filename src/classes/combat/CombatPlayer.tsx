@@ -26,7 +26,7 @@ class CombatPlayer extends CombatEntity implements TurnTaker{
     resetActionUses:() => void;
     
     clone(): CombatPlayer {
-      return new CombatPlayer(this.id, this.stats, this.symbol, this.name, this.position, this.advanceTurn, this.resetActionUses);
+      return new CombatPlayer(this.id, this.stats, this.symbol, this.name, this.position, this.advanceTurn, this.resetActionUses, this.hp);
     }
 
     constructor(
@@ -36,9 +36,10 @@ class CombatPlayer extends CombatEntity implements TurnTaker{
       name: string, 
       position: Vector2, 
       advanceTurn: () => void,
-      resetActionUses:() => void
+      resetActionUses:() => void,
+      currentHp?:number 
     ){
-      super(id, stats.getHealth(), stats.getHealth(), symbol, name, position);
+      super(id, currentHp || stats.getHealth(), stats.getHealth(), symbol, name, position);
       this.advanceTurn = advanceTurn;
       this.resetActionUses = resetActionUses;
       this.stats = stats;
