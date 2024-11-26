@@ -457,7 +457,7 @@
             "costs": [
                 {
                     "key": "Scrap",
-                    "quantity": 100
+                    "quantity": 50
                 }
             ],
             "results": [

@@ -7,7 +7,7 @@ const useExplorationInventory = (
     regularInventory: UniqueItemQuantitiesList
 ) => {
     const itemFactoryContext = useContext(ItemFactoryContext);
-    const MAX_CAPACITY = 10;
+    const MAX_CAPACITY = 20;
     const [explorationInventory, setExplorationInventory] = useState<UniqueItemQuantitiesList>(new UniqueItemQuantitiesList([], itemFactoryContext, MAX_CAPACITY));
 
     useEffect(() => {
