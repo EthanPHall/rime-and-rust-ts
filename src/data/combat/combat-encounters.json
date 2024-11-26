@@ -69,49 +69,49 @@
         {
             "encounterKey":"medium-3-combat-1",
             "mapKey":"medium-3-map-1",
-            "victoryEventKey":"easy-1-combat-1-victory",
+            "victoryEventKey":"medium-3-combat-1-victory",
             "defeatEventKey":"easy-1-combat-1-defeat"
         },
         {
             "encounterKey":"medium-3-combat-2",
             "mapKey":"medium-3-map-2",
-            "victoryEventKey":"easy-1-combat-1-victory",
+            "victoryEventKey":"medium-3-combat-1-victory",
             "defeatEventKey":"easy-1-combat-1-defeat"
         },
         {
             "encounterKey":"medium-4-combat-1",
             "mapKey":"medium-4-map-1",
-            "victoryEventKey":"easy-1-combat-1-victory",
+            "victoryEventKey":"medium-3-combat-1-victory",
             "defeatEventKey":"easy-1-combat-1-defeat"
         },
         {
             "encounterKey":"medium-4-combat-2",
             "mapKey":"medium-4-map-2",
-            "victoryEventKey":"easy-1-combat-1-victory",
+            "victoryEventKey":"medium-3-combat-1-victory",
             "defeatEventKey":"easy-1-combat-1-defeat"
         },
         {
             "encounterKey":"hard-1-combat-1",
             "mapKey":"hard-1-map-1",
-            "victoryEventKey":"easy-1-combat-1-victory",
+            "victoryEventKey":"medium-3-combat-1-victory",
             "defeatEventKey":"easy-1-combat-1-defeat"
         },
         {
             "encounterKey":"hard-1-combat-2",
             "mapKey":"hard-1-map-2",
-            "victoryEventKey":"easy-1-combat-1-victory",
+            "victoryEventKey":"medium-3-combat-1-victory",
             "defeatEventKey":"easy-1-combat-1-defeat"
         },
         {
             "encounterKey":"hard-2-combat-1",
             "mapKey":"hard-2-map-1",
-            "victoryEventKey":"easy-1-combat-1-victory",
+            "victoryEventKey":"medium-3-combat-1-victory",
             "defeatEventKey":"easy-1-combat-1-defeat"
         },
         {
             "encounterKey":"hard-2-combat-2",
             "mapKey":"hard-2-map-2",
-            "victoryEventKey":"easy-1-combat-1-victory",
+            "victoryEventKey":"medium-3-combat-1-victory",
             "defeatEventKey":"easy-1-combat-1-defeat"
         },
         {

@@ -650,6 +650,36 @@
             ]
         },
         {
+            "key":"medium-3-combat-1-victory",
+            "name": "Scrap, rusted but useful",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "",
+                    "type":"rewards",
+                    "options":[
+                        {
+                            "actionType":"closeAndClear"
+                        }
+                    ],
+                    "rewards":[
+                        {
+                            "itemKey":"Psychium Scrap",
+                            "range": {"min": 7, "max": 12}
+                        },
+                        {
+                            "itemKey":"Components",
+                            "range": {"min": 5, "max": 18}
+                        },
+                        {
+                            "itemKey":"Pure Psychium",
+                            "range": {"min": 0, "max": 1}
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "key":"medium-4-combat-1",
             "name": "A Battle",
             "scenes":[
