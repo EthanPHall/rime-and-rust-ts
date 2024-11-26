@@ -120,8 +120,8 @@ on={['hover', 'focus']}
           <button onClick={() => {addWorkersToSled(sled, 1)}}>+ workers</button>
         </div>
         <div className='add-subtract-section'>
-          <button onClick={() => {removeWorkersFromSled(sled, 5)}}>-5 workers</button>
-          <button onClick={() => {addWorkersToSled(sled, 5)}}>+5 workers</button>
+          <button onClick={() => {removeWorkersFromSled(sled, 4)}}>-4 workers</button>
+          <button onClick={() => {addWorkersToSled(sled, 4)}}>+4 workers</button>
         </div>
       </>
     }
