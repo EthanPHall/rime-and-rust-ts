@@ -20,7 +20,7 @@
         {
             "key": "background-location-3",
             "name": "forest",
-            "description": "Skeletal trees, entomed in ice",
+            "description": "Skeletal trees in their tombs of ice",
             "range":{ "min": 66, "max": 100 }
         }
     ],
@@ -42,72 +42,149 @@
             "key": "variable-1",
             "name": "bunker",
             "description": "Bunker",
-            "difficultyBrackets": [1]
+            "difficultyBrackets": [1],
+            "floatingVariant": "variable-1-floating"
+        },
+        {
+            "key": "variable-1-floating",
+            "name": "bunker",
+            "description": "Bunker",
+            "difficultyBrackets": [-1]
         },
         {
             "key": "variable-2",
             "name": "bunker",
             "description": "Bunker",
-            "difficultyBrackets": [2]
+            "difficultyBrackets": [2],
+            "floatingVariant": "variable-2-floating"
+        },
+        {
+            "key": "variable-2-floating",
+            "name": "bunker",
+            "description": "Bunker",
+            "difficultyBrackets": [-1]
         },
         {
             "key": "variable-3",
             "name": "bunker",
             "description": "Bunker",
-            "difficultyBrackets": [3]
+            "difficultyBrackets": [3],
+            "floatingVariant": "variable-3-floating"
+        },
+        {
+            "key": "variable-3-floating",
+            "name": "bunker",
+            "description": "Bunker",
+            "difficultyBrackets": [-1]
         },
         {
             "key": "variable-4",
             "name": "bunker",
             "description": "Bunker",
-            "difficultyBrackets": [4]
+            "difficultyBrackets": [4],
+            "floatingVariant": "variable-4-floating"
+        },
+        {
+            "key": "variable-4-floating",
+            "name": "bunker",
+            "description": "Bunker",
+            "difficultyBrackets": [-1]
         },
         {
             "key": "variable-5",
             "name": "bunker",
             "description": "Bunker",
-            "difficultyBrackets": []
+            "difficultyBrackets": [],
+            "floatingVariant": "variable-5-floating"
+        },
+        {
+            "key": "variable-5-floating",
+            "name": "bunker",
+            "description": "Bunker",
+            "difficultyBrackets": [-1]
         },
         {
             "key": "medium-1",
             "name": "city",
             "description": "City",
-            "difficultyBrackets": [2, 3]
+            "difficultyBrackets": [2, 3],
+            "floatingVariant": "medium-1-floating"
+        },
+        {
+            "key": "medium-1-floating",
+            "name": "city",
+            "description": "City",
+            "difficultyBrackets": [-1]
         },
         {
             "key": "medium-2",
             "name": "caravan",
             "description": "Caravan train",
-            "difficultyBrackets": [1, 2]
+            "difficultyBrackets": [1, 2],
+            "floatingVariant": "medium-2-floating"
+        },
+        {
+            "key": "medium-2-floating",
+            "name": "caravan",
+            "description": "Caravan train",
+            "difficultyBrackets": [-1]
         },
         {
             "key": "medium-3",
             "name": "city",
             "description": "City",
-            "difficultyBrackets": [4]
+            "difficultyBrackets": [4],
+            "floatingVariant": "medium-3-floating"
+        },
+        {
+            "key": "medium-3-floating",
+            "name": "city",
+            "description": "City",
+            "difficultyBrackets": [-1]
         },
         {
             "key": "medium-4",
             "name": "caravan",
             "description": "Caravan train",
-            "difficultyBrackets": [3, 4]
+            "difficultyBrackets": [3, 4],
+            "floatingVariant": "medium-4-floating"
+        },
+        {
+            "key": "medium-4-floating",
+            "name": "caravan",
+            "description": "Caravan train",
+            "difficultyBrackets": [-1]
         },
         {
             "key": "hard-1",
             "name": "Military Base",
             "description": "Military Base",
-            "difficultyBrackets": [4, 5]
+            "difficultyBrackets": [4, 5],
+            "floatingVariant": "hard-1-floating"
+        },
+        {
+            "key": "hard-1-floating",
+            "name": "Military Base",
+            "description": "Military Base",
+            "difficultyBrackets": [-1]
         },
         {
             "key": "hard-2",
             "name": "Factory",
             "description": "Factory",
-            "difficultyBrackets": [6]
+            "difficultyBrackets": [6],
+            "floatingVariant": "hard-2-floating"
+        },
+        {
+            "key": "hard-2-floating",
+            "name": "Factory",
+            "description": "Factory",
+            "difficultyBrackets": [-1]
         }
     ],
     "difficultyBrackets": 7,
     "explorableLocationsTotalPercentage": 8,
-    "percentagesByDifficultyBracket":[3,13,17,23,21,15,8],
+    "percentagesByDifficultyBracket":[3,7,11,17,15,8,4],
     "chancesToBeFloating":[0, 5, 10, 15, 20, 35, 55],
     "homeLocation":{
         "key": "home",
@@ -144,7 +221,15 @@
             "name":"bunker"
         },
         {
+            "key":"variable-1-floating",
+            "name":"bunker"
+        },
+        {
             "key":"variable-2",
+            "name":"bunker"
+        },
+        {
+            "key":"variable-2-floating",
             "name":"bunker"
         },
         {
@@ -152,7 +237,15 @@
             "name":"bunker"
         },
         {
+            "key":"variable-3-floating",
+            "name":"bunker"
+        },
+        {
             "key":"variable-4",
+            "name":"bunker"
+        },
+        {
+            "key":"variable-4-floating",
             "name":"bunker"
         },
         {
@@ -160,7 +253,15 @@
             "name":"bunker"
         },
         {
+            "key":"variable-5-floating",
+            "name":"bunker"
+        },
+        {
             "key":"medium-1",
+            "name":"city"
+        },
+        {
+            "key":"medium-1-floating",
             "name":"city"
         },
         {
@@ -168,7 +269,15 @@
             "name":"caravan"
         },
         {
+            "key":"medium-2-floating",
+            "name":"caravan"
+        },
+        {
             "key":"medium-3",
+            "name":"city"
+        },
+        {
+            "key":"medium-3-floating",
             "name":"city"
         },
         {
@@ -176,11 +285,23 @@
             "name":"caravan"
         },
         {
+            "key":"medium-4-floating",
+            "name":"caravan"
+        },
+        {
             "key":"hard-1",
             "name":"Military Base"
         },
         {
+            "key":"hard-1-floating",
+            "name":"Military Base"
+        },
+        {
             "key":"hard-2",
+            "name":"Factory"
+        },
+        {
+            "key":"hard-2-floating",
             "name":"Factory"
         }
     ],
@@ -235,7 +356,21 @@
             }
         },
         {
+            "key":"variable-1-floating",
+            "visualInfo":{
+                "symbol":"b",
+                "styles":"lower"
+            }
+        },
+        {
             "key":"variable-2",
+            "visualInfo":{
+                "symbol":"b",
+                "styles":"lower"
+            }
+        },
+        {
+            "key":"variable-2-floating",
             "visualInfo":{
                 "symbol":"b",
                 "styles":"lower"
@@ -249,7 +384,21 @@
             }
         },
         {
+            "key":"variable-3-floating",
+            "visualInfo":{
+                "symbol":"b",
+                "styles":"lower"
+            }
+        },
+        {
             "key":"variable-4",
+            "visualInfo":{
+                "symbol":"b",
+                "styles":"lower"
+            }
+        },
+        {
+            "key":"variable-4-floating",
             "visualInfo":{
                 "symbol":"b",
                 "styles":"lower"
@@ -263,7 +412,21 @@
             }
         },
         {
+            "key":"variable-5-floating",
+            "visualInfo":{
+                "symbol":"b",
+                "styles":"lower"
+            }
+        },
+        {
             "key":"medium-1",
+            "visualInfo":{
+                "symbol":"c",
+                "styles":"lower"
+            }
+        },
+        {
+            "key":"medium-1-floating",
             "visualInfo":{
                 "symbol":"c",
                 "styles":"lower"
@@ -277,7 +440,21 @@
             }
         },
         {
+            "key":"medium-2-floating",
+            "visualInfo":{
+                "symbol":"t",
+                "styles":"lower"
+            }
+        },
+        {
             "key":"medium-3",
+            "visualInfo":{
+                "symbol":"c",
+                "styles":"lower"
+            }
+        },
+        {
+            "key":"medium-3-floating",
             "visualInfo":{
                 "symbol":"c",
                 "styles":"lower"
@@ -291,6 +468,13 @@
             }
         },
         {
+            "key":"medium-4-floating",
+            "visualInfo":{
+                "symbol":"t",
+                "styles":"lower"
+            }
+        },
+        {
             "key":"hard-1",
             "visualInfo":{
                 "symbol":"m",
@@ -298,7 +482,21 @@
             }
         },
         {
+            "key":"hard-1-floating",
+            "visualInfo":{
+                "symbol":"m",
+                "styles":"lower"
+            }
+        },
+        {
             "key":"hard-2",
+            "visualInfo":{
+                "symbol":"f",
+                "styles":"lower"
+            }
+        },
+        {
+            "key":"hard-2-floating",
             "visualInfo":{
                 "symbol":"f",
                 "styles":"lower"
@@ -355,6 +553,15 @@
             ]
         },
         {
+            "key":"variable-1-floating",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"variable-1-floating-1",
+                    "chance": 100
+                }
+            ]
+        },
+        {
             "key":"variable-2",
             "eventKeyChancePairs":[
                 {
@@ -364,6 +571,15 @@
                 {
                     "eventKey":"variable-2-combat-2",
                     "chance": 50
+                }
+            ]
+        },
+        {
+            "key": "variable-2-floating",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"variable-2-floating-1",
+                    "chance": 100
                 }
             ]
         },
@@ -381,6 +597,15 @@
             ]
         },
         {
+            "key":"medium-1-floating",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"medium-1-floating-1",
+                    "chance": 100
+                }
+            ]
+        },
+        {
             "key":"medium-2",
             "eventKeyChancePairs":[
                 {
@@ -390,6 +615,15 @@
                 {
                     "eventKey":"medium-2-combat-2",
                     "chance": 50
+                }
+            ]
+        },
+        {
+            "key":"medium-2-floating",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"medium-2-floating-1",
+                    "chance": 100
                 }
             ]
         },
@@ -407,6 +641,15 @@
             ]
         },
         {
+            "key":"medium-3-floating",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"medium-3-floating-1",
+                    "chance": 100
+                }
+            ]
+        },
+        {
             "key":"medium-4",
             "eventKeyChancePairs":[
                 {
@@ -416,6 +659,15 @@
                 {
                     "eventKey":"medium-4-combat-2",
                     "chance": 0
+                }
+            ]
+        },
+        {
+            "key":"medium-4-floating",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"medium-4-floating-1",
+                    "chance": 100
                 }
             ]
         },
@@ -433,6 +685,15 @@
             ]
         },
         {
+            "key":"hard-1-floating",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"hard-1-floating-1",
+                    "chance": 100
+                }
+            ]
+        },
+        {
             "key":"hard-2",
             "eventKeyChancePairs":[
                 {
@@ -442,6 +703,15 @@
                 {
                     "eventKey":"hard-2-combat-2",
                     "chance": 50
+                }
+            ]
+        },
+        {
+            "key":"hard-2-floating",
+            "eventKeyChancePairs":[
+                {
+                    "eventKey":"hard-2-floating-1",
+                    "chance": 100
                 }
             ]
         }

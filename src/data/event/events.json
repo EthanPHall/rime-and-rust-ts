@@ -330,7 +330,7 @@
             "scenes":[
                 {
                     "sceneKey":1,
-                    "text": "Insane, but formidable. Forced to retreat.",
+                    "text": "Rusted are insane, but formidable. Forced to retreat.",
                     "type":"text only",
                     "options":[
                         {
@@ -377,6 +377,35 @@
             ]
         },
         {
+            "key":"variable-1-floating-1",
+            "name": "Pulled from Below",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "A Bunker, uprooted by Atlas.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"gotoAscend 2"
+                        },
+                        {
+                            "actionType":"close"
+                        }
+                    ]
+                },
+                {
+                    "sceneKey":2,
+                    "text": "A Bunker, uprooted by Atlas.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat variable-1-combat-1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "key":"variable-2-combat-1",
             "name": "Deeper still",
             "scenes":[
@@ -399,6 +428,35 @@
                 {
                     "sceneKey":1,
                     "text": "Screeching down every hall...",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat variable-2-combat-2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"variable-2-floating-1",
+            "name": "Bunker in the Sky",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "The great complex should have been safe beneath the earth.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"gotoAscend 2"
+                        },
+                        {
+                            "actionType":"close"
+                        }
+                    ]
+                },
+                {
+                    "sceneKey":2,
+                    "text": "The great complex should have been safe beneath the earth.",
                     "type":"text only",
                     "options":[
                         {
@@ -441,6 +499,35 @@
             ]
         },
         {
+            "key":"medium-1-floating-1",
+            "name": "City in the Sky",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "More than just clouds dot the sky.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"gotoAscend 2"
+                        },
+                        {
+                            "actionType":"close"
+                        }
+                    ]
+                },
+                {
+                    "sceneKey":2,
+                    "text": "More than just clouds dot the sky.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat medium-1-combat-2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "key":"medium-2-combat-1",
             "name": "Rival Caravan",
             "scenes":[
@@ -463,6 +550,35 @@
                 {
                     "sceneKey":1,
                     "text": "Fires led the way.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat medium-2-combat-2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"medium-2-floating-1",
+            "name": "Ruined Caravan",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "An entire caravan floats listlessly.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"gotoAscend 2"
+                        },
+                        {
+                            "actionType":"close"
+                        }
+                    ]
+                },
+                {
+                    "sceneKey":2,
+                    "text": "An entire caravan floats listlessly.",
                     "type":"text only",
                     "options":[
                         {
@@ -505,12 +621,70 @@
             ]
         },
         {
+            "key":"medium-3-floating-1",
+            "name": "A Grotesque Display",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "An entire city, pulled from the earth in a grotesque display of strength.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"gotoAscend 2"
+                        },
+                        {
+                            "actionType":"close"
+                        }
+                    ]
+                },
+                {
+                    "sceneKey":2,
+                    "text": "An entire city, pulled from the earth in a grotesque display of strength.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat medium-3-combat-2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "key":"medium-4-combat-1",
             "name": "A Battle",
             "scenes":[
                 {
                     "sceneKey":1,
                     "text": "Rival caravans fight for dominance.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat medium-4-combat-1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"medium-4-floating-1",
+            "name": "A Battle Above",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "Rival caravans fight for dominance, seemingly oblivious to their predicament.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"gotoAscend 2"
+                        },
+                        {
+                            "actionType":"close"
+                        }
+                    ]
+                },
+                {
+                    "sceneKey":2,
+                    "text": "Rival caravans fight for dominance, seemingly oblivious to their predicament.",
                     "type":"text only",
                     "options":[
                         {
@@ -553,6 +727,35 @@
             ]
         },
         {
+            "key":"hard-1-floating-1",
+            "name": "No Resistance",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "A seat of military power, hanging for all to see.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"gotoAscend 2"
+                        },
+                        {
+                            "actionType":"close"
+                        }
+                    ]
+                },
+                {
+                    "sceneKey":2,
+                    "text": "A seat of military power, hanging for all to see.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat hard-1-combat-2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "key":"hard-2-combat-1",
             "name": "Active Production",
             "scenes":[
@@ -575,6 +778,35 @@
                 {
                     "sceneKey":1,
                     "text": "The facility itself is against me.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"combat hard-2-combat-2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key":"hard-2-floating-1",
+            "name": "Living Facility",
+            "scenes":[
+                {
+                    "sceneKey":1,
+                    "text": "The spirit of this place thrashes against the hand of Atlas.",
+                    "type":"text only",
+                    "options":[
+                        {
+                            "actionType":"gotoAscend 2"
+                        },
+                        {
+                            "actionType":"close"
+                        }
+                    ]
+                },
+                {
+                    "sceneKey":2,
+                    "text": "The spirit of this place thrashes against the hand of Atlas.",
                     "type":"text only",
                     "options":[
                         {
