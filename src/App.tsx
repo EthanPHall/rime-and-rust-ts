@@ -780,7 +780,6 @@ function App() {
         <ItemFactoryContext.Provider value={itemFactoryContext}>
           <ProgressionContext.Provider value={{flags:progressionFlags, setFlags:setProgressionFlags}}>
             <div className="App">
-              Buh Buh Buh Buh
               {mainGameScreen == MainGameScreens.CARAVAN && <CaravanParent 
                 autoSaveInterval={autoSaveInterval} 
                 setLoadObject={setLoadObject} 
