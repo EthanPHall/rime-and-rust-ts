@@ -23,11 +23,7 @@
             "enemies":[
                 {
                     "enemyKey": "rusted-shambler-easy",
-                    "percent": 50
-                },
-                {
-                    "enemyKey": "rusted-brute-easy",
-                    "percent": 50
+                    "percent": 100
                 }
             ]
         },
@@ -54,7 +50,7 @@
             "enemies":[
                 {
                     "enemyKey": "rusted-brute-easy",
-                    "percent": 100
+                    "percent": 50
                 }
             ]
         },
@@ -72,11 +68,11 @@
             "enemies":[
                 {
                     "enemyKey": "rusted-shambler-easy",
-                    "percent": 50
+                    "percent": 25
                 },
                 {
                     "enemyKey": "rusted-brute-easy",
-                    "percent": 50
+                    "percent": 25
                 }
             ]
         },
@@ -94,11 +90,11 @@
             "enemies":[
                 {
                     "enemyKey": "rusted-shambler-easy",
-                    "percent": 50
+                    "percent": 25
                 },
                 {
                     "enemyKey": "rusted-brute-easy",
-                    "percent": 50
+                    "percent": 25
                 }
             ]
         },
@@ -107,7 +103,7 @@
             "enemies":[
                 {
                     "enemyKey": "rusted-brute-easy",
-                    "percent": 75
+                    "percent": 50
                 }
             ]
         },
@@ -116,7 +112,7 @@
             "enemies":[
                 {
                     "enemyKey": "rusted-brute-easy",
-                    "percent": 100
+                    "percent": 50
                 }
             ]
         },
@@ -134,7 +130,7 @@
             "enemies":[
                 {
                     "enemyKey": "rusted-brute-easy",
-                    "percent": 100
+                    "percent": 50
                 }
             ]
         },
@@ -143,7 +139,7 @@
             "enemies":[
                 {
                     "enemyKey": "rusted-brute-easy",
-                    "percent": 100
+                    "percent": 50
                 }
             ]
         },
@@ -152,7 +148,7 @@
             "enemies":[
                 {
                     "enemyKey": "rusted-brute-easy",
-                    "percent": 100
+                    "percent": 50
                 }
             ]
         },
@@ -161,7 +157,7 @@
             "enemies":[
                 {
                     "enemyKey": "rusted-brute-easy",
-                    "percent": 100
+                    "percent": 50
                 }
             ]
         },
@@ -170,7 +166,7 @@
             "enemies":[
                 {
                     "enemyKey": "rusted-brute-easy",
-                    "percent": 100
+                    "percent": 50
                 }
             ]
         },

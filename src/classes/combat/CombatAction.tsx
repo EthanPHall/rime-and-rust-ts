@@ -513,7 +513,7 @@ abstract class CombatAction{
           const targetPosition: Vector2 = Vector2.add(targetEntity.position, directionVector);
           const targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
 
-          if(targetLocationData && !targetLocationData.entity){
+          if(targetLocationData && (!targetLocationData.entity || targetLocationData.entity.isWalkable())){
             targetEntity.position = targetPosition;
           }
         }
