@@ -3,7 +3,7 @@ import PathfindingUtil from "../ai/PathfindingUtil";
 import Directions, { DirectionsUtility } from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
 import AIHandler from "./AIHandler";
-import CombatAction, {  Attack, CombatActionWithRepeat, CombatActionWithUses, Move, Punch } from "./CombatAction";
+import CombatAction, {  Attack, Chop, CombatActionWithRepeat, CombatActionWithUses, Move, Punch } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
 import CombatMapData from "./CombatMapData";
 import IActionExecutor from "./IActionExecutor";
@@ -267,7 +267,7 @@ class RustedBrute extends CombatEnemy{
     );
 
     this.actions = {
-      attack: new CombatActionWithUses(new Attack(this.id, undefined, this.getMap, this.updateEntity, this.refreshMap), 2),
+      attack: new CombatActionWithUses(new Chop(this.id, undefined, this.getMap, this.updateEntity, this.refreshMap), 2),
       move: new CombatActionWithUses(new Move(this.id, undefined, getMap, updateEntity, refreshMap), 5),
     };
   }
