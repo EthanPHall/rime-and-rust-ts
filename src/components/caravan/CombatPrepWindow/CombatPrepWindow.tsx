@@ -42,12 +42,12 @@ const CombatPrepWindow: FC<CombatPrepWindowProps> = (
   const [equipmentActions, setEquipmentActions] = useState<CombatActionSeed[]>([]);
 
   useEffect(() => {
-    console.log(
-      combatActionList,
-      defaultActions,
-      alwaysPreparedActions,
-      equipmentActions
-    );
+    // console.log(
+    //   combatActionList,
+    //   defaultActions,
+    //   alwaysPreparedActions,
+    //   equipmentActions
+    // );
   }, []);
 
   useEffect(() => {

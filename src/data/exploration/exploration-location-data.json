@@ -68,7 +68,7 @@
             "key": "variable-3",
             "name": "bunker",
             "description": "Bunker",
-            "difficultyBrackets": [3],
+            "difficultyBrackets": [-3],
             "floatingVariant": "variable-3-floating"
         },
         {
@@ -81,7 +81,7 @@
             "key": "variable-4",
             "name": "bunker",
             "description": "Bunker",
-            "difficultyBrackets": [4],
+            "difficultyBrackets": [-4],
             "floatingVariant": "variable-4-floating"
         },
         {
@@ -94,7 +94,7 @@
             "key": "variable-5",
             "name": "bunker",
             "description": "Bunker",
-            "difficultyBrackets": [],
+            "difficultyBrackets": [-5],
             "floatingVariant": "variable-5-floating"
         },
         {

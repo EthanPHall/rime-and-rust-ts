@@ -22,7 +22,7 @@ const PrepWindowActionEntry: FC<PrepWindowActionEntryProps> = (
   }
 ) => {
 
-  useEffect(() => {console.log(prepped)}, []);
+  // useEffect(() => {console.log(prepped)}, []);
 
   const actionName = keysToNames.find((keyToName) => keyToName.key == actionSeed.key)?.displayName;
 

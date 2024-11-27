@@ -19,13 +19,14 @@ interface CaravanSectionSledsProps {
 }
 
 const CaravanSectionSleds: FC<CaravanSectionSledsProps> = ({sleds, setSleds, dogs, workers, workersMax, setWorkers, executeRecipe, sellSled}) => {
-  const SLED_MAX_WORKERS = 4;
+  const SLED_MAX_WORKERS = 6;
   const MY_SLED_WORKERS = 0;
+  const LARGER_ALLOCATION = 6;
   
   const itemFactory:IItemFactory = useContext(ItemFactoryContext);
 
   useEffect(() => {
-    console.log("Sleds:",sleds);
+    // console.log("Sleds:",sleds);
   }, [])
 
   function removeWorkersFromSled(sled:Sled, amount:number){
@@ -120,8 +121,8 @@ on={['hover', 'focus']}
           <button onClick={() => {addWorkersToSled(sled, 1)}}>+ workers</button>
         </div>
         <div className='add-subtract-section'>
-          <button onClick={() => {removeWorkersFromSled(sled, 4)}}>-4 workers</button>
-          <button onClick={() => {addWorkersToSled(sled, 4)}}>+4 workers</button>
+          <button onClick={() => {removeWorkersFromSled(sled, LARGER_ALLOCATION)}}>-{LARGER_ALLOCATION} workers</button>
+          <button onClick={() => {addWorkersToSled(sled, LARGER_ALLOCATION)}}>+{LARGER_ALLOCATION} workers</button>
         </div>
       </>
     }

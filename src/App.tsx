@@ -328,7 +328,7 @@ function App() {
       }
     }
 
-    console.log("Total Workers Augment:", maxWorkersAugment);
+    //console.log("Total Workers Augment:", maxWorkersAugment);
     setMaxWorkers(1 + maxWorkersAugment);
   }, [inventory]);
 
@@ -376,7 +376,7 @@ function App() {
   }, [combatEncounterKey])
 
   useEffect(() => {
-    console.log("Sleds List:", sledsList);
+    // console.log("Sleds List:", sledsList);
     sledsListRef.current = sledsList;
   }, [sledsList]);
 
@@ -587,11 +587,11 @@ function App() {
           }
         }
 
-        console.log("totalWorkersRef", totalWorkersRef.current)
-          console.log("maxWorkersRef", maxWorkersRef.current)
+        // console.log("totalWorkersRef", totalWorkersRef.current)
+        //   console.log("maxWorkersRef", maxWorkersRef.current)
         //Certain events may not be able to fire, given the current state.
         if(eventKey){
-          console.log("Event Key:", eventKey);
+          // console.log("Event Key:", eventKey);
           if(eventKey == "survivors-increase-1" && totalWorkersRef.current >= maxWorkersRef.current){
             eventKey = null;
           }
@@ -751,7 +751,7 @@ function App() {
       messageManager
     );
 
-    console.log("In Load");
+    // console.log("In Load");
 
     setSavedMap(mapWasLoaded ? map.clone() : null);
     setInventory(inventory.clone());

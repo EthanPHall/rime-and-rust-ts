@@ -44,7 +44,7 @@
                 "key": "craftableItem2"
             }
         ],
-        "maxWorkersAugment": 1
+        "maxWorkersAugment": 2
     },
     "Debug Sled":{
         "key": "Debug Sled",
@@ -99,7 +99,7 @@
                 "key": "Cartridge"
             }
         ],
-        "maxWorkersAugment": 1
+        "maxWorkersAugment": 2
     },
     "My Sled": {
         "key": "My Sled",
@@ -187,7 +187,7 @@
                 "key": "Sled Dog"
             }
         ],
-        "maxWorkersAugment": 1
+        "maxWorkersAugment": 2
     },
     "Workshop Sled": {
         "key": "Workshop Sled",
@@ -244,7 +244,7 @@
                 "key": "Forge Sled"
             }
         ],
-        "maxWorkersAugment": 1
+        "maxWorkersAugment": 2
     },
     "House Sled": {
         "key": "House Sled",
@@ -304,7 +304,7 @@
                 "key": "Nutrient Slurry"
             }
         ],
-        "maxWorkersAugment": 5
+        "maxWorkersAugment": 7
     },
     "Lab Sled": {
         "key": "Lab Sled",
@@ -378,7 +378,7 @@
                 "key": "Grappling Hook"
             }
         ],
-        "maxWorkersAugment": 1
+        "maxWorkersAugment": 2
     },
     "Scavenger Sled Cheap": {
         "key": "Scavenger Sled Cheap",
@@ -425,7 +425,7 @@
                 "key": "Pure Psychium"
             }
         ],
-        "maxWorkersAugment": 1
+        "maxWorkersAugment": 2
     },
     "Forge Sled": {
         "key": "Forge Sled",
@@ -491,7 +491,7 @@
                 "key": "Pure Psychium"
             }
         ],
-        "maxWorkersAugment": 1
+        "maxWorkersAugment": 2
     },
     "Forge Sled Cheap": {
         "key": "Forge Sled Cheap",
@@ -537,7 +537,7 @@
                 "key": "Scrap Sword"
             }
         ],
-        "maxWorkersAugment": 1
+        "maxWorkersAugment": 2
     },
     "Invalid Sled": {
         "key": "Invalid Sled",
@@ -558,6 +558,6 @@
         },
         "workers": 0,
         "canCraftList": [],
-        "maxWorkersAugment": 1
+        "maxWorkersAugment": 2
     }
 }

@@ -539,7 +539,7 @@ function executeActionsList() {
                   settingsContext.setSettingsManager((prev) => {
                     const newSettingsManager = prev.clone();
                     newSettingsManager.setOneClickCombatMove(!newSettingsManager.getOneClickCombatMove());
-                    console.log(newSettingsManager.getOneClickCombatMove());
+                    // console.log(newSettingsManager.getOneClickCombatMove());
 
                     return newSettingsManager;
                   })

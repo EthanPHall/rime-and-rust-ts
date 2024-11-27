@@ -28,7 +28,7 @@ class EntitySpawner {
 
     spawnEntity(entity: CombatEntity) {
         if (entity instanceof CombatHazard) {
-            console.log("Spawning hazard: " + entity);
+            // console.log("Spawning hazard: " + entity);
 
             const hazard = entity as CombatHazard;
             

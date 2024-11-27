@@ -83,7 +83,7 @@ const ActionButton: FC<ActionButtonProps> = ({addToComboList, action, actionInde
     pauseProcessingSingleClickMove(false);
 
     if (actionToSendOff === null) {
-      console.log("No action to send off.");
+      // console.log("No action to send off.");
       return false;
     } else {
       reduceActionUses(actionIndex);

@@ -843,7 +843,7 @@ abstract class CombatAction{
     }
 
     execute() {
-      console.log('Blocking');
+      // console.log('Blocking');
       this.refreshMap();
     }
 
@@ -1282,7 +1282,7 @@ abstract class CombatAction{
           continue;
         }
         
-        console.log("Target entity found");
+        // console.log("Target entity found");
         targetEntity.takeDamage(this.damage, this);
         this.updateEntity(targetEntity.id, targetEntity);
       }
@@ -1346,7 +1346,7 @@ abstract class CombatAction{
       );
     }
     execute(): void {
-      console.log('Fireball');
+      // console.log('Fireball');
 
       const player:CombatEntity|null = this.getMap().getPlayer();
       if(!player){return;}
@@ -1360,7 +1360,7 @@ abstract class CombatAction{
         !this.getMap().isInBounds(positionToSpawnAt) ||
         this.getMap().locations[positionToSpawnAt.y][positionToSpawnAt.x].entity
       ){
-        console.log('Fireball blocked');
+        // console.log('Fireball blocked');
         this.refreshMap();
         return;
       }

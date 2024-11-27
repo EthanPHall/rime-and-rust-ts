@@ -8,11 +8,11 @@ class CombatPlayer extends CombatEntity implements TurnTaker{
     stats:PlayerCombatStats;
 
     startTurn(): void {
-      console.log(`${this.name} is starting their turn.`);
+      // console.log(`${this.name} is starting their turn.`);
       this.resetActionUses();
     }
     endTurn(): void {
-      console.log(`${this.name} is ending their turn.`);
+      // console.log(`${this.name} is ending their turn.`);
       this.advanceTurn();
     }
     canTakeTurn(): boolean {
