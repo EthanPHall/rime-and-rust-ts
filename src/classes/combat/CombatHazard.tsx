@@ -385,7 +385,8 @@ class Fireball extends CombatHazard implements TurnTaker{
     refreshMap: () => void,
     settingsManager:ISettingsManager
   ){
-    super(id, 999, 999, 'F', "Fireball", position, false, Fireball.DESCRIPTION, true, true);
+    //TODO: Define display data for entities in a json file
+    super(id, 999, 999, '\xA4', "Fireball", position, false, Fireball.DESCRIPTION, true, true);
     this.damage = 5;
     this.getMap = getMap;
     this.updateEntity = updateEntity;
