@@ -4,7 +4,7 @@ import Directions, { DirectionsUtility } from "../utility/Directions";
 import IdGenerator from "../utility/IdGenerator";
 import Vector2 from "../utility/Vector2";
 import AreaOfEffect from "./AreaOfEffect";
-import CombatEnemy, { ReactionFlags } from "./CombatEnemy";
+import CombatEnemy from "./CombatEnemy";
 import CombatEntity from "./CombatEntity";
 import CombatHazard, { BurningFloor, Wall, Fireball as FireballHazard } from "./CombatHazard";
 import CombatHazardSymbolFactory from "./CombatHazardSymbolFactory";
@@ -14,6 +14,7 @@ import EntitySpawner from "./EntitySpawner";
 import hazardsJSONData from "../../data/combat/hazards.json"
 import { ISettingsManager } from "../../context/misc/SettingsContext";
 import CombatHazardFireballFactory from "./CombatHazardFireballFactory";
+import ReactionFlags from "./Reactions/ReactionFlags";
 
 abstract class CombatAction{
     name: string;
@@ -148,10 +149,10 @@ abstract class CombatAction{
           return;
         }
 
-        targetEntity.takeDamage(this.damage, this);
+        targetEntity.takeDamage(this.damage, this, this.ownerId);
 
         if(targetEntity instanceof CombatEnemy){
-          targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this);
+          targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this, this.ownerId);
         }
 
         this.updateEntity(targetEntity.id, targetEntity);
@@ -220,10 +221,10 @@ abstract class CombatAction{
           return;
         }
 
-        targetEntity.takeDamage(this.damage, this);
+        targetEntity.takeDamage(this.damage, this, this.ownerId);
 
         if(targetEntity instanceof CombatEnemy){
-          targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this);
+          targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this, this.ownerId);
         }
 
         this.updateEntity(targetEntity.id, targetEntity);
@@ -291,10 +292,10 @@ abstract class CombatAction{
           return;
         }
 
-        targetEntity.takeDamage(this.damage, this);
+        targetEntity.takeDamage(this.damage, this, this.ownerId);
 
         if(targetEntity instanceof CombatEnemy){
-          targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this);
+          targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this, this.ownerId);
         }
 
         this.updateEntity(targetEntity.id, targetEntity);
@@ -362,10 +363,10 @@ abstract class CombatAction{
           return;
         }
 
-        targetEntity.takeDamage(this.damage, this);
+        targetEntity.takeDamage(this.damage, this, this.ownerId);
 
         if(targetEntity instanceof CombatEnemy){
-          targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this);
+          targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this, this.ownerId);
         }
 
         this.updateEntity(targetEntity.id, targetEntity);
@@ -434,10 +435,10 @@ abstract class CombatAction{
           return;
         }
 
-        targetEntity.takeDamage(this.damage, this);
+        targetEntity.takeDamage(this.damage, this, this.ownerId);
 
         if(targetEntity instanceof CombatEnemy){
-          targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this);
+          targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this, this.ownerId);
         }
 
         this.updateEntity(targetEntity.id, targetEntity);
@@ -506,7 +507,7 @@ abstract class CombatAction{
           return;
         }
 
-        targetEntity.takeDamage(this.damage, this);
+        targetEntity.takeDamage(this.damage, this, this.ownerId);
 
         if(targetEntity.isMovable()){
           const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
@@ -518,7 +519,7 @@ abstract class CombatAction{
           }
         }
         if(targetEntity instanceof CombatEnemy){
-          targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this);
+          targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this, this.ownerId);
         }
 
         this.updateEntity(targetEntity.id, targetEntity);
@@ -588,7 +589,7 @@ abstract class CombatAction{
           return;
         }
 
-        targetEntity.takeDamage(this.damage, this);
+        targetEntity.takeDamage(this.damage, this, this.ownerId);
         this.updateEntity(targetEntity.id, targetEntity);
         return;
       }
@@ -770,7 +771,7 @@ abstract class CombatAction{
           return;
         }
 
-        targetEntity.takeDamage(this.damage, this);
+        targetEntity.takeDamage(this.damage, this, this.ownerId);
 
         //destroy walls
         if(targetEntity instanceof Wall){
@@ -889,7 +890,7 @@ abstract class CombatAction{
         }
 
         if(owner instanceof CombatPlayer){
-          CombatEntity.setEntityWideReaction(ReactionFlags.PLAYER_DID_MOVE, this);
+          CombatEntity.setEntityWideReaction(ReactionFlags.PLAYER_DID_MOVE, this, this.ownerId);
         }
       }
       else{
@@ -979,7 +980,7 @@ abstract class CombatAction{
         }
 
         let bumped:boolean = false;
-        targetEntity.takeDamage(this.damage, this);
+        targetEntity.takeDamage(this.damage, this, this.ownerId);
 
         const backwardPosition:Vector2 = Vector2.add(targetEntity.position, backwardsVector);
         if(previousEntity){
@@ -996,7 +997,7 @@ abstract class CombatAction{
         }
 
         if(bumped){
-          targetEntity.takeDamage(this.damage, this);
+          targetEntity.takeDamage(this.damage, this, this.ownerId);
         }
         else{
           targetEntity.position = Vector2.add(targetEntity.position, pullVector);
@@ -1004,7 +1005,7 @@ abstract class CombatAction{
         this.updateEntity(targetEntity.id, targetEntity);
         
         if(targetEntity instanceof CombatEnemy){
-          targetEntity.setReactionFlag(ReactionFlags.WAS_PULLED, this);
+          targetEntity.setReactionFlag(ReactionFlags.WAS_PULLED, this, this.ownerId);
         }
 
         previousEntity = targetEntity;
@@ -1142,7 +1143,7 @@ abstract class CombatAction{
         }
         
         let bumped:boolean = false;
-        targetEntity.takeDamage(this.damage, this);
+        targetEntity.takeDamage(this.damage, this, this.ownerId);
 
         const forwardPosition:Vector2 = Vector2.add(targetEntity.position, forwardsVector);
         if(previousEntity){
@@ -1163,7 +1164,7 @@ abstract class CombatAction{
         }
 
         if(bumped){
-          targetEntity.takeDamage(this.damage, this);
+          targetEntity.takeDamage(this.damage, this, this.ownerId);
         }
         else{
           targetEntity.position = Vector2.add(targetEntity.position, pushVector);
@@ -1171,7 +1172,7 @@ abstract class CombatAction{
         this.updateEntity(targetEntity.id, targetEntity);
         
         if(targetEntity instanceof CombatEnemy){
-          targetEntity.setReactionFlag(ReactionFlags.WAS_PULLED, this);
+          targetEntity.setReactionFlag(ReactionFlags.WAS_PULLED, this, this.ownerId);
         }
 
         previousEntity = targetEntity;
@@ -1283,7 +1284,7 @@ abstract class CombatAction{
         }
         
         // console.log("Target entity found");
-        targetEntity.takeDamage(this.damage, this);
+        targetEntity.takeDamage(this.damage, this, this.ownerId);
         this.updateEntity(targetEntity.id, targetEntity);
       }
 

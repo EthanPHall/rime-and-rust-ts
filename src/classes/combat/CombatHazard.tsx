@@ -8,10 +8,12 @@ import MapUtilities from "../utility/MapUtilities";
 import Vector2 from "../utility/Vector2";
 import CombatAction, { Attack, BurningFloorAttack, CombatActionWithUses, DespawnBurningRadius, Move, SpawnBurningRadius } from "./CombatAction";
 import CombatActionFactory from "./CombatActionFactory";
-import CombatEnemy, { AIHandler, Reaction, ReactionFlags } from "./CombatEnemy";
+import CombatEnemy, { AIHandler } from "./CombatEnemy";
 import CombatEntity from "./CombatEntity";
 import CombatMapData from "./CombatMapData";
 import EntitySpawner from "./EntitySpawner";
+import Reaction from "./Reactions/Reaction";
+import ReactionFlags from "./Reactions/ReactionFlags";
 import TurnTaker from "./TurnTaker";
 
 abstract class CombatHazard extends CombatEntity{
@@ -26,13 +28,14 @@ abstract class CombatHazard extends CombatEntity{
       maxHp: number, 
       symbol: string, 
       name: string, 
-      position: Vector2, 
+      position: Vector2,
+      getMap: ()=>CombatMapData,
       solid: boolean, 
       description: string = "", 
       onlyDisplayOneInSidebar: boolean = false,
       intangible: boolean = false
     ){
-      super(id, hp, maxHp, symbol, name, position, description);
+      super(id, hp, maxHp, symbol, name, position, getMap, description);
       this.solid = solid;
       this.onlyDisplayOneInSidebar = onlyDisplayOneInSidebar;
       this.intangible = intangible;
@@ -62,22 +65,22 @@ abstract class CombatHazard extends CombatEntity{
     static WALL_HP = 10;
     static WALL_DESCRIPTION:string = 'Sturdy walls. Click a specific wall in the map to see its health.';
   
-    constructor(id:number, hp: number, maxHp: number, symbol: string, name: string, position: Vector2, solid: boolean){
-      super(id, hp, maxHp, symbol, name, position, solid, Wall.WALL_DESCRIPTION, true);
+    constructor(id:number, hp: number, maxHp: number, symbol: string, name: string, position: Vector2, getMap: ()=>CombatMapData, solid: boolean){
+      super(id, hp, maxHp, symbol, name, position, getMap, solid, Wall.WALL_DESCRIPTION, true);
     }
   
-    static createDefaultWall(position: Vector2): Wall{
-      return new Wall(IdGenerator.generateUniqueId(), Wall.WALL_HP, Wall.WALL_HP, '#', 'Wall', position, true);
+    static createDefaultWall(position: Vector2, getMap: ()=>CombatMapData): Wall{
+      return new Wall(IdGenerator.generateUniqueId(), Wall.WALL_HP, Wall.WALL_HP, '#', 'Wall', position, getMap, true);
     }
   
-    static createDefaultWalls(startEndPointPair: {start:Vector2, end:Vector2}[]): Wall[]{
+    static createDefaultWalls(startEndPointPair: {start:Vector2, end:Vector2}[], getMap: ()=>CombatMapData): Wall[]{
       const walls: Wall[] = [];
   
       startEndPointPair.forEach(pair => {
         const line:Vector2[] = MapUtilities.getLineBetweenPoints(pair.start, pair.end);
   
         line.forEach(point => {
-          walls.push(Wall.createDefaultWall(point));
+          walls.push(Wall.createDefaultWall(point, getMap));
         });
       });
   
@@ -85,7 +88,7 @@ abstract class CombatHazard extends CombatEntity{
     }
 
     clone(): CombatHazard{
-      return new Wall(this.id, this.hp, this.maxHp, this.symbol, this.name, this.position, this.solid);
+      return new Wall(this.id, this.hp, this.maxHp, this.symbol, this.name, this.position, this.getMap, this.solid);
     }
 
     handleNewEntityOnThisSpace(newEntity: CombatEntity|null): CombatEntity|null {
@@ -101,22 +104,22 @@ abstract class CombatHazard extends CombatEntity{
     static WALL_HP = Infinity;
     static WALL_DESCRIPTION:string = '';
   
-    constructor(id:number, hp: number, maxHp: number, symbol: string, name: string, position: Vector2, solid: boolean){
-      super(id, InvisibleWall.WALL_HP, InvisibleWall.WALL_HP, "0", "invisible-wall", position, solid, InvisibleWall.WALL_DESCRIPTION, true);
+    constructor(id:number, hp: number, maxHp: number, symbol: string, name: string, position: Vector2, getMap: ()=>CombatMapData, solid: boolean){
+      super(id, InvisibleWall.WALL_HP, InvisibleWall.WALL_HP, "0", "invisible-wall", position, getMap, solid, InvisibleWall.WALL_DESCRIPTION, true);
     }
   
-    static createDefaultWall(position: Vector2): InvisibleWall{
-      return new InvisibleWall(IdGenerator.generateUniqueId(), InvisibleWall.WALL_HP, InvisibleWall.WALL_HP, '0', 'invisible-wall', position, true);
+    static createDefaultWall(position: Vector2, getMap: ()=>CombatMapData): InvisibleWall{
+      return new InvisibleWall(IdGenerator.generateUniqueId(), InvisibleWall.WALL_HP, InvisibleWall.WALL_HP, '0', 'invisible-wall', position, getMap, true);
     }
   
-    static createDefaultWalls(startEndPointPair: {start:Vector2, end:Vector2}[]): InvisibleWall[]{
+    static createDefaultWalls(startEndPointPair: {start:Vector2, end:Vector2}[], getMap: ()=>CombatMapData): InvisibleWall[]{
       const walls: InvisibleWall[] = [];
   
       startEndPointPair.forEach(pair => {
         const line:Vector2[] = MapUtilities.getLineBetweenPoints(pair.start, pair.end);
   
         line.forEach(point => {
-          walls.push(InvisibleWall.createDefaultWall(point));
+          walls.push(InvisibleWall.createDefaultWall(point, getMap));
         });
       });
   
@@ -124,7 +127,7 @@ abstract class CombatHazard extends CombatEntity{
     }
 
     clone(): CombatHazard{
-      return new InvisibleWall(this.id, this.hp, this.maxHp, this.symbol, this.name, this.position, this.solid);
+      return new InvisibleWall(this.id, this.hp, this.maxHp, this.symbol, this.name, this.position, this.getMap, this.solid);
     }
 
     handleNewEntityOnThisSpace(newEntity: CombatEntity|null): CombatEntity|null {
@@ -145,19 +148,29 @@ abstract class CombatHazard extends CombatEntity{
   class VolatileCanister extends CombatHazard{
     actionFactory: CombatActionFactory;
     addToComboList: (action: CombatAction) => void;
-
-    constructor(id:number, symbol: string, name: string, position: Vector2, solid: boolean, actionFactory: CombatActionFactory, addToComboList: (action: CombatAction) => void){
-      super(id, 2, 2, symbol, name, position, solid);
+    
+    constructor(
+      id:number, 
+      symbol: string, 
+      name: string, 
+      position: Vector2, 
+      getMap: ()=>CombatMapData,
+      solid: boolean,
+      actionFactory: CombatActionFactory,
+      addToComboList: (action: CombatAction) => void
+    ){
+      super(id, 2, 2, symbol, name, position, getMap, solid);
       this.actionFactory = actionFactory;
       this.addToComboList = addToComboList;
     }
 
-    static createDefaultVolatileCanister(position:Vector2, actionFactory: CombatActionFactory, addToComboList: (action: CombatAction) => void):VolatileCanister{
+    static createDefaultVolatileCanister(position:Vector2, actionFactory: CombatActionFactory, addToComboList: (action: CombatAction) => void, getMap: ()=>CombatMapData):VolatileCanister{
       return new VolatileCanister(
         IdGenerator.generateUniqueId(),
         '+',
         'Volatile Canister',
         position,
+        getMap,
         false,
         actionFactory,
         addToComboList
@@ -169,7 +182,16 @@ abstract class CombatHazard extends CombatEntity{
     }
 
     clone(): CombatHazard{
-      const newCanister:VolatileCanister = new VolatileCanister(this.id, this.symbol, this.name, this.position, this.solid, this.actionFactory, this.addToComboList);
+      const newCanister:VolatileCanister = new VolatileCanister(
+        this.id,
+        this.symbol,
+        this.name,
+        this.position,
+        this.getMap,
+        this.solid,
+        this.actionFactory,
+        this.addToComboList
+      );
       newCanister.hp = this.hp;
 
       return newCanister;
@@ -188,7 +210,7 @@ abstract class CombatHazard extends CombatEntity{
     }
 
     takeDamage(damage: number, damagingAction: CombatAction): void {
-      super.takeDamage(damage, damagingAction);
+      super.takeDamage(damage, damagingAction, this.id);
 
       if(this.reactionTriggerList[ReactionFlags.DID_DIE]){
         this.hp = .1;
@@ -219,7 +241,6 @@ abstract class CombatHazard extends CombatEntity{
     static DESCRIPTION:string = 'Engulfed in flames, this space deals damage to anything that steps on it.';
 
     damage: number;
-    getMap: ()=>CombatMapData;
     updateEntity: (id: number, newEntity: CombatEntity) => void;
     refreshMap: () => void;
 
@@ -230,9 +251,8 @@ abstract class CombatHazard extends CombatEntity{
       updateEntity: (id: number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
-      super(id, 999, 999, 'f', "Burning Floor", position, false, BurningFloor.DESCRIPTION, true, true);
+      super(id, 999, 999, 'f', "Burning Floor", position, getMap, false, BurningFloor.DESCRIPTION, true, true);
       this.damage = 5;
-      this.getMap = getMap;
       this.updateEntity = updateEntity;
       this.refreshMap = refreshMap;
     }
@@ -349,7 +369,6 @@ class Fireball extends CombatHazard implements TurnTaker{
   settingsManager:ISettingsManager;
   entitySpawner: EntitySpawner;
 
-  getMap: ()=>CombatMapData;
   updateEntity: (id: number, newEntity: CombatEntity) => void;
   refreshMap: () => void;
   
@@ -363,7 +382,7 @@ class Fireball extends CombatHazard implements TurnTaker{
     this.executeTurn();
   }
   endTurn(): void {
-    this.advanceTurn();
+    // this.advanceTurn();
   }
 
   canTakeTurn(): boolean {
@@ -386,9 +405,8 @@ class Fireball extends CombatHazard implements TurnTaker{
     settingsManager:ISettingsManager
   ){
     //TODO: Define display data for entities in a json file
-    super(id, 999, 999, '\xA4', "Fireball", position, false, Fireball.DESCRIPTION, true, true);
+    super(id, 999, 999, '\xA4', "Fireball", position, getMap, false, Fireball.DESCRIPTION, true, true);
     this.damage = 5;
-    this.getMap = getMap;
     this.updateEntity = updateEntity;
     this.refreshMap = refreshMap;
     this.advanceTurn = advanceTurn;

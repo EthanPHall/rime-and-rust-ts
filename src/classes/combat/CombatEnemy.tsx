@@ -6,80 +6,24 @@ import AIHandler from "./AIHandler";
 import CombatAction, {  Attack, Chop, CombatActionWithRepeat, CombatActionWithUses, Move, Punch } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
 import CombatMapData from "./CombatMapData";
+import ConditionDebug from "./Conditions/ConditionDebug";
+import ICondition from "./Conditions/ICondition";
 import IActionExecutor from "./IActionExecutor";
+import Reaction from "./Reactions/Reaction";
 import TurnTaker from "./TurnTaker";
 
-enum ReactionFlags{
-  PLAYER_DID_MOVE = 'PLAYER_DID_MOVE',
-  WAS_ATTACKED = 'WAS_ATTACKED',
-  WAS_PULLED = 'WAS_PULLED',
-  WAS_PUSHED = 'WAS_PUSHED',
-  DID_DIE = 'DID_DIE',
-}
-
-type ReactionFlagAndTriggerList = { [ k in ReactionFlags ]?: CombatAction };
 type KeyActionPairs = { [ k: string ]: CombatActionWithUses };
-
-class Reaction {
-  action:CombatAction; 
-  priority:number;
-
-  constructor(action: CombatAction, priority: number){
-    this.action = action;
-    this.priority = priority;
-  }
-};
-
-interface ReactionGenerator{
-  getReaction(): Reaction | null;
-}
-
-class AttackWhenAttacked implements ReactionGenerator{
-  reactionTriggerList: ReactionFlagAndTriggerList;
-  actions: KeyActionPairs;
-
-  constructor(actions: KeyActionPairs, reactionTriggerList: ReactionFlagAndTriggerList){
-    this.reactionTriggerList = reactionTriggerList;
-    this.actions = actions;
-  }
-
-  getReaction(): Reaction | null {
-    const trigger:CombatAction|undefined = this.reactionTriggerList[ReactionFlags.WAS_ATTACKED];
-      
-    if(trigger){
-      return new Reaction(this.actions.attack.action.clone(DirectionsUtility.getOppositeDirection(trigger.direction)), 100);
-    }
-
-    return null;
-  }
-}
-
-class MoveWhenPlayerMoves implements ReactionGenerator{
-  reactionTriggerList: ReactionFlagAndTriggerList;
-  actions: KeyActionPairs;
-
-  constructor(actions: KeyActionPairs, reactionTriggerList: ReactionFlagAndTriggerList){
-    this.reactionTriggerList = reactionTriggerList;
-    this.actions = actions;
-  }
-
-  getReaction(): Reaction | null {
-    const trigger:CombatAction|undefined = this.reactionTriggerList[ReactionFlags.PLAYER_DID_MOVE];
-      
-    if(trigger){
-      return new Reaction(this.actions.move.action.clone(trigger.direction), 100);
-    }
-
-    return null;
-  }
-}
 
 abstract class CombatEnemy extends CombatEntity implements TurnTaker{
   static ACTION_DELAY = 600;
   static TURN_START_DELAY = 1500;
   static ACTION_SHOW_OFF_DELAY = 1500;
 
-  getMap: () => CombatMapData;
+  actions: { [ k: string ]: CombatActionWithUses };
+  playerId: number;
+
+  settingsManager:ISettingsManager;
+
   updateEntity: (id:number, newEntity: CombatEntity) => void;
   refreshMap: () => void;  
 
@@ -92,11 +36,25 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
   combatEntity: CombatEntity = this;
   advanceTurn: () => void;
   startTurn(): void {
+    this.resetToDefaults();
+
+    this.conditions.forEach(condition => {
+      if(!condition.evaluateShouldWearOff()){
+        condition.executeCondition(this);
+      }
+    });
+
     this.executeTurn();
   }
   endTurn(): void {
-    // console.log(`${this.name} is ending their turn.`);
-    this.advanceTurn();
+    console.log(`${this.name} is ending their turn.`);
+    
+    //clean up conditions
+    this.conditions = this.conditions.filter(condition => {
+      return !condition.evaluateShouldWearOff();
+    });
+    
+    // this.advanceTurn();
   }
 
   abstract executeTurn(): Promise<void>;
@@ -104,11 +62,6 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
   setHp(hp: number): void{
     this.hp = hp;
   }
-
-  actions: { [ k: string ]: CombatActionWithUses };
-  playerId: number;
-
-  settingsManager:ISettingsManager;
 
   constructor(
     id:number, 
@@ -123,18 +76,19 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     getMap: () => CombatMapData,
     updateEntity: (id:number, newEntity: CombatEntity) => void,
     refreshMap: () => void,
-    settingsManager:ISettingsManager
+    settingsManager:ISettingsManager,
+    conditions: ICondition[] = []
   ){
-    super(id, hp, maxHp, symbol, name, position);
+    super(id, hp, maxHp, symbol, name, position, getMap);
     this.advanceTurn = advanceTurn;
     this.addActionToList = addActionToList;
     this.executeActionsList = executeActionsList;
-    this.getMap = getMap;
     this.updateEntity = updateEntity;
     this.refreshMap = refreshMap;
     this.actions = {};
     this.playerId = getMap().getPlayer()?.id || -1;
     this.settingsManager = settingsManager;
+    this.conditions = conditions;
   }
 
   clone(): CombatEnemy {
@@ -256,7 +210,7 @@ class RustedBrute extends CombatEnemy{
       10, 
       'B', 
       'Rusted Brute', 
-      position, 
+      position,
       advanceTurn, 
       addActionToList, 
       executeActionsList,
@@ -374,5 +328,5 @@ class RustedShamblerAI implements AIHandler{
 }
 
 export default CombatEnemy;
-export { RustedShambler, RustedBrute, ReactionFlags, Reaction };
-export type { AIHandler, ReactionFlagAndTriggerList };
+export { RustedShambler, RustedBrute  };
+export type { AIHandler, KeyActionPairs };

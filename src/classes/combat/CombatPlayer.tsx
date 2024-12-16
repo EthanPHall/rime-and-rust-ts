@@ -1,5 +1,8 @@
 import Vector2 from "../utility/Vector2";
 import CombatEntity from "./CombatEntity";
+import CombatMapData from "./CombatMapData";
+import ConditionDebug from "./Conditions/ConditionDebug";
+import ICondition from "./Conditions/ICondition";
 import PlayerCombatStats from "./PlayerCombatStats";
 import TurnTaker from "./TurnTaker";
 
@@ -9,11 +12,21 @@ class CombatPlayer extends CombatEntity implements TurnTaker{
 
     startTurn(): void {
       // console.log(`${this.name} is starting their turn.`);
+      this.conditions.forEach(condition => {
+        if(!condition.evaluateShouldWearOff()){
+          condition.executeCondition(this);
+        }
+      });
+  
       this.resetActionUses();
     }
     endTurn(): void {
       // console.log(`${this.name} is ending their turn.`);
-      this.advanceTurn();
+      
+      //clean up conditions
+      this.conditions = this.conditions.filter(condition => {
+        return !condition.shouldWearOff();
+      });
     }
     canTakeTurn(): boolean {
       return this.hp > 0;
@@ -26,23 +39,34 @@ class CombatPlayer extends CombatEntity implements TurnTaker{
     resetActionUses:() => void;
     
     clone(): CombatPlayer {
-      return new CombatPlayer(this.id, this.stats, this.symbol, this.name, this.position, this.advanceTurn, this.resetActionUses, this.hp);
+      return new CombatPlayer(this.id, this.stats, this.symbol, this.name, this.position, this.getMap, this.advanceTurn, this.resetActionUses, this.hp, this.conditions);
     }
 
     constructor(
       id:number, 
-      stats:PlayerCombatStats,
+      stats:PlayerCombatStats, 
       symbol: string, 
       name: string, 
-      position: Vector2, 
+      position: Vector2,
+      getMap: ()=>CombatMapData,
       advanceTurn: () => void,
       resetActionUses:() => void,
-      currentHp?:number 
+      currentHp?:number,
+      conditions: ICondition[] = []
     ){
-      super(id, currentHp || stats.getHealth(), stats.getHealth(), symbol, name, position);
+      super(id, currentHp || stats.getHealth(), stats.getHealth(), symbol, name, position, getMap);
       this.advanceTurn = advanceTurn;
       this.resetActionUses = resetActionUses;
       this.stats = stats;
+
+      if(conditions.length > 0){
+        this.conditions = conditions;
+      }
+      else{
+        this.conditions = [
+          new ConditionDebug(1),
+        ];
+      }
     }
   }
 

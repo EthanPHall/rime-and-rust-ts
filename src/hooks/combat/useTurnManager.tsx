@@ -17,6 +17,8 @@ const useTurnManager = (): [TurnManager, ()=>boolean] => {
     const advanceTurn = () => {
         const turnTakers = turnTakersRefOfRef.current.current;
 
+        turnTakers[currentIndex.current].endTurn();
+
         for(let i = 0; i < turnTakers.length; i++){
             const nextIndex = (currentIndex.current + 1) % turnTakers.length;
             currentIndex.current = (nextIndex);

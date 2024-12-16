@@ -70,11 +70,13 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
         switch(hazardKey){
             case hazardsJSONData.keys.basicWall:    
                 return Wall.createDefaultWall(
-                    position
+                    position,
+                    this.getMap
                 );
             case hazardsJSONData.keys.invisibleWall:    
                 return InvisibleWall.createDefaultWall(
-                    position
+                    position,
+                    this.getMap
                 );
             case hazardsJSONData.keys.burning:    
                 return new BurningFloor(
@@ -88,7 +90,8 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
                 return VolatileCanister.createDefaultVolatileCanister(
                     position,
                     this.actionFactory,
-                    this.addToComboList
+                    this.addToComboList,
+                    this.getMap
                 );
             case hazardsJSONData.keys.fireball:
                 return new Fireball(
@@ -107,7 +110,8 @@ class CombatHazardSymbolFactory implements ICombatHazardFactory{
             default:
                 console.log("No hazard with key " + hazardKey + " found, using default instead.");
                 return Wall.createDefaultWall(
-                    position
+                    position,
+                    this.getMap
                 );
         }
     }

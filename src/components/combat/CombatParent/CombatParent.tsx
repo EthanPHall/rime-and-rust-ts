@@ -97,14 +97,33 @@ class CombatMapTemplate1 extends CombatMapTemplate{
         {start: new Vector2(8, 9), end: new Vector2(8, 12)},
         {start: new Vector2(8, 12), end: new Vector2(12, 12)},
         {start: new Vector2(12, 8), end: new Vector2(12, 13)},
-      ]
+      ],
+      getMap
     );
     // walls.push(Wall.createDefaultWall(new Vector2(7, 4)));
 
     const enemies: CombatEnemy[] = [];
     const hazards: CombatHazard[] = [
-      new VolatileCanister(IdGenerator.generateUniqueId(), '+', 'Volatile Canister', new Vector2(7, 1), false, combatActionFactory, addToComboList),
-      new VolatileCanister(IdGenerator.generateUniqueId(), '+', 'Volatile Canister', new Vector2(7, 4), false, combatActionFactory, addToComboList),
+      new VolatileCanister(
+        IdGenerator.generateUniqueId(), 
+        '+', 
+        'Volatile Canister', 
+        new Vector2(7, 4),
+        getMap, 
+        false, 
+        combatActionFactory, 
+        addToComboList
+      ),
+      new VolatileCanister(
+        IdGenerator.generateUniqueId(), 
+        '+', 
+        'Volatile Canister', 
+        new Vector2(7, 4),
+        getMap, 
+        false, 
+        combatActionFactory, 
+        addToComboList
+      ),
       new BurningFloor(IdGenerator.generateUniqueId(), new Vector2(7, 9), getMap, updateEntity, refreshMap),
       new BurningFloor(IdGenerator.generateUniqueId(), new Vector2(7, 10), getMap, updateEntity, refreshMap),
       new BurningFloor(IdGenerator.generateUniqueId(), new Vector2(7, 11), getMap, updateEntity, refreshMap),
@@ -156,7 +175,7 @@ const CombatParent: FC<CombatParentProps> = (
   //but then with the next action, the player would reset to its old position. So I made a hook where setPlayer also updates
   //a ref that everyone can use to make sure that they're using the most up-to-date player, and a function to get that ref's value,
   //so no more trying to get the player by value, it's all by reference now.
-  const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), combatPlayerStats, '@', 'Player', new Vector2(0, 0), turnManager.advanceTurn, resetActionUses));
+  const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), combatPlayerStats, '@', 'Player', new Vector2(0, 0), getCachedMap, turnManager.advanceTurn, resetActionUses));
   const [enemiesForEffects, getEnemies, setEnemies] = useRefState<CombatEnemy[]>([]);
   const [hazardsForEffects, getHazards, setHazards] = useRefState<CombatHazard[]>([]);
 

@@ -9,9 +9,10 @@ import TurnManager from '../../classes/combat/TurnManager';
 import CombatHazard from '../../classes/combat/CombatHazard';
 import CombatEntity from '../../classes/combat/CombatEntity';
 import CombatPlayer from '../../classes/combat/CombatPlayer';
-import CombatEnemy, { Reaction } from '../../classes/combat/CombatEnemy';
+import CombatEnemy from '../../classes/combat/CombatEnemy';
 import { start } from 'repl';
 import { SettingsContext } from '../../context/misc/SettingsContext';
+import Reaction from '../../classes/combat/Reactions/Reaction';
 
 enum ActionSteps{
     ANIMATION,
