@@ -38,21 +38,14 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
   startTurn(): void {
     this.resetToDefaults();
 
-    this.conditions.forEach(condition => {
-      if(!condition.evaluateShouldWearOff()){
-        condition.executeCondition(this);
-      }
-    });
+    this.applyConditions();
 
     this.executeTurn();
   }
   endTurn(): void {
-    console.log(`${this.name} is ending their turn.`);
+    // console.log(`${this.name} is ending their turn.`);
     
-    //clean up conditions
-    this.conditions = this.conditions.filter(condition => {
-      return !condition.evaluateShouldWearOff();
-    });
+    this.cleanUpConditions();
     
     // this.advanceTurn();
   }
@@ -91,23 +84,24 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
     this.conditions = conditions;
   }
 
-  clone(): CombatEnemy {
-    const clone = new RustedShambler(
-      this.id, 
-      this.position, 
-      this.advanceTurn,
-      this.addActionToList,
-      this.executeActionsList,
-      this.getMap,
-      this.updateEntity,
-      this.refreshMap,
-      this.settingsManager
-    );
+  abstract clone(): CombatEnemy; 
+  // {
+  //   const clone = new RustedShambler(
+  //     this.id, 
+  //     this.position, 
+  //     this.advanceTurn,
+  //     this.addActionToList,
+  //     this.executeActionsList,
+  //     this.getMap,
+  //     this.updateEntity,
+  //     this.refreshMap,
+  //     this.settingsManager
+  //   );
 
-    clone.setHp(this.hp);
+  //   clone.setHp(this.hp);
 
-    return clone;
-  }
+  //   return clone;
+  // }
 }
 
 class RustedShambler extends CombatEnemy{
@@ -120,7 +114,8 @@ class RustedShambler extends CombatEnemy{
     getMap: () => CombatMapData,
     updateEntity: (id:number, newEntity: CombatEntity) => void,
     refreshMap: () => void,
-    settingsManager:ISettingsManager
+    settingsManager:ISettingsManager,
+    conditions: ICondition[] = []
   ){
     super(
       id, 
@@ -135,12 +130,13 @@ class RustedShambler extends CombatEnemy{
       getMap,
       updateEntity,
       refreshMap,
-      settingsManager
+      settingsManager,
+      conditions
     );
 
     this.actions = {
-      attack: new CombatActionWithUses(new Punch(this.id, undefined, this.getMap, this.updateEntity, this.refreshMap), 2),
-      move: new CombatActionWithUses(new Move(this.id, undefined, getMap, updateEntity, refreshMap), 4),
+      attack: new CombatActionWithUses(this.getAttackAction() as CombatAction, 2),
+      move: new CombatActionWithUses(this.getMoveAction() as CombatAction, 4),
     };
   }
 
@@ -154,10 +150,14 @@ class RustedShambler extends CombatEnemy{
       this.getMap,
       this.updateEntity,
       this.refreshMap,
-      this.settingsManager
+      this.settingsManager,
+      this.conditions
     );
 
     clone.setHp(this.hp);
+
+    clone.resetToDefaults();
+    clone.applyConditions();
 
     return clone;
   }
@@ -186,9 +186,11 @@ class RustedShambler extends CombatEnemy{
     }, this.settingsManager.getCorrectTiming(CombatEnemy.ACTION_DELAY));
   }
 
-  getReaction(): Reaction | null {
-    // return new AttackWhenAttacked(this.actions, this.reactionTriggerList).getReaction();
-    return null;
+  getAttackAction(): CombatAction | null {
+    return new Punch(this.id, undefined, this.getMap, this.updateEntity, this.refreshMap);
+  }
+  getMoveAction(): CombatAction | null {
+    return new Move(this.id, undefined, this.getMap, this.updateEntity, this.refreshMap);
   }
 }
 
@@ -202,7 +204,8 @@ class RustedBrute extends CombatEnemy{
     getMap: () => CombatMapData,
     updateEntity: (id:number, newEntity: CombatEntity) => void,
     refreshMap: () => void,
-    settingsManager:ISettingsManager
+    settingsManager:ISettingsManager,
+    conditions: ICondition[] = []
   ){
     super(
       id, 
@@ -217,12 +220,13 @@ class RustedBrute extends CombatEnemy{
       getMap,
       updateEntity,
       refreshMap,
-      settingsManager
+      settingsManager,
+      conditions
     );
 
     this.actions = {
-      attack: new CombatActionWithUses(new Chop(this.id, undefined, this.getMap, this.updateEntity, this.refreshMap), 2),
-      move: new CombatActionWithUses(new Move(this.id, undefined, getMap, updateEntity, refreshMap), 5),
+      attack: new CombatActionWithUses(this.getAttackAction() as CombatAction, 2),
+      move: new CombatActionWithUses(this.getMoveAction() as CombatAction, 5),
     };
   }
 
@@ -236,7 +240,8 @@ class RustedBrute extends CombatEnemy{
       this.getMap,
       this.updateEntity,
       this.refreshMap,
-      this.settingsManager
+      this.settingsManager,
+      this.conditions
     );
 
     clone.setHp(this.hp);
@@ -268,9 +273,11 @@ class RustedBrute extends CombatEnemy{
     }, this.settingsManager.getCorrectTiming(CombatEnemy.ACTION_DELAY));
   }
 
-  getReaction(): Reaction | null {
-    // return new MoveWhenPlayerMoves(this.actions, CombatEntity.ENTITY_WIDE_REACTION_LIST).getReaction();
-    return null;
+  getAttackAction(): CombatAction | null {
+    return new Chop(this.id, undefined, this.getMap, this.updateEntity, this.refreshMap);
+  }
+  getMoveAction(): CombatAction | null {
+    return new Move(this.id, undefined, this.getMap, this.updateEntity, this.refreshMap);
   }
 }
 

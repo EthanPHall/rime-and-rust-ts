@@ -1,9 +1,14 @@
+import CombatEntity from "../CombatEntity";
+import FollowSourceMovement from "../Reactions/FollowSourceMovement";
 import ICondition from "./ICondition";
 
 class ConditionGrappled implements ICondition{
-    private turnsUntilWearsOff: number = 1;
-    constructor(turnsUntilWearsOff: number){
+    private turnsUntilWearsOff: number;
+    private applyerId: number;
+
+    constructor(applyerId: number, turnsUntilWearsOff: number = 99){
         this.turnsUntilWearsOff = turnsUntilWearsOff;
+        this.applyerId = applyerId;
     }
     
     getTurnsUntilWearsOff(): number {
@@ -11,20 +16,18 @@ class ConditionGrappled implements ICondition{
     }
 
     evaluateShouldWearOff(): boolean {
-        const result:boolean = this.turnsUntilWearsOff <= 0;
+        
+
+        const result:boolean = this.shouldWearOff();
         this.turnsUntilWearsOff--;
-
-        if(result){
-            console.log("ConditionGrappled wore off");
-        }
-
         return result;
     }
     shouldWearOff(): boolean {
         return this.turnsUntilWearsOff <= 0;
     }
-    executeCondition(): void {
-        console.log("ConditionGrappled executed");
+    executeCondition(affected:CombatEntity): void {
+        affected.addReactionGenerator(new FollowSourceMovement(this.applyerId));
+        affected.setWorkingSpeed(0);
     }
 }
 

@@ -51,6 +51,18 @@ class CombatAnimationDetailsToMotionAnimation{
                         {duration: combatAnimation.animationLength/2000}
                     ],
                     combatAnimation.positionToAnimate);
+            case CombatAnimationNames.Grapple:
+                return new MotionAnimation(
+                    combatAnimation.entityToAnimateId, 
+                    [
+                        {scale: .7}, 
+                        {scale: 1}
+                    ],
+                    [
+                        {duration: combatAnimation.animationLength/2000},
+                        {duration: combatAnimation.animationLength/2000}
+                    ],
+                    combatAnimation.positionToAnimate);        
             case CombatAnimationNames.Block:
                 return new MotionAnimation(
                     combatAnimation.entityToAnimateId, 

@@ -210,6 +210,7 @@ function App() {
     [
       {key:"Punch", uses:2, id:IdGenerator.generateUniqueId()},
       {key:"Kick", uses:1, id:IdGenerator.generateUniqueId()},
+      {key:"Grapple", uses:1, id:IdGenerator.generateUniqueId()},
     ]
   );
   const [INITIAL_COMBAT_ACTIONS_ALWAYS_PREPPED] = useState<CombatActionSeed[]>(

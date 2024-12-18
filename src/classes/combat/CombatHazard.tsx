@@ -58,7 +58,12 @@ abstract class CombatHazard extends CombatEntity{
     abstract handleNewEntityOnThisSpace(newEntity: CombatEntity|null): CombatEntity|null;
     abstract getActionForNewEntityOnSpace(newEntity: CombatEntity|null): CombatAction|null;
 
-    
+    getAttackAction(): CombatAction | null {
+      return null;
+    }
+    getMoveAction(): CombatAction | null {
+      return null;
+    }  
   }
   
   class Wall extends CombatHazard{

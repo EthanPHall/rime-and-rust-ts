@@ -15,6 +15,7 @@ import hazardsJSONData from "../../data/combat/hazards.json"
 import { ISettingsManager } from "../../context/misc/SettingsContext";
 import CombatHazardFireballFactory from "./CombatHazardFireballFactory";
 import ReactionFlags from "./Reactions/ReactionFlags";
+import ConditionGrappled from "./Conditions/ConditionGrappled";
 
 abstract class CombatAction{
     name: string;
@@ -457,7 +458,77 @@ abstract class CombatAction{
       return result;
     }
   }
-  
+
+  class Grapple extends CombatAction {
+    getMap: () => CombatMapData;
+    damage: number;
+
+    constructor(
+      ownerId: number,
+      direction: Directions = Directions.NONE,
+      getMap: () => CombatMapData,
+      updateEntity: (id:number, newEntity: CombatEntity) => void,
+      refreshMap: () => void
+    ){
+      super('Grapple', true, ownerId, direction, updateEntity, refreshMap);
+      this.getMap = getMap;
+      this.damage = 1;
+    }
+
+    clone(newDirection:Directions = Directions.NONE) : Grapple{
+      const direction: Directions = newDirection != Directions.NONE ? newDirection : this.direction;
+      
+      return new Grapple(this.ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
+    }
+
+    getTargetId(): number|undefined{
+      const map: CombatMapData = this.getMap();
+      const owner: CombatEntity|null = map.getEntityById(this.ownerId);
+
+      if(!owner){return undefined;}
+
+      const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
+      const targetPosition: Vector2 = Vector2.add(owner.position, directionVector);
+      const targetId:number|undefined = map.locations?.[targetPosition.y]?.[targetPosition.x]?.entity?.id
+      
+      if(targetId === undefined || targetId === owner.id) {return undefined;}
+      else {return targetId;}
+    }
+
+    execute() {
+      const targetId:number|undefined = this.getTargetId();
+      const map: CombatMapData = this.getMap();
+      
+      if(targetId){
+        const targetEntity = map.getEntityById(targetId)?.clone();
+
+        if(!targetEntity){
+          this.refreshMap();
+          return;
+        }
+
+        targetEntity.addCondition(new ConditionGrappled(this.ownerId));
+
+        if(targetEntity instanceof CombatEnemy){
+          targetEntity.setReactionFlag(ReactionFlags.WAS_GRAPPLED, this, this.ownerId);
+        }
+
+        this.updateEntity(targetEntity.id, targetEntity);
+        return;
+      }
+
+      this.refreshMap();
+    }
+
+    getAnimations(): AnimationDetails[][] {
+      const targetId:number|undefined = this.getTargetId();
+
+      const result:AnimationDetails[][] = [[CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId)]];
+      if(targetId) result[1] = [CombatAnimationFactory.createAnimation(CombatAnimationNames.Grapple, this.direction, targetId)];
+
+      return result;
+    }
+  }
   
   class Kick extends CombatAction {
     getMap: () => CombatMapData;
@@ -892,6 +963,8 @@ abstract class CombatAction{
         if(owner instanceof CombatPlayer){
           CombatEntity.setEntityWideReaction(ReactionFlags.PLAYER_DID_MOVE, this, this.ownerId);
         }
+
+        CombatEntity.setEntityWideReaction(ReactionFlags.ENTITY_DID_MOVE, this, this.ownerId);
       }
       else{
         this.refreshMap();
@@ -1491,5 +1564,5 @@ abstract class CombatAction{
   }
   
 export default CombatAction;
-export {Slice, Lacerate, DespawnBurningRadius, SpawnBurningRadius, Fireball, Burn, Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
+export {Grapple, Slice, Lacerate, DespawnBurningRadius, SpawnBurningRadius, Fireball, Burn, Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
 export type { CombatActionSeed };

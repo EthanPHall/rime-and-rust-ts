@@ -1,4 +1,5 @@
 import Vector2 from "../utility/Vector2";
+import CombatAction from "./CombatAction";
 import CombatEntity from "./CombatEntity";
 import CombatMapData from "./CombatMapData";
 import ConditionDebug from "./Conditions/ConditionDebug";
@@ -7,6 +8,12 @@ import PlayerCombatStats from "./PlayerCombatStats";
 import TurnTaker from "./TurnTaker";
 
 class CombatPlayer extends CombatEntity implements TurnTaker{
+    getAttackAction(): CombatAction | null {
+      throw new Error("Method not implemented.");
+    }
+    getMoveAction(): CombatAction | null {
+      throw new Error("Method not implemented.");
+    }
 
     stats:PlayerCombatStats;
 

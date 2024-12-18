@@ -1,6 +1,6 @@
 import Directions from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
-import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion, Chop, Punch, Kick, Burn, Fireball, SpawnBurningRadius, DespawnBurningRadius, Slice, Lacerate } from "./CombatAction";
+import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion, Chop, Punch, Kick, Burn, Fireball, SpawnBurningRadius, DespawnBurningRadius, Slice, Lacerate, Grapple } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
 import CombatHazard from "./CombatHazard";
 import CombatHazardFireballFactory from "./CombatHazardFireballFactory";
@@ -19,6 +19,7 @@ enum CombatActionNames{
     Slice = "Slice",
     Lacerate = "Lacerate",
     Punch = "Punch",
+    Grapple = "Grapple",
     Kick = "Kick",
     Burn = "Burn",
     Fireball = "Fireball",
@@ -50,6 +51,8 @@ function stringToCombatActionNames(actionName: string): CombatActionNames{
             return CombatActionNames.Lacerate;
         case "Punch":
             return CombatActionNames.Punch;
+        case "Grapple":
+            return CombatActionNames.Grapple;
         case "Kick":
             return CombatActionNames.Kick;
         case "Burn":
@@ -120,6 +123,8 @@ class CombatActionFactory{
                 return new Lacerate(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
             case CombatActionNames.Punch:
                 return new Punch(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
+            case CombatActionNames.Grapple:
+                return new Grapple(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
             case CombatActionNames.Kick:
                 return new Kick(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
             case CombatActionNames.Burn:
