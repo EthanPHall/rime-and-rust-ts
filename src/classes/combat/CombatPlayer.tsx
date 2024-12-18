@@ -20,7 +20,7 @@ class CombatPlayer extends CombatEntity implements TurnTaker{
     startTurn(): void {
       // console.log(`${this.name} is starting their turn.`);
       this.conditions.forEach(condition => {
-        if(!condition.evaluateShouldWearOff()){
+        if(!condition.evaluateShouldWearOff(this)){
           condition.executeCondition(this);
         }
       });
@@ -32,7 +32,7 @@ class CombatPlayer extends CombatEntity implements TurnTaker{
       
       //clean up conditions
       this.conditions = this.conditions.filter(condition => {
-        return !condition.shouldWearOff();
+        return !condition.shouldWearOff(this);
       });
     }
     canTakeTurn(): boolean {

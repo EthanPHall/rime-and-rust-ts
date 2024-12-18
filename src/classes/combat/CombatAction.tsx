@@ -587,8 +587,10 @@ abstract class CombatAction{
 
           if(targetLocationData && (!targetLocationData.entity || targetLocationData.entity.isWalkable())){
             targetEntity.position = targetPosition;
+            targetEntity.setReactionFlag(ReactionFlags.WAS_PUSHED, this, this.ownerId);
           }
         }
+
         if(targetEntity instanceof CombatEnemy){
           targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this, this.ownerId);
         }
@@ -953,6 +955,7 @@ abstract class CombatAction{
         }
         
         if(!targetLocationData || !isWalkable){
+          owner.setReactionFlag(ReactionFlags.BUMPED_ON_SOLID_SURFACE, this, this.ownerId);
           this.refreshMap();
         }
         else{
@@ -1245,7 +1248,7 @@ abstract class CombatAction{
         this.updateEntity(targetEntity.id, targetEntity);
         
         if(targetEntity instanceof CombatEnemy){
-          targetEntity.setReactionFlag(ReactionFlags.WAS_PULLED, this, this.ownerId);
+          targetEntity.setReactionFlag(ReactionFlags.WAS_PUSHED, this, this.ownerId);
         }
 
         previousEntity = targetEntity;

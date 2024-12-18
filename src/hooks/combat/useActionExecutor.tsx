@@ -181,8 +181,11 @@ const useActionExecutor = (
         
         const reactionsList:(Reaction|null)[] = reactionEntities.map((entity) => {
             // console.log("Reactor: ", entity);
+            entity.resetToDefaults();
+            entity.applyConditions();
             const reaction:Reaction|null = entity.getReaction();
-            entity.clearReactionFlags();
+            
+            // entity.clearReactionFlags();
             
             if(reaction === null){
                 return null;
@@ -190,9 +193,6 @@ const useActionExecutor = (
             
             return reaction;
         });
-        // console.log("                 ");
-        // console.log("-----------------");
-        // console.log("                 ");
         
         reactionsList.sort((a, b) => {
             if(a === null){

@@ -156,8 +156,10 @@ class RustedShambler extends CombatEnemy{
 
     clone.setHp(this.hp);
 
-    clone.resetToDefaults();
-    clone.applyConditions();
+    clone.setReactionTriggerList(this.reactionTriggerList);
+
+    // clone.resetToDefaults();
+    // clone.applyConditions();
 
     return clone;
   }
@@ -245,6 +247,7 @@ class RustedBrute extends CombatEnemy{
     );
 
     clone.setHp(this.hp);
+    clone.setReactionTriggerList(this.reactionTriggerList);
 
     return clone;
   }

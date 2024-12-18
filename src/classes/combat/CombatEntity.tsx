@@ -137,8 +137,9 @@ abstract class CombatEntity{
 
   applyConditions(): void {
     this.conditions.forEach(condition => {
-      console.log("Applying condition", condition);
-      if(!condition.evaluateShouldWearOff()){
+      // console.log("Applying condition", condition);
+      // console.log("Reaction Flags", this.reactionTriggerList);
+      if(!condition.shouldWearOff(this)){
         condition.executeCondition(this);
       }
     });
@@ -146,12 +147,20 @@ abstract class CombatEntity{
 
   cleanUpConditions(): void {
     this.conditions = this.conditions.filter(condition => {
-      return !condition.shouldWearOff();
+      return !condition.evaluateShouldWearOff(this);
     });
   }
 
   setWorkingSpeed(speed: number): void {
     this.working_speed = speed;
+  }
+
+  getReactionFlag(flag: ReactionFlags): ActionWhoDidAction | undefined {
+    return this.reactionTriggerList[flag];
+  }
+
+  setReactionTriggerList(reactionTriggerList: ReactionFlagAndTriggerList): void {
+    this.reactionTriggerList = reactionTriggerList;
   }
 }
 
