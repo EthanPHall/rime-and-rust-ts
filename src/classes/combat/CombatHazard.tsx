@@ -7,7 +7,7 @@ import IdGenerator from "../utility/IdGenerator";
 import MapUtilities from "../utility/MapUtilities";
 import Vector2 from "../utility/Vector2";
 import CombatAction, { Attack, BurningFloorAttack, CombatActionWithUses, DespawnBurningRadius, Move, SpawnBurningRadius } from "./CombatAction";
-import CombatActionFactory from "./CombatActionFactory";
+import CombatActionFactory, { CombatActionNames } from "./CombatActionFactory";
 import CombatEnemy, { AIHandler } from "./CombatEnemy";
 import CombatEntity from "./CombatEntity";
 import CombatMapData from "./CombatMapData";
@@ -186,6 +186,11 @@ abstract class CombatHazard extends CombatEntity{
       return true;
     }
 
+    getMoveAction(): CombatAction | null {
+      console.log("VolatileCanister getMoveAction");
+      return this.actionFactory.createAction(CombatActionNames.Move, this.id, Directions.NONE);
+    }
+
     clone(): CombatHazard{
       const newCanister:VolatileCanister = new VolatileCanister(
         this.id,
@@ -198,6 +203,11 @@ abstract class CombatHazard extends CombatEntity{
         this.addToComboList
       );
       newCanister.hp = this.hp;
+      newCanister.conditions = this.conditions;
+      newCanister.reactionTriggerList = this.reactionTriggerList;
+      // newCanister.resetToDefaults();
+
+      // newCanister.applyConditions();
 
       return newCanister;
     }
@@ -222,13 +232,15 @@ abstract class CombatHazard extends CombatEntity{
       }
     }
     getReaction(): Reaction | null {
+      const potentialResult = super.getReaction();
+
       if(this.reactionTriggerList[ReactionFlags.DID_DIE] !== undefined){
         //the explosion action kills the canister
         const explosion:CombatAction = this.actionFactory.createVolatileCanExplosion(this.id);
         return new Reaction(explosion, 200);
       }
 
-      return null;
+      return potentialResult;
     }
   }
 
