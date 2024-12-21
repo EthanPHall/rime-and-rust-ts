@@ -1,4 +1,5 @@
 import CombatEntity from "../CombatEntity";
+import ConditionName from "./ConditionNames";
 
 interface ICondition{
     getTurnsUntilWearsOff(): number;
@@ -11,6 +12,7 @@ interface ICondition{
     evaluateShouldWearOff(affected:CombatEntity): boolean;
     shouldWearOff(affected:CombatEntity): boolean;
     executeCondition(affected:CombatEntity): void;
+    getName():ConditionName;
 }
 
 export default ICondition;

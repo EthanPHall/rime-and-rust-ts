@@ -24,14 +24,16 @@ abstract class CombatAction{
     direction: Directions;
     updateEntity: (id:number, newEntity: CombatEntity) => void;
     refreshMap: () => void;
+    getMap: () => CombatMapData;
 
-    constructor(name: string, directional: boolean, ownerId: number, direction: Directions = Directions.NONE, updateEntity: (id:number, newEntity: CombatEntity) => void, refreshMap: () => void){    
+    constructor(name: string, directional: boolean, ownerId: number, direction: Directions = Directions.NONE, updateEntity: (id:number, newEntity: CombatEntity) => void, refreshMap: () => void, getMap: () => CombatMapData){    
       this.name = name;
       this.directional = directional;
       this.ownerId = ownerId;
       this.direction = direction;
       this.updateEntity = updateEntity;
       this.refreshMap = refreshMap;
+      this.getMap = getMap;
     }
   
     //MIGHTDO: Might want to put stuff like this into a factory class
@@ -103,7 +105,7 @@ abstract class CombatAction{
   }  
   
   class Attack extends CombatAction {
-    getMap: () => CombatMapData;
+     
     damage: number;
 
     constructor(
@@ -113,8 +115,7 @@ abstract class CombatAction{
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
-      super('Attack', true, ownerId, direction, updateEntity, refreshMap);
-      this.getMap = getMap;
+      super('Attack', true, ownerId, direction, updateEntity, refreshMap, getMap);
       this.damage = 5;
     }
 
@@ -175,7 +176,7 @@ abstract class CombatAction{
 
 
   class Chop extends CombatAction {
-    getMap: () => CombatMapData;
+     
     damage: number;
 
     constructor(
@@ -185,8 +186,7 @@ abstract class CombatAction{
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
-      super('Chop', true, ownerId, direction, updateEntity, refreshMap);
-      this.getMap = getMap;
+      super('Chop', true, ownerId, direction, updateEntity, refreshMap, getMap);
       this.damage = 3;
     }
 
@@ -246,7 +246,7 @@ abstract class CombatAction{
   }
 
   class Slice extends CombatAction {
-    getMap: () => CombatMapData;
+     
     damage: number;
 
     constructor(
@@ -256,8 +256,7 @@ abstract class CombatAction{
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
-      super('Slice', true, ownerId, direction, updateEntity, refreshMap);
-      this.getMap = getMap;
+      super('Slice', true, ownerId, direction, updateEntity, refreshMap, getMap);
       this.damage = 6;
     }
 
@@ -317,7 +316,7 @@ abstract class CombatAction{
   }
 
   class Lacerate extends CombatAction {
-    getMap: () => CombatMapData;
+     
     damage: number;
 
     constructor(
@@ -327,8 +326,7 @@ abstract class CombatAction{
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
-      super('Lacerate', true, ownerId, direction, updateEntity, refreshMap);
-      this.getMap = getMap;
+      super('Lacerate', true, ownerId, direction, updateEntity, refreshMap, getMap);
       this.damage = 12;
     }
 
@@ -389,7 +387,7 @@ abstract class CombatAction{
 
 
   class Punch extends CombatAction {
-    getMap: () => CombatMapData;
+     
     damage: number;
 
     constructor(
@@ -399,8 +397,7 @@ abstract class CombatAction{
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
-      super('Punch', true, ownerId, direction, updateEntity, refreshMap);
-      this.getMap = getMap;
+      super('Punch', true, ownerId, direction, updateEntity, refreshMap, getMap);
       this.damage = 1;
     }
 
@@ -460,7 +457,7 @@ abstract class CombatAction{
   }
 
   class Grapple extends CombatAction {
-    getMap: () => CombatMapData;
+     
     damage: number;
 
     constructor(
@@ -470,8 +467,7 @@ abstract class CombatAction{
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
-      super('Grapple', true, ownerId, direction, updateEntity, refreshMap);
-      this.getMap = getMap;
+      super('Grapple', true, ownerId, direction, updateEntity, refreshMap, getMap);
       this.damage = 1;
     }
 
@@ -531,7 +527,7 @@ abstract class CombatAction{
   }
   
   class Kick extends CombatAction {
-    getMap: () => CombatMapData;
+     
     damage: number;
 
     constructor(
@@ -541,8 +537,7 @@ abstract class CombatAction{
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
-      super('Kick', true, ownerId, direction, updateEntity, refreshMap);
-      this.getMap = getMap;
+      super('Kick', true, ownerId, direction, updateEntity, refreshMap, getMap);
       this.damage = 2;
     }
 
@@ -617,7 +612,7 @@ abstract class CombatAction{
 
 
   class BurningFloorAttack extends CombatAction {
-    getMap: () => CombatMapData;
+     
     damage: number;
     ownerEntity: CombatEntity;
 
@@ -630,8 +625,7 @@ abstract class CombatAction{
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void,
     ){
-      super('Attack', true, ownerId, direction, updateEntity, refreshMap);
-      this.getMap = getMap;
+      super('Attack', true, ownerId, direction, updateEntity, refreshMap, getMap);
       this.damage = damage;
       this.ownerEntity = ownerEntity;
     }
@@ -792,7 +786,7 @@ abstract class CombatAction{
 
 
   class VolatileCanExplosion extends CombatAction {
-    getMap: () => CombatMapData;
+     
     getHazardsList: () => CombatHazard[];
     setHazardsList: (newHazards: CombatHazard[]) => void;
     damage: number;
@@ -806,8 +800,7 @@ abstract class CombatAction{
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
-      super('Explosion', false, ownerId, undefined, updateEntity, refreshMap);
-      this.getMap = getMap;
+      super('Explosion', false, ownerId, undefined, updateEntity, refreshMap, getMap);
       this.getHazardsList = getHazardsList;
       this.setHazardsList = setHazardsList;
       this.damage = 5;
@@ -908,12 +901,12 @@ abstract class CombatAction{
 
 
   class Block extends CombatAction {
-    constructor(ownerId: number, updateEntity: (id:number, newEntity: CombatEntity) => void, refreshMap: () => void){
-      super('Block', false, ownerId, Directions.NONE, updateEntity, refreshMap);
+    constructor(ownerId: number, updateEntity: (id:number, newEntity: CombatEntity) => void, refreshMap: () => void, getMap: () => CombatMapData){
+      super('Block', false, ownerId, Directions.NONE, updateEntity, refreshMap, getMap);
     }
 
     clone() : Block{
-      return new Block(this.ownerId, this.updateEntity, this.refreshMap);
+      return new Block(this.ownerId, this.updateEntity, this.refreshMap, this.getMap);
     }
 
     execute() {
@@ -927,11 +920,10 @@ abstract class CombatAction{
   }
 
   class Move extends  CombatAction {
-    getMap: () => CombatMapData;
+     
 
     constructor(ownerId: number, direction: Directions = Directions.NONE, getMap: () => CombatMapData, updateEntity: (id:number, newEntity: CombatEntity) => void, refreshMap: () => void){
-      super('Move', true, ownerId, direction, updateEntity, refreshMap);
-      this.getMap = getMap;
+      super('Move', true, ownerId, direction, updateEntity, refreshMap, getMap);
     }
 
     clone(newDirection:Directions|undefined) : Move{
@@ -1002,7 +994,7 @@ abstract class CombatAction{
   }
 
   class PullRange5 extends CombatAction {
-    getMap: () => CombatMapData;
+     
     damage: number;
     aoe: AreaOfEffect;
 
@@ -1013,8 +1005,7 @@ abstract class CombatAction{
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
-      super('Pull', true, ownerId, direction, updateEntity, refreshMap);
-      this.getMap = getMap;
+      super('Pull', true, ownerId, direction, updateEntity, refreshMap, getMap);
       this.damage = 2;
 
       this.aoe = new AreaOfEffect(5, direction, 0, false);
@@ -1158,7 +1149,7 @@ abstract class CombatAction{
   }
 
   class PushRange5 extends CombatAction {
-    getMap: () => CombatMapData;
+     
     damage: number;
     aoe: AreaOfEffect;
 
@@ -1169,8 +1160,7 @@ abstract class CombatAction{
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
-      super('Push', true, ownerId, direction, updateEntity, refreshMap);
-      this.getMap = getMap;
+      super('Push', true, ownerId, direction, updateEntity, refreshMap, getMap);
       this.damage = 2;
 
       this.aoe = new AreaOfEffect(5, direction, 0, false);
@@ -1316,7 +1306,7 @@ abstract class CombatAction{
   }
 
   class Burn extends CombatAction {
-    getMap: () => CombatMapData;
+     
     damage: number;
     aoe: AreaOfEffect;
 
@@ -1327,8 +1317,7 @@ abstract class CombatAction{
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
-      super('Burn', true, ownerId, direction, updateEntity, refreshMap);
-      this.getMap = getMap;
+      super('Burn', true, ownerId, direction, updateEntity, refreshMap, getMap);
       this.damage = 8;
 
       this.aoe = new AreaOfEffect(8, direction, 0, false);
@@ -1387,7 +1376,7 @@ abstract class CombatAction{
   }
 
   class Fireball extends CombatAction {
-    getMap: () => CombatMapData;
+     
 
     //TODO: Change earlier actions to use this when they spawn hazards.
     private entitySpawner: EntitySpawner;
@@ -1404,9 +1393,8 @@ abstract class CombatAction{
       getMap: () => CombatMapData,
       combatHazardFireballFactory: CombatHazardFireballFactory
     ){
-      super('Fireball', true, ownerId, direction, updateEntity, refreshMap);
+      super('Fireball', true, ownerId, direction, updateEntity, refreshMap, getMap);
       this.entitySpawner = entitySpawner;
-      this.getMap = getMap;
 
       this.combatHazardFireballFactory = combatHazardFireballFactory;
     }
@@ -1468,7 +1456,6 @@ abstract class CombatAction{
   class SpawnBurningRadius extends CombatAction {
     private radius:number;
     private entitySpawner: EntitySpawner;
-    private getMap: () => CombatMapData;
 
     constructor(
       ownerId: number,
@@ -1478,10 +1465,9 @@ abstract class CombatAction{
       getMap: () => CombatMapData,
       radius: number = 2
     ){
-      super('SpawnBurningRadius', false, ownerId, Directions.NONE, updateEntity, refreshMap);
+      super('SpawnBurningRadius', false, ownerId, Directions.NONE, updateEntity, refreshMap, getMap);
       this.radius = radius;
       this.entitySpawner = entitySpawner;
-      this.getMap = getMap;
     }
 
     clone(newDirection?: Directions): CombatAction {
@@ -1515,7 +1501,6 @@ abstract class CombatAction{
 
   class DespawnBurningRadius extends CombatAction {
     private radius:number;
-    private getMap: () => CombatMapData;
     private entitySpawner: EntitySpawner;
 
     constructor(
@@ -1526,7 +1511,7 @@ abstract class CombatAction{
       getMap: () => CombatMapData,
       radius: number = 2,
     ){
-      super('DespawnBurningRadius', false, ownerId, Directions.NONE, updateEntity, refreshMap);
+      super('DespawnBurningRadius', false, ownerId, Directions.NONE, updateEntity, refreshMap, getMap);
       this.radius = radius;
       this.getMap = getMap;
       this.entitySpawner = entitySpawner;

@@ -70,6 +70,9 @@ abstract class CombatEntity{
   getHp(): number{
     return this.hp;
   }
+  getConditions(): ICondition[]{
+    return this.conditions;
+  }
 
   abstract clone(): CombatEntity;
 

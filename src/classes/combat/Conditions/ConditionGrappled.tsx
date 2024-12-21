@@ -1,6 +1,7 @@
 import CombatEntity from "../CombatEntity";
 import FollowSourceMovement from "../Reactions/FollowSourceMovement";
 import ReactionFlags from "../Reactions/ReactionFlags";
+import ConditionName from "./ConditionNames";
 import ICondition from "./ICondition";
 
 class ConditionGrappled implements ICondition{
@@ -49,6 +50,9 @@ class ConditionGrappled implements ICondition{
 
         affected.addReactionGenerator(new FollowSourceMovement(this.applyerId));
         affected.setWorkingSpeed(0);
+    }
+    getName():ConditionName {
+        return ConditionName.Grappled;
     }
 }
 

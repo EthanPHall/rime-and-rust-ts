@@ -103,7 +103,7 @@ class CombatActionFactory{
             case CombatActionNames.Attack:
                 return new Attack(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
             case CombatActionNames.Block:
-                return new Block(ownerId, this.updateEntity, this.refreshMap);
+                return new Block(ownerId, this.updateEntity, this.refreshMap, this.getMap);
             case CombatActionNames.VolatileCanExplosion:
                 return new VolatileCanExplosion(ownerId, this.getMap, this.getHazardsList, this.setHazardsList, this.updateEntity, this.refreshMap);
             case CombatActionNames.AttackForHazards:

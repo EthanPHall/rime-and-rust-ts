@@ -6,6 +6,8 @@ import CombatEntity from "./CombatEntity";
 import CombatLocationData from "./CombatLocationData";
 import CombatHazard from "./CombatHazard";
 import CombatPlayer from "./CombatPlayer";
+import ConditionDebug from "./Conditions/ConditionDebug";
+import ConditionName from "./Conditions/ConditionNames";
 
 class CombatMapData{
     locations: CombatLocationData[][];
@@ -137,6 +139,20 @@ class CombatMapData{
 
     isInBounds(position: Vector2):boolean{
       return position.x >= 0 && position.x < this.width && position.y >= 0 && position.y < this.height;
+    }
+
+    getEntitiesWithCondition(condition:ConditionName):CombatEntity[]{
+      const entities:CombatEntity[] = [];
+  
+      this.locations.forEach((row) => {
+        row.forEach((location) => {
+          if(location.entity && location.entity.getConditions().find((cond) => cond.getName() === condition)){
+            entities.push(location.entity);
+          }
+        });
+      });
+  
+      return entities;
     }
   
     static clone(map: CombatMapData): CombatMapData{
