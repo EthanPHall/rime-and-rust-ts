@@ -86,19 +86,22 @@ const ActionButton: FC<ActionButtonProps> = ({addToComboList, action, actionInde
       // console.log("No action to send off.");
       return false;
     } else {
-      reduceActionUses(actionIndex);
-      addToComboList(actionToSendOff.action.clone());
+
+      if(actionToSendOff.action.getShouldBypassUseLimits() === false){
+        reduceActionUses(actionIndex);
+      }
+      addToComboList(actionToSendOff.action.getCorrectAction());
 
       return true;
     }
   }
   
   function setupForDirectionalInput() : void{
-    if(action.uses <= 0){
+    if(action.uses <= 0 && !action.action.getShouldBypassUseLimits()){
       return;
     }
 
-    if(!action.action.directional){
+    if(!action.action.getIsDirectional()){
       sendOffAction(action);
     }
     else{
@@ -113,7 +116,7 @@ const ActionButton: FC<ActionButtonProps> = ({addToComboList, action, actionInde
       <div className={`${activateControls ? "direction-input-cover" : ""}`}>
       </div>
       <button className="action-button" data-testid="action-button" onClick={setupForDirectionalInput} disabled={buttonsShouldBeDisabled()}>
-        {`${action.action.name} x${action.uses}`}
+        {`${action.action.getName()} x${action.action.getShouldBypassUseLimits() ? "Inf" : action.uses}`}
       </button>
     </div>
   );

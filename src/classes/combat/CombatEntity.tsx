@@ -123,7 +123,7 @@ abstract class CombatEntity{
   }
 
   resetToDefaults(): void {
-    this.working_reactionGenerators = this.default_reactionGenerators;
+    this.working_reactionGenerators = [...this.default_reactionGenerators];
     this.working_speed = this.default_speed;
   }
 
@@ -150,6 +150,7 @@ abstract class CombatEntity{
 
   cleanUpConditions(): void {
     this.conditions = this.conditions.filter(condition => {
+      console.log("Cleaning up condition", condition);
       return !condition.evaluateShouldWearOff(this);
     });
   }

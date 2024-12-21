@@ -1,6 +1,6 @@
 import Directions from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
-import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion, Chop, Punch, Kick, Burn, Fireball, SpawnBurningRadius, DespawnBurningRadius, Slice, Lacerate, Grapple } from "./CombatAction";
+import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion, Chop, Punch, Kick, Burn, Fireball, SpawnBurningRadius, DespawnBurningRadius, Slice, Lacerate, Grapple, SwitchGrappleMode, CombatActionWithRepeat } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
 import CombatHazard from "./CombatHazard";
 import CombatHazardFireballFactory from "./CombatHazardFireballFactory";
@@ -20,6 +20,7 @@ enum CombatActionNames{
     Lacerate = "Lacerate",
     Punch = "Punch",
     Grapple = "Grapple",
+    SwitchGrappleMode = "SwitchGrappleMode",
     Kick = "Kick",
     Burn = "Burn",
     Fireball = "Fireball",
@@ -53,6 +54,10 @@ function stringToCombatActionNames(actionName: string): CombatActionNames{
             return CombatActionNames.Punch;
         case "Grapple":
             return CombatActionNames.Grapple;
+        case "SwitchGrappleMode":
+            return CombatActionNames.SwitchGrappleMode;
+        case "Grapple":
+            return CombatActionNames.Grapple;
         case "Kick":
             return CombatActionNames.Kick;
         case "Burn":
@@ -74,6 +79,7 @@ class CombatActionFactory{
     refreshMap: () => void;
     getHazardsList: () => CombatHazard[];
     setHazardsList: (newHazards: CombatHazard[]) => void;
+    getComboList: () => CombatActionWithRepeat[];
 
     entitySpawner: EntitySpawner;
     fireballFactory: CombatHazardFireballFactory;
@@ -84,6 +90,7 @@ class CombatActionFactory{
         refreshMap: () => void,
         getHazardsList: () => CombatHazard[],
         setHazardsList: (newHazards: CombatHazard[]) => void,
+        getComboList: () => CombatActionWithRepeat[],
         entitySpawner: EntitySpawner,
         fireballFactory: CombatHazardFireballFactory
     ){
@@ -92,6 +99,7 @@ class CombatActionFactory{
         this.refreshMap = refreshMap;
         this.getHazardsList = getHazardsList;
         this.setHazardsList = setHazardsList;
+        this.getComboList = getComboList;
         this.entitySpawner = entitySpawner;
         this.fireballFactory = fireballFactory;
     }
@@ -124,7 +132,10 @@ class CombatActionFactory{
             case CombatActionNames.Punch:
                 return new Punch(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
             case CombatActionNames.Grapple:
-                return new Grapple(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
+                const switchGrappleMode:SwitchGrappleMode = this.createAction(CombatActionNames.SwitchGrappleMode, ownerId, direction) as SwitchGrappleMode;
+                return new Grapple(ownerId, direction, switchGrappleMode, this.getComboList, this.getMap, this.updateEntity, this.refreshMap);
+            case CombatActionNames.SwitchGrappleMode:
+                return new SwitchGrappleMode(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
             case CombatActionNames.Kick:
                 return new Kick(ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
             case CombatActionNames.Burn:

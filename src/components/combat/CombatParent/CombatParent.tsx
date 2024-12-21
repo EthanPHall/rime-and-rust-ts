@@ -194,7 +194,7 @@ const CombatParent: FC<CombatParentProps> = (
     )
   )
 
-  const combatActionFactory:CombatActionFactory = new CombatActionFactory(getCachedMap, updateEntity, refreshMap, getHazards, setHazards, entitySpawner, combatHazardFireballFactory);
+  const combatActionFactory:CombatActionFactory = new CombatActionFactory(getCachedMap, updateEntity, refreshMap, getHazards, setHazards, getComboList, entitySpawner, combatHazardFireballFactory);
   const [combatMapTemplateFactory] = useState<ICombatMapTemplateFactory>(new CombatMapTemplateFactoryJSON(
     turnManager.advanceTurn,
     addToComboList,

@@ -13,6 +13,10 @@ interface ICondition{
     shouldWearOff(affected:CombatEntity): boolean;
     executeCondition(affected:CombatEntity): void;
     getName():ConditionName;
+    switchMode():void;
+    getMode():string;
+    getApplyerId():number;
+    getAffectedId():number;
 }
 
 export default ICondition;

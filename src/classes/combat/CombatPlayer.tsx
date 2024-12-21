@@ -71,7 +71,7 @@ class CombatPlayer extends CombatEntity implements TurnTaker{
       }
       else{
         this.conditions = [
-          new ConditionDebug(1),
+          new ConditionDebug(this.id, this.id, 1),
         ];
       }
     }

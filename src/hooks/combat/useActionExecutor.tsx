@@ -182,6 +182,7 @@ const useActionExecutor = (
         const reactionsList:(Reaction|null)[] = reactionEntities.map((entity) => {
             // console.log("Reactor: ", entity);
             entity.resetToDefaults();
+            entity.cleanUpConditions();
             entity.applyConditions();
             const reaction:Reaction|null = entity.getReaction();
             

@@ -15,13 +15,16 @@ import hazardsJSONData from "../../data/combat/hazards.json"
 import { ISettingsManager } from "../../context/misc/SettingsContext";
 import CombatHazardFireballFactory from "./CombatHazardFireballFactory";
 import ReactionFlags from "./Reactions/ReactionFlags";
-import ConditionGrappled from "./Conditions/ConditionGrappled";
+import ConditionGrappled, { GrappleModes } from "./Conditions/ConditionGrappled";
+import ConditionName from "./Conditions/ConditionNames";
+import ICondition from "./Conditions/ICondition";
 
 abstract class CombatAction{
     name: string;
     directional: boolean;
     ownerId: number;
     direction: Directions;
+    bypassUseLimits: boolean = false;
     updateEntity: (id:number, newEntity: CombatEntity) => void;
     refreshMap: () => void;
     getMap: () => CombatMapData;
@@ -52,6 +55,15 @@ abstract class CombatAction{
     // }
 
     abstract clone(newDirection?:Directions): CombatAction;
+    abstract getName(): string;
+    abstract getCorrectAction(): CombatAction;
+
+    getShouldBypassUseLimits(): boolean{
+      return this.bypassUseLimits;
+    }
+    getIsDirectional(): boolean{
+      return this.directional;
+    }
   
     dataToObject() : Object{
       return {
@@ -172,6 +184,9 @@ abstract class CombatAction{
 
       return result;
     }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
   }
 
 
@@ -243,6 +258,9 @@ abstract class CombatAction{
 
       return result;
     }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
   }
 
   class Slice extends CombatAction {
@@ -313,6 +331,9 @@ abstract class CombatAction{
 
       return result;
     }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
   }
 
   class Lacerate extends CombatAction {
@@ -383,6 +404,10 @@ abstract class CombatAction{
 
       return result;
     }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
+
   }
 
 
@@ -454,27 +479,37 @@ abstract class CombatAction{
 
       return result;
     }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
+
   }
 
   class Grapple extends CombatAction {
      
     damage: number;
+    switchGrappleMode: SwitchGrappleMode;
+    getComboList: () => CombatActionWithRepeat[];
 
     constructor(
       ownerId: number,
       direction: Directions = Directions.NONE,
+      switchGrappleMode: SwitchGrappleMode,
+      getComboList:() => CombatActionWithRepeat[],
       getMap: () => CombatMapData,
       updateEntity: (id:number, newEntity: CombatEntity) => void,
       refreshMap: () => void
     ){
       super('Grapple', true, ownerId, direction, updateEntity, refreshMap, getMap);
       this.damage = 1;
+      this.switchGrappleMode = switchGrappleMode;
+      this.getComboList = getComboList;
     }
 
     clone(newDirection:Directions = Directions.NONE) : Grapple{
       const direction: Directions = newDirection != Directions.NONE ? newDirection : this.direction;
       
-      return new Grapple(this.ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
+      return new Grapple(this.ownerId, direction, this.switchGrappleMode, this.getComboList, this.getMap, this.updateEntity, this.refreshMap);
     }
 
     getTargetId(): number|undefined{
@@ -503,7 +538,7 @@ abstract class CombatAction{
           return;
         }
 
-        targetEntity.addCondition(new ConditionGrappled(this.ownerId));
+        targetEntity.addCondition(new ConditionGrappled(targetId, this.ownerId));
 
         if(targetEntity instanceof CombatEnemy){
           targetEntity.setReactionFlag(ReactionFlags.WAS_GRAPPLED, this, this.ownerId);
@@ -524,7 +559,150 @@ abstract class CombatAction{
 
       return result;
     }
+
+    getName(): string{
+      var nameToUse:string = this.name;
+
+      const map: CombatMapData = this.getMap();
+      const grappledEntities:CombatEntity[] = map.getEntitiesWithCondition(ConditionName.Grappled);
+
+      const grapplesAppliedByOwner:ICondition[] = [];
+      
+      grappledEntities
+        .forEach(entity => {
+          entity.getConditions()
+            .filter(condition => { return condition.getName() == ConditionName.Grappled; })
+            .filter(condition => { return condition.getApplyerId() == this.ownerId; })
+            .forEach(condition => { grapplesAppliedByOwner.push(condition); });
+      });
+
+      //We also want to know what grappling related actions have been added to the combo list so that this action can be named appropriately on the fly.
+      const isTryingToGrapple:boolean = this.getComboList().some(combo => {
+        return combo.combatAction instanceof Grapple;
+      });
+
+      if(grapplesAppliedByOwner.length > 0){
+        if(grapplesAppliedByOwner[0].getMode() == GrappleModes.Pull){
+          nameToUse = 'Fix Grpl';
+        }
+        else{
+          nameToUse = 'Pull Grpl';
+        }
+      }
+
+      //We now have a starting point for what name to use, and we need to narrow in further given what appears on the combo list.
+      if(isTryingToGrapple){
+        if(nameToUse == this.name){//In this case, there are no grappled targets yet, but the player is trying to grapple. The default grapple mode is pull, so the SwitchGrappleMode will switch to fixed.
+          nameToUse = 'Fix Grpl';
+        }
+
+        //We need to alternate between the two grapple modes, startiung with the one provided above. We alternate based on how many instances of SwitchGrappleMode there are in the combo list.
+        const howManySwitches:number = this.getComboList()
+          .filter(actionWRepeat => { return actionWRepeat.combatAction instanceof SwitchGrappleMode; })
+          .reduce((acc, actionWRepeat) => { return acc + actionWRepeat.repeat; }, 0);
+
+        console.log("How many switches:", howManySwitches);
+
+        if(nameToUse == "Fix Grpl" && howManySwitches % 2 != 0){
+          nameToUse = "Pull Grpl";
+        }
+        else if(nameToUse == "Pull Grpl" && howManySwitches % 2 != 0){
+          nameToUse = "Fix Grpl";
+        } 
+      }
+
+      this.switchGrappleMode.setIdToAffect(this.ownerId);
+
+      return nameToUse;  
+    }
+    getCorrectAction(): CombatAction { 
+      const nameToUse:string = this.getName();
+      if(nameToUse != this.name){
+        return this.switchGrappleMode.getCorrectAction();
+      }
+      else{
+        return this.clone();
+      }
+    }
+
+    override getShouldBypassUseLimits(): boolean {
+      const nameToUse:string = this.getName();
+      if(nameToUse != this.name){
+        return this.switchGrappleMode.getShouldBypassUseLimits();
+      }
+      else{
+        return this.bypassUseLimits;
+      }
+    }
+
+    override getIsDirectional(): boolean {
+      const nameToUse:string = this.getName();
+      if(nameToUse != this.name){
+        return this.switchGrappleMode.getIsDirectional();
+      }
+      else{
+        return this.directional;
+      }
+    }
   }
+
+  class SwitchGrappleMode extends CombatAction {
+    idWhoseGrapplesToSwitch: number;
+
+    constructor(
+      ownerId: number,
+      direction: Directions = Directions.NONE,
+      getMap: () => CombatMapData,
+      updateEntity: (id:number, newEntity: CombatEntity) => void,
+      refreshMap: () => void,
+      idWhoseGrapplesToSwitch: number = -1
+    ){
+      super('Switch Grapple Mode', false, ownerId, direction, updateEntity, refreshMap, getMap);
+
+      this.idWhoseGrapplesToSwitch = idWhoseGrapplesToSwitch;
+      this.bypassUseLimits = true;
+    }
+
+    setIdToAffect(newId:number): void{
+      this.idWhoseGrapplesToSwitch = newId;
+    }
+
+    clone(newDirection?: Directions): CombatAction {
+      return new SwitchGrappleMode(this.ownerId, newDirection || this.direction, this.getMap, this.updateEntity, this.refreshMap, this.idWhoseGrapplesToSwitch);
+    }
+    getName(): string {
+      return this.name;
+    }
+    getCorrectAction(): CombatAction {
+      return this.clone();
+    }
+    execute(): void {
+      const grapplesToSwitch: ICondition[] = this.getMap().getEntitiesWithCondition(ConditionName.Grappled)
+        .reduce<ICondition[]>((acc, entity) => { return [...acc, ...entity.getConditions()] }, [])
+        .filter(condition => { return condition.getName() == ConditionName.Grappled && condition.getApplyerId() == this.ownerId; });
+
+      grapplesToSwitch.forEach(grapple => {
+        grapple.switchMode();
+      });
+
+      this.refreshMap();
+    }
+    getAnimations(): AnimationDetails[][] {
+      const grapplesToSwitch: ICondition[] = this.getMap().getEntitiesWithCondition(ConditionName.Grappled)
+        .reduce<ICondition[]>((acc, entity) => { return [...acc, ...entity.getConditions()] }, [])
+        .filter(condition => { return condition.getName() == ConditionName.Grappled && condition.getApplyerId() == this.ownerId; });
+
+      const targetIds:number[] = grapplesToSwitch.map(grapple => grapple.getAffectedId());
+
+      const result:AnimationDetails[][] = [[]];
+      targetIds.forEach(targetId => {
+        result[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Grapple, this.direction, targetId));
+      });
+
+      return result;
+    }
+  }
+
   
   class Kick extends CombatAction {
      
@@ -608,6 +786,10 @@ abstract class CombatAction{
 
       return result;
     }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
+
   }
 
 
@@ -672,6 +854,10 @@ abstract class CombatAction{
 
       return result;
     }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
+
   }
 
 
@@ -894,6 +1080,10 @@ abstract class CombatAction{
       
       return result;
     }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
+
   }
 
 
@@ -917,6 +1107,10 @@ abstract class CombatAction{
     getAnimations(): AnimationDetails[][] {
       return [[CombatAnimationFactory.createAnimation(CombatAnimationNames.Block, Directions.NONE, this.ownerId)]];
     }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
+
   }
 
   class Move extends  CombatAction {
@@ -953,13 +1147,14 @@ abstract class CombatAction{
         else{
           updatedEntity.position = targetPosition;
           this.updateEntity(owner.id, updatedEntity);
+
+          if(owner instanceof CombatPlayer){
+            CombatEntity.setEntityWideReaction(ReactionFlags.PLAYER_DID_MOVE, this, this.ownerId);
+          }
+  
+          CombatEntity.setEntityWideReaction(ReactionFlags.ENTITY_DID_MOVE, this, this.ownerId);
         }
 
-        if(owner instanceof CombatPlayer){
-          CombatEntity.setEntityWideReaction(ReactionFlags.PLAYER_DID_MOVE, this, this.ownerId);
-        }
-
-        CombatEntity.setEntityWideReaction(ReactionFlags.ENTITY_DID_MOVE, this, this.ownerId);
       }
       else{
         this.refreshMap();
@@ -991,6 +1186,10 @@ abstract class CombatAction{
 
       return animationsToSendOff;
     }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(this.direction); }
+
   }
 
   class PullRange5 extends CombatAction {
@@ -1146,6 +1345,9 @@ abstract class CombatAction{
 
       return result;
     }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
   }
 
   class PushRange5 extends CombatAction {
@@ -1303,6 +1505,9 @@ abstract class CombatAction{
 
       return result;
     }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
   }
 
   class Burn extends CombatAction {
@@ -1373,6 +1578,10 @@ abstract class CombatAction{
 
       return result;
     }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
+
   }
 
   class Fireball extends CombatAction {
@@ -1451,6 +1660,10 @@ abstract class CombatAction{
 
       return result;
     }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
+
   }
 
   class SpawnBurningRadius extends CombatAction {
@@ -1497,6 +1710,9 @@ abstract class CombatAction{
       return [[]];
     }
     
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
+
   }
 
   class DespawnBurningRadius extends CombatAction {
@@ -1542,6 +1758,10 @@ abstract class CombatAction{
     getAnimations(): AnimationDetails[][] {
       return [[]];
     }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
+
   }
 
 
@@ -1552,5 +1772,5 @@ abstract class CombatAction{
   }
   
 export default CombatAction;
-export {Grapple, Slice, Lacerate, DespawnBurningRadius, SpawnBurningRadius, Fireball, Burn, Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
+export {SwitchGrappleMode, Grapple, Slice, Lacerate, DespawnBurningRadius, SpawnBurningRadius, Fireball, Burn, Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
 export type { CombatActionSeed };

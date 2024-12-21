@@ -45,7 +45,7 @@ abstract class CombatEnemy extends CombatEntity implements TurnTaker{
   endTurn(): void {
     // console.log(`${this.name} is ending their turn.`);
     
-    this.cleanUpConditions();
+    // this.cleanUpConditions();
     
     // this.advanceTurn();
   }
