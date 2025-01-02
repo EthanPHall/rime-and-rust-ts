@@ -1,5 +1,5 @@
 import { ISettingsManager, SettingsManager } from "../../context/misc/SettingsContext";
-import PathfindingUtil from "../ai/PathfindingUtil";
+import PathfindingUtil, { PathfindingAttitude } from "../ai/PathfindingUtil";
 import Directions, { DirectionsUtility } from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
 import AIHandler from "./AIHandler";
@@ -262,7 +262,7 @@ class RustedBrute extends CombatEnemy{
     await new Promise((resolve) => setTimeout(resolve, this.settingsManager.getCorrectTiming(CombatEnemy.TURN_START_DELAY)));
 
     if(playerPosition){
-      const aiHandler = new RustedShamblerAI(this, playerPosition, this.playerId, this.getMap, this.actions as {move: CombatActionWithUses, attack: CombatActionWithUses});
+      const aiHandler = new RustedBruteAI(this, playerPosition, this.playerId, this.getMap, this.actions as {move: CombatActionWithUses, attack: CombatActionWithUses});
       const aiActions = aiHandler.handleAI();
 
       for(const action of aiActions){
@@ -301,7 +301,60 @@ class RustedShamblerAI implements AIHandler{
 
   handleAI():CombatAction[]{
     const actions:CombatAction[] = [];
-    const directions = PathfindingUtil.findPath(this.entity.position, this.playerPosition, this.getMap());
+    const directions = PathfindingUtil.findPath(this.entity.position, this.playerPosition, this.getMap(), PathfindingAttitude.DUMB);
+
+    //Handle movement actions.
+    const loopLimit = Math.min(directions.length, this.actions.move.uses);
+    for(let i = 0; i < loopLimit; i++){
+      actions.push(this.actions.move.action.clone(directions[i]));
+    }
+
+    //Handle attack actions.
+    const targetPosition = directions.length != 0 ? PathfindingUtil.findStoppingPoint(this.entity.position, directions, this.actions.move.uses) : this.entity.position;
+    if(targetPosition){
+      const neighbors:Vector2[] = DirectionsUtility.getNeighbors(targetPosition, this.getMap());
+      let playerLocation:Vector2|null = null;
+      
+      for(let i = 0; i < this.actions.attack.uses; i++){
+        //Don't go through the inner loop again if the player position was found.
+        if(playerLocation){
+          actions.push(this.actions.attack.action.clone(DirectionsUtility.getDirectionFromCoordinates(targetPosition, playerLocation)));
+          break;
+        }
+        
+        //Find the player's location, if they are in the neighbors
+        for(const neighbor of neighbors){
+          if(this.getMap().locations[neighbor.y][neighbor.x].entity?.id === this.playerId){
+            playerLocation = neighbor;
+            actions.push(this.actions.attack.action.clone(DirectionsUtility.getDirectionFromCoordinates(targetPosition, playerLocation)));
+            break;
+          }
+        }  
+      }
+    }
+
+    return actions;
+  }
+}
+
+class RustedBruteAI implements AIHandler{
+  entity: CombatEntity;
+  playerPosition: Vector2;
+  playerId: number;
+  getMap: () => CombatMapData;
+  actions: {move: CombatActionWithUses, attack: CombatActionWithUses};
+
+  constructor(entity: CombatEntity, playerPosition: Vector2, playerId: number, getMap: () => CombatMapData, actions: {move: CombatActionWithUses, attack: CombatActionWithUses}){
+    this.entity = entity;
+    this.playerPosition = playerPosition;
+    this.playerId = playerId;
+    this.getMap = getMap;
+    this.actions = actions;
+  }
+
+  handleAI():CombatAction[]{
+    const actions:CombatAction[] = [];
+    const directions = PathfindingUtil.findPath(this.entity.position, this.playerPosition, this.getMap(), PathfindingAttitude.AGGRESSIVE);
 
     //Handle movement actions.
     const loopLimit = Math.min(directions.length, this.actions.move.uses);

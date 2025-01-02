@@ -28,6 +28,15 @@
             ]
         },
         {
+            "enemyGroupKey": "easy-1-group-debug",
+            "enemies":[
+                {
+                    "enemyKey": "rusted-brute-easy",
+                    "percent": 100
+                }
+            ]
+        },
+        {
             "enemyGroupKey": "variable-1-group-1",
             "enemies":[
                 {

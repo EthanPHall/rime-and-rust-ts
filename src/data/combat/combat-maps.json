@@ -111,6 +111,32 @@
             ]
         },
         {
+            "mapKey":"easy-1-map-debug",
+            "potentialEnemyGroups":[
+                {
+                    "enemyGroupKey": "easy-1-group-debug",
+                    "chance":100
+                }
+            ],
+            "potentialHazardGroups":[
+                {
+                    "hazardGroupKey": "easy-1-group-debug",
+                    "chance":100
+                }
+            ],
+            "mapRepresentation":[
+                ". . . . . . .",
+                ". . . . . . .",
+                ". . . . . . .",
+                ". . h h h . .",
+                ". h h e h h .",
+                ". . h h h . .",
+                ". . . h . . .",
+                ". . . h . . .",
+                ". . . @ . . ."
+            ]
+        },
+        {
             "mapKey":"variable-1-map-1",
             "potentialEnemyGroups":[
                 {

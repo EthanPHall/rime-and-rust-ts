@@ -526,6 +526,10 @@
                 },
                 {
                     "eventKey":"easy-1-combat-2",
+                    "chance": 0
+                },
+                {
+                    "eventKey":"easy-1-combat-debug",
                     "chance": 100
                 }
             ]

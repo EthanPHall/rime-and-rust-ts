@@ -28,6 +28,15 @@
             ]
         },
         {
+            "hazardGroupKey": "easy-1-group-debug",
+            "hazards":[
+                {
+                    "hazardKey": "burning-floor",
+                    "percent": 100
+                }
+            ]
+        },
+        {
             "hazardGroupKey": "variable-1-group-1",
             "hazards":[
                 {
