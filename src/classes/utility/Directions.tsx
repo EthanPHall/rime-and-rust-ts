@@ -19,6 +19,34 @@ class DirectionsUtility {
                 return Directions.NONE;
         }
     }
+    static getNextDirectionClockwise(direction: Directions): Directions{
+        switch(direction){
+            case Directions.UP:
+                return Directions.RIGHT;
+            case Directions.RIGHT:
+                return Directions.DOWN;
+            case Directions.DOWN:
+                return Directions.LEFT;
+            case Directions.LEFT:
+                return Directions.UP;
+            default:
+                return Directions.NONE;
+        }
+    }
+    static getNextDirectionCounterClockwise(direction: Directions): Directions{
+        switch(direction){
+            case Directions.UP:
+                return Directions.LEFT;
+            case Directions.LEFT:
+                return Directions.DOWN;
+            case Directions.DOWN:
+                return Directions.RIGHT;
+            case Directions.RIGHT:
+                return Directions.UP;
+            default:
+                return Directions.NONE;
+        }
+    }
 
     static getVectorFromDirection(direction: Directions): Vector2{
         switch(direction){

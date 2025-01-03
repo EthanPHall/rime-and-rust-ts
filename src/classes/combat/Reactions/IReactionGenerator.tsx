@@ -6,7 +6,7 @@ import Reaction from "./Reaction";
 import ReactionFlagAndTriggerList from "./ReactionFlagAndTriggerList";
 
 interface IReactionGenerator{
-  getReaction(reactorId:number, getMap: ()=>CombatMapData, reactionTriggerList: ReactionFlagAndTriggerList|undefined): Reaction | null;
+  getReaction(reactorId:number, getMap: ()=>CombatMapData, reactionTriggerList: ReactionFlagAndTriggerList|undefined, reactionToTake?:CombatAction): Reaction | null;
 }
 
 export default IReactionGenerator;

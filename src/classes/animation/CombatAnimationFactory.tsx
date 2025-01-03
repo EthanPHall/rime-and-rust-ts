@@ -6,6 +6,7 @@ import Vector2 from "../utility/Vector2";
 enum CombatAnimationNames {
     Move = "Move",
     Attack = "Attack",
+    Swipe = "Swipe",
     Block = "Block",
     Bump = "Bump",
     ShortBump = "ShortBump",
@@ -26,6 +27,8 @@ class CombatAnimationFactory{
                 return new AnimationDetails(CombatAnimationNames.Move, 250, direction, entityToAnimateId);
             case CombatAnimationNames.Attack:
                 return new AnimationDetails(CombatAnimationNames.Attack, 200, direction, entityToAnimateId);
+            case CombatAnimationNames.Swipe:
+                return new AnimationDetails(CombatAnimationNames.Swipe, 300, direction, entityToAnimateId);
             case CombatAnimationNames.Block:
                 return new AnimationDetails(CombatAnimationNames.Block, 250, direction, entityToAnimateId);
             case CombatAnimationNames.Bump:

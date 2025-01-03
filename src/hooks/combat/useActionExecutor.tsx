@@ -13,6 +13,7 @@ import CombatEnemy from '../../classes/combat/CombatEnemy';
 import { start } from 'repl';
 import { SettingsContext } from '../../context/misc/SettingsContext';
 import Reaction from '../../classes/combat/Reactions/Reaction';
+import ReactionFlags from '../../classes/combat/Reactions/ReactionFlags';
 
 enum ActionSteps{
     ANIMATION,
@@ -180,7 +181,7 @@ const useActionExecutor = (
         const reactionEntities:CombatEntity[] = [...enemies, ...hazards];
         
         const reactionsList:(Reaction|null)[] = reactionEntities.map((entity) => {
-            // console.log("Reactor: ", entity);
+
             entity.resetToDefaults();
             entity.cleanUpConditions();
             entity.applyConditions();

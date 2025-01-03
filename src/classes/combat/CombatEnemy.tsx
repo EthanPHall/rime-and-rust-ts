@@ -3,12 +3,13 @@ import PathfindingUtil, { PathfindingAttitude } from "../ai/PathfindingUtil";
 import Directions, { DirectionsUtility } from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
 import AIHandler from "./AIHandler";
-import CombatAction, {  Attack, Chop, CombatActionWithRepeat, CombatActionWithUses, Move, Punch } from "./CombatAction";
+import CombatAction, {  Attack, Chop, CombatActionWithRepeat, CombatActionWithUses, Move, Punch, Swipe } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
 import CombatMapData from "./CombatMapData";
 import ConditionDebug from "./Conditions/ConditionDebug";
 import ICondition from "./Conditions/ICondition";
 import IActionExecutor from "./IActionExecutor";
+import AttackWhenBump from "./Reactions/AttackWhenBump";
 import Reaction from "./Reactions/Reaction";
 import TurnTaker from "./TurnTaker";
 
@@ -229,7 +230,10 @@ class RustedBrute extends CombatEnemy{
     this.actions = {
       attack: new CombatActionWithUses(this.getAttackAction() as CombatAction, 2),
       move: new CombatActionWithUses(this.getMoveAction() as CombatAction, 5),
+      swipe: new CombatActionWithUses(this.getSwipeAction() as CombatAction, 1)
     };
+
+    this.default_reactionGenerators.push(new AttackWhenBump(this.actions));
   }
 
   clone(): RustedBrute {
@@ -251,6 +255,22 @@ class RustedBrute extends CombatEnemy{
 
     return clone;
   }
+
+  override  getReaction(): Reaction|null {
+    let potentialReaction: Reaction|null = null;
+    
+    for(const generator of this.working_reactionGenerators){
+      // console.log("Getting reaction for entity", this);
+      const reaction = generator.getReaction(this.id, this.getMap, this.reactionTriggerList, this.actions.swipe.action);
+  
+      if(reaction && (!potentialReaction || reaction.priority > potentialReaction.priority)){
+        potentialReaction = reaction;
+      }
+    }
+
+    return potentialReaction;
+  }
+
 
   async executeTurn(): Promise<void> {
     if(this.playerId == -1){
@@ -281,6 +301,9 @@ class RustedBrute extends CombatEnemy{
   }
   getMoveAction(): CombatAction | null {
     return new Move(this.id, undefined, this.getMap, this.updateEntity, this.refreshMap);
+  }
+  getSwipeAction(): CombatAction | null {
+    return new Swipe(this.id, undefined, this.getMap, this.updateEntity, this.refreshMap);
   }
 }
 

@@ -51,6 +51,22 @@ class CombatAnimationDetailsToMotionAnimation{
                         {duration: combatAnimation.animationLength/2000}
                     ],
                     combatAnimation.positionToAnimate);
+            case CombatAnimationNames.Swipe:
+                xyIncrement.x *= parseFloat(CSSPropertyGetter.getProperty("--combat-location-width")) / 3;
+                xyIncrement.y *= parseFloat(CSSPropertyGetter.getProperty("--combat-location-height")) / 3;
+                return new MotionAnimation(
+                    combatAnimation.entityToAnimateId, 
+                    [
+                        {x: -xyIncrement.x, y: -xyIncrement.y}, 
+                        {x: xyIncrement.x, y: xyIncrement.y}, 
+                        {x: 0, y: 0}
+                    ],
+                    [
+                        {duration: combatAnimation.animationLength/5000},
+                        {duration: combatAnimation.animationLength/2000},
+                        {duration: combatAnimation.animationLength/2000}
+                    ],
+                    combatAnimation.positionToAnimate);
             case CombatAnimationNames.Grapple:
                 return new MotionAnimation(
                     combatAnimation.entityToAnimateId, 

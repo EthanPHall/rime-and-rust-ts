@@ -792,6 +792,135 @@ abstract class CombatAction{
 
   }
 
+  class Swipe extends CombatAction {
+     
+    damage: number;
+
+    constructor(
+      ownerId: number,
+      direction: Directions = Directions.NONE,
+      getMap: () => CombatMapData,
+      updateEntity: (id:number, newEntity: CombatEntity) => void,
+      refreshMap: () => void
+    ){
+      super('Swipe', true, ownerId, direction, updateEntity, refreshMap, getMap);
+      this.damage = 2;
+    }
+
+    clone(newDirection:Directions = Directions.NONE) : Swipe{
+      const direction: Directions = newDirection != Directions.NONE ? newDirection : this.direction;
+      
+      return new Swipe(this.ownerId, direction, this.getMap, this.updateEntity, this.refreshMap);
+    }
+
+    getTargetId(): number|undefined{
+      const map: CombatMapData = this.getMap();
+      const owner: CombatEntity|null = map.getEntityById(this.ownerId);
+
+      if(!owner){return undefined;}
+
+      const directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(this.direction);
+      const targetPosition: Vector2 = Vector2.add(owner.position, directionVector);
+      const targetId:number|undefined = map.locations?.[targetPosition.y]?.[targetPosition.x]?.entity?.id
+      
+      if(targetId === undefined || targetId === owner.id) {return undefined;}
+      else {return targetId;}
+    }
+
+    execute() {
+      const targetId:number|undefined = this.getTargetId();
+      const map: CombatMapData = this.getMap();
+      
+      if(targetId){
+        const targetEntity = map.getEntityById(targetId)?.clone();
+
+        if(!targetEntity){
+          this.refreshMap();
+          return;
+        }
+
+        targetEntity.takeDamage(this.damage, this, this.ownerId);
+
+
+        //Try to move the target first clockwise, then counterclockwise if that fails.
+        if(targetEntity.isMovable()){
+          let directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getNextDirectionClockwise(this.direction));
+          let targetPosition: Vector2 = Vector2.add(targetEntity.position, directionVector);
+          let targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
+
+          if(targetLocationData && (!targetLocationData.entity || targetLocationData.entity.isWalkable())){
+            targetEntity.position = targetPosition;
+            targetEntity.setReactionFlag(ReactionFlags.WAS_PUSHED, this, this.ownerId);
+          }
+          else{
+            directionVector = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getNextDirectionCounterClockwise(this.direction));
+            targetPosition = Vector2.add(targetEntity.position, directionVector);
+            targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
+            
+            if(targetLocationData && (!targetLocationData.entity || targetLocationData.entity.isWalkable())){
+              targetEntity.position = targetPosition;
+              targetEntity.setReactionFlag(ReactionFlags.WAS_PUSHED, this, this.ownerId);
+            }
+          }
+        }
+
+        if(targetEntity instanceof CombatEnemy){
+          targetEntity.setReactionFlag(ReactionFlags.WAS_ATTACKED, this, this.ownerId);
+        }
+
+        this.updateEntity(targetEntity.id, targetEntity);
+        return;
+      }
+
+      this.refreshMap();
+    }
+
+    getAnimations(): AnimationDetails[][] {
+      const targetId:number|undefined = this.getTargetId();
+
+      const result:AnimationDetails[][] = [[CombatAnimationFactory.createAnimation(CombatAnimationNames.Swipe, this.direction, this.ownerId)]];
+      
+      //Get the mvoement direction for the target
+      let movementDirection  = Directions.NONE;
+      const map: CombatMapData = this.getMap();
+      
+      if(targetId){
+        const targetEntity = map.getEntityById(targetId)?.clone();
+
+        if(targetEntity && targetEntity.isMovable()){
+          let directionVector: Vector2 = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getNextDirectionClockwise(this.direction));
+          let targetPosition: Vector2 = Vector2.add(targetEntity.position, directionVector);
+          let targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
+
+          if(targetLocationData && (!targetLocationData.entity || targetLocationData.entity.isWalkable())){
+            movementDirection = DirectionsUtility.getDirectionFromVector(directionVector);
+          }
+          else{
+            directionVector = DirectionsUtility.getVectorFromDirection(DirectionsUtility.getNextDirectionCounterClockwise(this.direction));
+            targetPosition = Vector2.add(targetEntity.position, directionVector);
+            targetLocationData = map.locations?.[targetPosition.y]?.[targetPosition.x];
+            
+            if(targetLocationData && (!targetLocationData.entity || targetLocationData.entity.isWalkable())){
+              movementDirection = DirectionsUtility.getDirectionFromVector(directionVector);
+            }
+          }
+        }      
+      }  
+
+      
+      if(targetId) {
+        result[1] = [CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, targetId)];
+        result[2] = [CombatAnimationFactory.createAnimation(CombatAnimationNames.Move, movementDirection, targetId)];
+      }
+
+      return result;
+    }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
+
+  }
+
 
   class BurningFloorAttack extends CombatAction {
      
@@ -1141,6 +1270,7 @@ abstract class CombatAction{
         }
         
         if(!targetLocationData || !isWalkable){
+          console.log('Should set bump flag');
           owner.setReactionFlag(ReactionFlags.BUMPED_ON_SOLID_SURFACE, this, this.ownerId);
           this.refreshMap();
         }
@@ -1772,5 +1902,5 @@ abstract class CombatAction{
   }
   
 export default CombatAction;
-export {SwitchGrappleMode, Grapple, Slice, Lacerate, DespawnBurningRadius, SpawnBurningRadius, Fireball, Burn, Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
+export {Swipe, SwitchGrappleMode, Grapple, Slice, Lacerate, DespawnBurningRadius, SpawnBurningRadius, Fireball, Burn, Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
 export type { CombatActionSeed };

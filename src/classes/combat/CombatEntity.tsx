@@ -98,12 +98,12 @@ abstract class CombatEntity{
   }
 
   getReaction(): Reaction|null {
-    // console.log("Getting reaction for entity", this);
-
     let potentialReaction: Reaction|null = null;
-
+    
     for(const generator of this.working_reactionGenerators){
+      // console.log("Getting reaction for entity", this);
       const reaction = generator.getReaction(this.id, this.getMap, this.reactionTriggerList);
+  
       if(reaction && (!potentialReaction || reaction.priority > potentialReaction.priority)){
         potentialReaction = reaction;
       }
