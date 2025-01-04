@@ -2,7 +2,7 @@ import { DOMKeyframesDefinition, DynamicAnimationOptions, color } from "framer-m
 import AnimationDetails from "./AnimationDetails";
 import { CombatAnimationNames } from "./CombatAnimationFactory";
 import Vector2 from "../utility/Vector2";
-import { DirectionsUtility } from "../utility/Directions";
+import Directions, { DirectionsUtility } from "../utility/Directions";
 import CSSPropertyGetter from "../utility/CSSPropertyGetter";
 
 class MotionAnimation{
@@ -54,17 +54,24 @@ class CombatAnimationDetailsToMotionAnimation{
             case CombatAnimationNames.Swipe:
                 xyIncrement.x *= parseFloat(CSSPropertyGetter.getProperty("--combat-location-width")) / 3;
                 xyIncrement.y *= parseFloat(CSSPropertyGetter.getProperty("--combat-location-height")) / 3;
+
+                const secondaryXYIncrement:Vector2 = DirectionsUtility.getVectorFromDirection(combatAnimation.secondaryDirection || Directions.NONE);
+                secondaryXYIncrement.x *= parseFloat(CSSPropertyGetter.getProperty("--combat-location-width")) / 4;
+                secondaryXYIncrement.y *= parseFloat(CSSPropertyGetter.getProperty("--combat-location-height")) / 4;
+
                 return new MotionAnimation(
                     combatAnimation.entityToAnimateId, 
                     [
-                        {x: -xyIncrement.x, y: -xyIncrement.y}, 
-                        {x: xyIncrement.x, y: xyIncrement.y}, 
+                        {x: -xyIncrement.x/2, y: -xyIncrement.y/2}, 
+                        {x: xyIncrement.x, y: xyIncrement.y},
+                        {x: xyIncrement.x + secondaryXYIncrement.x, y: xyIncrement.y + secondaryXYIncrement.y},
                         {x: 0, y: 0}
                     ],
                     [
-                        {duration: combatAnimation.animationLength/5000},
                         {duration: combatAnimation.animationLength/2000},
-                        {duration: combatAnimation.animationLength/2000}
+                        {duration: combatAnimation.animationLength/6000},
+                        {duration: combatAnimation.animationLength/6000},
+                        {duration: combatAnimation.animationLength/2000},
                     ],
                     combatAnimation.positionToAnimate);
             case CombatAnimationNames.Grapple:

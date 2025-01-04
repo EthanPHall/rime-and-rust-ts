@@ -21,14 +21,14 @@ enum CombatAnimationNames {
 }
 
 class CombatAnimationFactory{
-    static createAnimation(animationName: string, direction:Directions, entityToAnimateId:number, dontPlayIfLast:boolean = false, positionToAnimate:Vector2|null = null): AnimationDetails {
+    static createAnimation(animationName: string, direction:Directions, entityToAnimateId:number, dontPlayIfLast:boolean = false, positionToAnimate:Vector2|null = null, secondaryDirection:Directions|undefined = undefined): AnimationDetails {
         switch(animationName){
             case CombatAnimationNames.Move:
                 return new AnimationDetails(CombatAnimationNames.Move, 250, direction, entityToAnimateId);
             case CombatAnimationNames.Attack:
                 return new AnimationDetails(CombatAnimationNames.Attack, 200, direction, entityToAnimateId);
             case CombatAnimationNames.Swipe:
-                return new AnimationDetails(CombatAnimationNames.Swipe, 300, direction, entityToAnimateId);
+                return new AnimationDetails(CombatAnimationNames.Swipe, 300, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate, secondaryDirection);
             case CombatAnimationNames.Block:
                 return new AnimationDetails(CombatAnimationNames.Block, 250, direction, entityToAnimateId);
             case CombatAnimationNames.Bump:

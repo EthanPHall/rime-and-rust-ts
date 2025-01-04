@@ -166,6 +166,10 @@ abstract class CombatEntity{
   setReactionTriggerList(reactionTriggerList: ReactionFlagAndTriggerList): void {
     this.reactionTriggerList = reactionTriggerList;
   }
+
+  isBarrier(): boolean {
+    return false;
+  }
 }
 
 export default CombatEntity;

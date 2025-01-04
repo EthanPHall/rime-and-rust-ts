@@ -840,7 +840,9 @@ abstract class CombatAction{
         }
 
         targetEntity.takeDamage(this.damage, this, this.ownerId);
-
+        if(targetEntity.isBarrier()){
+          targetEntity.killEntity();
+        }
 
         //Try to move the target first clockwise, then counterclockwise if that fails.
         if(targetEntity.isMovable()){
@@ -877,9 +879,7 @@ abstract class CombatAction{
 
     getAnimations(): AnimationDetails[][] {
       const targetId:number|undefined = this.getTargetId();
-
-      const result:AnimationDetails[][] = [[CombatAnimationFactory.createAnimation(CombatAnimationNames.Swipe, this.direction, this.ownerId)]];
-      
+          
       //Get the mvoement direction for the target
       let movementDirection  = Directions.NONE;
       const map: CombatMapData = this.getMap();
@@ -907,6 +907,7 @@ abstract class CombatAction{
         }      
       }  
 
+      const result:AnimationDetails[][] = [[CombatAnimationFactory.createAnimation(CombatAnimationNames.Swipe, this.direction, this.ownerId, undefined, undefined, movementDirection)]];
       
       if(targetId) {
         result[1] = [CombatAnimationFactory.createAnimation(CombatAnimationNames.Hurt, this.direction, targetId)];

@@ -233,7 +233,7 @@ class RustedBrute extends CombatEnemy{
       swipe: new CombatActionWithUses(this.getSwipeAction() as CombatAction, 1)
     };
 
-    this.default_reactionGenerators.push(new AttackWhenBump(this.actions));
+    // this.default_reactionGenerators.push(new AttackWhenBump(this.actions));
   }
 
   clone(): RustedBrute {
@@ -282,7 +282,7 @@ class RustedBrute extends CombatEnemy{
     await new Promise((resolve) => setTimeout(resolve, this.settingsManager.getCorrectTiming(CombatEnemy.TURN_START_DELAY)));
 
     if(playerPosition){
-      const aiHandler = new RustedBruteAI(this, playerPosition, this.playerId, this.getMap, this.actions as {move: CombatActionWithUses, attack: CombatActionWithUses});
+      const aiHandler = new RustedBruteAI(this, playerPosition, this.playerId, this.getMap, this.actions as {move: CombatActionWithUses, attack: CombatActionWithUses, swipe: CombatActionWithUses});
       const aiActions = aiHandler.handleAI();
 
       for(const action of aiActions){
@@ -365,9 +365,9 @@ class RustedBruteAI implements AIHandler{
   playerPosition: Vector2;
   playerId: number;
   getMap: () => CombatMapData;
-  actions: {move: CombatActionWithUses, attack: CombatActionWithUses};
+  actions: {move: CombatActionWithUses, attack: CombatActionWithUses, swipe: CombatActionWithUses};
 
-  constructor(entity: CombatEntity, playerPosition: Vector2, playerId: number, getMap: () => CombatMapData, actions: {move: CombatActionWithUses, attack: CombatActionWithUses}){
+  constructor(entity: CombatEntity, playerPosition: Vector2, playerId: number, getMap: () => CombatMapData, actions: {move: CombatActionWithUses, attack: CombatActionWithUses, swipe: CombatActionWithUses}){
     this.entity = entity;
     this.playerPosition = playerPosition;
     this.playerId = playerId;
@@ -381,8 +381,24 @@ class RustedBruteAI implements AIHandler{
 
     //Handle movement actions.
     const loopLimit = Math.min(directions.length, this.actions.move.uses);
+    let currentPosition = this.entity.position;
+    let mvoementsUsed = 0;
     for(let i = 0; i < loopLimit; i++){
+      if(mvoementsUsed >= this.actions.move.uses){
+        break;
+      }
+
       actions.push(this.actions.move.action.clone(directions[i]));
+      mvoementsUsed++;
+      currentPosition = currentPosition.add(DirectionsUtility.getVectorFromDirection(directions[i]));
+      
+      if(this.getMap().locations[currentPosition.y][currentPosition.x].entity
+      && this.getMap().locations[currentPosition.y][currentPosition.x].entity?.id != this.playerId
+      ){
+        actions.push(this.actions.swipe.action.clone(directions[i]));
+        actions.push(this.actions.move.action.clone(directions[i]));
+        mvoementsUsed++;
+      }
     }
 
     //Handle attack actions.

@@ -136,31 +136,23 @@ class PathfindingUtil{
         goalPlusDirectNeighbors.push(goal);
 
         //Get the neighbors of the goal neighbors
-        const indirectGoalNeighbors: Vector2[] = [];
-        for(const neighbor of goalPlusDirectNeighbors){
-            const neighbors = DirectionsUtility.getNeighbors(neighbor, mapData);
-            for(const neighbor of neighbors){
-                if(!goalPlusDirectNeighbors.some((node) => node.equals(neighbor))){
-                    indirectGoalNeighbors.push(neighbor);
-                }
-            }
-        }
+        //Coming back later, I'm not totally sure what this part really does. I think it's to keep entities from bumping into eachother if the player is surrounded, but I can't quite remember. In any case, that's not a problem for the aggressive AI
+        // const indirectGoalNeighbors: Vector2[] = [];
+        // for(const neighbor of goalPlusDirectNeighbors){
+        //     const neighbors = DirectionsUtility.getNeighbors(neighbor, mapData);
+        //     for(const neighbor of neighbors){
+        //         if(!goalPlusDirectNeighbors.some((node) => node.equals(neighbor))){
+        //             indirectGoalNeighbors.push(neighbor);
+        //         }
+        //     }
+        // }
 
         while (openList.length > 0) {
             // Find the node with the lowest fScore
             const current = openList.reduce((a, b) => (fScore[a.toString()] < fScore[b.toString()] ? a : b));
 
             // If the current node is the goal, or is surrounding the goal, reconstruct the path and return it
-            // if (current.equals(goal)) {
-            //     return this.reconstructPath(cameFrom, current);
-            // }
             if(goalPlusDirectNeighbors.some((node) => node.equals(current))){
-                return this.reconstructPath(cameFrom, current);
-            }
-            else if(
-                !goalPlusDirectNeighbors.some((node) => {return !mapData.locations[node.y][node.x].entity || mapData.locations[node.y][node.x].entity?.isWalkable()}) && 
-                indirectGoalNeighbors.some((node) => node.equals(current))
-            ){
                 return this.reconstructPath(cameFrom, current);
             }
 
@@ -179,7 +171,7 @@ class PathfindingUtil{
                 }
 
                 // Calculate the tentative gScore for the neighbor
-                // There's a change here: Rather than Infinity, the penalty for walking through an entity is 3 (arrived at via trial and error). Also, walkability of the entity is not actually considered.
+                // Rather than Infinity, the penalty for walking through an entity is 3 (arrived at via trial and error). Also, walkability of the entity is not actually considered.
                 const entityAtNeighborLocation:CombatEntity | null = mapData.locations[neighbor.y][neighbor.x].entity;
                 const gPenaltyNoEntity = gScore[current.toString()] + current.manhattanDistance(neighbor);
                 const tentativeGScore = entityAtNeighborLocation ? gPenaltyNoEntity + 3 : gPenaltyNoEntity;
@@ -197,11 +189,6 @@ class PathfindingUtil{
                 gScore[neighbor.toString()] = tentativeGScore;
                 hScore[neighbor.toString()] = neighbor.manhattanDistance(goal);
                 fScore[neighbor.toString()] = gScore[neighbor.toString()] + hScore[neighbor.toString()];
-                
-                // if(debug_toStringList.some((string) => {return string === neighbor.toString()})){
-                //     console.log("Duplicate Node: " + neighbor.toString());
-                // }
-                // debug_toStringList.push(neighbor.toString());
             }
         }
 

@@ -103,6 +103,10 @@ abstract class CombatHazard extends CombatEntity{
     getActionForNewEntityOnSpace(newEntity: CombatEntity | null): CombatAction | null {
       return null;
     }
+
+    override isBarrier(): boolean {
+      return true;
+    }
   }
 
   class InvisibleWall extends CombatHazard{

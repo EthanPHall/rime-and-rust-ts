@@ -5,17 +5,20 @@ class AnimationDetails{
     animationName: string;
     animationLength: number;
     direction: Directions;
+    secondaryDirection: Directions|undefined;
     entityToAnimateId: number;
     dontPlayIfLast: boolean;
     positionToAnimate:Vector2|null;
 
-    constructor(animationName: string, animationLength: number, direction: Directions, entityToAnimateId: number, dontPlayIfLast: boolean = false, positionToAnimate:Vector2|null = null){
+    constructor(animationName: string, animationLength: number, direction: Directions, entityToAnimateId: number, dontPlayIfLast: boolean = false, positionToAnimate:Vector2|null = null, secondaryDirection: Directions|undefined = undefined){
         this.animationName = animationName;
         this.animationLength = animationLength;
         this.direction = direction;
         this.entityToAnimateId = entityToAnimateId;
         this.dontPlayIfLast = dontPlayIfLast;
         this.positionToAnimate = positionToAnimate;
+
+        this.secondaryDirection = secondaryDirection;
     }
 
     getFullname(): string{
