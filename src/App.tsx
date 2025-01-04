@@ -216,6 +216,7 @@ function App() {
   const [INITIAL_COMBAT_ACTIONS_ALWAYS_PREPPED] = useState<CombatActionSeed[]>(
     [
       {key:"Move", uses:7, id:IdGenerator.generateUniqueId()},
+      {key:"Swap00To33", uses:3, id:IdGenerator.generateUniqueId()},
     ]
   );
 

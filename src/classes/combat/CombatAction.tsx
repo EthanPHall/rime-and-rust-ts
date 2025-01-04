@@ -1894,6 +1894,49 @@ abstract class CombatAction{
     getCorrectAction(): CombatAction { return this.clone(); }
 
   }
+ 
+  class Swap00To33 extends CombatAction {
+    private radius:number;
+    private entitySpawner: EntitySpawner;
+
+    constructor(
+      ownerId: number,
+      entitySpawner: EntitySpawner,
+      updateEntity: (id:number, newEntity: CombatEntity) => void,
+      refreshMap: () => void,
+      getMap: () => CombatMapData,
+      radius: number = 2,
+    ){
+      super('Swap00To33', false, ownerId, Directions.NONE, updateEntity, refreshMap, getMap);
+      this.radius = radius;
+      this.getMap = getMap;
+      this.entitySpawner = entitySpawner;
+    }
+
+    clone(newDirection?: Directions): CombatAction {
+      return new Swap00To33(
+        this.ownerId,
+        this.entitySpawner,
+        this.updateEntity,
+        this.refreshMap,
+        this.getMap,
+        this.radius
+      );
+    }
+    execute(): void {
+      console.log('Swapping');
+
+      this.getMap().swap00ToXY(3, 3);
+
+      this.refreshMap();
+    }
+    getAnimations(): AnimationDetails[][] {
+      return [[]];
+    }
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
+  }
 
 
   type CombatActionSeed = {
@@ -1903,5 +1946,5 @@ abstract class CombatAction{
   }
   
 export default CombatAction;
-export {Swipe, SwitchGrappleMode, Grapple, Slice, Lacerate, DespawnBurningRadius, SpawnBurningRadius, Fireball, Burn, Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
+export {Swap00To33, Swipe, SwitchGrappleMode, Grapple, Slice, Lacerate, DespawnBurningRadius, SpawnBurningRadius, Fireball, Burn, Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
 export type { CombatActionSeed };

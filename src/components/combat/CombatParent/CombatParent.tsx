@@ -178,6 +178,7 @@ const CombatParent: FC<CombatParentProps> = (
   const [playerForEffects, getPlayer, setPlayer] = useRefState<CombatPlayer>(new CombatPlayer(IdGenerator.generateUniqueId(), combatPlayerStats, '@', 'Player', new Vector2(0, 0), getCachedMap, turnManager.advanceTurn, resetActionUses));
   const [enemiesForEffects, getEnemies, setEnemies] = useRefState<CombatEnemy[]>([]);
   const [hazardsForEffects, getHazards, setHazards] = useRefState<CombatHazard[]>([]);
+  const dontRefreshMapOnEffect = useRef(false);
 
   const [entitySpawner, setEntitySpawner] = useState<EntitySpawner>(new EntitySpawner(turnManager, getHazards, getEnemies, setHazards, setEnemies));
 
@@ -363,10 +364,19 @@ const CombatParent: FC<CombatParentProps> = (
   }, [baseMap]);
 
   useEffect(() => {
+    if(dontRefreshMapOnEffect.current){
+      dontRefreshMapOnEffect.current = false;
+      return;
+    }
+
     refreshMap();
   }, [playerForEffects, enemiesForEffects, hazardsForEffects]);
 
   useEffect(() => {
+    if(dontRefreshMapOnEffect.current){
+      return;
+    }
+
     //Handle determining if the encounter is done yet.
     if(setupFinished.current){
       if(getPlayer().getHp() <= 0){
@@ -415,6 +425,34 @@ const CombatParent: FC<CombatParentProps> = (
     }
 
     const newMap: CombatMapData = CombatMapData.clone(baseMapRef.current);
+
+    //Reflect changes that the map itself may have made to the entities in the actual entity lists
+    try{
+      const currentMap:CombatMapData = mapToSendOffCached.current;
+      console.log("currentMap:", currentMap);
+
+      const currentEnemies:CombatEnemy[] = currentMap.getEnemies();
+      const currentHazards:CombatHazard[] = currentMap.getHazards();
+
+      getEnemies().forEach(enemy => {
+        currentMap.applyAnyEntityChanges(enemy);
+      });
+      getHazards().forEach(hazard => {
+        currentMap.applyAnyEntityChanges(hazard);
+      });
+
+      currentMap.applyAnyEntityChanges(getPlayer());
+
+      currentMap.clearEntityChanges();
+
+      dontRefreshMapOnEffect.current = true;
+      setEnemies([...getEnemies()]);
+      setHazards([...getHazards()]);
+      setPlayer(getPlayer().clone());
+    }
+    catch(e){
+      //Ignore
+    }
 
     getHazards().forEach(hazard => {
       if (hazard.getHp() <= 0) {

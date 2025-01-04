@@ -1,6 +1,6 @@
 import Directions from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
-import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion, Chop, Punch, Kick, Burn, Fireball, SpawnBurningRadius, DespawnBurningRadius, Slice, Lacerate, Grapple, SwitchGrappleMode, CombatActionWithRepeat } from "./CombatAction";
+import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion, Chop, Punch, Kick, Burn, Fireball, SpawnBurningRadius, DespawnBurningRadius, Slice, Lacerate, Grapple, SwitchGrappleMode, CombatActionWithRepeat, Swap00To33 } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
 import CombatHazard from "./CombatHazard";
 import CombatHazardFireballFactory from "./CombatHazardFireballFactory";
@@ -26,6 +26,7 @@ enum CombatActionNames{
     Fireball = "Fireball",
     SpawnBurningRadius = "SpawnBurningRadius",
     DespawnBurningRadius = "DespawnBurningRadius",
+    Swap00To33 = "Swap00To33",
 }
 
 function stringToCombatActionNames(actionName: string): CombatActionNames{
@@ -68,6 +69,8 @@ function stringToCombatActionNames(actionName: string): CombatActionNames{
             return CombatActionNames.SpawnBurningRadius;
         case "DespawnBurningRadius":
             return CombatActionNames.DespawnBurningRadius;
+        case "Swap00To33":
+            return CombatActionNames.Swap00To33;
         default:
             throw new Error("Invalid action name: " + actionName);
     }
@@ -146,6 +149,8 @@ class CombatActionFactory{
                 return new SpawnBurningRadius(ownerId, this.updateEntity, this.refreshMap, this.entitySpawner, this.getMap);
             case CombatActionNames.DespawnBurningRadius:
                 return new DespawnBurningRadius(ownerId, this.entitySpawner, this.updateEntity, this.refreshMap, this.getMap);
+            case CombatActionNames.Swap00To33:
+                return new Swap00To33(ownerId, this.entitySpawner, this.updateEntity, this.refreshMap, this.getMap);
             default:
                 throw new Error("Invalid action name: " + actionName);
         }

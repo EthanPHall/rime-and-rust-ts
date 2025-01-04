@@ -8,11 +8,15 @@ import CombatHazard from "./CombatHazard";
 import CombatPlayer from "./CombatPlayer";
 import ConditionDebug from "./Conditions/ConditionDebug";
 import ConditionName from "./Conditions/ConditionNames";
+import CombatEnemy from "./CombatEnemy";
 
 class CombatMapData{
     locations: CombatLocationData[][];
     height: number;
     width: number;
+
+    entityIdToNewPosition: Map<number, Vector2> = new Map<number, Vector2>();
+
     constructor(height: number, width: number){
       this.locations = [];
       this.height = height;
@@ -164,6 +168,78 @@ class CombatMapData{
       });
   
       return newMap;
+    }
+
+    swap00ToXY(x: number, y: number):void{
+      //Find the two locations: 0,0 and x,y
+      let zeroZeroLocation:CombatLocationData|undefined;
+      let xyLocation:CombatLocationData|undefined;
+
+      this.locations.forEach((row) => {
+        row.forEach((location) => {
+          if(location.x === 0 && location.y === 0){
+            zeroZeroLocation = location;
+          }
+
+          if(location.x === x && location.y === y){
+            xyLocation = location;
+          }
+        });
+      });
+
+      console.log("zeroZeroLocation:", zeroZeroLocation);
+      console.log("xyLocation:", xyLocation);
+
+      //If both locations are found, swap them
+      if(zeroZeroLocation && xyLocation){
+        zeroZeroLocation.x = x;
+        zeroZeroLocation.y = y;
+        this.entityIdToNewPosition.set(zeroZeroLocation?.entity?.id || -1, new Vector2(x, y));
+
+        xyLocation.x = 0;
+        xyLocation.y = 0;
+        this.entityIdToNewPosition.set(xyLocation?.entity?.id || -1, new Vector2(0, 0));
+      }
+    }
+
+    applyAnyEntityChanges(entity:CombatEntity):void{
+      const newPosition = this.entityIdToNewPosition.get(entity.id);
+
+      if(newPosition){
+        entity.position = newPosition;
+      }
+    }
+
+    clearEntityChanges():void{
+      this.entityIdToNewPosition.clear();
+    }
+
+    getEnemies():CombatEnemy[]{
+      const enemies:CombatEnemy[] = [];
+
+      this.locations.forEach((row) => {
+        row.forEach((location) => {
+          if(location.entity && location.entity instanceof CombatEnemy){
+            enemies.push(location.entity);
+          }
+        });
+      });
+
+      return enemies;
+    }
+
+    getHazards():CombatHazard[]{
+      const hazards:CombatHazard[] = [];
+
+      this.locations.forEach((row) => {
+        row.forEach((location) => {
+          if(location.entity && location.entity instanceof CombatHazard){
+            hazards.push(location.entity);
+          }
+        });
+      });
+
+      return hazards;
     }
   }
 
