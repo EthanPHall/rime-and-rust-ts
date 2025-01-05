@@ -9,8 +9,9 @@ class AnimationDetails{
     entityToAnimateId: number;
     dontPlayIfLast: boolean;
     positionToAnimate:Vector2|null;
+    movementVector:Vector2|undefined;
 
-    constructor(animationName: string, animationLength: number, direction: Directions, entityToAnimateId: number, dontPlayIfLast: boolean = false, positionToAnimate:Vector2|null = null, secondaryDirection: Directions|undefined = undefined){
+    constructor(animationName: string, animationLength: number, direction: Directions, entityToAnimateId: number, dontPlayIfLast: boolean = false, positionToAnimate:Vector2|null = null, secondaryDirection: Directions|undefined = undefined, movementVector:Vector2|undefined = undefined){
         this.animationName = animationName;
         this.animationLength = animationLength;
         this.direction = direction;
@@ -19,6 +20,7 @@ class AnimationDetails{
         this.positionToAnimate = positionToAnimate;
 
         this.secondaryDirection = secondaryDirection;
+        this.movementVector = movementVector;
     }
 
     getFullname(): string{

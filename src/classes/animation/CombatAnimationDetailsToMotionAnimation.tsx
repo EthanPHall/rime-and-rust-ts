@@ -174,6 +174,28 @@ class CombatAnimationDetailsToMotionAnimation{
                     ],
                     combatAnimation.positionToAnimate
                 );
+            case CombatAnimationNames.Swap:
+                emphasisScale = parseFloat(CSSPropertyGetter.getProperty("--emphasis-scale"));
+
+                xyIncrement.x = combatAnimation.movementVector?.x || 0;
+                xyIncrement.y = combatAnimation.movementVector?.y || 0;
+                xyIncrement.x *= parseFloat(CSSPropertyGetter.getProperty("--combat-location-width"));
+                xyIncrement.y *= parseFloat(CSSPropertyGetter.getProperty("--combat-location-height"));
+
+                return new MotionAnimation(
+                    combatAnimation.entityToAnimateId, 
+                    [
+                        {scaleX: .5, scaleY: .5},
+                        {x: xyIncrement.x, y: xyIncrement.y},
+                        {scaleX: 1, scaleY: 1},
+                    ], 
+                    [
+                        {duration: combatAnimation.animationLength/3500},
+                        {duration: combatAnimation.animationLength/2000},
+                        {duration: combatAnimation.animationLength/3500},
+                    ],
+                    combatAnimation.positionToAnimate
+                );
             case CombatAnimationNames.Burn:
                 return new MotionAnimation(
                     combatAnimation.entityToAnimateId,

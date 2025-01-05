@@ -429,7 +429,7 @@ const CombatParent: FC<CombatParentProps> = (
     //Reflect changes that the map itself may have made to the entities in the actual entity lists
     try{
       const currentMap:CombatMapData = mapToSendOffCached.current;
-      console.log("currentMap:", currentMap);
+      // console.log("currentMap:", currentMap);
 
       const currentEnemies:CombatEnemy[] = currentMap.getEnemies();
       const currentHazards:CombatHazard[] = currentMap.getHazards();

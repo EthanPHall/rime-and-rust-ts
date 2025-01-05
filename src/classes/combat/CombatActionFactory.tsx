@@ -1,6 +1,6 @@
 import Directions from "../utility/Directions";
 import Vector2 from "../utility/Vector2";
-import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion, Chop, Punch, Kick, Burn, Fireball, SpawnBurningRadius, DespawnBurningRadius, Slice, Lacerate, Grapple, SwitchGrappleMode, CombatActionWithRepeat, Swap00To33 } from "./CombatAction";
+import CombatAction, { Attack, BurningFloorAttack, Block, Move, PullRange5, PushRange5, VolatileCanExplosion, Chop, Punch, Kick, Burn, Fireball, SpawnBurningRadius, DespawnBurningRadius, Slice, Lacerate, Grapple, SwitchGrappleMode, CombatActionWithRepeat, Swap00To33, SwapTopCornerToBottom } from "./CombatAction";
 import CombatEntity from "./CombatEntity";
 import CombatHazard from "./CombatHazard";
 import CombatHazardFireballFactory from "./CombatHazardFireballFactory";
@@ -27,6 +27,7 @@ enum CombatActionNames{
     SpawnBurningRadius = "SpawnBurningRadius",
     DespawnBurningRadius = "DespawnBurningRadius",
     Swap00To33 = "Swap00To33",
+    SwapTopCornerToBottom = "SwapTopCornerToBottom",
 }
 
 function stringToCombatActionNames(actionName: string): CombatActionNames{
@@ -71,6 +72,8 @@ function stringToCombatActionNames(actionName: string): CombatActionNames{
             return CombatActionNames.DespawnBurningRadius;
         case "Swap00To33":
             return CombatActionNames.Swap00To33;
+        case "SwapTopCornerToBottom":
+            return CombatActionNames.SwapTopCornerToBottom;
         default:
             throw new Error("Invalid action name: " + actionName);
     }
@@ -151,6 +154,8 @@ class CombatActionFactory{
                 return new DespawnBurningRadius(ownerId, this.entitySpawner, this.updateEntity, this.refreshMap, this.getMap);
             case CombatActionNames.Swap00To33:
                 return new Swap00To33(ownerId, this.entitySpawner, this.updateEntity, this.refreshMap, this.getMap);
+            case CombatActionNames.SwapTopCornerToBottom:
+                return new SwapTopCornerToBottom(ownerId, this.updateEntity, this.refreshMap, this.getMap);
             default:
                 throw new Error("Invalid action name: " + actionName);
         }

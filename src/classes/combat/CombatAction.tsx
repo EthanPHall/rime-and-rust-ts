@@ -1930,14 +1930,109 @@ abstract class CombatAction{
 
       this.refreshMap();
     }
-    getAnimations(): AnimationDetails[][] {
-      return [[]];
+
+    getTargets(): Vector2[]{
+      const map: CombatMapData = this.getMap();
+      const owner: CombatEntity|null = map.getEntityById(this.ownerId);
+
+      if(!owner){return []};
+
+      const positions:Vector2[] = [
+        new Vector2(0, 0),
+        new Vector2(3, 3)
+      ]
+      return positions;
     }
+
+    getAnimations(): AnimationDetails[][] {
+      const positions = this.getTargets();
+
+      // console.log("Positions to swap", positions);
+      // console.log("Positions to swap subtracted 0 - 1", Vector2.subtract(positions[0], positions[1]));
+      // console.log("Positions to swap subtracted 1 - 0", Vector2.subtract(positions[1], positions[0]));
+
+      const result:AnimationDetails[][] = [[],[]];
+      result[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId));
+
+      result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Swap, this.direction, -1, false, positions[0], undefined, Vector2.subtract(positions[1], positions[0])));
+      result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Swap, this.direction, -1, false, positions[1], undefined, Vector2.subtract(positions[0], positions[1])));
+
+      return result;
+    }
+
 
     getName(): string{ return this.name; }
     getCorrectAction(): CombatAction { return this.clone(); }
   }
 
+  class SwapTopCornerToBottom extends CombatAction {
+    constructor(
+      ownerId: number,
+      updateEntity: (id:number, newEntity: CombatEntity) => void,
+      refreshMap: () => void,
+      getMap: () => CombatMapData,
+    ){
+      super('SwapTopCornerToBottom', false, ownerId, Directions.NONE, updateEntity, refreshMap, getMap);
+      this.getMap = getMap;
+    }
+
+    clone(newDirection?: Directions): CombatAction {
+      return new SwapTopCornerToBottom(
+        this.ownerId,
+        this.updateEntity,
+        this.refreshMap,
+        this.getMap,
+      );
+    }
+    execute(): void {
+      console.log('Swapping Many');
+
+      this.getMap().swapZone1ToZone2({start:new Vector2(0,0), length:7, height:7}, {start:new Vector2(7,0), length:7, height:7});
+
+      this.refreshMap();
+    }
+
+    getTargets(): {positions1: Vector2[], positions2: Vector2[]}{
+      const map: CombatMapData = this.getMap();
+      const owner: CombatEntity|null = map.getEntityById(this.ownerId);
+
+      if(!owner){return {positions1:[],positions2:[]}};
+
+      const positions1:Vector2[] = [];
+      const positions2:Vector2[] = [];
+
+      for(let y = 0; y < 7; y++){
+        for(let x = 0; x < 7; x++){
+          positions1.push(new Vector2(x, y));
+          positions2.push(new Vector2(x + 7, y));
+        }
+      }
+
+      return {positions1, positions2};
+    }
+
+    getAnimations(): AnimationDetails[][] {
+      const {positions1, positions2} = this.getTargets();
+
+      
+      const result:AnimationDetails[][] = [[],[]];
+      result[0].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Attack, this.direction, this.ownerId));
+      
+      positions1.forEach((position1, index) => {
+        const position2 = positions2[index];
+
+        result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Swap, this.direction, -1, false, position1, undefined, Vector2.subtract(position2, position1)));
+        result[1].push(CombatAnimationFactory.createAnimation(CombatAnimationNames.Swap, this.direction, -1, false, position2, undefined, Vector2.subtract(position1, position2)));
+      });      
+
+
+      return result;
+    }
+
+
+    getName(): string{ return this.name; }
+    getCorrectAction(): CombatAction { return this.clone(); }
+  }
 
   type CombatActionSeed = {
     key: string;
@@ -1946,5 +2041,5 @@ abstract class CombatAction{
   }
   
 export default CombatAction;
-export {Swap00To33, Swipe, SwitchGrappleMode, Grapple, Slice, Lacerate, DespawnBurningRadius, SpawnBurningRadius, Fireball, Burn, Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
+export {SwapTopCornerToBottom, Swap00To33, Swipe, SwitchGrappleMode, Grapple, Slice, Lacerate, DespawnBurningRadius, SpawnBurningRadius, Fireball, Burn, Kick, Punch, Chop, Attack, Block, Move, CombatActionWithRepeat, CombatActionWithUses, PullRange5, PushRange5, BurningFloorAttack, VolatileCanExplosion};
 export type { CombatActionSeed };

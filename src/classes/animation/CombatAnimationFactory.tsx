@@ -17,11 +17,12 @@ enum CombatAnimationNames {
     Pyro = "Pyro",
     Burn = "Burn",
     Explosion = "Explosion",
+    Swap = "Swap",
     None = "None",
 }
 
 class CombatAnimationFactory{
-    static createAnimation(animationName: string, direction:Directions, entityToAnimateId:number, dontPlayIfLast:boolean = false, positionToAnimate:Vector2|null = null, secondaryDirection:Directions|undefined = undefined): AnimationDetails {
+    static createAnimation(animationName: string, direction:Directions, entityToAnimateId:number, dontPlayIfLast:boolean = false, positionToAnimate:Vector2|null = null, secondaryDirection:Directions|undefined = undefined, movementVector:Vector2|undefined = undefined): AnimationDetails {
         switch(animationName){
             case CombatAnimationNames.Move:
                 return new AnimationDetails(CombatAnimationNames.Move, 250, direction, entityToAnimateId);
@@ -47,6 +48,8 @@ class CombatAnimationFactory{
                 return new AnimationDetails(CombatAnimationNames.Burn, 1000, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate);
             case CombatAnimationNames.Explosion:
                 return new AnimationDetails(CombatAnimationNames.Explosion, 1000, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate);
+            case CombatAnimationNames.Swap:
+                return new AnimationDetails(CombatAnimationNames.Swap, 500, direction, entityToAnimateId, dontPlayIfLast, positionToAnimate, secondaryDirection, movementVector);
             case CombatAnimationNames.Reset:
                 return new AnimationDetails(CombatAnimationNames.Reset, 0, direction, entityToAnimateId);
             default:

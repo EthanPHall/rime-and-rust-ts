@@ -187,20 +187,55 @@ class CombatMapData{
         });
       });
 
-      console.log("zeroZeroLocation:", zeroZeroLocation);
-      console.log("xyLocation:", xyLocation);
-
       //If both locations are found, swap them
       if(zeroZeroLocation && xyLocation){
         zeroZeroLocation.x = x;
         zeroZeroLocation.y = y;
-        this.entityIdToNewPosition.set(zeroZeroLocation?.entity?.id || -1, new Vector2(x, y));
+        this.entityIdToNewPosition.set(zeroZeroLocation.entity?.id || -1, new Vector2(x, y));
 
         xyLocation.x = 0;
         xyLocation.y = 0;
-        this.entityIdToNewPosition.set(xyLocation?.entity?.id || -1, new Vector2(0, 0));
+        this.entityIdToNewPosition.set(xyLocation.entity?.id || -1, new Vector2(0, 0));
       }
     }
+
+    swapZone1ToZone2(zone1:{start:Vector2, length:number, height:number}, zone2:{start:Vector2, length:number, height:number}):void{
+      //Find all zone 1 locations
+      const zone1Locations:CombatLocationData[] = [];
+      for(let i = zone1.start.y; i < zone1.start.y + zone1.height; i++){
+        for(let j = zone1.start.x; j < zone1.start.x + zone1.length; j++){
+          if(this.isInBounds(new Vector2(j, i))){
+            zone1Locations.push(this.locations[i][j]);
+          }
+        }
+      }
+
+      //Find all zone 2 locations
+      const zone2Locations:CombatLocationData[] = [];
+      for(let i = zone2.start.y; i < zone2.start.y + zone2.height; i++){
+        for(let j = zone2.start.x; j < zone2.start.x + zone2.length; j++){
+          if(this.isInBounds(new Vector2(j, i))){
+            zone2Locations.push(this.locations[i][j]);
+          }
+        }
+      }
+
+      //Swap locations with the same index
+      zone1Locations.forEach((location, index) => {
+        const zone2Location = zone2Locations[index];
+        const tempX = location.x;
+        const tempY = location.y;
+
+        location.x = zone2Location.x;
+        location.y = zone2Location.y;
+        this.entityIdToNewPosition.set(location.entity?.id || -1, new Vector2(zone2Location.x, zone2Location.y));
+
+        zone2Location.x = tempX;
+        zone2Location.y = tempY;
+        this.entityIdToNewPosition.set(zone2Location.entity?.id || -1, new Vector2(tempX, tempY));
+      });
+    }
+
 
     applyAnyEntityChanges(entity:CombatEntity):void{
       const newPosition = this.entityIdToNewPosition.get(entity.id);
