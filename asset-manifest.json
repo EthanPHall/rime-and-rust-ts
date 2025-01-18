@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/rime-and-rust-ts/static/css/main.287e3122.css",
-    "main.js": "/rime-and-rust-ts/static/js/main.b96343c2.js",
+    "main.css": "/rime-and-rust-ts/static/css/main.047d62c1.css",
+    "main.js": "/rime-and-rust-ts/static/js/main.1b7f5c1e.js",
     "static/js/453.c26d03b4.chunk.js": "/rime-and-rust-ts/static/js/453.c26d03b4.chunk.js",
     "index.html": "/rime-and-rust-ts/index.html",
-    "main.287e3122.css.map": "/rime-and-rust-ts/static/css/main.287e3122.css.map",
-    "main.b96343c2.js.map": "/rime-and-rust-ts/static/js/main.b96343c2.js.map",
+    "main.047d62c1.css.map": "/rime-and-rust-ts/static/css/main.047d62c1.css.map",
+    "main.1b7f5c1e.js.map": "/rime-and-rust-ts/static/js/main.1b7f5c1e.js.map",
     "453.c26d03b4.chunk.js.map": "/rime-and-rust-ts/static/js/453.c26d03b4.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.287e3122.css",
-    "static/js/main.b96343c2.js"
+    "static/css/main.047d62c1.css",
+    "static/js/main.1b7f5c1e.js"
   ]
 }
